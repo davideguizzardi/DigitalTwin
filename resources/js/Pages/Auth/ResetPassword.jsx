@@ -1,10 +1,8 @@
-import { useEffect } from 'react';
-import GuestLayout from '@/Layouts/GuestLayout';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import { Head, useForm } from '@inertiajs/react';
+import { Button, Checkbox, Label, TextInput } from "flowbite-react";
+import BaseLayout from '@/CustomLayouts/BaseLayout'
+import { Head, Link, useForm } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
+import InputError from "@/CustomComponents/InputError";
 
 export default function ResetPassword({ token, email }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -27,13 +25,14 @@ export default function ResetPassword({ token, email }) {
     };
 
     return (
-        <GuestLayout>
+        <BaseLayout>
             <Head title="Reset Password" />
 
             <form onSubmit={submit}>
                 <div>
-                    <InputLabel htmlFor="email" value="Email" />
-
+                    <div className="mb-2 block">
+                        <Label className="text-lg" htmlFor="email" value="Your email" />
+                    </div>
                     <TextInput
                         id="email"
                         type="email"
@@ -48,8 +47,9 @@ export default function ResetPassword({ token, email }) {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
+                    <div className="mb-2 block" >
+                        <Label className="text-lg" htmlFor="password" value="Your password" />
+                    </div>
                     <TextInput
                         id="password"
                         type="password"
@@ -65,7 +65,9 @@ export default function ResetPassword({ token, email }) {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
+                    <div className="mb-2 block" >
+                        <Label className="text-lg" htmlFor="password_confirmation" value="Confirm Password" />
+                    </div>
 
                     <TextInput
                         type="password"
@@ -81,11 +83,11 @@ export default function ResetPassword({ token, email }) {
                 </div>
 
                 <div className="flex items-center justify-end mt-4">
-                    <PrimaryButton className="ms-4" disabled={processing}>
+                    <Button className="ms-4" disabled={processing} type="submit">
                         Reset Password
-                    </PrimaryButton>
+                    </Button>
                 </div>
             </form>
-        </GuestLayout>
+        </BaseLayout>
     );
 }
