@@ -36,9 +36,9 @@ class ResetPasswordNotification extends Notification
     {
         return (new MailMessage)
                     ->greeting('Hello!')
-                    ->line('Reset password')
-                    ->action('Notification Action', $this->route)
-                    ->line('Thank you for using our application!');
+                    ->line('We received a password reset request for your Digital Twin account. To reset your password, please click on the following link:')
+                    ->action('Reset Password', $this->route)
+                    ->line('If you did not request a password reset, you can ignore this email.');
     }
 
     /**
