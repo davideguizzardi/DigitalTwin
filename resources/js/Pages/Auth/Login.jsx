@@ -1,8 +1,8 @@
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
-import BaseLayout from '@/CustomLayouts/BaseLayout';
+import BaseLayout from '@/Layouts/BaseLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import InputError from "@/CustomComponents/InputError";
+import InputError from "@/Components/InputError";
 
 export default function Login({ status, canResetPassword }) {
   const { data, setData, post, processing, errors, reset } = useForm({

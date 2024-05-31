@@ -1,7 +1,7 @@
-import BaseLayout from "@/CustomLayouts/BaseLayout";
+import BaseLayout from "@/Layouts/BaseLayout";
 import { Button, TextInput } from "flowbite-react";
 import { Head, useForm } from "@inertiajs/react";
-import InputError from "@/CustomComponents/InputError";
+import InputError from "@/Components/InputError";
 
 
 export default function ForgotPassword({ status }) {
