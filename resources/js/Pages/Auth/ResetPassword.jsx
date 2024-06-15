@@ -1,5 +1,6 @@
-import { Button, Checkbox, Label, TextInput } from "flowbite-react";
-import BaseLayout from '@/Layouts/BaseLayout'
+import {Label, TextInput } from "flowbite-react";
+import {ThemeButton as Button} from "@/Components/ThemeButton";
+import GuestLayout from '@/Layouts/GuestLayout'
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import InputError from "@/Components/InputError";
@@ -25,7 +26,7 @@ export default function ResetPassword({ token, email }) {
     };
 
     return (
-        <BaseLayout>
+        <GuestLayout>
             <Head title="Reset Password" />
 
             <form onSubmit={submit}>
@@ -83,11 +84,11 @@ export default function ResetPassword({ token, email }) {
                 </div>
 
                 <div className="flex items-center justify-end mt-4">
-                    <Button className="ms-4" disabled={processing} type="submit">
+                    <Button className="ms-4 bg-lime-200 text-black" disabled={processing} type="submit">
                         Reset Password
                     </Button>
                 </div>
             </form>
-        </BaseLayout>
+        </GuestLayout>
     );
 }

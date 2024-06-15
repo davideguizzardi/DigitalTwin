@@ -1,13 +1,13 @@
 import { Head , Link} from '@inertiajs/react';
 import { Button } from 'flowbite-react';
-import BaseLayout from '@/CustomLayouts/BaseLayout';
+import GuestLayout from '@/Layouts/GuestLayout';
 
 export default function Dashboard({ auth }) {
     return (
-        <BaseLayout>
+        <GuestLayout>
             <Link href={route('logout')} method="post" as="button">
                 Logout
             </Link>
-        </BaseLayout>
+        </GuestLayout>
     );
 }
