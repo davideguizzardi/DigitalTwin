@@ -29,7 +29,7 @@ export function ThemeSidebar() {
                             }
                         </Button>
                     </div>
-                    <Sidebar.ItemGroup className="h-full flex flex-col items-center">
+                    <Sidebar.ItemGroup className="h-full flex flex-col">
                         <SidebarItem name="Home" icon={FaHouse} collapsed={collapsed}>
                         </SidebarItem>
                         <SidebarItem name="Consumption" icon={FaBolt} collapsed={collapsed}>
@@ -39,7 +39,7 @@ export function ThemeSidebar() {
                         <SidebarItem name="Configuration" icon={FaGear} collapsed={collapsed}>
                         </SidebarItem>
                     </Sidebar.ItemGroup>
-                    <Sidebar.ItemGroup className="flex flex-col items-center">
+                    <Sidebar.ItemGroup className="flex flex-col">
                         <Sidebar.Item>
                             <Avatar rounded>
                                 {!collapsed &&
