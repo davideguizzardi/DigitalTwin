@@ -1,13 +1,16 @@
 import { Head , Link} from '@inertiajs/react';
-import { Button } from 'flowbite-react';
-import GuestLayout from '@/Layouts/GuestLayout';
+import UserLayout from '@/Layouts/UserLayout';
+import { ThemeButton } from '@/Components/ThemeButton';
 
 export default function Dashboard({ auth }) {
     return (
-        <GuestLayout>
-            <Link href={route('logout')} method="post" as="button">
+        <UserLayout>
+            <div className="flex items-center">
+            <ThemeButton>
                 Logout
-            </Link>
-        </GuestLayout>
+            </ThemeButton>
+            </div>
+        </UserLayout>
+
     );
 }
