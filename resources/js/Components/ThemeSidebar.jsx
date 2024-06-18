@@ -30,13 +30,13 @@ export function ThemeSidebar() {
                         </Button>
                     </div>
                     <Sidebar.ItemGroup className="h-full flex flex-col">
-                        <SidebarItem name="Home" icon={FaHouse} collapsed={collapsed}>
+                        <SidebarItem name="Home" href={route('dashboard')} icon={FaHouse} collapsed={collapsed}>
                         </SidebarItem>
                         <SidebarItem name="Consumption" icon={FaBolt} collapsed={collapsed}>
                         </SidebarItem>
                         <SidebarItem name="Automations" icon={FaPuzzlePiece} collapsed={collapsed}>
                         </SidebarItem>
-                        <SidebarItem name="Configuration" icon={FaGear} collapsed={collapsed}>
+                        <SidebarItem name="Configuration" href={route('configuration')} icon={FaGear} collapsed={collapsed}>
                         </SidebarItem>
                     </Sidebar.ItemGroup>
                     <Sidebar.ItemGroup className="flex flex-col">
