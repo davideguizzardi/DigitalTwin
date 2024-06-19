@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Map;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
@@ -13,10 +14,14 @@ class MapController extends Controller
     {
         $maps = $request->file();
         $counter=0;
+        $directory = 'public/maps';
         foreach($maps as $map){
             $extension = $map->getClientOriginalExtension();
-            $path = $map->storeAs('public/maps', 'map_' . $counter . '.'  . $extension);
+            $fileName = 'map_' . $counter . '.'  . $extension;
+            $path = $map->storeAs($directory, $fileName);
+            $url = $directory .'/'. $fileName;
             $counter=$counter+1;
+            Map::create(['floor' => $counter, "url" => $url]);
         }
         return redirect('dashboard');
     }

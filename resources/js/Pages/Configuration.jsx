@@ -1,7 +1,8 @@
-import ConfigurationMap from '@/Components/ConfigurationMap';
+import UploadMap from '@/Components/UploadMap';
 import UserLayout from '@/Layouts/UserLayout';
 
-const Configuration = () => {
+const Configuration = ({maps}) => {
+    console.log(maps)
     return (
         <ConfigurationMap/>
     )

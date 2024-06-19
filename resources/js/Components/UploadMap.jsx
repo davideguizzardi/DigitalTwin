@@ -33,7 +33,7 @@ const rejectStyle = {
 
 let counter = 0;
 
-export default function ConfigurationMap({ props }) {
+export default function UploadMap({ props }) {
     let [files, setFiles] = useState([]);
     let [listMap, setListMap] = useState([]);
     let [indexThumbs, setIndexThumbs] = useState(-1);
