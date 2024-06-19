@@ -1,16 +1,15 @@
-import { Head , Link} from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import UserLayout from '@/Layouts/UserLayout';
 import { ThemeButton } from '@/Components/ThemeButton';
 
-export default function Dashboard({ auth }) {
+const Dashboard = () => {
     return (
-        <UserLayout>
-            <div className="flex items-center">
+        <div className="flex items-center">
             <ThemeButton>
                 Logout
             </ThemeButton>
-            </div>
-        </UserLayout>
-
+        </div>
     );
 }
+
+export default Dashboard

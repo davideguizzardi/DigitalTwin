@@ -17,7 +17,7 @@ export default function ForgotPassword({ status }) {
     };
 
     return (
-        <GuestLayout>
+        <>
             <Head title="Forgot Password" />
             <div className="">
                 <div className="mb-4 text-sm text-gray-600">
@@ -42,6 +42,6 @@ export default function ForgotPassword({ status }) {
                     </Button>
                 </form>
             </div>
-        </GuestLayout>
+        </>
     )
 }

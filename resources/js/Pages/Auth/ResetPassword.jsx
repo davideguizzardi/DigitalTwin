@@ -1,5 +1,5 @@
-import {Label, TextInput } from "flowbite-react";
-import {ThemeButton as Button} from "@/Components/ThemeButton";
+import { Label, TextInput } from "flowbite-react";
+import { ThemeButton as Button } from "@/Components/ThemeButton";
 import GuestLayout from '@/Layouts/GuestLayout'
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
@@ -26,7 +26,7 @@ export default function ResetPassword({ token, email }) {
     };
 
     return (
-        <GuestLayout>
+        <>
             <Head title="Reset Password" />
 
             <form onSubmit={submit}>
@@ -89,6 +89,6 @@ export default function ResetPassword({ token, email }) {
                     </Button>
                 </div>
             </form>
-        </GuestLayout>
+        </>
     );
 }

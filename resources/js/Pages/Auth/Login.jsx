@@ -23,7 +23,7 @@ export default function Login({ status, canResetPassword }) {
     post(route('login'));
   };
   return (
-    <GuestLayout>
+    <>
       <div className="p-5">
         <Head title="Custom Log in" />
 
@@ -88,6 +88,6 @@ export default function Login({ status, canResetPassword }) {
           </Button>
         </form>
       </div>
-    </GuestLayout>
+    </>
   );
 }

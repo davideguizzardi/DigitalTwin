@@ -1,11 +1,10 @@
 import ConfigurationMap from '@/Components/ConfigurationMap';
 import UserLayout from '@/Layouts/UserLayout';
 
-export default function Configuration({ auth }) {
+const Configuration = () => {
     return (
-        <UserLayout>
-            <ConfigurationMap/>
-        </UserLayout>
-
-    );
+        <ConfigurationMap/>
+    )
 }
+
+export default Configuration;
