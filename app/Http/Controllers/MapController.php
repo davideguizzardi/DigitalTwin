@@ -15,11 +15,12 @@ class MapController extends Controller
         $maps = $request->file();
         $counter=0;
         $directory = 'public/maps';
+        
         foreach($maps as $map){
             $extension = $map->getClientOriginalExtension();
             $fileName = 'map_' . $counter . '.'  . $extension;
             $path = $map->storeAs($directory, $fileName);
-            $url = $directory .'/'. $fileName;
+            $url = 'storage/maps/'. $fileName;
             $counter=$counter+1;
             Map::create(['floor' => $counter, "url" => $url]);
         }

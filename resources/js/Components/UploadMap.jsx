@@ -114,8 +114,8 @@ export default function UploadMap({ props }) {
 
 
     return (
-        <div className="w-3/6 bg-white shadow items-center flex flex-col ">
-            <p className='h-min w-full p-4 text-center text-2xl'>Configure map house</p>
+        <div className="w-full lg:w-3/5 h-full items-center flex flex-col ">
+            <p className='h-min w-full p-4 text-center text-2xl'>Upload map house</p>
             <form name="maps" className='h-full w-full flex flex-col justify-center py-2' onSubmit={submit}>
                 <div className="flex items-center w-full px-3 py-5" >
                     <div className="w-full h-96">
