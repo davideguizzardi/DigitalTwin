@@ -1,8 +1,9 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { ThemeButton } from './ThemeButton';
-import { FaPlus, FaTrashCan} from "react-icons/fa6";
+import { FaPlus, FaTrashCan } from "react-icons/fa6";
 import { Button } from 'flowbite-react';
+import { router } from '@inertiajs/react';
 
 const baseStyle = {
     display: 'flex',
@@ -69,7 +70,7 @@ export default function ConfigurationMap({ props }) {
 
 
     const buttons = listMap.map((map, index) => (
-        <ThemeButton className='size-min mx-px my-2' onClick={() => { setIndexThumbs(index);console.log(listMap);}}
+        <ThemeButton className='size-min mx-px my-2' onClick={() => { setIndexThumbs(index); console.log(listMap); }}
             pill key={map.name}>{index}</ThemeButton>
     ));
     const dragAndDrop = (
@@ -83,9 +84,11 @@ export default function ConfigurationMap({ props }) {
             <Button className='absolute right-0 top-0 bg-red-500 enabled:hover:bg-red-700' pill
                 onClick={() => {
                     setListMap(listMap.filter(f => f.name !== file.name));
-                    setIndexThumbs(counter--);
+                    counter = counter - 1;
+                    console.log("counter " + counter)
+                    setIndexThumbs(counter - 1);
                 }}>
-                <FaTrashCan className='size-4' color='white'/>
+                <FaTrashCan className='size-4' color='white' />
             </Button>
             <img className='max-w-full max-h-96'
                 src={file.preview}
@@ -93,6 +96,16 @@ export default function ConfigurationMap({ props }) {
             />
         </div>
     ));
+    const submit = () => {
+        const formData = new FormData();
+        formData.append('maps', listMap);
+        router.post(route('map.store'), listMap);
+    }
+    const submitButton = (
+        <div className='w-full flex py-5 justify-center'>
+            <ThemeButton className="size-min" onClick={submit} >Upload</ThemeButton>
+        </div>
+    );
 
     // clean up
     useEffect(() => {
@@ -101,22 +114,22 @@ export default function ConfigurationMap({ props }) {
 
 
     return (
-        <div className="w-3/6 bg-white shadow items-center flex flex-col justify-around">
-            <p className='text-2xl'>Configure map house</p>
-            <div className="flex items-center w-full p-3" >
-                <div className="w-full h-96">
-                    {indexThumbs < 0 ? dragAndDrop : thumbs.at(indexThumbs)}
+        <div className="w-3/6 bg-white shadow items-center flex flex-col ">
+            <p className='h-min w-full p-4 text-center text-2xl'>Configure map house</p>
+            <form name="maps" className='h-full w-full flex flex-col justify-center py-2' onSubmit={submit}>
+                <div className="flex items-center w-full px-3 py-5" >
+                    <div className="w-full h-96">
+                        {indexThumbs >= 0 ? thumbs.at(indexThumbs) : dragAndDrop}
+                    </div>
+                    <div className="flex flex-col justify-center w-min m-2 p-1 rounded-full bg-gray-100 shadow">
+                        {buttons}
+                        <ThemeButton className='size-min mx-px my-2' pill onClick={() => { setIndexThumbs(-1) }} >
+                            <FaPlus />
+                        </ThemeButton>
+                    </div>
                 </div>
-                <div className="flex flex-col justify-center w-min m-2 p-1 rounded-full bg-gray-100 shadow">
-                    {buttons}
-                    <ThemeButton className='size-min mx-px my-2' pill onClick={() => { setIndexThumbs(-1), console.log(indexThumbs) }} >
-                        <FaPlus />
-                    </ThemeButton>
-                </div>
-            </div>
-            <ThemeButton>
-                Upload
-            </ThemeButton>
+                {listMap.length > 0 ? submitButton : (<div></div>)}
+            </form>
         </div>
     );
 }
