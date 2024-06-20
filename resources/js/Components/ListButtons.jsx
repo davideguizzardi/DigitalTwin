@@ -8,11 +8,11 @@ export default function listButtons({ dataButtons, index }) {
         <motion.div 
             className="my-2 size-min"
             whileHover={{scale: 1.2}}
-            key={"div_index"}
+            key={"div_" + i}
         >
             <ThemeButton className={index==i ? " bg-lime-300": ""} 
-            key={i} pill onClick={dataBtn}>
-                {i}
+            key={dataBtn.text} pill onClick={dataBtn.callback}>
+                {dataBtn.text} {dataBtn.icon}
             </ThemeButton>
         </motion.div>
     ))

@@ -7,12 +7,16 @@ export default function ConfigurationMap({ maps }) {
     let [indexImg, setIndexImg] = useState(0);
     let [isEditMap, setEditMap] = useState(false);
     let dataBtn = []
+
     maps.map((element, index) => {
-        dataBtn = [...dataBtn, useCallback(() => {
+        dataBtn = [...dataBtn, {
+            callback: useCallback(() => {
                 setIndexImg(index)
-            }, [])
-        ]
-    });
+            }, []),
+            text: index,
+            icon: (<></>)
+        }]
+    })
 
     const handleToggleEditMap = () => {
         setEditMap(!isEditMap);
