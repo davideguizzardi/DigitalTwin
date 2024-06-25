@@ -3,7 +3,6 @@ import { ThemeButton } from "./ThemeButton"
 import { motion } from "framer-motion"
 
 export default function listButtons({ dataButtons, index }) {
-    console.log(dataButtons)
     const buttons = dataButtons.map((dataBtn, i) => (
         <motion.div 
             className="my-2 size-min"
