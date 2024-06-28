@@ -1,35 +1,46 @@
-import CardAppliance from "./CardAppliance";
-import { useRef, useState } from "react"
+import CardAppliance, { FULL } from "./CardAppliance";
+import { useEffect, useRef, useState } from "react"
+import { DRAG_START, DRAG_END, DRAG_END_OUT, AVAILABLE_DROP, emit, subscribe, unsubscribe } from "@/Utils/events";
 
-export default function ListAppliances({ appliance, dragConstraints, isEditMode = false }) {
+export default function ListAppliances({ appliances, dragConstraints, isEditMode = false }) {
+    const [appl, setAppl] = useState([...appliances])
     const listRef = useRef()
+
+    const handleDragStart = (event) => {
+        emit(AVAILABLE_DROP, {
+            id: listRef,
+        })
+    }
+
+    const handleDragEnd = (event) => {
+        let tempAppl = appl.filter(e => e != event.detail.id)
+        setAppl([...tempAppl])
+        setTimeout(() => {
+            if (event.detail.droppable == listRef) {
+                const newId = event.detail.id
+                tempAppl = [...tempAppl, newId]
+                setAppl([...tempAppl])
+            }
+        }, 1)
+    }
+
+    useEffect(() => {
+        subscribe(DRAG_START, handleDragStart)
+        subscribe(DRAG_END, handleDragEnd)
+        subscribe(DRAG_END_OUT, handleDragEnd)
+        return () => {
+            unsubscribe(DRAG_START, () => { })
+            unsubscribe(DRAG_END, () => { })
+        }
+    }, [appl])
     return (
-        <ul className="w-full flex flex-col justify-center items-start"
-            ref={listRef}
-            onDragEnter={(event) => {
-                event.stopPropagation();
-                event.preventDefault();
-                //console.log(event)
-            }}
-            onDragLeave={(event) => {
-                //console.log(event)
-                event.preventDefault();
-            }}
-            onDragOver={(event) => {
-                event.stopPropagation();
-                event.preventDefault();
-                //console.log(event)
-            }}
-            onDrop={(event) => {
-                event.stopPropagation();
-                event.preventDefault();
-                //console.log(event)
-            }}
+        <ul className="w-full h-full flex flex-col justify-center items-start"
+            ref={listRef} id="list_appliance"
         >
             {
-                appliance.map((e, i) => (
-                    <CardAppliance key={"card_" + i} text={"appliance_" + i} 
-                    draggable={isEditMode} dragConstraints={dragConstraints} />
+                appl.map((e) => (
+                    <CardAppliance key={e} id={e} type={FULL}
+                        draggable={isEditMode} dragConstraints={dragConstraints} parentRef={listRef} />
                 ))
             }
         </ul>
