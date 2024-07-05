@@ -1,5 +1,5 @@
 import { FaLightbulb } from "react-icons/fa6"
-import { animate, motion, motionValue } from "framer-motion"
+import { animate, motion } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
 import { AVAILABLE_DROP, DRAG_END, DRAG_END_OUT,DRAG_START, emit, subscribe, unsubscribe } from "@/Utils/events"
 
@@ -26,7 +26,7 @@ export default function CardAppliance({ id, draggable, parentRef, dragConstraint
         min: {
             width: 'min-content',
             padding: '8px',
-            borderRadius: '6px'
+            borderRadius: '50px'
         },
         icon: {
             zIndex: 100,
@@ -41,6 +41,10 @@ export default function CardAppliance({ id, draggable, parentRef, dragConstraint
             const elem = cardRef.current
             const oldX = info.point.x - dragConstraints.current.offsetLeft - event.layerX
             const oldY = info.point.y - dragConstraints.current.offsetTop - event.layerY
+            console.log(oldX)
+            console.log(oldY)
+            console.log(event)
+            console.log(info)
             const sequence = [
                 [elem, {
                     position: 'absolute',
@@ -49,7 +53,7 @@ export default function CardAppliance({ id, draggable, parentRef, dragConstraint
                 }, { duration: 0.001 }],
                 [elem, {
                     left: info.point.x - dragConstraints.current.offsetLeft - 20,
-                    right: info.point.y - dragConstraints.current.offsetTop - 20
+                    top: info.point.y - dragConstraints.current.offsetTop - 20
                 }, { duration: 0.5 }]
             ]
             if (firstTime) {
@@ -115,7 +119,7 @@ export default function CardAppliance({ id, draggable, parentRef, dragConstraint
 
         <motion.div
             ref={cardRef}
-            className="py-1 flex justify-start shadow relative bg-white z-10"
+            className="py-1 flex justify-start items-center shadow bg-white z-10"
             variants={variantCard}
             animate={typeMode[mode]}
             drag={draggable}
@@ -130,7 +134,6 @@ export default function CardAppliance({ id, draggable, parentRef, dragConstraint
             }}
             style={style}
         >
-            <div className='bg-opacity-0 bg-red-100 absolute top-0 left-0 size-full z-20'></div>
             <div className="rounded-full bg-gray-200 p-1 size-min">
                 <FaLightbulb size={32} />
             </div>

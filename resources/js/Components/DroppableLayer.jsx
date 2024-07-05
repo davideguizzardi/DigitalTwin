@@ -9,25 +9,28 @@ export default function DroppableLayer({ isEditMode, listAppliancesPos, dragCons
 
     const handleDragEnd = (event) => {
         let tempApplPos = applPos.filter(e => e.id != event.detail.id)
+        const element =  applPos.filter(e => e.id == event.detail.id)
+        console.log(element)
         setApplPos([...tempApplPos])
         setTimeout(() => {
             if (event.detail.droppable == layerRef) {
                 const cardRect = event.detail.rect
                 const layerRect = layerRef.current.getBoundingClientRect()
-                const absTop = cardRect.top - layerRect.top
+                const absTop = cardRect.top - layerRect.top  
                 const absLeft = cardRect.left - layerRect.left
                 const relTop = absTop * 100 / layerRect.height
                 const relLeft = absLeft * 100 / layerRect.width
+                console.log(absTop)
+                console.log(absLeft)
                 tempApplPos = [...tempApplPos, { id: event.detail.id, top: relTop, left: relLeft }]
                 setApplPos([...tempApplPos])
             }
-        }, 10)
+        }, 1)
     }
 
     const handleDragEndOut = (event) => {
         const elem = applPos.filter(e => e.id == event.detail.id)[0]
         if (event.detail.droppable == layerRef && elem) {
-            console.log(elem)
             let tempApplPos = applPos.filter(e => e.id != event.detail.id)
             setApplPos([...tempApplPos])
             setTimeout(() =>{
@@ -61,7 +64,7 @@ export default function DroppableLayer({ isEditMode, listAppliancesPos, dragCons
             <div className="size-full absolute relative">
                 {
                     applPos.map((e) => (
-                        <CardAppliance key={e.id} id={e.id} type={ICON} style={{ left: e.left + "%", top: e.top + "%" }}
+                        <CardAppliance key={e.id} id={e.id} type={ICON} style={{position: "absolute", left: e.left +"%", top: e.top +"%"}}
                             draggable={isEditMode} dragConstraints={dragConstraints} parentRef={layerRef} />
                     ))
                 }
