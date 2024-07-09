@@ -1,7 +1,7 @@
 import { AVAILABLE_DROP, DRAG_END, DRAG_END_OUT, DRAG_START, subscribe, unsubscribe } from "@/Utils/events"
 import { useEffect, useRef, useState } from "react"
 import { emit } from "@/Utils/events"
-import CardAppliance, { ICON } from "./CardAppliance"
+import CardAppliance, { ICON } from "@/Components/ConfigurationMap/CardAppliance"
 
 export default function DroppableLayer({ isEditMode, listAppliancesPos, dragConstraints }) {
     const [applPos, setApplPos] = useState([...listAppliancesPos])

@@ -1,8 +1,7 @@
-import GuestLayout from "@/Layouts/GuestLayout";
 import { TextInput } from "flowbite-react";
-import {ThemeButton as Button} from "@/Components/ThemeButton";
+import {ThemeButton as Button} from "@/Components/Commons/ThemeButton";
 import { Head, useForm } from "@inertiajs/react";
-import InputError from "@/Components/InputError";
+import InputError from "@/Components/Commons/InputError";
 
 
 export default function ForgotPassword({ status }) {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ThemeButton } from "./ThemeButton";
+import { ThemeButton } from "@/Components/Commons/ThemeButton";
 
 export default function CarouselMap({ maps, index = 0,
     setIndex = (i) => { index = i }, otherButtons = (<></>) }) {

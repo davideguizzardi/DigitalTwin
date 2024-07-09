@@ -1,9 +1,8 @@
 import { Label, TextInput } from "flowbite-react";
-import { ThemeButton as Button } from "@/Components/ThemeButton";
-import GuestLayout from '@/Layouts/GuestLayout'
+import { ThemeButton as Button } from "@/Components/Commons/ThemeButton";
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import InputError from "@/Components/InputError";
+import InputError from "@/Components/Commons/InputError";
 
 export default function ResetPassword({ token, email }) {
     const { data, setData, post, processing, errors, reset } = useForm({

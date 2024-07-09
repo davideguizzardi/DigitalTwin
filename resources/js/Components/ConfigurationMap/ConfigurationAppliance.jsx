@@ -1,11 +1,11 @@
 import { useCallback, useRef, useState } from "react";
-import { ThemeButton } from "./ThemeButton"
+import { ThemeButton } from "@/Components/Commons/ThemeButton"
 import { motion } from "framer-motion";
-import ListButtons from "@/Components/ListButtons"
-import ListAppliances from "@/Components/ListAppliances"
-import DroppableLayer from "./DroppableLayer";
+import ListButtons from "@/Components/Commons/ListButtons"
+import ListAppliances from "@/Components/ConfigurationMap/ListAppliances"
+import DroppableLayer from "@/Components/ConfigurationMap/DroppableLayer";
 
-export default function ConfigurationMap({ maps }) {
+export default function ConfigurationAppliance({ maps }) {
     let configRef = useRef()
     let [indexImg, setIndexImg] = useState(0);
     let [isEditMap, setEditMap] = useState(false);
@@ -50,7 +50,7 @@ export default function ConfigurationMap({ maps }) {
             <div className="flex flex-col lg:flex-row w-full h-full lg:h-5/6">
                 <div className="w-full h-full p-5">
                     <div className="size-full flex justify-center items-center">
-                        <div className="w-full h-full max-w-screen max-h-screen relative flex justify-center items-center ">
+                        <div className="max-w-screen max-h-screen relative flex justify-center items-center ">
                             <img className="max-h-full aspect-auto p-2" src={maps[indexImg].url} alt="" />
                         <DroppableLayer isEditMode={isEditMap} listAppliancesPos={Array.from(Array(0).keys())} dragConstraints={configRef}></DroppableLayer>
                         </div>
@@ -63,7 +63,7 @@ export default function ConfigurationMap({ maps }) {
                         </motion.div>
                     </div>
                 </div>
-                <div className="w-full h-full p-4 p-5 overflow-y-scroll">
+                <div className="w-full h-full p-4 p-5 ">
                     <p className='h-min w-full p-4 text-center text-2xl'>Configure map house</p>
                     <ListAppliances appliances={appliances} dragConstraints={configRef} isEditMode={isEditMap}></ListAppliances>
                 </div>

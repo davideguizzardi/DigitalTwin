@@ -1,10 +1,10 @@
-import UploadMap from '@/Components/UploadMap';
-import ConfigurationMap from '@/Components/ConfigurationMap';
+import UploadMap from '@/Components/ConfigurationMap/UploadMap';
+import ConfigurationAppliance from '@/Components/ConfigurationMap/ConfigurationAppliance';
 
 const Configuration = ({maps}) => {
     return (
         <div className="w-full p-10 m-10 bg-white shadow items-center flex flex-col ">
-            {maps.length > 0 ? <ConfigurationMap maps={maps}/> :<UploadMap/>}
+            {maps.length > 0 ? <ConfigurationAppliance maps={maps}/> :<UploadMap/>}
         </div>
     )
 }

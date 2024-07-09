@@ -1,10 +1,10 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { ThemeButton } from './ThemeButton';
+import { ThemeButton } from '@/Components/Commons/ThemeButton';
 import { FaPlus, FaTrashCan } from "react-icons/fa6";
 import { Button } from 'flowbite-react';
 import { router } from '@inertiajs/react';
-import DragDropFile from './DragDropFile';
+import DragDropFile from '@/Components/ConfigurationMap/DragDropFile';
 
 let counter = -1;
 

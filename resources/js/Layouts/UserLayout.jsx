@@ -1,4 +1,4 @@
-import { ThemeSidebar as Sidebar } from "@/Components/ThemeSidebar"
+import { ThemeSidebar as Sidebar } from "@/Components/Sidebar/ThemeSidebar"
 
 export default function UserLayout({ children }) {
     return (

@@ -2,7 +2,7 @@ import { Sidebar, Avatar, Button } from "flowbite-react";
 import { useState} from "react";
 import { motion } from "framer-motion";
 import { FaHouse, FaBolt, FaPuzzlePiece, FaGear, FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
-import { ThemeSidebarItem as SidebarItem } from "./ThemeSidebarItem";
+import { ThemeSidebarItem as SidebarItem } from "@/Components/Sidebar/ThemeSidebarItem";
 
 export function ThemeSidebar() {
     const [collapsed, setCollapsed] = useState(false);

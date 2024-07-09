@@ -1,6 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import UserLayout from '@/Layouts/UserLayout';
-import { ThemeButton } from '@/Components/ThemeButton';
+import { ThemeButton } from '@/Components/Commons/ThemeButton';
 
 const Dashboard = () => {
     return (
