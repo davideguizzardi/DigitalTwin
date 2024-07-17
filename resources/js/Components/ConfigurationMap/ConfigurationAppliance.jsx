@@ -46,7 +46,7 @@ export default function ConfigurationAppliance({ maps }) {
         <div className="relative flex flex-col h-full w-full justify-center items-center"
            ref={configRef}
         >
-            <p className='h-min w-full p-4 text-center text-2xl'>Configure map house</p>
+            <p className='h-min w-full p-4 text-center text-2xl'>Configure Appliance</p>
             <div className="flex flex-col lg:flex-row w-full h-full lg:h-5/6">
                 <div className="w-full h-full p-5">
                     <div className="size-full flex justify-center items-center">
@@ -64,7 +64,6 @@ export default function ConfigurationAppliance({ maps }) {
                     </div>
                 </div>
                 <div className="w-full h-full p-4 p-5 ">
-                    <p className='h-min w-full p-4 text-center text-2xl'>Configure map house</p>
                     <ListAppliances appliances={appliances} dragConstraints={configRef} isEditMode={isEditMap}></ListAppliances>
                 </div>
             </div>
