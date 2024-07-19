@@ -46,7 +46,8 @@ export default function DragDropFile({getRootProps,
     ]);
 
     return (
-        <div className='h-full' {...getRootProps({ style })}>
+        <div className='h-96 w-full' {...getRootProps({ style })}>
+
             <input {...getInputProps()} />
             <div>Drag and drop your images here.</div>
         </div>

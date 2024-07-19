@@ -12,18 +12,20 @@ class MapController extends Controller
 {
     public function store(Request $request): RedirectResponse
     {
-        $maps = $request->file();
-        $counter=0;
+        $files = $request->file();
+        $maps = $request->all();
         $directory = 'public/maps';
         
-        foreach($maps as $map){
-            $extension = $map->getClientOriginalExtension();
-            $fileName = 'map_' . $counter . '.'  . $extension;
-            $path = $map->storeAs($directory, $fileName);
-            $url = 'storage/maps/'. $fileName;
-            $counter=$counter+1;
-            Map::create(['floor' => $counter, "url" => $url]);
+        for ($i=0; $i < count($maps); $i++) { 
+            $floor = $maps[$i]["floor"];
+            $file = $maps[$i]["file"];
+            $extension = $file->getClientOriginalExtension();
+            $fileName = 'map_' . $floor . '.' . $extension;
+            $path = $file->storeAs($directory, $fileName);
+            $url = "storage/maps/" . $fileName;
+            Map::create(["floor" => $floor, "url" => $url]);
         }
+
         return redirect('dashboard');
     }
 }
