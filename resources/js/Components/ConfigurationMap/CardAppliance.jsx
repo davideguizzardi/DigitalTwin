@@ -14,6 +14,7 @@ export default function CardAppliance({ id, draggable, parentRef, dragConstraint
     const cardRef = useRef()
     const parent = parentRef
     let droppableList = useRef([])
+    const [oldPos, setOldPos] = useState({top:0, left:0})
     let [mode, setMode] = useState(type)
     let [firstTime, setFirstTime] = useState(true)
 
@@ -41,10 +42,6 @@ export default function CardAppliance({ id, draggable, parentRef, dragConstraint
             const elem = cardRef.current
             const oldX = info.point.x - dragConstraints.current.offsetLeft - event.layerX
             const oldY = info.point.y - dragConstraints.current.offsetTop - event.layerY
-            console.log(oldX)
-            console.log(oldY)
-            console.log(event)
-            console.log(info)
             const sequence = [
                 [elem, {
                     position: 'absolute',
@@ -74,8 +71,10 @@ export default function CardAppliance({ id, draggable, parentRef, dragConstraint
     }
 
     const handleDragStart = (event, info) => {
+        const cardRect = cardRef.current.getBoundingClientRect()
         setModeIcon();
         setFirstPosition(event, info);
+        setOldPos({top: cardRect.top, left: cardRect.left})
         emit(DRAG_START, { id: cardRef });
     }
 
@@ -95,7 +94,7 @@ export default function CardAppliance({ id, draggable, parentRef, dragConstraint
             }
         })
         if (!droppable) {
-            emit(DRAG_END_OUT, { id: id, droppable: parent})
+            emit(DRAG_END_OUT, { id: id, droppable: parent, rect:{top: oldPos.top, left: oldPos.left}})
         }
     }
 

@@ -1,44 +1,44 @@
 import { AVAILABLE_DROP, DRAG_END, DRAG_END_OUT, DRAG_START, subscribe, unsubscribe } from "@/Utils/events"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { emit } from "@/Utils/events"
 import CardAppliance, { ICON } from "@/Components/ConfigurationMap/CardAppliance"
 
-export default function DroppableLayer({ isEditMode, listAppliancesPos, dragConstraints }) {
-    const [applPos, setApplPos] = useState([...listAppliancesPos])
+export default function DroppableLayer({ isEditMode, listAppliancesPos, dragConstraints, index, addAppl, removeAppl }) {
     const layerRef = useRef()
+    const refIndex = useRef()
+    refIndex.current = index
 
-    const handleDragEnd = (event) => {
-        let tempApplPos = applPos.filter(e => e.id != event.detail.id)
-        const element =  applPos.filter(e => e.id == event.detail.id)
-        console.log(element)
-        setApplPos([...tempApplPos])
+    const handleDragEnd = useCallback((event) => {
+        removeAppl(event.detail.id)
         setTimeout(() => {
             if (event.detail.droppable == layerRef) {
                 const cardRect = event.detail.rect
                 const layerRect = layerRef.current.getBoundingClientRect()
-                const absTop = cardRect.top - layerRect.top  
+                const absTop = cardRect.top - layerRect.top
                 const absLeft = cardRect.left - layerRect.left
                 const relTop = absTop * 100 / layerRect.height
                 const relLeft = absLeft * 100 / layerRect.width
-                console.log(absTop)
-                console.log(absLeft)
-                tempApplPos = [...tempApplPos, { id: event.detail.id, top: relTop, left: relLeft }]
-                setApplPos([...tempApplPos])
+                const applOnFloor = { id: event.detail.id, top: relTop, left: relLeft, floor: refIndex.current }
+                addAppl(applOnFloor)
             }
         }, 1)
-    }
+    }, [])
 
-    const handleDragEndOut = (event) => {
-        const elem = applPos.filter(e => e.id == event.detail.id)[0]
-        if (event.detail.droppable == layerRef && elem) {
-            let tempApplPos = applPos.filter(e => e.id != event.detail.id)
-            setApplPos([...tempApplPos])
-            setTimeout(() =>{
-                tempApplPos = [...tempApplPos, elem]
-                setApplPos([...tempApplPos])
+    const handleDragEndOut = useCallback((event) => {
+        if (event.detail.droppable == layerRef) {
+            removeAppl(event.detail.id)
+            const cardRect = event.detail.rect
+            const layerRect = layerRef.current.getBoundingClientRect()
+            const absTop = cardRect.top - layerRect.top
+            const absLeft = cardRect.left - layerRect.left
+            const relTop = absTop * 100 / layerRect.height
+            const relLeft = absLeft * 100 / layerRect.width
+            const applOnFloor = { id: event.detail.id, top: relTop, left: relLeft, floor: refIndex.current }
+            setTimeout(() => {
+                addAppl(applOnFloor)
             }, 1)
         }
-    }
+    }, [])
 
     useEffect(() => {
         subscribe(DRAG_START, (event) => {
@@ -53,7 +53,7 @@ export default function DroppableLayer({ isEditMode, listAppliancesPos, dragCons
             unsubscribe(DRAG_END, () => { })
             unsubscribe(DRAG_END_OUT, () => { })
         }
-    }, [applPos])
+    }, [])
 
 
 
@@ -63,8 +63,8 @@ export default function DroppableLayer({ isEditMode, listAppliancesPos, dragCons
         >
             <div className="size-full absolute relative">
                 {
-                    applPos.map((e) => (
-                        <CardAppliance key={e.id} id={e.id} type={ICON} style={{position: "absolute", left: e.left +"%", top: e.top +"%"}}
+                    listAppliancesPos.filter(element => element.floor == index).map((e) => (
+                        <CardAppliance key={e.id} id={e.id} type={ICON} style={{ position: "absolute", left: e.left + "%", top: e.top + "%" }}
                             draggable={isEditMode} dragConstraints={dragConstraints} parentRef={layerRef} />
                     ))
                 }

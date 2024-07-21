@@ -2,7 +2,7 @@ import CardAppliance, { FULL } from "@/Components/ConfigurationMap/CardAppliance
 import { useEffect, useRef, useState } from "react"
 import { DRAG_START, DRAG_END, DRAG_END_OUT, AVAILABLE_DROP, emit, subscribe, unsubscribe } from "@/Utils/events";
 
-export default function ListAppliances({ appliances, dragConstraints, isEditMode = false }) {
+export default function ListAppliances({ appliances, dragConstraints, isEditMode = false, addAppl, removeAppl }) {
     const [appl, setAppl] = useState([...appliances])
     const listRef = useRef()
 
@@ -15,13 +15,16 @@ export default function ListAppliances({ appliances, dragConstraints, isEditMode
     const handleDragEnd = (event) => {
         let tempAppl = appl.filter(e => e != event.detail.id)
         setAppl([...tempAppl])
+        removeAppl(event.detail.id)
         setTimeout(() => {
             if (event.detail.droppable == listRef) {
                 const newId = event.detail.id
                 tempAppl = [...tempAppl, newId]
                 setAppl([...tempAppl])
+                addAppl(event.detail.id)
             }
         }, 1)
+            
     }
 
     useEffect(() => {

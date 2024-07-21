@@ -55,7 +55,7 @@ export default function UploadMap({ props }) {
                     }}>
                     <FaTrashCan className='size-4' color='white' />
                 </Button>
-                <Label htmlFor='floorName' value='Floor name' className='px-1'/>
+                <p className="text-xl">Floor number {map.floor}</p>
             </div>
             <div className="size-full flex justify-center items-center">
                 <img className='max-w-full max-h-96'
