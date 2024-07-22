@@ -2,10 +2,10 @@ import { useCallback } from "react"
 import { ThemeButton } from "@/Components/Commons/ThemeButton"
 import { motion } from "framer-motion"
 
-export default function listButtons({ dataButtons, index }) {
+export default function listButtons({ dataButtons, index, vertical=true }) {
     const buttons = dataButtons.map((dataBtn, i) => (
         <motion.div 
-            className="my-2 size-min"
+            className="size-min"
             whileHover={{scale: 1.2}}
             key={"div_" + i}
         >
@@ -17,7 +17,7 @@ export default function listButtons({ dataButtons, index }) {
     ))
 
     return (
-        <div className="flex flex-col justify-center items-center w-min m-2 p-1 rounded-full bg-gray-100 shadow">
+        <div className={"flex justify-center items-center gap-2 w-min m-2 p-1 rounded-full bg-gray-100 shadow " + (vertical && " flex-col") }>
             {buttons}
         </div>
     )

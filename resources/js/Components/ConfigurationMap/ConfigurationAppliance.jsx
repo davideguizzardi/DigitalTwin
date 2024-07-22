@@ -83,7 +83,7 @@ export default function ConfigurationAppliance({ maps }) {
                 </div>
             </div>
             <div className="flex items-center p-5">
-                <ThemeButton>{isEditMap ? "Save" : "Edit"}</ThemeButton>
+                <ThemeButton onClick={()=>(console.log(applOnFloor))}>{isEditMap ? "Save" : "Edit"}</ThemeButton>
             </div>
         </div>
     )

@@ -3,6 +3,7 @@ import ProgressConfiguration from '@/Components/ConfigurationMap/ProgressConfigu
 import ConfigurationAppliance from '@/Components/ConfigurationMap/ConfigurationAppliance';
 import { useState } from 'react';
 import { ThemeButton } from '@/Components/Commons/ThemeButton';
+import ConfigurationEnergyPlan from './ConfigurationEnergyPlan';
 
 const STATE_UPLOAD_MAP = 0
 const STATE_CONFIGURATION_APPLIANCE = 1
@@ -19,12 +20,14 @@ const FirstConfiguration = ({maps}) => {
                 return <UploadMap/>;
             case STATE_CONFIGURATION_APPLIANCE:
                 return <ConfigurationAppliance maps={maps}/>;
+            case STATE_CONFIGURATION_ENERGY_PLAN:
+                return <ConfigurationEnergyPlan/>
         } 
     }
 
     return(
         <div className="flex flex-col size-full p-5">
-            <ProgressConfiguration state={progressState}></ProgressConfiguration>
+            <ProgressConfiguration state={progressState} setState={setProgressState}></ProgressConfiguration>
             <div className="w-full h-full p-5 my-2 bg-white shadow items-center flex flex-col ">
                 {renderCard()}
             </div>
