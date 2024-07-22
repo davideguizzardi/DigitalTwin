@@ -14,9 +14,8 @@ export function ThemeSidebar() {
     return (
         <motion.div
         layout
-        animate={{width: collapsed ? 96 : 256 }}
         >
-            <Sidebar className="size-full">
+            <Sidebar className="flex size-full">
                 <Sidebar.Items className="flex flex-col h-full">
                     <div className="flex flex-row justify-between">
                         <Sidebar.Logo className="self-center flex-none" href="#" img="/storage/image/logo.png">
