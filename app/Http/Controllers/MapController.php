@@ -4,28 +4,33 @@ namespace App\Http\Controllers;
 
 use App\Models\Map;
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
 
 class MapController extends Controller
 {
-    public function store(Request $request): RedirectResponse
+    
+    public function get(Request $request)
     {
-        $files = $request->file();
+        return ["maps" => Map::all()];
+    }
+
+    public function store(Request $request)
+    {
         $maps = $request->all();
         $directory = 'public/maps';
-        
+        $floors = array_keys($maps);
+
         for ($i=0; $i < count($maps); $i++) { 
-            $floor = $maps[$i]["floor"];
-            $file = $maps[$i]["file"];
+            $floor = $floors[$i];
+            $file = $maps[$floor];
             $extension = $file->getClientOriginalExtension();
             $fileName = 'map_' . $floor . '.' . $extension;
             $path = $file->storeAs($directory, $fileName);
             $url = "storage/maps/" . $fileName;
             Map::create(["floor" => $floor, "url" => $url]);
         }
-
-        return redirect('dashboard');
+        
     }
 }

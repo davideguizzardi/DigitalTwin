@@ -195,7 +195,7 @@ export default function ConfigurationEnergyPlan() {
                         ): (<></>)}
                     </div>
                     <div className="flex w-full h-min px-5 py-3 items-end justify-center">
-                        <ThemeButton onClick={() =>{console.log(slotWeekHour)}}>Save</ThemeButton>
+                        <ThemeButton onClick={() =>{console.log(JSON.stringify(slotWeekHour))}}>Save</ThemeButton>
                     </div>
                 </div>
             </div>

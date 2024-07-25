@@ -7,7 +7,7 @@ import ModalUploadMap from './ModalUploadMap';
 
 let counter = -1;
 
-export default function UploadMap({ props }) {
+export default function UploadMap({ endSection}) {
     const [listMap, setListMap] = useState([]);
     const [indexThumbs, setIndexThumbs] = useState(-1);
     const [openModal, setOpenModal] = useState(false)
@@ -25,10 +25,17 @@ export default function UploadMap({ props }) {
 
     const cancelCallback = () => {setOpenModal(false)}
 
-    const submit = () => {
-        const formData = new FormData();
-        formData.append('maps', listMap);
-        router.post(route('map.store'), listMap);
+    const submit = async () => {
+        const apiRoute = route('map.store')
+        let formData = new FormData();
+        listMap.forEach((el, i)=>{
+            formData.append(el.floor, el.file)
+        })
+        await fetch(apiRoute, {
+            method: 'POST',
+            body: formData
+        })
+        endSection()
     }
     const submitButton = (
         <div className='w-full flex py-5 justify-center'>

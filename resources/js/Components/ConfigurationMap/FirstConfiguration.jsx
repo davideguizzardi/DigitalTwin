@@ -17,9 +17,9 @@ const FirstConfiguration = ({maps}) => {
     const renderCard = () =>{
         switch(progressState){
             case STATE_UPLOAD_MAP:
-                return <UploadMap/>;
+                return <UploadMap endSection={() => setProgressState(STATE_CONFIGURATION_APPLIANCE)}/>;
             case STATE_CONFIGURATION_APPLIANCE:
-                return <ConfigurationAppliance maps={maps}/>;
+                return <ConfigurationAppliance editMode={true} endSection={() => setProgressState(STATE_CONFIGURATION_ENERGY_PLAN)}/>;
             case STATE_CONFIGURATION_ENERGY_PLAN:
                 return <ConfigurationEnergyPlan/>
         } 

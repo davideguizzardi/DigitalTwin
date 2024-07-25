@@ -18,7 +18,7 @@ export default function DroppableLayer({ isEditMode, listAppliancesPos, dragCons
                 const absLeft = cardRect.left - layerRect.left
                 const relTop = absTop * 100 / layerRect.height
                 const relLeft = absLeft * 100 / layerRect.width
-                const applOnFloor = { id: event.detail.id, top: relTop, left: relLeft, floor: refIndex.current }
+                const applOnFloor = { id: event.detail.id, top: Math.round(relTop), left: Math.round(relLeft), floor: refIndex.current }
                 addAppl(applOnFloor)
             }
         }, 1)
@@ -33,7 +33,7 @@ export default function DroppableLayer({ isEditMode, listAppliancesPos, dragCons
             const absLeft = cardRect.left - layerRect.left
             const relTop = absTop * 100 / layerRect.height
             const relLeft = absLeft * 100 / layerRect.width
-            const applOnFloor = { id: event.detail.id, top: relTop, left: relLeft, floor: refIndex.current }
+            const applOnFloor = { id: event.detail.id, top: Math.round(relTop), left: Math.round(relLeft), floor: refIndex.current }
             setTimeout(() => {
                 addAppl(applOnFloor)
             }, 1)
