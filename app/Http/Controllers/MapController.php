@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Map;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
@@ -32,5 +33,9 @@ class MapController extends Controller
             Map::create(["floor" => $floor, "url" => $url]);
         }
         
+    }
+
+    public function delete(Request $request){
+        DB::table('maps')->truncate();
     }
 }
