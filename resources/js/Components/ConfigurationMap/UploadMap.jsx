@@ -1,8 +1,7 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { ThemeButton } from '@/Components/Commons/ThemeButton';
-import { FaPlus, FaTrashCan } from "react-icons/fa6";
-import { Button, Label, TextInput } from 'flowbite-react';
-import { router } from '@inertiajs/react';
+import {FaTrashCan } from "react-icons/fa6";
+import { Button} from 'flowbite-react';
 import ModalUploadMap from './ModalUploadMap';
 
 let counter = -1;

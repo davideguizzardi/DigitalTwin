@@ -10,7 +10,7 @@ export const ICON = 2
 const typeMode = ["full", "min", "icon"]
 
 
-export default function CardAppliance({ id, draggable, parentRef, dragConstraints, type, style = {} }) {
+export default function CardDraggable({ id, draggable, parentRef, dragConstraints, type, style = {} }) {
     const [typeAppl, name] = id.split(".", 2)
     const cardRef = useRef()
     const parent = parentRef

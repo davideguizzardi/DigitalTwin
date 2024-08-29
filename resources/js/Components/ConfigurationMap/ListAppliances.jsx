@@ -1,4 +1,4 @@
-import CardAppliance, { FULL } from "@/Components/ConfigurationMap/CardAppliance";
+import CardDraggable, { FULL } from "@/Components/ConfigurationMap/CardDraggable";
 import { useEffect, useRef, useState } from "react"
 import { DRAG_START, DRAG_END, DRAG_END_OUT, AVAILABLE_DROP, emit, subscribe, unsubscribe } from "@/Utils/events";
 
@@ -46,7 +46,7 @@ export default function ListAppliances({ appliances, dragConstraints, isEditMode
         >
             {
                 appliances.map((e) => (
-                    <CardAppliance key={e} id={e} type={FULL}
+                    <CardDraggable key={e} id={e} type={FULL}
                         draggable={isEditMode} dragConstraints={dragConstraints} parentRef={listRef} />
                 ))
             }

@@ -1,7 +1,7 @@
 import { AVAILABLE_DROP, DRAG_END, DRAG_END_OUT, DRAG_START, subscribe, unsubscribe } from "@/Utils/events"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { emit } from "@/Utils/events"
-import CardAppliance, { ICON } from "@/Components/ConfigurationMap/CardAppliance"
+import CardDraggable, { ICON } from "@/Components/ConfigurationMap/CardDraggable"
 
 export default function DroppableLayer({ isEditMode, listAppliancesPos, dragConstraints, index, addAppl, removeAppl }) {
     const layerRef = useRef()
@@ -64,7 +64,7 @@ export default function DroppableLayer({ isEditMode, listAppliancesPos, dragCons
             <div className="size-full absolute relative">
                 {
                     listAppliancesPos.filter(element => element.floor == index).map((e) => (
-                        <CardAppliance key={e.id} id={e.id} type={ICON} style={{ position: "absolute", left: e.left + "%", top: e.top + "%" }}
+                        <CardDraggable key={e.id} id={e.id} type={ICON} style={{ position: "absolute", left: e.left + "%", top: e.top + "%" }}
                             draggable={isEditMode} dragConstraints={dragConstraints} parentRef={layerRef} />
                     ))
                 }
