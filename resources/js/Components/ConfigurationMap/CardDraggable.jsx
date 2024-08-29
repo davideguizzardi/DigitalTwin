@@ -1,7 +1,7 @@
-import { FaLightbulb, FaFan, FaMusic, FaToggleOn, FaCloudSun, FaTowerBroadcast, FaMobileButton, FaRegSun, FaQuestion } from "react-icons/fa6"
 import { animate, motion } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
 import { AVAILABLE_DROP, DRAG_END, DRAG_END_OUT, DRAG_START, emit, subscribe, unsubscribe } from "@/Utils/events"
+import IconAppliance from "../Commons/IconAppliance"
 
 export const FULL = 0
 export const MIN = 1
@@ -120,71 +120,6 @@ export default function CardDraggable({ id, draggable, parentRef, dragConstraint
         }
     }, [])
 
-    let icon = null
-    switch(typeAppl){
-        case "sun":
-            icon = (
-                <div className="bg-amber-300 rounded-full p-2 ">
-                    <FaRegSun size={36}/>
-                </div>
-            )
-            break
-        case "media_player":
-            icon = (
-                <div className="bg-violet-300 rounded-full p-2 ">
-                    <FaMusic size={36}/>
-                </div>
-            )
-            break
-        case "button":
-            icon = (
-                <div className="bg-orange-400 rounded-full p-2 ">
-                    <FaToggleOn size={36}/>
-                </div>
-            )
-            break
-        case "weather":
-            icon = (
-                <div className="bg-cyan-300 rounded-full p-2 ">
-                    <FaCloudSun size={36}/>
-                </div>
-            )
-            break
-        case "sensor":
-            icon = (
-                <div className="bg-emerald-300 rounded-full p-2 ">
-                    <FaTowerBroadcast size={36}/>
-                </div>
-            )
-            break
-        case "device_tracker":
-            icon = (
-                <div className="bg-red-400 rounded-full p-2 ">
-                    <FaMobileButton size={36}/>
-                </div>
-            )
-            break
-        case "light":
-            icon = (
-                <div className="bg-yellow-200 rounded-full p-2 ">
-                    <FaLightbulb size={36}/>
-                </div>
-            )
-            break
-        case "fan": 
-            icon = (
-                <div className="bg-slate-400 rounded-full p-2 ">
-                    <FaFan size={36}/>
-                </div>
-            )
-            break
-        default :
-            icon = (
-                <div className="bg-gray-300 rounded-full p-2 ">
-                    <FaQuestion size={36}/>
-                </div>
-            )
-    }
 
     return (
 
@@ -205,7 +140,7 @@ export default function CardDraggable({ id, draggable, parentRef, dragConstraint
             }}
             style={style}
         >
-            {icon}
+            <IconAppliance typeAppl={typeAppl}></IconAppliance>
             {mode == ICON ? <></>
                 :
                 <div className="flex flex-col w-full px-2">
