@@ -29,7 +29,7 @@ export function ThemeSidebar() {
                         </Button>
                     </div>
                     <Sidebar.ItemGroup className="h-full flex flex-col">
-                        <SidebarItem name="Home" href={route('dashboard')} icon={FaHouse} collapsed={collapsed}>
+                        <SidebarItem name="Dashboard" href={route('dashboard')} icon={FaHouse} collapsed={collapsed}>
                         </SidebarItem>
                         <SidebarItem name="Consumption" icon={FaBolt} collapsed={collapsed}>
                         </SidebarItem>
