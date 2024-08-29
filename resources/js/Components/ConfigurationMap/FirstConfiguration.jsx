@@ -11,7 +11,7 @@ const STATE_CONFIGURATION_ENERGY_PLAN = 2
 const STATE_FINISH = 3
 
 
-const FirstConfiguration = ({maps}) => {
+const FirstConfiguration = () => {
     const [progressState, setProgressState] = useState(STATE_UPLOAD_MAP)
     
     const renderCard = () =>{
@@ -21,7 +21,16 @@ const FirstConfiguration = ({maps}) => {
             case STATE_CONFIGURATION_APPLIANCE:
                 return <ConfigurationAppliance editMode={true} endSection={() => setProgressState(STATE_CONFIGURATION_ENERGY_PLAN)}/>;
             case STATE_CONFIGURATION_ENERGY_PLAN:
-                return <ConfigurationEnergyPlan/>
+                return <ConfigurationEnergyPlan endSection={() => setProgressState(STATE_FINISH)}/>;
+            case STATE_FINISH:
+                return  <div className="size-full">
+                    <div className="h-5/6 flex justify-center items-center">
+                        <h1>Configuration complete</h1>
+                    </div>
+                    <div className="w-full flex justify-center">
+                        <ThemeButton href={route('configuration')}>Finish</ThemeButton>
+                    </div>
+                </div>
         } 
     }
 
@@ -31,16 +40,6 @@ const FirstConfiguration = ({maps}) => {
             <div className="w-full h-full p-5 my-2 bg-white shadow items-center flex flex-col ">
                 {renderCard()}
             </div>
-            <ThemeButton onClick={()=>{
-                const temp = progressState + 1
-                if(temp > 3){
-                    setProgressState(0)
-                }
-                else{
-                    setProgressState(temp)
-                }
-                console.log(progressState)
-            }}>Bottone</ThemeButton>
         </div>
     )
 } 

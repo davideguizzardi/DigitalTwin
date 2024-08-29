@@ -73,11 +73,13 @@ export default function CardAppliance({ id, draggable, parentRef, dragConstraint
     }
 
     const handleDragStart = (event, info) => {
-        const cardRect = cardRef.current.getBoundingClientRect()
-        setModeIcon();
-        setFirstPosition(event, info);
-        setOldPos({ top: cardRect.top, left: cardRect.left })
-        emit(DRAG_START, { id: cardRef });
+        if(draggable){
+            const cardRect = cardRef.current.getBoundingClientRect()
+            setModeIcon();
+            setFirstPosition(event, info);
+            setOldPos({ top: cardRect.top, left: cardRect.left })
+            emit(DRAG_START, { id: cardRef });
+        }
     }
 
     const handleDragEnd = () => {
