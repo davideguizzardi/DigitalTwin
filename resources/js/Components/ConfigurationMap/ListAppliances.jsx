@@ -41,7 +41,7 @@ export default function ListAppliances({ appliances, dragConstraints, isEditMode
         }
     }, [appliances])
     return (
-        <ul className="w-full h-full flex flex-col justify-start items-start overflow-y-scroll z-0 gap-1 p-1"
+        <ul className="w-full h-full flex flex-col justify-start items-start overflow-y-scroll shadow z-0 gap-1 p-1"
             ref={listRef} id="list_appliance"
         >
             {

@@ -186,6 +186,7 @@ export default function ConfigurationAppliance({editMode, endSection}) {
                     </div>
                 </div>
                 <div className="w-full h-full p-5">
+                    <p className="text-center text-xl">Appliances</p>
                     <ListAppliances appliances={unconfAppl} dragConstraints={configRef} isEditMode={true}
                     addAppl={addUnconfAppl} removeAppl={removeUnconAppl}
                     />
