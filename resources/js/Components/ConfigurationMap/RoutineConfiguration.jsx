@@ -20,7 +20,7 @@ export default function RoutineConfiguration(){
                     <h1>Energy Plan</h1>
                 </div>
             </div>
-            <div className="bg-white rounded shadow size-full p-5">
+            <div className="bg-white rounded shadow size-full p-5 w-fit">
                 {section == 0 ?
                     <ConfigurationAppliance editMode={true}></ConfigurationAppliance>
                     :

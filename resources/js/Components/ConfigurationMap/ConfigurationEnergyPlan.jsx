@@ -232,9 +232,9 @@ export default function ConfigurationEnergyPlan({ endSection }) {
     }, [])
 
     return (
-        <div className="size-full flex flex-col">
+        <div className="size-full flex flex-col w-fit">
 
-            <div className="flex flex-col lg:flex-row size-full">
+            <div className="flex flex-col lg:flex-row size-full w-fit">
                 <div className="flex flex-col h-full w-full ">
                     <div className="flex w-full h-min">
                         <h1 className="text-3xl">Configure your energy plan schedule</h1>
@@ -277,13 +277,13 @@ export default function ConfigurationEnergyPlan({ endSection }) {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col h-full w-full">
+                <div className="flex flex-col h-full w-fit">
                     <div className="flex w-full h-min justify-center p-1">
                         <h1 className={"text-xl px-4 py-1 rounded " + (currentSlot >= 0 ? colors[currentSlot] : "")}>
                             {"Insert time slot " + (currentSlot >= 0 ? currentSlot + 1 : "")}
                         </h1>
                     </div>
-                    <div className="flex size-full py-1">
+                    <div className="flex size-full py-1 w-fit">
                         {table}
                     </div>
                 </div>

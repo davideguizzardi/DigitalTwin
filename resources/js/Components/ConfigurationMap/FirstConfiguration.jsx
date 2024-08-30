@@ -37,7 +37,7 @@ const FirstConfiguration = () => {
     return(
         <div className="flex flex-col size-full p-5">
             <ProgressConfiguration state={progressState} setState={setProgressState}></ProgressConfiguration>
-            <div className="w-full h-full p-5 my-2 bg-white shadow items-center flex flex-col ">
+            <div className="w-full h-full p-5 my-2 bg-white shadow items-center flex flex-col w-fit">
                 {renderCard()}
             </div>
         </div>
