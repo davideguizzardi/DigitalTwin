@@ -5,7 +5,7 @@ import { FaHouse, FaBolt, FaPuzzlePiece, FaGear, FaAnglesLeft, FaAnglesRight } f
 import { ThemeSidebarItem as SidebarItem } from "@/Components/Sidebar/ThemeSidebarItem";
 
 export function ThemeSidebar() {
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
 
     const handleToggleSidebar = () => {
         setCollapsed(!collapsed);
@@ -13,17 +13,19 @@ export function ThemeSidebar() {
 
     return (
         <motion.div
+        className="absolute h-full shadow"
+        style={{zIndex: 100}}
         layout
         >
             <Sidebar className="flex size-full">
-                <Sidebar.Items className="flex flex-col h-full">
-                    <div className="flex flex-row justify-between">
+                <Sidebar.Items className="flex flex-col h-full p-0">
+                    <div className="flex justify-between">
                         <Sidebar.Logo className="self-center flex-none" href="#" img="/storage/image/logo.png">
                             {!collapsed ? "Digital Twin" : ""}
                         </Sidebar.Logo>
                         <Button className="size-fit" color="transparent" onClick={handleToggleSidebar}>
                             {collapsed ?
-                                <FaAnglesRight className="self-center" /> :
+                                <FaAnglesRight className="self-center" size={12} /> :
                                 <FaAnglesLeft className="self-center" />
                             }
                         </Button>
