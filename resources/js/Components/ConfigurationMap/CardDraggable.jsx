@@ -32,7 +32,7 @@ export default function CardDraggable({ id, draggable, parentRef, dragConstraint
             borderRadius: '50px'
         },
         icon: {
-            zIndex: 100,
+            zIndex: 50,
             width: 'min-content',
             padding: '1px',
             borderRadius: '99999px'
