@@ -83,7 +83,7 @@ export default function Sidebar() {
             }
         },
         visible: {
-            width: "100%",
+            width: "66%",
             transition: {
                 delayChildren: 0.1,
                 staggerChildren: 0.01
@@ -117,7 +117,7 @@ export default function Sidebar() {
     }, [])
 
     return <>
-        <motion.div className="absolute flex rounded-full bg-lime-400 p-3 m-3 items-center "
+        <motion.div className="absolute flex rounded-full bg-lime-400 p-3 m-3 items-center shadow-2xl "
             style={styleLogoBtn} onClick={logoClick} onHoverStart={() => { setHoverLogo(true) }}
             onHoverEnd={() => { setHoverLogo(false) }}
         >
@@ -138,7 +138,7 @@ export default function Sidebar() {
         </motion.div >
 
 
-        <motion.ul className="absolute flex flex-col bg-white h-full pt-32 gap-10 "
+        <motion.ul className="absolute flex flex-col bg-white shadow-2xl h-full pt-32 gap-10 "
             style={styleMenu} variants={menu} initial={false}
             animate={isVisible ? "visible" : "hidden"} onClick={cancelCallback}>
             <motion.li className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
@@ -162,10 +162,10 @@ export default function Sidebar() {
                 <a href={route("configuration")}>Configuration</a>
             </motion.li>
         </motion.ul>
-        <motion.div className="absolute bottom-3 right-3" whileHover={{scale: 1.2}}>
+        <motion.div className="absolute bottom-3 right-3" whileHover={{scale: 1.2}} 
+            style={{ zIndex: 100 }} >
             <a href={route("userarea.get")}>
-                <Avatar rounded style={{ zIndex: 100 }}
-                    size={"lg"} img={userState.url_photo} />
+                <Avatar rounded size={"lg"} img={userState.url_photo} />
             </a>
         </motion.div>
 
