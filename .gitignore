@@ -20,3 +20,7 @@ yarn-error.log
 /.vscode
 z_cose_fatte.md
 reset_docker.sh
+
+
+
+docker-compose.yml 
