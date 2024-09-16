@@ -3,8 +3,10 @@ import { ThemeButton } from '@/Components/Commons/ThemeButton';
 import {FaTrashCan } from "react-icons/fa6";
 import { Button} from 'flowbite-react';
 import ModalUploadMap from './ModalUploadMap';
+import Cookies from 'js-cookie';
 
 let counter = -1;
+const token = Cookies.get("auth-token")
 
 export default function UploadMap({ endSection}) {
     const [listMap, setListMap] = useState([]);
@@ -32,6 +34,9 @@ export default function UploadMap({ endSection}) {
         })
         await fetch(apiRoute, {
             method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token 
+            },
             body: formData
         })
         endSection()
@@ -52,7 +57,7 @@ export default function UploadMap({ endSection}) {
     }, [listMap]);
     
     const thumbs = listMap.map((map, index) => (
-        <div className='size-full columns-1 items-center justify-center' key={map.file.name}>
+        <div className='size-full items-center justify-center' key={map.file.name}>
             <div className="w-full h-fit py-1 flex items-center self-start">
                 <Button className='bg-red-500 enabled:hover:bg-red-700 mx-2' pill
                     onClick={() => {

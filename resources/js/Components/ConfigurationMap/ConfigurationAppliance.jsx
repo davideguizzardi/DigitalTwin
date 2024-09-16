@@ -5,6 +5,9 @@ import ListButtons from "@/Components/Commons/ListButtons"
 import ListAppliances from "@/Components/ConfigurationMap/ListAppliances"
 import DroppableLayer from "@/Components/ConfigurationMap/DroppableLayer";
 import { Modal } from "flowbite-react";
+import Cookies from 'js-cookie';
+
+const token = Cookies.get("auth-token")
 
 export default function ConfigurationAppliance({editMode, endSection}) {
     const configRef = useRef()
@@ -53,7 +56,10 @@ export default function ConfigurationAppliance({editMode, endSection}) {
     const deleteAppl = async (appl) =>{
         const response = await fetch("http://localhost:8000/map/entity/" + appl,{
             method: 'DELETE',
-            headers: {'Content-Type': 'application/json'},
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token 
+            },
         })
         console.log(response)
     }
@@ -76,7 +82,10 @@ export default function ConfigurationAppliance({editMode, endSection}) {
         })
         const response = await fetch("http://localhost:8000/map",{
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json', 
+                'Authorization': 'Bearer ' + token 
+            },
             body: JSON.stringify({data: data})
         })       
     }
@@ -94,11 +103,16 @@ export default function ConfigurationAppliance({editMode, endSection}) {
     useEffect(() => {
         const apiRoute = route('map.index')
         const fetchMap = async () =>{
-            const response =  await fetch(apiRoute)
+            const response =  await fetch(apiRoute, {
+            headers: {
+                'Authorization': 'Bearer ' + token 
+            },
+            })
             response.json().then((result) =>{
                 setMaps([...result.maps])
                 setFloor(result.maps[0].floor)
             })
+            
         }
         fetchMap()
     },[])
@@ -164,7 +178,7 @@ export default function ConfigurationAppliance({editMode, endSection}) {
                 </Modal.Body>
             </Modal>
             <p className='h-min w-full p-4 text-center text-2xl'>Configure Appliance</p>
-            <div className="flex flex-col lg:flex-row w-full h-full lg:h-5/6">
+            <div className="flex flex-col xl:flex-row w-full h-full lg:h-5/6">
                 <div className="w-full h-full p-5">
                     <div className="size-full flex justify-center items-center">
                         <div className="flex size-full items-center justify-center">

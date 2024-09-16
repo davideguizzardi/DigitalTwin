@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { useDropzone } from "react-dropzone";
 
 
 const baseStyle = {

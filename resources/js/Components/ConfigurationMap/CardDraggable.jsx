@@ -42,8 +42,12 @@ export default function CardDraggable({ id, draggable, parentRef, dragConstraint
     const setFirstPosition = (event, info) => {
         if (mode == FULL) {
             const elem = cardRef.current
+            const scrollOffset = {top: dragConstraints.current.getBoundingClientRect().top}
             const oldX = info.point.x - dragConstraints.current.offsetLeft - event.layerX
             const oldY = info.point.y - dragConstraints.current.offsetTop - event.layerY
+            console.log(info.point)
+            console.log(dragConstraints.current.getBoundingClientRect())
+            console.log(scrollOffset.top)
             const sequence = [
                 [elem, {
                     position: 'absolute',
@@ -52,7 +56,7 @@ export default function CardDraggable({ id, draggable, parentRef, dragConstraint
                 }, { duration: 0.001 }],
                 [elem, {
                     left: info.point.x - dragConstraints.current.offsetLeft - 20,
-                    top: info.point.y - dragConstraints.current.offsetTop - 20
+                    top: info.point.y - dragConstraints.current.offsetTop - 20  - scrollOffset.top + 120
                 }, { duration: 0.5 }]
             ]
             if (firstTime) {

@@ -23,7 +23,7 @@ const FirstConfiguration = () => {
             case STATE_CONFIGURATION_ENERGY_PLAN:
                 return <ConfigurationEnergyPlan endSection={() => setProgressState(STATE_FINISH)}/>;
             case STATE_FINISH:
-                return  <div className="size-full">
+                return  <div className="size-full flex flex-col gap-5 py-5">
                     <div className="h-5/6 flex justify-center items-center">
                         <h1>Configuration complete</h1>
                     </div>
@@ -35,9 +35,9 @@ const FirstConfiguration = () => {
     }
 
     return(
-        <div className="flex flex-col size-full p-5">
+        <div className="flex flex-col size-full min-h-fit min-w-fit p-5">
             <ProgressConfiguration state={progressState} setState={setProgressState}></ProgressConfiguration>
-            <div className="w-full h-full p-5 my-2 bg-white shadow items-center flex flex-col w-fit">
+            <div className="w-full p-5 my-2 bg-white shadow items-center flex flex-col min-w-fit min-h-fit">
                 {renderCard()}
             </div>
         </div>

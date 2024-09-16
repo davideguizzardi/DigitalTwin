@@ -1,9 +1,15 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\API\MapController;
+use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\UserController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MapController;
 
+
+Route::middleware('auth:sanctum')->group(function(){
     Route::get("/maps", [MapController::class, "get"])->name('map.index');
     Route::post('/maps', [MapController::class, "store"])->name('map.store');
     Route::delete("/maps", [MapController::class, "delete"])->name('map.delete');
+    Route::get("/user",  [UserController::class, "get"])->name("user.index");
+    Route::post("/user", [UserController::class, "update"])->name("user.update");
+});

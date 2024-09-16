@@ -3,14 +3,15 @@ import { ThemeButton } from "@/Components/Commons/ThemeButton";
 
 export default function CarouselMap({ maps, index = 0,
     setIndex = (i) => { index = i }, otherButtons = (<></>) }) {
+    const [urlImage, setUrlImage] = useState(maps[index].url);
+    console.log(maps)
 
-    let [urlImage, setUrlImage] = useState(maps[index].url);
     const listButtons = maps.map((element, i) => (
         <ThemeButton className="size-min mx-px my-2" key={i} pill onClick={() => {
             setUrlImage(element.url);
             setIndex(i);
         }}>
-            {i}
+            {element.floor}
         </ThemeButton>
     ));
     return (

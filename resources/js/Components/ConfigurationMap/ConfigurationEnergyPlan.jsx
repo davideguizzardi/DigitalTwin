@@ -232,15 +232,15 @@ export default function ConfigurationEnergyPlan({ endSection }) {
     }, [])
 
     return (
-        <div className="size-full flex flex-col w-fit">
+        <div className="size-full flex flex-col min-w-fit min-h-fit">
 
-            <div className="flex flex-col lg:flex-row size-full w-fit">
-                <div className="flex flex-col h-full w-full ">
+            <div className="flex flex-col xl:flex-row size-full min-w-fit min-h-fit justify-around">
+                <div className="flex flex-col h-full w-full min-h-fit min-w-fit justify-around">
                     <div className="flex w-full h-min">
                         <h1 className="text-3xl">Configure your energy plan schedule</h1>
                         <p></p>
                     </div>
-                    <div className="flex flex-col size-full pt-5">
+                    <div className="flex flex-col size-full justify-start gap-16 pt-5">
 
                         <div className="flex px-5 px-3 items-center">
                             <p className="text-xl px-2">Maximum capacity</p>
@@ -266,18 +266,16 @@ export default function ConfigurationEnergyPlan({ endSection }) {
                                                 <FaCalendarPlus />
                                             </IconContext.Provider>
                                         </Button>
+                                        {currentSlot == index ? (
+                                            <p className="text-xl">Insert time slots in the calendar</p>
+                                        ) : (<></>)}
                                     </div>
                                 )
                             })
                         }
-                        <div className="flex size-full justify-center items-center">
-                            {currentSlot >= 0 ? (
-                                <p className="text-xl">Insert time slots in the calendar</p>
-                            ) : (<></>)}
-                        </div>
                     </div>
                 </div>
-                <div className="flex flex-col h-full w-fit">
+                <div className="flex flex-col h-full min-w-fit">
                     <div className="flex w-full h-min justify-center p-1">
                         <h1 className={"text-xl px-4 py-1 rounded " + (currentSlot >= 0 ? colors[currentSlot] : "")}>
                             {"Insert time slot " + (currentSlot >= 0 ? currentSlot + 1 : "")}

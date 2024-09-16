@@ -79,7 +79,7 @@ Use Tinker to interact with the Laravel application directly from the command li
 
 Inside the Tinker console, you can create a new user with the following command (replace `'test'` and `'test@digital.twin'` with your desired values):
 
-``` User::create(['name' => 'test', 'email' => 'test@digital.twin', 'password'=>Hash::make('password')]); ```
+``` User::create(['username' => 'test', 'email' => 'test@digital.twin', 'password'=>Hash::make('password')]); ```
 
 ### Stop Application
 

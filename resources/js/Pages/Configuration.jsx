@@ -4,7 +4,7 @@ import RoutineConfiguration from '@/Components/ConfigurationMap/RoutineConfigura
 const Configuration = ({maps}) => {
     const mapsLength = maps.length
     return (
-        <div className='size-full flex'>
+        <div className='size-full flex min-w-fit min-h-fit'>
             {
                 mapsLength > 0 ? 
                 <RoutineConfiguration/>: <FirstConfiguration/>

@@ -41,14 +41,18 @@ export default function ListAppliances({ appliances, dragConstraints, isEditMode
         }
     }, [appliances])
     return (
-        <ul className="w-full h-full flex flex-col justify-start items-start overflow-y-scroll shadow z-0 gap-1 p-1"
+        <ul className="w-full h-full flex flex-col min-h-96 justify-start items-start overflow-y-scroll shadow z-0 gap-1 p-1"
             ref={listRef} id="list_appliance"
         >
-            {
+            {appliances.length > 0 ?
                 appliances.map((e) => (
                     <CardDraggable key={e} id={e} type={FULL}
                         draggable={isEditMode} dragConstraints={dragConstraints} parentRef={listRef} />
                 ))
+                :
+                <div className="h-full w-full flex items-center justify-center">
+                    <h1 className="text-xl text-gray-600">No appliance</h1>
+                </div>
             }
         </ul>
     )
