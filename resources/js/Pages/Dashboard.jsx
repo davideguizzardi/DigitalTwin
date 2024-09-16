@@ -23,16 +23,6 @@ const Dashboard = ({ maps, token }) => {
             icon: (<></>)
     }})
 
-    const icons = ["media_player", "light", "fan", "weather", "sensor"]
-
-    const favoriteBtn = Array.from(Array(5).keys()).map((e, i) =>{
-        return {
-            callback: () => {},
-            text: "Command " + e,
-            icon: (<FaStar size={32}/>)
-        }
-    })
-
     useEffect(()=>{
         const fetchAppliance = async () =>{
             const response = await fetch("http://localhost:8000/map")
@@ -73,25 +63,23 @@ const Dashboard = ({ maps, token }) => {
     }, [floor])
 
     return (
-        <div className="size-full flex flex-col xl:flex-row p-2 gap-2 ">
-            <div className='size-full flex flex-col bg-white gap-4 p-4 shadow rounded'>
-                <div className="w-full flex mt-6 gap-2 p-3">
+        <div className="size-full flex gap-2 p-2">
+            <div className='size-full flex flex-col bg-white gap-4 p-1 shadow rounded w-3/5 lg:w-full'>
+                <div className="w-full flex items-center justify-center mt-6 gap-2 p-3">
                     <FaHouse size={36}/>
                     <h1 className="text-2xl">Your Home</h1>
-                </div>
-                <div className="flex justify-center mt-3">
-                    <div className="h-min">
-                        <ListButtons dataButtons={favoriteBtn} vertical={false}/>
-                    </div>
                 </div>
                 {
                     maps.length > 0 ?
                         <div className="size-full flex items-center justify-center">
-                            <div className="relative max-h-min justify-center items-center shadow">
-                                <img className='aspect-auto' src={maps[indexImg].url} />
+                            <div className="relative w-full justify-center items-center shadow">
+                                <img className='w-full' src={maps[indexImg].url}/>
                                 {appliance.filter((e) => e.floor==floor).map((e) => (<CardAppliance key={e.id} appliance={e}/>))}
                             </div>
-                            <ListButtons dataButtons={floorBtn} index={indexImg}/>
+                            <div className="flex flex-col justify-center items-center">
+                                <h1>Floors</h1>
+                                <ListButtons dataButtons={floorBtn} index={indexImg}/>
+                            </div>
                         </div>
                         :
                         <div className="size-full flex justify-center items-center">
@@ -99,7 +87,7 @@ const Dashboard = ({ maps, token }) => {
                                 <a style={{ color: "blue" }} href={route("configuration")}> here</a></p>
                         </div>
                 }
-                <div className="flex items-center justify-around">
+                <div className="flex items-center justify-around p-2">
                     <div className="lg:w-48 flex flex-col p-2 bg-gray-200 rounded shadow">
                         <div className="flex items-center gap-1">
                             <FaBolt size={16}/> <h1>Power usage</h1>
@@ -126,29 +114,9 @@ const Dashboard = ({ maps, token }) => {
                     </div>
                 </div>
             </div>
-            <div className='h-full xl:w-full flex flex-col gap-2'>
+            <div className='h-full xl:w-full flex flex-col gap-2 w-2/5 '>
                 <div className="flex bg-white shadow rounded max-w-full p-4 items-center justify-center">
-                    <Plot
-                        className="flex items-center justify-center"
-                        data={[{
-                            x: consumption.x,
-                            y: consumption.y,
-                            type: "bar",
-                            marker: {color: "#a3e635"},
-                        }]}
-                        layout={{
-                            title: "Daily Consumption",
-                            autosize: true,
-                            xaxis: {
-                                autotick: false,
-                                title: "Hour",
-                            },
-                            yaxis:{
-                                title: "Consumption (Wh)"
-                            }
-                        }}
-                        config={{displayModeBar:false}}
-                    />
+                    
                 </div>
                 <div className="w-full h-1/2 bg-white shadow rounded p-4">
                     <h1>Prova</h1>
