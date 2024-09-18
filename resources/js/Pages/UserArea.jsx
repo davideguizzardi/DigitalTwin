@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
 import { Avatar, Checkbox } from "flowbite-react"
 import { ThemeButton } from "@/Components/Commons/ThemeButton"
-import { FaLock } from "react-icons/fa6"
+import { FaGear } from "react-icons/fa6"
 import ModalUploadPhoto from "@/Components/UserArea/ModalUploadPhoto.jsx"
 import ModalChangePassword from "@/Components/UserArea/ModalChangePassword"
 import Cookies from "js-cookie"
 import Preferences from "@/Components/UserArea/Preferences"
-
+import { motion } from "framer-motion"
 
 const token = Cookies.get("auth-token")
 
@@ -21,10 +21,7 @@ export default function UserArea({ user }) {
     })
     const [modalPhotoState, setModalPhotoState] = useState(false)
     const [modalChangePassword, setModalChangePassword] = useState(false)
-
-    const uploadPhoto = () => {
-        setModalPhotoState(true)
-    }
+    const [isVisibleSetting, setVisibleSetting] = useState(false)
 
     const fetchUser = async () => {
         const token = Cookies.get("auth-token")
@@ -42,6 +39,46 @@ export default function UserArea({ user }) {
         setModalPhotoState(false)
         if (save) {
             fetchUser()
+        }
+    }
+
+    const variantSettings = {
+        hidden: {
+            width: "0%",
+            height: "0%",
+            transition: {
+                delay: 0.2,
+                staggerChildren: 0.01,
+                staggerDirection: -1
+            }
+        },
+        visible: {
+            width: "100%",
+            height: "100%",
+            transition: {
+                delayChildren: 0.1,
+                staggerChildren: 0.01
+            }
+        }
+    }
+
+    const variantSettingsMenu = {
+        hidden: {
+            opacity: 0,
+            x: 200
+        },
+        visible: {
+            opacity: 1,
+            x: -10
+        }
+    }
+
+    const variantIcon = {
+        hidden: {
+            rotate: "360deg"
+        },
+        visible: {
+            rotate: "-360deg"
         }
     }
 
@@ -94,23 +131,41 @@ export default function UserArea({ user }) {
                 <ModalChangePassword open={true} closeCallback={() => { setModalChangePassword(false) }} />
             }
 
-            <div className="flex w-full min-h-fit bg-white shadow rounded pl-5 p-2 gap-3">
-                <Avatar key={Date.now()} className="cursor-pointer" rounded size={"lg"}
-                    onClick={uploadPhoto} img={userState.url_photo} />
-                <div className="flex flex-col gap-3">
-                    <h1 className="text-2xl">{userState.username}</h1>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {userState.email}
-                    </p>
-                    <ThemeButton onClick={() => { setModalChangePassword(true) }} >
-                        <div className="flex justify-center items-center gap-2">
-                            <FaLock size={12} />
-                            <h1>Change password</h1>
-                        </div>
-                    </ThemeButton>
-                </div>
-            </div>
-            <div className="flex flex-col h-full xl:flex-row justify-center gap-2 p-2">
+            <motion.div className="absolute top-2 right-2 z-20 rounded-full bg-lime-400 p-2 shadow-xl "
+                ring-1 style={{ cursor: "pointer" }}
+                onClick={() => setVisibleSetting(!isVisibleSetting)} variants={variantIcon}
+                animate={isVisibleSetting ? "visible" : "hidden"}
+            >
+                <FaGear size={32} />
+            </motion.div>
+            <motion.div className="absolute top-0 right-0 z-10 pt-16 text-xl flex flex-col min-h-fit items-end"
+                initial="hidden"
+                variants={variantSettings} animate={isVisibleSetting ? "visible" : "hidden"}
+                onClick={() => setVisibleSetting(false)}
+            >
+                <motion.div className="flex flex-col gap-3">
+                    <motion.div className="py-2 px-3 z-20 bg-lime-400 shadow-xl rounded-full justify-center"
+                        style={{ cursor: "pointer" }} variants={variantSettingsMenu}
+                        onClick={() => {
+                            setModalChangePassword(true)
+                            setVisibleSetting(false)
+                        }}
+                        >
+                        Change image profile
+                    </motion.div>
+                    <motion.div className="flex py-2 px-3 z-20 bg-lime-400 shadow-xl rounded-full justify-center"
+                        style={{ cursor: "pointer" }} variants={variantSettingsMenu}
+                        onClick={() => {
+                            setModalChangePassword(true)
+                            setVisibleSetting(false)
+                        }}
+                        >
+                        Change password
+                    </motion.div>
+                </motion.div>
+            </motion.div>
+
+            <div className="flex flex-col h-full xl:flex-row justify-center gap-2 pt-16 p-2">
                 <div className="flex flex-col gap-2">
                     <div className="flex flex-col bg-white rounded shadow px-2 py-4 gap-3">
                         <h1 className="text-2xl p-2">Preferences</h1>

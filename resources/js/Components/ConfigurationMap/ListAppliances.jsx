@@ -14,21 +14,20 @@ export default function ListAppliances({ appliances, dragConstraints, isEditMode
     const handleDragEnd = (event) => {
         removeAppl(event.detail.id)
         setTimeout(() => {
-            if (event.detail.droppable == listRef) {
+            if (event.detail.droppable === listRef) {
                 const newId = event.detail.id
                 addAppl(event.detail.id)
             }
-        }, 1)
+        }, 100)
     }
 
     const handleDragEndOut = (event) => {
         removeAppl(event.detail.id)
         setTimeout(() => {
-            if (event.detail.droppable == listRef) {
-                const newId = event.detail.id
+            if (event.detail.droppable === listRef) {
                 addAppl(event.detail.id)
             }
-        }, 1)
+        }, 100)
     }
 
     useEffect(() => {

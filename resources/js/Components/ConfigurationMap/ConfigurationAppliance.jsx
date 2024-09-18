@@ -6,6 +6,7 @@ import ListAppliances from "@/Components/ConfigurationMap/ListAppliances"
 import DroppableLayer from "@/Components/ConfigurationMap/DroppableLayer";
 import { Modal } from "flowbite-react";
 import Cookies from 'js-cookie';
+import AnimateMap from "../Commons/AnimateMap";
 
 const token = Cookies.get("auth-token")
 
@@ -13,6 +14,7 @@ export default function ConfigurationAppliance({editMode, endSection}) {
     const configRef = useRef()
     const refApplOnfFloor = useRef()
     const [applOnFloor, setApplOnFloor] = useState([])
+    const [up, setUp] = useState(false)
     const [maps, setMaps] = useState([])
     refApplOnfFloor.current = applOnFloor
     const [unconfAppl, setUnconfAppl] = useState([])
@@ -25,6 +27,7 @@ export default function ConfigurationAppliance({editMode, endSection}) {
     maps.map((element, index) => {
         dataBtn = [...dataBtn, {
             callback: () => {
+                setUp(element.floor>floor)
                 setFloor(element.floor)
                 setIndexImg(index)
             },
@@ -150,7 +153,7 @@ export default function ConfigurationAppliance({editMode, endSection}) {
     }, [first, applOnFloor])
 
     return (
-        <div className="relative flex flex-col h-full w-full justify-center items-center"
+        <div className="relative size-full flex flex-col justify-center items-center bg-white shadow "
            ref={configRef}
         >
             <Modal size="3xl" show={openModal} onClose={()=>setOpenModal(false)}>
@@ -178,28 +181,27 @@ export default function ConfigurationAppliance({editMode, endSection}) {
                 </Modal.Body>
             </Modal>
             <p className='h-min w-full p-4 text-center text-2xl'>Configure Appliance</p>
-            <div className="flex flex-col xl:flex-row w-full h-full lg:h-5/6">
-                <div className="w-full h-full p-5">
+            <div className="flex w-full h-full">
+                <div className="w-4/6 xl:w-full h-full p-2">
                     <div className="size-full flex justify-center items-center">
-                        <div className="flex size-full items-center justify-center">
-                            <div className="max-w-screen max-h-screen relative flex justify-center items-center shadow">
+                            <div className="relative size-full flex justify-center items-center shadow">
                                 { maps[indexImg] && (
-                                    <img className="max-h-full aspect-auto p-2" src={maps[indexImg].url} alt="" />
+                                    <AnimateMap map={maps[indexImg].url} up={up}/>
                                 )}
                                 <DroppableLayer isEditMode={editMode}  dragConstraints={configRef}
                                  listAppliancesPos={refApplOnfFloor.current} index={floor} 
                                  addAppl={addApplOnFloor} removeAppl={removeApplOnFloor}
                                  />
                             </div>
-                        </div>
 
-                        <motion.div className="flex flex-col justify-center w-min m-2 p-1 rounded-full"
+                        <motion.div className="flex flex-col justify-center items-center w-min m-2 p-1 rounded-full"
                         >
+                            <p>Floors</p>
                             <ListButtons dataButtons={dataBtn} index={indexImg} />
                         </motion.div>
                     </div>
                 </div>
-                <div className="w-full h-full p-5">
+                <div className="w-2/6 xl:w-full h-5/6 p-2">
                     <p className="text-center text-xl">Appliances</p>
                     <ListAppliances appliances={unconfAppl} dragConstraints={configRef} isEditMode={true}
                     addAppl={addUnconfAppl} removeAppl={removeUnconAppl}

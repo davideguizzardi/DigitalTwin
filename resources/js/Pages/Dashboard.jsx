@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import ListButtons from "@/Components/Commons/ListButtons";
 import CardAppliance from "@/Components/Commons/CardAppliance";
 import {FaHouse, FaBolt, FaLaptop, FaCloud, FaStar} from "react-icons/fa6";
-import Plot from "react-plotly.js";
 import Cookies from "js-cookie";
+import AnimateMap from "@/Components/Commons/AnimateMap";
 
 const Dashboard = ({ maps, token }) => {
     const firstFloor = maps.length > 0 ? maps[0].floor : 0
     const [floor, setFloor] = useState(firstFloor)
+    const [up, setUp] = useState(false)
     const [homeContext, setHomeContext] = useState({})
     const [consumption, setConsumption] = useState({})
     const [indexImg, setIndexImg] = useState(0)
@@ -16,6 +17,7 @@ const Dashboard = ({ maps, token }) => {
     const floorBtn = maps.map((element, index) => {
         return {
             callback: () => {
+                setUp(element.floor > floor)
                 setFloor(element.floor)
                 setIndexImg(index)
             },
@@ -72,8 +74,8 @@ const Dashboard = ({ maps, token }) => {
                 {
                     maps.length > 0 ?
                         <div className="size-full flex items-center justify-center">
-                            <div className="relative w-full justify-center items-center shadow">
-                                <img className='w-full' src={maps[indexImg].url}/>
+                            <div className="relative flex flex-col-reverse w-full justify-center items-center shadow">
+                                <AnimateMap map={maps[indexImg].url} up={up}/>
                                 {appliance.filter((e) => e.floor==floor).map((e) => (<CardAppliance key={e.id} appliance={e}/>))}
                             </div>
                             <div className="flex flex-col justify-center items-center">

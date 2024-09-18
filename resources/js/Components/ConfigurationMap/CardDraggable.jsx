@@ -1,4 +1,4 @@
-import { animate, motion } from "framer-motion"
+import { animate, AnimatePresence, motion } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
 import { AVAILABLE_DROP, DRAG_END, DRAG_END_OUT, DRAG_START, emit, subscribe, unsubscribe } from "@/Utils/events"
 import IconAppliance from "../Commons/IconAppliance"
@@ -27,14 +27,14 @@ export default function CardDraggable({ id, draggable, parentRef, dragConstraint
             borderRadius: '6px'
         },
         min: {
-            width: 'min-content',
+            width: '250px',
             padding: '8px',
             borderRadius: '50px'
         },
         icon: {
             zIndex: 50,
-            width: 'min-content',
-            padding: '1px',
+            width: "auto",
+            padding: '0px',
             borderRadius: '99999px'
         }
     }
@@ -56,7 +56,7 @@ export default function CardDraggable({ id, draggable, parentRef, dragConstraint
                 }, { duration: 0.001 }],
                 [elem, {
                     left: info.point.x - dragConstraints.current.offsetLeft - 20,
-                    top: info.point.y - dragConstraints.current.offsetTop - 20  - scrollOffset.top + 120
+                    top: info.point.y - dragConstraints.current.offsetTop - 20  
                 }, { duration: 0.5 }]
             ]
             if (firstTime) {
@@ -145,14 +145,17 @@ export default function CardDraggable({ id, draggable, parentRef, dragConstraint
             style={style}
         >
             <IconAppliance typeAppl={typeAppl}></IconAppliance>
-            {mode == ICON ? <></>
-                :
-                <div className="flex flex-col w-full px-2">
-                    <div className="flex w-full justify-start">
-                        <span>{name}</span>
-                    </div>
-                </div>
+            <AnimatePresence>
+            {mode != ICON &&
+                <motion.span className="flex flex-col px-2"
+                    initial={{ opacity: 0}}
+                    animate={{ opacity: 1}}
+                    exit={{opacity: 0}}
+                >
+                    {name}
+                </motion.span>
             }
+            </AnimatePresence>
         </motion.div>
     )
 } 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { FaBars } from "react-icons/fa6";
+import { FaBars, FaX } from "react-icons/fa6";
 import { AnimatePresence, delay, motion, useAnimate } from "framer-motion"
 import Cookies from "js-cookie";
 import { Avatar } from "flowbite-react";
@@ -35,7 +35,6 @@ export default function Sidebar() {
 
     const styleMenu = {
         zIndex: 80,
-        opacity: 0.96
     }
 
     const styleEntry = {
@@ -83,7 +82,7 @@ export default function Sidebar() {
             }
         },
         visible: {
-            width: "66%",
+            width: "100%",
             transition: {
                 delayChildren: 0.1,
                 staggerChildren: 0.01
@@ -94,11 +93,15 @@ export default function Sidebar() {
     const entry = {
         hidden: {
             opacity: 0,
-            x: -100,
+            x: -500,
         },
         visible: {
             opacity: 1,
             x: 100,
+        },
+        hover: {
+            opacity: 1,
+            x: 170,
         }
     }
 
@@ -117,11 +120,11 @@ export default function Sidebar() {
     }, [])
 
     return <>
-        <motion.div className="absolute flex rounded-full bg-lime-400 p-3 m-3 items-center "
+        <motion.div className="absolute top-2 left-2 flex rounded-full bg-lime-400 p-3 items-center shadow-xl"
             style={styleLogoBtn} onClick={logoClick} onHoverStart={() => { setHoverLogo(true) }}
             onHoverEnd={() => { setHoverLogo(false) }}
         >
-            <motion.div ref={scopeLogo} >
+            <motion.div className="shadow-xl" ref={scopeLogo} >
                 <FaBars size={24} />
             </motion.div>
             <motion.div variants={logoDiv} animate={hoverLogo ? "visible" : "hidden"}>
@@ -130,7 +133,7 @@ export default function Sidebar() {
                     animate={"visible"}
                     exit={"hidden"}
                     variants={logoText}
-                    style={{ height: "32px" }}
+                    style={{ height: "24px" }}
                 >
                     Digital twin
                 </motion.p>
@@ -138,31 +141,37 @@ export default function Sidebar() {
         </motion.div >
 
 
-        <motion.ul className="absolute flex flex-col bg-white shadow-2xl h-full pt-32 gap-10 "
+        <motion.div className="absolute flex flex-col h-full"
             style={styleMenu} variants={menu} initial={false}
             animate={isVisible ? "visible" : "hidden"} onClick={cancelCallback}>
+            <div className="flex flex-col h-full bg-white  pt-32 gap-10 shadow-2xl " style={{width: "66%"}}>
             <motion.a href={route("dashboard")} className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
                 style={styleEntry} variants={entry} initial={false}
+                hover="hover"
             >
                 Dashboard
             </motion.a>
             <motion.a href="#" className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
                 style={styleEntry} variants={entry} initial={false}
+                hover={"hover"}
             >
                 Consumption
             </motion.a>
             <motion.a href="#" className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
                 style={styleEntry} variants={entry} initial={false}
+                hover={"hover"}
             >
                 Automations
             </motion.a>
             <motion.a href={route("configuration")} className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
                 style={styleEntry} variants={entry} initial={false}
+                hover={"hover"}
             >
                 Configuration
             </motion.a>
-        </motion.ul>
-        <motion.div className="absolute bottom-3 right-3" whileHover={{scale: 1.2}} 
+            </div>
+        </motion.div>
+        <motion.div className="absolute bottom-3 right-3 shadow-xl rounded-full" whileHover={{scale: 1.2}} 
             style={{ zIndex: 100 }} >
             <a href={route("userarea.get")}>
                 <Avatar rounded size={"lg"} img={userState.url_photo} />

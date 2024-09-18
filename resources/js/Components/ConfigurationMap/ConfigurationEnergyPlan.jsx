@@ -4,6 +4,7 @@ import { Button, Table } from "flowbite-react"
 import { FaCalendarPlus } from "react-icons/fa6";
 import { IconContext } from "react-icons";
 import { ThemeButton } from "../Commons/ThemeButton";
+import { color } from "framer-motion";
 
 export default function ConfigurationEnergyPlan({ endSection }) {
     const [powerCapacity, setPowerCapacity] = useState(0)
@@ -57,25 +58,25 @@ export default function ConfigurationEnergyPlan({ endSection }) {
                 <Table.HeadCell style={{ cursor: "default" }}>Hour</Table.HeadCell>
                 <Table.HeadCell style={{ cursor: "pointer" }}
                     onClick={() => { setDay(0) }}
-                >Monday</Table.HeadCell>
+                >Mon</Table.HeadCell>
                 <Table.HeadCell style={{ cursor: "pointer" }}
                     onClick={() => { setDay(1) }}
-                >Tuesday</Table.HeadCell>
+                >Tue</Table.HeadCell>
                 <Table.HeadCell style={{ cursor: "pointer" }}
                     onClick={() => { setDay(2) }}
-                >Wednesday</Table.HeadCell>
+                >Wed</Table.HeadCell>
                 <Table.HeadCell style={{ cursor: "pointer" }}
                     onClick={() => { setDay(3) }}
-                >Thursday</Table.HeadCell>
+                >Thu</Table.HeadCell>
                 <Table.HeadCell style={{ cursor: "pointer" }}
                     onClick={() => { setDay(4) }}
-                >Friday</Table.HeadCell>
+                >Fri</Table.HeadCell>
                 <Table.HeadCell style={{ cursor: "pointer" }}
                     onClick={() => { setDay(5) }}
-                >Saturday</Table.HeadCell>
+                >Sat</Table.HeadCell>
                 <Table.HeadCell style={{ cursor: "pointer" }}
                     onClick={() => { setDay(6) }}
-                >Sunday</Table.HeadCell>
+                >Sun</Table.HeadCell>
             </Table.Head>
             <Table.Body>
                 {
@@ -175,21 +176,32 @@ export default function ConfigurationEnergyPlan({ endSection }) {
         ]
         powerPrice.forEach((el, i) => {
             const index = i + 1
-            dataConf = [...dataConf, {
-                key: "cost_slot_" + index,
-                value: el,
-                unit: "€/kWh"
-            }]
+            if(i<timeSlots){
+                dataConf = [...dataConf, {
+                    key: "cost_slot_" + index,
+                    value: el,
+                    unit: "€/kWh"
+                }]
+            }
         })
+        console.log(dataConf)
         fetch("http://localhost:8000/configuration/", {
             method: "PUT",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ data: dataConf })
         })
+        if(timeSlots < 3){
+            const response = await fetch("http://localhost:8000/configuration/cost_slot_3", {
+                    method: "DELETE",
+                    headers: { 'Content-Type': 'application/json'}
+                })
+            const result = await response.json()
+            console.log(result)
+            if(timeSlots < 2){
 
-
+            }
+        }
         const dataCalendar = JSON.stringify({ data: slotWeekHour })
-        console.log(dataCalendar)
 
         const responseCalendar = await fetch("http://localhost:8000/calendar", {
             method: "PUT",
@@ -197,7 +209,6 @@ export default function ConfigurationEnergyPlan({ endSection }) {
             body: dataCalendar
         })
         const result = await responseCalendar.json()
-        console.log(result)
         endSection()
     }
 
@@ -206,7 +217,6 @@ export default function ConfigurationEnergyPlan({ endSection }) {
             const response = await fetch("http://localhost:8000/configuration/")
             const result = await response.json()
             let updatePrice = [0.0000]
-            console.log(result)
             result.forEach((conf) => {
                 if (conf.key == "energy_slots_number")
                     setTimeSlots(conf.value)
@@ -224,7 +234,6 @@ export default function ConfigurationEnergyPlan({ endSection }) {
         const getCalendar = async () => {
             const response = await fetch("http://localhost:8000/calendar")
             const result = await response.json()
-            console.log(result.data)
             setSlotWeekHour([...result.data])
         }
         getCalendar()
@@ -232,26 +241,28 @@ export default function ConfigurationEnergyPlan({ endSection }) {
     }, [])
 
     return (
-        <div className="size-full flex flex-col min-w-fit min-h-fit">
+        <div className="size-full flex flex-col min-w-fit min-h-fit bg-white rounded shadow p-2">
+            <div className="flex w-full h-min justify-center pt-3">
+                <h1 className="text-3xl">Configure your energy plan schedule</h1>
+            </div>
+            <div className="flex size-full min-w-fit min-h-fit">
+                <div className="flex flex-col lg:p-2 h-full min-w-fit w-full">
+                        {table}
+                </div>
+                <div className="flex flex-col h-full w-full min-h-fit min-w-fit">
+                    <div className="flex flex-col size-full justify-start gap-4 pt-5">
 
-            <div className="flex flex-col xl:flex-row size-full min-w-fit min-h-fit justify-around">
-                <div className="flex flex-col h-full w-full min-h-fit min-w-fit justify-around">
-                    <div className="flex w-full h-min">
-                        <h1 className="text-3xl">Configure your energy plan schedule</h1>
-                        <p></p>
-                    </div>
-                    <div className="flex flex-col size-full justify-start gap-16 pt-5">
-
-                        <div className="flex px-5 px-3 items-center">
+                        <div className="flex px-5 px-3  items-center justify-center">
                             <p className="text-xl px-2">Maximum capacity</p>
                             <input className="px-1" style={{ width: "64px" }} type="number" value={powerCapacity} min="0" max="15" step="0.5" onChange={e => setPowerCapacity(e.target.value)} />
                             <p className="text-xl px-2">kW</p>
                         </div>
-                        <div className="flex px-5 py-3 items-center">
+                        <div className="flex px-5 py-3  items-center justify-center">
                             <p className="text-xl px-2">Number of slots</p>
                             <ListButtons dataButtons={dataBtn}
                                 index={timeSlots - 1} vertical={false} />
                         </div>
+                        <div className="flex flex-col items-center">
                         {
                             powerPrice.map((element, index) => {
                                 return (
@@ -266,29 +277,23 @@ export default function ConfigurationEnergyPlan({ endSection }) {
                                                 <FaCalendarPlus />
                                             </IconContext.Provider>
                                         </Button>
-                                        {currentSlot == index ? (
-                                            <p className="text-xl">Insert time slots in the calendar</p>
-                                        ) : (<></>)}
                                     </div>
                                 )
                             })
                         }
-                    </div>
-                </div>
-                <div className="flex flex-col h-full min-w-fit">
-                    <div className="flex w-full h-min justify-center p-1">
-                        <h1 className={"text-xl px-4 py-1 rounded " + (currentSlot >= 0 ? colors[currentSlot] : "")}>
-                            {"Insert time slot " + (currentSlot >= 0 ? currentSlot + 1 : "")}
-                        </h1>
-                    </div>
-                    <div className="flex size-full py-1 w-fit">
-                        {table}
+                        </div>
+                        <div className="flex w-full h-full px-5 py-3 items-center justify-center">
+                            {
+                                currentSlot >= 0 && 
+                                <p className={"text-lg p-3 rounded shadow " + colors[currentSlot]}>Insert {currentSlot + 1} slot in calendar</p>
+                            }
+                        </div>
+                        <div className="flex w-full h-min px-5 py-3 items-end justify-center">
+                            <ThemeButton onClick={() => { saveConfiguration() }}>Save</ThemeButton>
+                        </div>
                     </div>
                 </div>
 
-            </div>
-            <div className="flex w-full h-min px-5 py-3 items-end justify-center">
-                <ThemeButton onClick={() => { saveConfiguration() }}>Save</ThemeButton>
             </div>
         </div>
     )
