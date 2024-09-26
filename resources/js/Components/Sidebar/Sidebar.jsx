@@ -8,7 +8,7 @@ export default function Sidebar() {
     const [isVisible, setVisible] = useState(false)
     const [hoverLogo, setHoverLogo] = useState(false)
     const [scopeLogo, animateLogo] = useAnimate()
-    const [userState, setUserState] = useState({})
+    const [userState, setUserState] = useState("")
 
     const animationLogo = () => {
         const rotation = {
@@ -112,9 +112,11 @@ export default function Sidebar() {
             const response = await fetch("http://localhost/api/user", {
                 headers: { 'Authorization': 'Bearer ' + token }
             })
-            const result = await response.json()
-            const user = result.user
-            setUserState({ ...user, url_photo: user.url_photo + "?t=" + Date.now() })
+            response.json().then((result) => {
+                const user = result.user
+                if (user.url_photo !== null)
+                    setUserState(user.url_photo)
+            })
         }
         fetchUser()
     }, [])
@@ -144,39 +146,44 @@ export default function Sidebar() {
         <motion.div className="absolute flex flex-col h-full"
             style={styleMenu} variants={menu} initial={false}
             animate={isVisible ? "visible" : "hidden"} onClick={cancelCallback}>
-            <div className="flex flex-col h-full bg-white  pt-32 gap-10 shadow-2xl " style={{width: "66%"}}>
-            <motion.a href={route("dashboard")} className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
-                style={styleEntry} variants={entry} initial={false}
-                hover="hover"
-            >
-                Dashboard
-            </motion.a>
-            <motion.a href="#" className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
-                style={styleEntry} variants={entry} initial={false}
-                hover={"hover"}
-            >
-                Consumption
-            </motion.a>
-            <motion.a href="#" className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
-                style={styleEntry} variants={entry} initial={false}
-                hover={"hover"}
-            >
-                Automations
-            </motion.a>
-            <motion.a href={route("configuration")} className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
-                style={styleEntry} variants={entry} initial={false}
-                hover={"hover"}
-            >
-                Configuration
-            </motion.a>
+            <div className="flex flex-col h-full bg-white  pt-32 gap-10 shadow-2xl " style={{ width: "66%" }}>
+                <motion.a href={route("dashboard")} className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
+                    style={styleEntry} variants={entry} initial={false}
+                    hover="hover"
+                >
+                    Dashboard
+                </motion.a>
+                <motion.a href={route("consumption")} className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
+                    style={styleEntry} variants={entry} initial={false}
+                    hover={"hover"}
+                >
+                    Consumption
+                </motion.a>
+                <motion.a href={"#"} className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
+                    style={styleEntry} variants={entry} initial={false}
+                    hover={"hover"}
+                >
+                    Automations
+                </motion.a>
+                <motion.a href={route("configuration")} className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
+                    style={styleEntry} variants={entry} initial={false}
+                    hover={"hover"}
+                >
+                    Configuration
+                </motion.a>
+                <div className="size-full flex relative">
+                    <motion.div className="absolute bottom-3 right-3 shadow-xl bg-white rounded-full" whileHover={{ scale: 1.2 }}
+                        style={{ zIndex: 100 }} >
+                        <a href={route("userarea.get")}>
+                            {userState == "" ?
+                                <Avatar className="bg-slate-200 rounded-full "  size={"lg"} />
+                                :
+                                <Avatar className="bg-slate-200 rounded-full" size={"lg"} img={userState} />
+                            }
+                        </a>
+                    </motion.div>
+                </div>
             </div>
         </motion.div>
-        <motion.div className="absolute bottom-3 right-3 shadow-xl rounded-full" whileHover={{scale: 1.2}} 
-            style={{ zIndex: 100 }} >
-            <a href={route("userarea.get")}>
-                <Avatar rounded size={"lg"} img={userState.url_photo} />
-            </a>
-        </motion.div>
-
     </>
 }

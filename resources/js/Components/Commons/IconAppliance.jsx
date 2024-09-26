@@ -40,7 +40,7 @@ export default function IconAppliance ({typeAppl, size=36}) {
             icon = (<FaQuestion size={36}/>)
     }
     return(
-        <div className={"rounded-full p-2 ring-1 ring-black " + color}>
+        <div className={"rounded-full p-2 " + color}>
             {icon}
         </div>
     )

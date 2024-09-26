@@ -22,18 +22,23 @@ export default function CardDraggable({ id, draggable, parentRef, dragConstraint
     const variantCard = {
         full: {
             zIndex: 0,
+            border: "solid",
+            borderColor: "#f3f4f6", 
             width: '100%',
+            backgroundColor: "white",
             padding: '8px',
             borderRadius: '6px'
         },
         min: {
             width: '250px',
+            backgroundColor: "white",
             padding: '8px',
             borderRadius: '50px'
         },
         icon: {
             zIndex: 50,
-            width: "auto",
+            width: "36px",
+            backgroundColor: "transparent",
             padding: '0px',
             borderRadius: '99999px'
         }
@@ -45,9 +50,6 @@ export default function CardDraggable({ id, draggable, parentRef, dragConstraint
             const scrollOffset = {top: dragConstraints.current.getBoundingClientRect().top}
             const oldX = info.point.x - dragConstraints.current.offsetLeft - event.layerX
             const oldY = info.point.y - dragConstraints.current.offsetTop - event.layerY
-            console.log(info.point)
-            console.log(dragConstraints.current.getBoundingClientRect())
-            console.log(scrollOffset.top)
             const sequence = [
                 [elem, {
                     position: 'absolute',
@@ -87,7 +89,6 @@ export default function CardDraggable({ id, draggable, parentRef, dragConstraint
     }
 
     const handleDragEnd = () => {
-
         let droppable = false;
         const cardRect = cardRef.current.getBoundingClientRect()
         droppableList.current.forEach((e) => {
@@ -129,7 +130,7 @@ export default function CardDraggable({ id, draggable, parentRef, dragConstraint
 
         <motion.div
             ref={cardRef}
-            className="py-1 flex justify-start items-center shadow bg-white z-10"
+            className="py-1 flex justify-start items-center z-10"
             variants={variantCard}
             animate={typeMode[mode]}
             drag={draggable}
@@ -147,13 +148,17 @@ export default function CardDraggable({ id, draggable, parentRef, dragConstraint
             <IconAppliance typeAppl={typeAppl}></IconAppliance>
             <AnimatePresence>
             {mode != ICON &&
-                <motion.span className="flex flex-col px-2"
-                    initial={{ opacity: 0}}
-                    animate={{ opacity: 1}}
-                    exit={{opacity: 0}}
+                <motion.p className="flex flex-col px-2 text-ellipsis overflow-hidden"
+                    initial={{ display: "none", x:-50, opacity: 0}}
+                    animate={{ display: "block", x:0, opacity: 1}}
+                    exit={{display: "none", x:-150, opacity: 0}}
+                    transition={{
+                        duration: 0.2,
+                        opacity: {duration: 0.05}
+                    }}
                 >
                     {name}
-                </motion.span>
+                </motion.p>
             }
             </AnimatePresence>
         </motion.div>

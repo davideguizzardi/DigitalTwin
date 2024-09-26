@@ -7,6 +7,9 @@ import ModalChangePassword from "@/Components/UserArea/ModalChangePassword"
 import Cookies from "js-cookie"
 import Preferences from "@/Components/UserArea/Preferences"
 import { motion } from "framer-motion"
+import { ConsumptionComparisonGraph } from "@/Components/Consumption/ConsumptionComparisonGraph"
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import {AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 
 const token = Cookies.get("auth-token")
 
@@ -147,7 +150,7 @@ export default function UserArea({ user }) {
                     <motion.div className="py-2 px-3 z-20 bg-lime-400 shadow-xl rounded-full justify-center"
                         style={{ cursor: "pointer" }} variants={variantSettingsMenu}
                         onClick={() => {
-                            setModalChangePassword(true)
+                            setModalPhotoState(true)
                             setVisibleSetting(false)
                         }}
                         >
@@ -164,6 +167,12 @@ export default function UserArea({ user }) {
                     </motion.div>
                 </motion.div>
             </motion.div>
+
+            <div className="flex w-full bg-white">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <ConsumptionComparisonGraph   device_id={""} device_name={""}/>
+                </LocalizationProvider>
+            </div>
 
             <div className="flex flex-col h-full xl:flex-row justify-center gap-2 pt-16 p-2">
                 <div className="flex flex-col gap-2">

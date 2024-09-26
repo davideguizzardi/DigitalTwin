@@ -8,6 +8,7 @@ export default function AnimateMap({ map, up = true }) {
             display: "none",
             y: offset,
             transition:{
+                delay: 0.4,
                 duration: 0.02
             }
         },
@@ -20,20 +21,26 @@ export default function AnimateMap({ map, up = true }) {
             }
         },
         exit: {
+            display: "none",
+            opacity: 0,
+            y: -offset,
             transition:{
-                duration: 0.01
+                duration: 0.3
             }
         }
     }
 
     return (
-        <AnimatePresence>
-            <motion.img className='w-full' key={map} src={map}
+            <motion.img className="" key={map} src={map}
                 variants={variants}
                 initial="initial"
                 animate="animate"
                 exit="exit"
+                style={{
+                    objectFit: "contain",
+                    width: "100%",
+                    height: "70vh"
+                }}
             />
-        </AnimatePresence>
     )
 }

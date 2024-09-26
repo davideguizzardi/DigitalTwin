@@ -13,6 +13,7 @@ const token = Cookies.get("auth-token")
 export default function ConfigurationAppliance({editMode, endSection}) {
     const configRef = useRef()
     const refApplOnfFloor = useRef()
+    const refUnconfAppl = useRef()
     const [applOnFloor, setApplOnFloor] = useState([])
     const [up, setUp] = useState(false)
     const [maps, setMaps] = useState([])
@@ -37,8 +38,12 @@ export default function ConfigurationAppliance({editMode, endSection}) {
     })
 
     const addApplOnFloor =(posAppl) =>{
-        const updateState = [...refApplOnfFloor.current , posAppl]
+        const updateState = [...refApplOnfFloor.current.filter(el => el.id!==posAppl.id),
+            posAppl]
         setApplOnFloor([...updateState])
+        const updateUnconf =[...refUnconfAppl.current.filter(el => el !== posAppl.id)]
+        refUnconfAppl.current = [...updateUnconf]
+        setUnconfAppl([...updateUnconf])
     }
 
     const removeApplOnFloor = (posApplId) =>{
@@ -47,12 +52,20 @@ export default function ConfigurationAppliance({editMode, endSection}) {
     }
 
     const addUnconfAppl = (appl) =>{
-        const updateState = [...unconfAppl, appl]
-        setUnconfAppl([...updateState])
+        if(!refUnconfAppl.current.includes(appl)){
+            const updateApplOnFloor = [...refUnconfAppl.current.filter(el => el.id!==appl)]
+            refUnconfAppl.current = [...updateApplOnFloor]
+            setApplOnFloor([...refUnconfAppl.current.filter(el => el.id!==appl)])
+            const updateState = [...refUnconfAppl.current, appl].sort()
+            setUnconfAppl([...updateState])
+        }else{
+            setUnconfAppl([...refUnconfAppl.current])
+        }
+
     }
 
     const removeUnconAppl = (appl) =>{
-        const updateState = unconfAppl.filter(el => appl!==el)
+        const updateState = refUnconfAppl.current.filter(el => appl!==el)
         setUnconfAppl([...updateState])
     }
 
@@ -122,7 +135,9 @@ export default function ConfigurationAppliance({editMode, endSection}) {
 
     useEffect(()=>{
         const fetchApplOnFloor = async () =>{
-            const response = await fetch("http://localhost:8000/map")
+            const response = await fetch("http://localhost:8000/map",{
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
             response.json().then((result) =>{
                 const updateState = result.map((e) => { 
                     return {
@@ -142,18 +157,21 @@ export default function ConfigurationAppliance({editMode, endSection}) {
 
     useEffect(()=>{
         const fetchUnconfAppl = async () =>{
-            const response = await fetch("http://localhost:8000/virtual/entity")
+            const response = await fetch("http://localhost:8000/virtual/entity",{
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
             const result = await response.json()
             const updateState =result.filter((appl)=> {
                 return !applOnFloor.some(e => appl.entity_id == e.id)
-            }).map(e => e.entity_id)
+            }).map(e => e.entity_id).sort()
             setUnconfAppl([...updateState])
+            refUnconfAppl.current = [...updateState]
         }
         fetchUnconfAppl()
-    }, [first, applOnFloor])
+    }, [])
 
     return (
-        <div className="relative size-full flex flex-col justify-center items-center bg-white shadow "
+        <div className="relative w-full h-full flex flex-col px-3 bg-white shadow justify-around "
            ref={configRef}
         >
             <Modal size="3xl" show={openModal} onClose={()=>setOpenModal(false)}>
@@ -180,10 +198,9 @@ export default function ConfigurationAppliance({editMode, endSection}) {
                     </div>
                 </Modal.Body>
             </Modal>
-            <p className='h-min w-full p-4 text-center text-2xl'>Configure Appliance</p>
-            <div className="flex w-full h-full">
-                <div className="w-4/6 xl:w-full h-full p-2">
-                    <div className="size-full flex justify-center items-center">
+            <p className='h-min w-full p-1 text-center text-3xl'>Configure Appliance</p>
+            <div className="flex w-full">
+                    <div className="w-3/5 h-full flex justify-center items-center">
                             <div className="relative size-full flex justify-center items-center shadow">
                                 { maps[indexImg] && (
                                     <AnimateMap map={maps[indexImg].url} up={up}/>
@@ -200,15 +217,14 @@ export default function ConfigurationAppliance({editMode, endSection}) {
                             <ListButtons dataButtons={dataBtn} index={indexImg} />
                         </motion.div>
                     </div>
-                </div>
-                <div className="w-2/6 xl:w-full h-5/6 p-2">
-                    <p className="text-center text-xl">Appliances</p>
+                <div className="w-2/5" style={{height: "68vh"}}>
+                    <p className="text-center text-2xl">Appliances</p>
                     <ListAppliances appliances={unconfAppl} dragConstraints={configRef} isEditMode={true}
                     addAppl={addUnconfAppl} removeAppl={removeUnconAppl}
                     />
                 </div>
             </div>
-            <div className="flex items-center p-5">
+            <div className="flex items-center justify-center">
                 <ThemeButton onClick={()=>{saveCallback()}}> Save </ThemeButton>
             </div>
         </div>

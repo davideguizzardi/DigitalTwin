@@ -3,7 +3,7 @@ import { useState } from "react";
 
 export default function ({state, setState}){
     return(
-        <div className="w-full flex justify-start items-center my-2 py-2 px-4
+        <div className="w-10/11 flex justify-start items-center  ml-16 mt-1 py-1 px-4
         rounded bg-white shadow">
             <div className={"rounded-full p-1 size-min border solid bg-lime-400"}
             onClick={() => setState(0)}

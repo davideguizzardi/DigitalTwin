@@ -13,23 +13,22 @@ export default function ListAppliances({ appliances, dragConstraints, isEditMode
 
     const handleDragEnd = (event) => {
         removeAppl(event.detail.id)
-        setTimeout(() => {
-            if (event.detail.droppable === listRef) {
-                const newId = event.detail.id
+        if (event.detail.droppable === listRef
+        ) {
+            setTimeout(() => {
                 addAppl(event.detail.id)
-            }
-        }, 100)
+            }, 10)
+        }
     }
 
     const handleDragEndOut = (event) => {
         removeAppl(event.detail.id)
-        setTimeout(() => {
-            if (event.detail.droppable === listRef) {
+        if (event.detail.droppable === listRef) {
+            setTimeout(() => {
                 addAppl(event.detail.id)
-            }
-        }, 100)
+            }, 100)
+        }
     }
-
     useEffect(() => {
         subscribe(DRAG_START, handleDragStart)
         subscribe(DRAG_END, handleDragEnd)
@@ -37,10 +36,12 @@ export default function ListAppliances({ appliances, dragConstraints, isEditMode
         return () => {
             unsubscribe(DRAG_START, () => { })
             unsubscribe(DRAG_END, () => { })
+            unsubscribe(DRAG_END_OUT, () => { })
         }
-    }, [appliances])
+    }, [])
+
     return (
-        <ul className="w-full h-full flex flex-col min-h-96 justify-start items-start overflow-y-scroll shadow z-0 gap-1 p-1"
+        <ul className="w-full h-full flex flex-col justify-start items-start overflow-y-scroll shadow z-0 gap-1 p-1"
             ref={listRef} id="list_appliance"
         >
             {appliances.length > 0 ?
