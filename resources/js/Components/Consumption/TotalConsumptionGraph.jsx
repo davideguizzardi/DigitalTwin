@@ -14,6 +14,8 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
   const [deviceId, setDeviceId] = useState("")
   const [devicesList, setDeviceList] = useState([])
 
+  const heightGraph = window.innerHeight > 1000 ? 850 : 600
+
   useEffect(() => {
     fetchDevices()
   }, [])
@@ -119,7 +121,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
   //const series=Object.keys(dataset).map(key=> ({ dataKey: "energy_consumption",color: '#a3e635', label:key, valueFormatter }))
   //        <h1 className="text-gray-800 text-base font-semibold font-[Inter]">{deviceName}</h1>
   return (
-    <div className="bg-zinc-50 size-full rounded-lg shadow-md flex flex-col">
+    <div className="size-full rounded-lg shadow-md flex flex-col">
       <div className="grid grid-cols-5 mx-3 my-2 items-center">
         <div className="flex flex-row gap-2 col-span-1">
           <div className="flex flex-col w-fit">
@@ -130,7 +132,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
               devicesList
               .filter(d=>!["Sun","Forecast"].includes(d.name))
               .map(dev => (
-                <option id={dev.device_id}>{dev.name}</option>
+                <option id={dev.device_id} key={dev.device_id}>{dev.name}</option>
               ))
             }
           </Select>
@@ -191,15 +193,16 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
 
         </div>
       </div>
-      <div className="pl-3 flex size-full items-center">
+      <div className="pl-3">
         <BarChart
-          className="flex size-full"
+          className=""
           dataset={dataset}
           xAxis={[{ scaleType: 'band', dataKey: 'date' }]}
           yAxis={[{ valueFormatter: valueFormatter }]}
           series={[{ dataKey: "energy_consumption", color: '#a3e635', valueFormatter }]}
           borderRadius={4}
           margin={{ left: 70 }}
+          height={heightGraph}
           onItemClick={(event, params) => handleItemClick(params)}
         />
       </div>

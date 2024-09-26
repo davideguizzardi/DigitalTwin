@@ -1,209 +1,180 @@
+import { useState } from "react"
+import { animate, AnimatePresence, motion, useAnimate } from "framer-motion"
 import { ConsumptionComparisonGraph } from "@/Components/Consumption/ConsumptionComparisonGraph"
-import { TotalConsumptionGraph } from "@/Components/Consumption/TotalConsumptionGraph"
-import { getOpacity } from "@mui/material/styles/createColorScheme"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
-import { motion } from "framer-motion"
-import { useState } from "react"
-import { FaExpand } from "react-icons/fa6";
+import { TotalConsumptionGraph } from "@/Components/Consumption/TotalConsumptionGraph"
 
 export default function Consumption() {
-    const [selectTab, setSelectTab] = useState(0)
+    const [tab, setTab] = useState(0)
+    const [previousTab, setPreviousTab] = useState(0)
+    const [scopeTotal, animateTotal] = useAnimate()
+    const [scopePredicted, animatePredicted] = useAnimate()
+    const [scopeDevice, animateDevice] = useAnimate()
+    const [scopeAutomation, animateAutomation] = useAnimate()
+
+    const scopes = [scopeTotal, scopePredicted, scopeDevice, scopeAutomation]
+
+    const offset = 300
 
     const variants = {
-        hidden: {
-            width: "0px",
-            height: "0px"
+        initial: {
+            x: (tab < previousTab ?  -offset : offset),
+            display: "none",
+            opacity: 0.8,
         },
-        visible: {
-            width: "49%",
-            height: "49%"
-        },
-        full: {
-            width: "98.5%",
-            height: "98%"
-        }
-    }
-
-    const stateDiv1 = ["visible", "full", "hidden", "hidden", "hidden"]
-    const variants1 = {
-        hidden: {
-            top: "0%",
-            left: "0%",
-            right: "100%",
-            bottom: "100%",
-        },
-        visible: {
-            top: "1%",
-            left: "1%",
-            right: "50.5%",
-            bottom: "51%"
-        },
-        full: {
-            top: "0%",
-            left: "0%",
-            right: "0%",
-            bottom: "0%",
-        }
-    }
-    const variants2 = {
-        hidden: {
-            top: "0%",
-            left: "100%",
-            right: "0%",
-            bottom: "100%",
-        },
-        visible: {
-            top: "1%",
-            left: "50.5%",
-            right: "1%",
-            bottom: "51%"
-        },
-        full: {
-            top: "0%",
-            left: "0%",
-            right: "0%",
-            bottom: "0%",
-        }
-    }
-    const variants3 = {
-        hidden: {
-            top: "100%",
-            left: "0%",
-            right: "100%",
-            bottom: "0%",
-        },
-        visible: {
-            top: "51%",
-            left: "1%",
-            right: "50.5%",
-            bottom: "1%"
-        },
-        full: {
-            top: "0%",
-            left: "0%",
-            right: "0%",
-            bottom: "0%",
-        }
-    }
-    const variants4 = {
-        hidden: {
-            top: "100%",
-            left: "100%",
-            right: "0%",
-            bottom: "0%",
-        },
-        visible: {
-            top: "51%",
-            left: "50.5%",
-            right: "1%",
-            bottom: "1%"
-        },
-        full: {
-            top: "0%",
-            left: "0%",
-            right: "0%",
-            bottom: "0%",
-        }
-    }
-
-    const variantsPreview = {
-        hidden: {
-            display:"none",
-            opacity: 0,
-        },
-        visible: {
-            display: "flex",
+        animate: {
+            display: "block",
+            x: 0,
             opacity: 1,
-            paddingTop: "10%",
-            paddingBottom: "0%",
-            width: "100%",
-            height: "100%"
+            transition: {
+                ease: "linear",
+                duration: 0.25,
+                delay: 0.25
+            }
         },
-        full: {
-            display: "flex",
-            opacity: 1,
-            paddingTop: "1%",
-            paddingBottom: "1%",
-            width: "100%",
-            height: "auto"
+        exit: {
+            display: "none",
+            opacity: 0.8,
+            transition: {
+                ease: "linear",
+                duration: 0.25,
+            }
         }
     }
 
-    const stateDiv2 = ["visible", "hidden", "full", "hidden", "hidden"]
-    const stateDiv3 = ["visible", "hidden", "hidden", "full", "hidden"]
-    const stateDiv4 = ["visible", "hidden", "hidden", "hidden", "full"]
+    const handleClickTab = (ntab)=>{
+        animate(scopes[tab].current,
+            {x: (tab < ntab ? -offset : offset)},
+            {duration: 0.25}
+        )
+        setPreviousTab(tab)
+        setTab(ntab)
+    }
 
     return (
-        <div className="size-full relative">
-            <motion.div className="absolute top-0 left-0 flex flex-col bg-white rounded shadow "
-                variants={variants1}
-                initial="hidden"
-                animate={stateDiv1[selectTab]}
-            >
-                {stateDiv1[selectTab] != "hidden" &&
-                    <div className="flex w-full h-min justify-end p-2">
-                        <FaExpand size={32} onClick={() => selectTab > 0 ? setSelectTab(0) : setSelectTab(1)} />
+        <div className="size-full flex flex-col p-3 gap-3">
+            <div className="flex w-full h-min justify-center">
+                <h1 className="text-xl">Consumption</h1>
+            </div>
+            <div className="flex flex-col size-full bg-white shadow rounded gap-1">
+                <div className="flex w-full h-min border-b-2 border-slate-200">
+                    <div className="flex flex-col items-center w-full"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => { handleClickTab(0)}}
+                    >
+                        <h1 className="text-xl py-2">Total energy consumption</h1>
+                        <motion.div className="flex bg-lime-400 rounded"
+                            animate={{
+                                width: (tab == 0 ? "50%" : "0px"),
+                                height: (tab == 0 ? "2px" : "0px")
+                            }}
+                            transition={{ duration: 0.3 }}
+                        />
                     </div>
-                }
-                <motion.div className="justify-center" variants={variantsPreview} >
-                    <h1 className="text-2xl">Consumption comparison</h1>
-                </motion.div>
-
-                {stateDiv1[selectTab] == "full" &&
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <ConsumptionComparisonGraph   device_id={""} device_name={""}/>
-                </LocalizationProvider>
-
-                }
-            </motion.div>
-            <motion.div className="absolute top-0 right-0 flex flex-col bg-white shadow "
-                variants={variants2}
-                initial="hidden"
-                animate={stateDiv2[selectTab]}
-            >
-                {stateDiv2[selectTab] != "hidden" &&
-                    <div className="flex w-full h-min justify-end p-2">
-                        <FaExpand size={32} onClick={() => selectTab > 0 ? setSelectTab(0) : setSelectTab(2)} />
+                    <div className="flex flex-col items-center w-full"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => { handleClickTab(1)}}
+                    >
+                        <h1 className="text-xl py-2">Predicted energy consumption</h1>
+                        <motion.div className="flex bg-lime-400 rounded"
+                            animate={{
+                                width: (tab == 1 ? "50%" : "0px"),
+                                height: (tab == 1 ? "2px" : "0px")
+                            }}
+                            transition={{ duration: 0.3 }}
+                        />
                     </div>
-                }
-                <motion.div className="justify-center" variants={variantsPreview} >
-                    <h1 className="text-2xl">Total Consumption </h1>
-                </motion.div>
-
-                {stateDiv2[selectTab] == "full" &&
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <TotalConsumptionGraph  device_id={""} device_name={""}/>
-                </LocalizationProvider>
-
-                }
-            </motion.div>
-
-            <motion.div className="absolute bottom-0 left-0 flex flex-col bg-red-500 round"
-                variants={variants3}
-                initial="hidden"
-                animate={stateDiv3[selectTab]}
-            >
-                {stateDiv3[selectTab] != "hidden" &&
-                    <div className="flex w-full h-min justify-end p-2">
-                        <FaExpand size={32} onClick={() => selectTab > 0 ? setSelectTab(0) : setSelectTab(3)} />
+                    <div className="flex flex-col items-center w-full"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => { handleClickTab(2) }}
+                    >
+                        <h1 className="text-xl py-2">Consumption per device</h1>
+                        <motion.div className="flex bg-lime-400 rounded"
+                            animate={{
+                                width: (tab == 2 ? "50%" : "0px"),
+                                height: (tab == 2 ? "2px" : "0px")
+                            }}
+                            transition={{ duration: 0.3 }}
+                        />
                     </div>
-                }
-            </motion.div>
-
-            <motion.div className="absolute bottom-0 right-0 flex flex-col bg-gray-500 round"
-                variants={variants4}
-                initial="hidden"
-                animate={stateDiv4[selectTab]}
-            >
-                {stateDiv4[selectTab] != "hidden" &&
-                    <div className="flex w-full h-min justify-end p-2">
-                        <FaExpand size={32} onClick={() => selectTab > 0 ? setSelectTab(0) : setSelectTab(4)} />
+                    <div className="flex flex-col items-center w-full"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => { handleClickTab(3)}}
+                    >
+                        <h1 className="text-xl py-2">Consumption per automation</h1>
+                        <motion.div className="flex bg-lime-400 rounded"
+                            animate={{
+                                width: (tab == 3 ? "50%" : "0px"),
+                                height: (tab == 3 ? "2px" : "0px")
+                            }}
+                            transition={{ duration: 0.3 }}
+                        />
                     </div>
-                }
-            </motion.div>
+                </div>
+                <div className="bg-slate-200 w-full" />
+                <div className="flex w-full h-full">
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <AnimatePresence>
+                            {tab == 0 &&
+                                <motion.div className="flex size-full"
+                                    ref={scopes[0]}
+                                    key={"TotalEnergy"}
+                                    variants={variants}
+                                    initial="initial"
+                                    animate="animate"
+                                    exit="exit"
+                                >
+                                    <TotalConsumptionGraph key={"TotalComp"} device_id={""} device_name={""} />
+                                </motion.div>
+                            }
+                        </AnimatePresence>
+                        <AnimatePresence>
+                            {tab == 1 &&
+                                <motion.div className="flex size-full"
+                                    ref={scopes[1]}
+                                    key={"PredictedEnergy"}
+                                    variants={variants}
+                                    initial="initial"
+                                    animate="animate"
+                                    exit="exit"
+                                >
+                                    <TotalConsumptionGraph key={"PredictedComp"} device_id={""} device_name={""} />
+                                </motion.div>
+                            }
+                        </AnimatePresence>
+                        <AnimatePresence>
+                            {tab == 2 &&
+                                <motion.div className="flex size-full"
+                                    ref={scopes[2]}
+                                    key={"DeviceEnergy"}
+                                    variants={variants}
+                                    initial="initial"
+                                    animate="animate"
+                                    exit="exit"
+                                >
+                                    <ConsumptionComparisonGraph key={"DeviceComp"} device_id={""} device_name={""} />
+                                </motion.div>
+                            }
+                        </AnimatePresence>
+                        <AnimatePresence>
+                            {tab == 3 &&
+                                <motion.div className="flex size-full"
+                                    ref={scopes[3]}
+                                    key={"AutomationEnergy"}
+                                    variants={variants}
+                                    initial="initial"
+                                    animate="animate"
+                                    exit="exit"
+                                >
+                                    <TotalConsumptionGraph key={"AutomationComp"} device_id={""} device_name={""} />
+                                </motion.div>
+                            }
+                        </AnimatePresence>
+                    </LocalizationProvider>
+                </div>
 
-
+            </div>
         </div>
     )
 }
