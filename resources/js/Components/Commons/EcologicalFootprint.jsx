@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { CiUser, CiPizza } from "react-icons/ci";
 import { FaCarSide } from "react-icons/fa";
 import { LuSmartphoneCharging } from "react-icons/lu";
-import { motion } from "framer-motion"
+import { animate, motion, useMotionValue, useTransform } from "framer-motion"
 
 export function EcologicalFootprint({ energyConsumptionIn }) {
     const [gCO2, setGCO2] = useState(0)
@@ -14,6 +14,13 @@ export function EcologicalFootprint({ energyConsumptionIn }) {
     const [averageBarWidth, setAverageBarWidth] = useState(50)
     const [yourBarWidth, setYourBarWidth] = useState(50)
 
+    const countKm = useMotionValue(0)
+    const countPizza = useMotionValue(0)
+    const countCharge = useMotionValue(0)
+
+    const roundedKm = useTransform(countKm, latest => Math.round(latest) + " km")
+    const roundedPizza = useTransform(countPizza, latest => Math.round(latest) + " Margheritas")
+    const roundedCharge = useTransform(countCharge, latest => Math.round(latest) + " times")
 
     useEffect(() => {
         setGCO2(energyConsumptionIn * gCO2PerKwh)
@@ -27,6 +34,17 @@ export function EcologicalFootprint({ energyConsumptionIn }) {
             setYourBarWidth(Math.round(50 * (gCO2 / averageGCO2)))
         }
     }, [gCO2])
+
+    useEffect(()=>{
+        const controlsKm = animate(countKm, Math.round(gCO2/gCO2PerKm), {duration: 0.5, delay: 0.5})
+        const controlsPizza = animate(countPizza, Math.round(gCO2/gCO2PerPizza),{duration: 0.5, delay: 0.5})
+        const controlsCharge = animate(countCharge, Math.round(energyConsumptionIn/kWhPerPhoneCharge), {duration: 0.5, delay: 0.5} )
+        return () => {
+            controlsKm.stop()
+            controlsPizza.stop()
+            controlsCharge.stop()
+        }
+    },[gCO2])
 
     return (
         <div className="bg-white w-full h-full rounded-lg shadow items-center flex flex-col gap-3 text-gray-800 p-4">
@@ -76,17 +94,17 @@ export function EcologicalFootprint({ energyConsumptionIn }) {
                 <div className="flex flex-col items-center">
                     <FaCarSide className="size-16" />
                     <p>Driving a car for</p>
-                    <p className="font-bold text-green-900 underline">{Math.round(gCO2 / gCO2PerKm)}km</p>
+                    <motion.div className="font-bold text-green-900 underline">{roundedKm}</motion.div>
                 </div>
                 <div className="flex flex-col items-center">
                     <CiPizza className="size-16" />
-                    <p>Eating <span className="font-bold text-green-900 underline">{Math.round(gCO2 / gCO2PerPizza)} Margheritas</span></p>
+                    <p>Eating <motion.span className="font-bold text-green-900 underline">{roundedPizza}</motion.span></p>
                     <p>at the pizzeria</p>
                 </div>
                 <div className="flex flex-col items-center">
                     <LuSmartphoneCharging className="size-16" />
                     <p>Charging an average  </p>
-                    <p>smartphone <span className="font-bold text-green-900 underline">{Math.round(energyConsumptionIn / kWhPerPhoneCharge)} times</span></p>
+                    <p>smartphone <motion.span className="font-bold text-green-900 underline">{roundedCharge}</motion.span></p>
                 </div>
             </div>
         </div>
