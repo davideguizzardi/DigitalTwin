@@ -15,11 +15,11 @@ export default function Consumption() {
 
     const scopes = [scopeTotal, scopePredicted, scopeDevice, scopeAutomation]
 
-    const offset = 300
+    const offset = 900
 
     const variants = {
         initial: {
-            x: (tab < previousTab ?  -offset : offset),
+            x: (tab < previousTab ? -offset : offset),
             display: "none",
             opacity: 0.8,
         },
@@ -43,13 +43,15 @@ export default function Consumption() {
         }
     }
 
-    const handleClickTab = (ntab)=>{
-        animate(scopes[tab].current,
-            {x: (tab < ntab ? -offset : offset)},
-            {duration: 0.25}
-        )
-        setPreviousTab(tab)
-        setTab(ntab)
+    const handleClickTab = (ntab) => {
+        if (ntab != tab) {
+            animate(scopes[tab].current,
+                { x: (tab < ntab ? -offset : offset) },
+                { duration: 0.25 }
+            )
+            setPreviousTab(tab)
+            setTab(ntab)
+        }
     }
 
     return (
@@ -61,7 +63,7 @@ export default function Consumption() {
                 <div className="flex w-full h-min border-b-2 border-slate-200">
                     <div className="flex flex-col items-center w-full"
                         style={{ cursor: "pointer" }}
-                        onClick={() => { handleClickTab(0)}}
+                        onClick={() => { handleClickTab(0) }}
                     >
                         <h1 className="text-xl py-2">Total energy consumption</h1>
                         <motion.div className="flex bg-lime-400 rounded"
@@ -74,7 +76,7 @@ export default function Consumption() {
                     </div>
                     <div className="flex flex-col items-center w-full"
                         style={{ cursor: "pointer" }}
-                        onClick={() => { handleClickTab(1)}}
+                        onClick={() => { handleClickTab(1) }}
                     >
                         <h1 className="text-xl py-2">Predicted energy consumption</h1>
                         <motion.div className="flex bg-lime-400 rounded"
@@ -100,7 +102,7 @@ export default function Consumption() {
                     </div>
                     <div className="flex flex-col items-center w-full"
                         style={{ cursor: "pointer" }}
-                        onClick={() => { handleClickTab(3)}}
+                        onClick={() => { handleClickTab(3) }}
                     >
                         <h1 className="text-xl py-2">Consumption per automation</h1>
                         <motion.div className="flex bg-lime-400 rounded"
