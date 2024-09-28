@@ -55,7 +55,7 @@ export default function Consumption() {
     }
 
     return (
-        <div className="size-full flex flex-col p-3 gap-3">
+        <div className="size-full flex flex-col p-3 gap-5">
             <div className="flex w-full h-min justify-center">
                 <h1 className="text-xl">Consumption</h1>
             </div>
