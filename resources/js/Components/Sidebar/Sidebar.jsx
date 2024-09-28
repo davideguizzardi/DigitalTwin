@@ -3,12 +3,13 @@ import { FaBars, FaX } from "react-icons/fa6";
 import { AnimatePresence, delay, motion, useAnimate } from "framer-motion"
 import Cookies from "js-cookie";
 import { Avatar } from "flowbite-react";
+import CardUser from "../Commons/CardUser";
 
 export default function Sidebar() {
     const [isVisible, setVisible] = useState(false)
     const [hoverLogo, setHoverLogo] = useState(false)
     const [scopeLogo, animateLogo] = useAnimate()
-    const [userState, setUserState] = useState("")
+    const [userState, setUserState] = useState({})
 
     const namePage = (string) => {
         return string.replace("/", "").charAt(0).toUpperCase() + string.slice(2)
@@ -42,19 +43,8 @@ export default function Sidebar() {
     }
 
     const styleEntry = {
-        width: "400px",
+        width: "80%",
         cursor: "pointer",
-    }
-
-    const logoText = {
-        hidden: {
-            width: "0px",
-            opacity: 0,
-        },
-        visible: {
-            width: "120px",
-            opacity: 1,
-        }
     }
 
     const menu = {
@@ -82,12 +72,8 @@ export default function Sidebar() {
         },
         visible: {
             opacity: 1,
-            x: 100,
+            x: 50,
         },
-        hover: {
-            opacity: 1,
-            x: 170,
-        }
     }
 
 
@@ -97,11 +83,12 @@ export default function Sidebar() {
             const response = await fetch("http://localhost/api/user", {
                 headers: { 'Authorization': 'Bearer ' + token }
             })
-            response.json().then((result) => {
-                const user = result.user
-                if (user.url_photo !== null)
-                    setUserState(user.url_photo)
-            })
+            if(response.ok){
+                response.json().then((result) => {
+                    const user = result.user
+                    setUserState(user)
+                })
+            }
         }
         fetchUser()
     }, [])
@@ -114,52 +101,45 @@ export default function Sidebar() {
             <motion.div className="shadow-xl" ref={scopeLogo} >
                 <FaBars size={24} />
             </motion.div>
-                <motion.p className="text-xl pl-2">
-                    {namePage(window.location.pathname)}
-                </motion.p>
+            <motion.p className="text-xl pl-2">
+                {namePage(window.location.pathname)}
+            </motion.p>
         </motion.div >
 
 
         <motion.div className="absolute flex flex-col h-full"
             style={styleMenu} variants={menu} initial={false}
             animate={isVisible ? "visible" : "hidden"} onClick={cancelCallback}>
-            <div className="flex flex-col h-full bg-white  pt-32 gap-10 shadow-2xl " style={{ width: "66%" }}>
+            <div className="flex flex-col h-full bg-white pt-32 gap-10 shadow-2xl " style={{ width: "50%" }}>
                 <motion.a href={route("dashboard")} className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
                     style={styleEntry} variants={entry} initial={false}
-                    hover="hover"
                 >
                     Dashboard
                 </motion.a>
                 <motion.a href={route("consumption")} className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
                     style={styleEntry} variants={entry} initial={false}
-                    hover={"hover"}
                 >
                     Consumption
                 </motion.a>
                 <motion.a href={"#"} className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
                     style={styleEntry} variants={entry} initial={false}
-                    hover={"hover"}
                 >
                     Automations
                 </motion.a>
                 <motion.a href={route("configuration")} className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
                     style={styleEntry} variants={entry} initial={false}
-                    hover={"hover"}
                 >
                     Configuration
                 </motion.a>
-                <div className="size-full flex relative">
-                    <motion.div className="absolute bottom-3 right-3 shadow-xl bg-white rounded-full" whileHover={{ scale: 1.2 }}
-                        style={{ zIndex: 100 }} >
-                        <a href={route("userarea.get")}>
-                            {userState == "" ?
-                                <Avatar className="bg-slate-200 rounded-full "  size={"lg"} />
-                                :
-                                <Avatar className="bg-slate-200 rounded-full" size={"lg"} img={userState} />
-                            }
-                        </a>
-                    </motion.div>
-                </div>
+                <motion.div className="h-full w-content flex items-end py-4"
+                    variants={{
+                        hidden: {opacity: 0, x:-500},
+                        visible: {opacity: 1, x: 50}
+                    }} initial={false}>
+                    <a href={route("userarea.get")} className="bg-slate-100 p-2 rounded size-min" style={styleEntry}>
+                        <CardUser user={userState}/>
+                    </a>
+                </motion.div>
             </div>
         </motion.div>
     </>
