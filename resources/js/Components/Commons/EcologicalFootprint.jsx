@@ -21,6 +21,11 @@ export function EcologicalFootprint({ energyConsumptionIn }) {
     const roundedKm = useTransform(countKm, latest => Math.round(latest) + " km")
     const roundedPizza = useTransform(countPizza, latest => Math.round(latest) + " Margheritas")
     const roundedCharge = useTransform(countCharge, latest => Math.round(latest) + " times")
+    
+    const animationProp = {
+        duration: 0.7,
+        delay: 0.5
+    }
 
     useEffect(() => {
         setGCO2(energyConsumptionIn * gCO2PerKwh)
@@ -36,9 +41,9 @@ export function EcologicalFootprint({ energyConsumptionIn }) {
     }, [gCO2])
 
     useEffect(()=>{
-        const controlsKm = animate(countKm, Math.round(gCO2/gCO2PerKm), {duration: 0.5, delay: 0.5})
-        const controlsPizza = animate(countPizza, Math.round(gCO2/gCO2PerPizza),{duration: 0.5, delay: 0.5})
-        const controlsCharge = animate(countCharge, Math.round(energyConsumptionIn/kWhPerPhoneCharge), {duration: 0.5, delay: 0.5} )
+        const controlsKm = animate(countKm, Math.round(gCO2/gCO2PerKm), animationProp)
+        const controlsPizza = animate(countPizza, Math.round(gCO2/gCO2PerPizza),animationProp)
+        const controlsCharge = animate(countCharge, Math.round(energyConsumptionIn/kWhPerPhoneCharge),animationProp )
         return () => {
             controlsKm.stop()
             controlsPizza.stop()
@@ -66,10 +71,7 @@ export function EcologicalFootprint({ energyConsumptionIn }) {
                     <motion.div className="bg-green-800 h-5 rounded-tr rounded-br"
                         initial={{ width: "0px" }}
                         animate={{ width: averageBarWidth + "%" }}
-                        transition={{
-                            delay: 0.5,
-                            duration: 0.5
-                        }}
+                        transition={animationProp}
                     />
                     <p>{Math.round(averageGCO2 / 1000)}kg CO2e</p>
                 </div>
@@ -79,10 +81,7 @@ export function EcologicalFootprint({ energyConsumptionIn }) {
                     <motion.div className="bg-lime-400 h-5 rounded-tr rounded-br"
                         initial={{ width: "0px" }}
                         animate={{ width: yourBarWidth + "%" }}
-                        transition={{
-                            delay: 0.5,
-                            duration: 0.5
-                        }}
+                        transition={animationProp}
                     />
                     <p>{Math.round(gCO2 / 1000)}kg CO2e</p>
                 </div>
