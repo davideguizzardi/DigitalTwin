@@ -7,6 +7,7 @@ import AnimateMap from "@/Components/Commons/AnimateMap";
 import { EcologicalFootprint } from "@/Components/Commons/EcologicalFootprint";
 import { DeviceTable } from "@/Components/Commons/DeviceTable";
 import { AnimatePresence } from "framer-motion";
+import AnimateMap2 from "@/Components/Commons/AnimateMap2";
 
 const Dashboard = ({ maps, token }) => {
     const firstFloor = maps.length > 0 ? maps[0].floor : 0
@@ -16,7 +17,7 @@ const Dashboard = ({ maps, token }) => {
     const [deviceContext, setDeviceContext] = useState({})
     const [consumption, setConsumption] = useState({})
     const [indexImg, setIndexImg] = useState(0)
-    const [appliance, setAppliance] = useState([])
+    const [appliances, setAppliance] = useState([])
 
     const floorBtn = maps.map((element, index) => {
         return {
@@ -94,18 +95,7 @@ const Dashboard = ({ maps, token }) => {
                 </div>
                 {
                     maps.length > 0 ?
-                        <div className="size-full flex items-center justify-center">
-                            <div className="relative flex flex-col-reverse w-full justify-center items-center shadow">
-                                <AnimatePresence>
-                                    <AnimateMap map={maps[indexImg].url} up={up} />
-                                </AnimatePresence>
-                                {appliance.filter((e) => e.floor == floor).map((e) => (<CardAppliance key={e.id} appliance={e} />))}
-                            </div>
-                            <div className="flex flex-col justify-center items-center">
-                                <h1>Floors</h1>
-                                <ListButtons dataButtons={floorBtn} index={indexImg} />
-                            </div>
-                        </div>
+                        <AnimateMap2 maps={maps} appliances={appliances}/>
                         :
                         <div className="size-full flex justify-center items-center">
                             <p className='text-center'>No map has been uploded yet, <br></br> you can add your house's map clicking
