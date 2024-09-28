@@ -10,6 +10,10 @@ export default function Sidebar() {
     const [scopeLogo, animateLogo] = useAnimate()
     const [userState, setUserState] = useState("")
 
+    const namePage = (string) => {
+        return string.replace("/", "").charAt(0).toUpperCase() + string.slice(2)
+    }
+
     const animationLogo = () => {
         const rotation = {
             true: "360deg",
@@ -50,25 +54,6 @@ export default function Sidebar() {
         visible: {
             width: "120px",
             opacity: 1,
-        }
-    }
-
-    const logoDiv = {
-        hidden: {
-            width: "0px",
-            paddingLeft: "0px",
-            opacity: 0,
-            transition: {
-                delayChildren: 1
-            }
-        },
-        visible: {
-            width: "120px",
-            paddingLeft: "8px",
-            opacity: 1,
-            transition: {
-                when: "beforeChildren"
-            }
         }
     }
 
@@ -122,24 +107,16 @@ export default function Sidebar() {
     }, [])
 
     return <>
-        <motion.div className="absolute top-2 left-2 flex rounded-full bg-lime-400 p-3 items-center shadow-xl"
+        <motion.div className="absolute top-2 left-2 flex rounded-full bg-lime-400 p-3 items-center justify-center shadow-xl"
             style={styleLogoBtn} onClick={logoClick} onHoverStart={() => { setHoverLogo(true) }}
             onHoverEnd={() => { setHoverLogo(false) }}
         >
             <motion.div className="shadow-xl" ref={scopeLogo} >
                 <FaBars size={24} />
             </motion.div>
-            <motion.div variants={logoDiv} animate={hoverLogo ? "visible" : "hidden"}>
-                <motion.p className="text-xl"
-                    initial={"hidden"}
-                    animate={"visible"}
-                    exit={"hidden"}
-                    variants={logoText}
-                    style={{ height: "24px" }}
-                >
-                    Digital twin
+                <motion.p className="text-xl pl-2">
+                    {namePage(window.location.pathname)}
                 </motion.p>
-            </motion.div>
         </motion.div >
 
 
