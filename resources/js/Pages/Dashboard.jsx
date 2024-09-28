@@ -130,11 +130,11 @@ const Dashboard = ({ maps, token }) => {
                 </div>
             </div>
             <div className='h-full xl:w-full flex flex-col gap-2 w-2/5 '>
+                <div className="w-full h-1/2 rounded">
+                    <EcologicalFootprint energyConsumptionIn={100} />
+                </div>
                 <div className="w-full h-1/2 bg-white shadow rounded p-2">
                     <DeviceTable deviceContext={deviceContext} />
-                </div>
-                <div className="w-full h-1/2 rounded ">
-                    <EcologicalFootprint energyConsumptionIn={100} />
                 </div>
 
             </div>
