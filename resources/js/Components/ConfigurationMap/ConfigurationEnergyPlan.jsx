@@ -4,6 +4,7 @@ import { Button } from "flowbite-react"
 import { FaCalendarPlus } from "react-icons/fa6";
 import { IconContext } from "react-icons";
 import { ThemeButton } from "../Commons/ThemeButton";
+import WhiteCard from "../Commons/WhiteCard";
 
 export default function ConfigurationEnergyPlan({ endSection }) {
     const [powerCapacity, setPowerCapacity] = useState(1)
@@ -236,7 +237,7 @@ export default function ConfigurationEnergyPlan({ endSection }) {
     }, [])
 
     return (
-        <div className="size-full flex flex-col min-w-fit min-h-fit bg-white rounded shadow p-2">
+        <WhiteCard className="size-full flex-col min-w-fit min-h-fit p-2">
             <div className="flex flex-col w-full h-min pt-3">
                 <h1 className="text-3xl text-center w-full">Configure your energy plan schedule</h1>
             </div>
@@ -293,6 +294,6 @@ export default function ConfigurationEnergyPlan({ endSection }) {
                 </div>
 
             </div>
-        </div>
+        </WhiteCard>
     )
 }

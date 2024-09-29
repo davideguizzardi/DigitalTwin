@@ -8,6 +8,7 @@ import { EcologicalFootprint } from "@/Components/Commons/EcologicalFootprint";
 import { DeviceTable } from "@/Components/Commons/DeviceTable";
 import { AnimatePresence } from "framer-motion";
 import AnimateMap2 from "@/Components/Commons/AnimateMap2";
+import WhiteCard from "@/Components/Commons/WhiteCard";
 
 const Dashboard = ({ maps, token }) => {
     const firstFloor = maps.length > 0 ? maps[0].floor : 0
@@ -88,14 +89,14 @@ const Dashboard = ({ maps, token }) => {
 
     return (
         <div className="size-full flex gap-2 p-2">
-            <div className='size-full flex flex-col bg-white gap-4 p-1 shadow rounded w-3/5 lg:w-full'>
+            <WhiteCard className=" flex-col gap-4 p-2 w-full" direction="left">
                 <div className="w-full flex items-center justify-center mt-6 gap-2 p-3">
                     <FaHouse size={36} />
                     <h1 className="text-2xl">Your Home</h1>
                 </div>
                 {
                     maps.length > 0 ?
-                        <AnimateMap2 maps={maps} appliances={appliances}/>
+                        <AnimateMap2 maps={maps} appliances={appliances} />
                         :
                         <div className="size-full flex justify-center items-center">
                             <p className='text-center'>No map has been uploded yet, <br></br> you can add your house's map clicking
@@ -128,14 +129,14 @@ const Dashboard = ({ maps, token }) => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </WhiteCard>
             <div className='h-full xl:w-full flex flex-col gap-2 w-2/5 '>
-                <div className="w-full h-1/2 rounded">
+                <WhiteCard className="size-full " direction="right">
                     <EcologicalFootprint energyConsumptionIn={100} />
-                </div>
-                <div className="w-full h-1/2 bg-white shadow rounded p-2">
+                </WhiteCard>
+                <WhiteCard className="size-full "  direction="right">
                     <DeviceTable deviceContext={deviceContext} />
-                </div>
+                </WhiteCard>
 
             </div>
         </div>

@@ -52,7 +52,7 @@ export function EcologicalFootprint({ energyConsumptionIn }) {
     },[gCO2])
 
     return (
-        <div className="bg-white w-full h-full rounded-lg shadow items-center flex flex-col gap-3 text-gray-800 p-4">
+        <div className="w-full h-full rounded-lg items-center flex flex-col gap-3 text-gray-800 p-4">
             <div className="w-full flex justify-center">
                 <h1 className="uppercase font-bold text-3xl">Your <span className="text-lime-400 underline underline-offset-1">Ecological</span> footprint</h1>
             </div>

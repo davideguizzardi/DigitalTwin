@@ -39,7 +39,7 @@ export function DeviceTable({ deviceContext }) {
     }, [deviceContext])
 
     return (
-        <div className="h-full flex flex-col">
+        <div className="size-full flex flex-col">
             <div>
                 <TextInput id="device_search" type="text" icon={CiSearch} placeholder="Enter device name..." onKeyUp={(value) => setSearchQuery(value.target.value)} />
             </div>

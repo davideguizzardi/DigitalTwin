@@ -4,6 +4,7 @@ import { ConsumptionComparisonGraph } from "@/Components/Consumption/Consumption
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { TotalConsumptionGraph } from "@/Components/Consumption/TotalConsumptionGraph"
+import WhiteCard from "@/Components/Commons/WhiteCard"
 
 export default function Consumption() {
     const [tab, setTab] = useState(0)
@@ -59,7 +60,7 @@ export default function Consumption() {
             <div className="flex w-full h-min justify-center">
                 <h1 className="text-xl">Consumption</h1>
             </div>
-            <div className="flex flex-col size-full bg-white shadow rounded gap-1">
+            <WhiteCard className="flex-col size-full gap-1 " direction="left">
                 <div className="flex w-full h-min border-b-2 border-slate-200">
                     <div className="flex flex-col items-center w-full"
                         style={{ cursor: "pointer" }}
@@ -176,7 +177,7 @@ export default function Consumption() {
                     </LocalizationProvider>
                 </div>
 
-            </div>
+            </WhiteCard>
         </div>
     )
 }

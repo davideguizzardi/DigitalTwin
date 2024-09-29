@@ -8,6 +8,7 @@ import { Modal } from "flowbite-react";
 import Cookies from 'js-cookie';
 import AnimateMap from "../Commons/AnimateMap";
 import AnimateMap2 from "../Commons/AnimateMap2";
+import WhiteCard from "../Commons/WhiteCard";
 
 const token = Cookies.get("auth-token")
 
@@ -201,9 +202,7 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
         fetchUnconfAppl()
     }, [])
     return (
-        <div className="relative w-full h-full flex flex-col px-3 bg-white shadow justify-around "
-            ref={configRef}
-        >
+        <WhiteCard className="relative flex-col size-full px-3 justify-around" ref={configRef} direction="left">
             <Modal size="3xl" show={openModal} onClose={() => setOpenModal(false)}>
                 <Modal.Header>Unconfigured Appliances</Modal.Header>
                 <Modal.Body>
@@ -270,6 +269,6 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
             <div className="flex items-center justify-center">
                 <ThemeButton onClick={() => { saveCallback() }}> Save </ThemeButton>
             </div>
-        </div>
+        </WhiteCard>
     )
 }
