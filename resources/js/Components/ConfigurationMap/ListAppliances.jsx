@@ -51,7 +51,7 @@ export default function ListAppliances({ appliances, dragConstraints, isEditMode
                 ))
                 :
                 <div className="h-full w-full flex items-center justify-center">
-                    <h1 className="text-xl text-gray-600">No appliance</h1>
+                    <h1 className="text-xl text-gray-600 dark:text-white">No appliance</h1>
                 </div>
             }
         </ul>

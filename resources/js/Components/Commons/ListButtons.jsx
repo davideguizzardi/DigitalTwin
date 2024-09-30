@@ -19,7 +19,7 @@ export default function listButtons({ dataButtons, index=null, vertical=true }) 
     ))
 
     return (
-        <div className={"flex justify-center items-center gap-2 w-min m-2 p-1 rounded-full bg-gray-100 shadow " + (vertical && " flex-col") }>
+        <div className={"flex justify-center items-center gap-2 w-min m-2 p-2 rounded-full bg-slate-100 dark:bg-neutral-700 shadow " + (vertical && " flex-col") }>
             {buttons}
         </div>
     )

@@ -52,7 +52,7 @@ export function EcologicalFootprint({ energyConsumptionIn }) {
     },[gCO2])
 
     return (
-        <div className="w-full h-full rounded-lg items-center flex flex-col gap-3 text-gray-800 p-4">
+        <div className="w-full h-full rounded-lg items-center flex flex-col gap-3 text-gray-800 p-4 dark:text-white">
             <div className="w-full flex justify-center">
                 <h1 className="uppercase font-bold text-3xl">Your <span className="text-lime-400 underline underline-offset-1">Ecological</span> footprint</h1>
             </div>
@@ -93,17 +93,17 @@ export function EcologicalFootprint({ energyConsumptionIn }) {
                 <div className="flex flex-col items-center">
                     <FaCarSide className="size-16" />
                     <p>Driving a car for</p>
-                    <motion.div className="font-bold text-green-900 underline">{roundedKm}</motion.div>
+                    <motion.div className="font-bold text-green-900 dark:text-green-400 underline">{roundedKm}</motion.div>
                 </div>
                 <div className="flex flex-col items-center">
                     <CiPizza className="size-16" />
-                    <p>Eating <motion.span className="font-bold text-green-900 underline">{roundedPizza}</motion.span></p>
+                    <p>Eating <motion.span className="font-bold text-green-900 dark:text-green-400 underline">{roundedPizza}</motion.span></p>
                     <p>at the pizzeria</p>
                 </div>
                 <div className="flex flex-col items-center">
                     <LuSmartphoneCharging className="size-16" />
                     <p>Charging an average  </p>
-                    <p>smartphone <motion.span className="font-bold text-green-900 underline">{roundedCharge}</motion.span></p>
+                    <p>smartphone <motion.span className="font-bold text-green-900 dark:text-green-400 underline">{roundedCharge}</motion.span></p>
                 </div>
             </div>
         </div>

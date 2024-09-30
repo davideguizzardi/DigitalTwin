@@ -70,12 +70,14 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
     }
 
     const addApplOnFloor = (posAppl) => {
-        const updateState = [...refApplOnfFloor.current.filter(el => el.id !== posAppl.id),
-            posAppl]
-        setApplOnFloor([...updateState])
-        const updateUnconf = [...refUnconfAppl.current.filter(el => el !== posAppl.id)]
-        refUnconfAppl.current = [...updateUnconf]
-        setUnconfAppl([...updateUnconf])
+        if (!refApplOnfFloor.current.includes(posAppl)) {
+            const updateState = [...refApplOnfFloor.current.filter(el => el.id !== posAppl.id),
+                posAppl]
+            setApplOnFloor([...updateState])
+            const updateUnconf = [...refUnconfAppl.current.filter(el => el !== posAppl.id)]
+            refUnconfAppl.current = [...updateUnconf]
+            setUnconfAppl([...updateUnconf])
+        }
     }
 
     const removeApplOnFloor = (posApplId) => {
@@ -87,7 +89,7 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
         if (!refUnconfAppl.current.includes(appl)) {
             const updateApplOnFloor = [...refUnconfAppl.current.filter(el => el.id !== appl)]
             refUnconfAppl.current = [...updateApplOnFloor]
-            setApplOnFloor([...refUnconfAppl.current.filter(el => el.id !== appl)])
+            setApplOnFloor([...refApplOnfFloor.current.filter(el => el.id !== appl)])
             const updateState = [...refUnconfAppl.current, appl].sort()
             setUnconfAppl([...updateState])
         } else {
@@ -202,12 +204,13 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
         fetchUnconfAppl()
     }, [])
     return (
-        <WhiteCard className="relative flex-col size-full px-3 justify-around" ref={configRef} direction="left">
+        <div className="relative flex size-full" ref={configRef} >
+        <WhiteCard className="flex-col size-full px-3 justify-around" direction="left">
             <Modal size="3xl" show={openModal} onClose={() => setOpenModal(false)}>
                 <Modal.Header>Unconfigured Appliances</Modal.Header>
                 <Modal.Body>
                     <div className="flex flex-col h-3/6">
-                        <div className="flex w-full h-fit pb-4 gap-2 justify-center items-center ">
+                        <div className="flex w-full h-fit pb-4 gap-2 justify-center items-center text-white">
                             <p>Those appliances are not configured</p>
                         </div>
                         <div className="w-full h-full p-5">
@@ -216,8 +219,8 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
                             />
                         </div>
                         <div className="flex items-center justify-around p-2 mt-2">
-                            <ThemeButton onClick={() => { setOpenModal(false) }}>Cancel</ThemeButton>
-                            <ThemeButton onClick={() => {
+                            <ThemeButton className="text-lg" onClick={() => { setOpenModal(false) }}>Cancel</ThemeButton>
+                            <ThemeButton className="text-lg"  onClick={() => {
                                 deleteUnconfAppl()
                                 putApplOnFloor()
                                 setOpenModal(false)
@@ -227,7 +230,7 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
                     </div>
                 </Modal.Body>
             </Modal>
-            <p className='h-min w-full p-1 text-center text-3xl'>Configure Appliance</p>
+            <p className='h-min w-full p-1 text-center text-3xl dark:text-white'>Configure Appliance</p>
             <div className="flex w-full">
                 <div className="w-3/5 h-full flex justify-center items-center">
                     <div className="relative size-full flex justify-center items-center shadow">
@@ -255,12 +258,12 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
 
                     <motion.div className="flex flex-col justify-center items-center w-min m-2 p-1 rounded-full"
                     >
-                        <p>Floors</p>
+                        <p className="dark:text-white">Floors</p>
                         <ListButtons dataButtons={dataBtn} index={indexImg} />
                     </motion.div>
                 </div>
                 <div className="w-2/5" style={{ height: "68vh" }}>
-                    <p className="text-center text-2xl">Appliances</p>
+                    <p className="text-center text-2xl dark:text-white">Appliances</p>
                     <ListAppliances appliances={unconfAppl} dragConstraints={configRef} isEditMode={true}
                         addAppl={addUnconfAppl} removeAppl={removeUnconAppl}
                     />
@@ -270,5 +273,6 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
                 <ThemeButton onClick={() => { saveCallback() }}> Save </ThemeButton>
             </div>
         </WhiteCard>
+        </div>
     )
 }

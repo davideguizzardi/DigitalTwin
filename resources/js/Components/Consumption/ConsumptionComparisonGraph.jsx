@@ -15,6 +15,57 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
   const [devicesList, setDeviceList] = useState([])
 
   const heightGraph = window.innerHeight > 1000 ? 850 : 600
+  const isDark = localStorage.getItem("darkTheme") =="true"
+
+  const sxDatePicker = {
+    '.MuiInputBase-root': {
+      color: isDark ? "white" : "black",
+      "&:hover > .MuiOutlinedInput-notchedOutline": {
+        border: "1px " + (isDark ? " white " : " black ") + " solid"
+      }
+    },
+    '.MuiIconButton-root': {
+      color: isDark ? "white" : "black"
+    },
+    '.MuiInputLabel-root': {
+      color: isDark ? "white" : "black"
+    },
+    '.MuiOutlinedInput-notchedOutline ': {
+      border: "1px " + (isDark ? " white " : " black ") + " solid"
+    },
+  }
+
+  const sxGraph = {
+    //change left yAxis label styles
+    "& .MuiChartsAxis-left .MuiChartsAxis-tickLabel": {
+      strokeWidth: "0.4",
+      fill: isDark ? "white" : "black"
+    },
+    // change bottom label styles
+    "& .MuiChartsAxis-bottom .MuiChartsAxis-tickLabel": {
+      strokeWidth: "0.5",
+      fill: isDark ? "white" : "black"
+    },
+    // bottomAxis Line Styles
+    "& .MuiChartsAxis-bottom .MuiChartsAxis-line": {
+      stroke: isDark ? "white" : "black",
+      strokeWidth: 1
+    },
+    // leftAxis Line Styles
+    "& .MuiChartsAxis-left .MuiChartsAxis-line": {
+      stroke: isDark ? "white" : "black",
+      strokeWidth: 1
+    },
+    "& .MuiChartsAxis-bottom .MuiChartsAxis-tick": {
+      stroke: isDark ? "white" : "black",
+      strokeWidth: 1
+    },
+    "& .MuiChartsAxis-left .MuiChartsAxis-tick": {
+      stroke: isDark ? "white" : "black",
+      strokeWidth: 1
+    }
+  }
+
 
   useEffect(() => {
     fetchDevices()
@@ -129,31 +180,35 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
         <div className="flex flex-col gap-2 col-span-1">
 
 
-            <Label htmlFor="device" value="Energy consumption of" />
-            <Select id="device" onChange={(event) => handleNameChange(event)} required>
-              {
-                devicesList
-                  .filter(d => !["Sun", "Forecast"].includes(d.name))
-                  .map(dev => (
-                    <option id={dev.device_id} key={dev.device_id}>{dev.name}</option>
-                  ))
-              }
-            </Select>
+          <Label htmlFor="device" value="Energy consumption of" />
+          <Select id="device" onChange={(event) => handleNameChange(event)} required>
+            {
+              devicesList
+                .filter(d => !["Sun", "Forecast"].includes(d.name))
+                .map(dev => (
+                  <option id={dev.device_id} key={dev.device_id}>{dev.name}</option>
+                ))
+            }
+          </Select>
         </div>
         <div className="flex flex-row gap-6 items-center justify-end flex-wrap col-span-4">
-          <div className="flex flex-row gap-2 items-center">
+          <div className="flex flex-row gap-2 items-center dark:text-white">
             {group == "daily" &&
               <>
-                <DatePicker value={date1} size="small" className="w-[146px]" label={'Day 1'} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => setDate1(val)} />
+                <DatePicker value={date1} size="small" className="w-[146px]" label={'Day 1'} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => setDate1(val)}
+                  sx={sxDatePicker} />
                 <span className="text-2xl">vs</span>
-                <DatePicker value={date2} className="w-[146px]" label={'Day 2'} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => setDate2(val)} />
+                <DatePicker value={date2} className="w-[146px]" label={'Day 2'} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => setDate2(val)}
+                  sx={sxDatePicker} />
               </>
             }
             {group == "monthly" &&
               <>
-                <DatePicker value={date1} className="w-[146px]" label={'Month 1'} views={['year', 'month']} format="MM-YYYY" onChange={(val) => { setDate1(val.date(1)) }} />
+                <DatePicker value={date1} className="w-[146px]" label={'Month 1'} views={['year', 'month']} format="MM-YYYY" onChange={(val) => { setDate1(val.date(1)) }}
+                  sx={sxDatePicker} />
                 <span className="text-2xl">vs</span>
-                <DatePicker value={date2} className="w-[146px]" label={'Month 2'} views={['year', 'month']} format="MM-YYYY" onChange={(val) => { setDate2(val.date(1)) }} />
+                <DatePicker value={date2} className="w-[146px]" label={'Month 2'} views={['year', 'month']} format="MM-YYYY" onChange={(val) => { setDate2(val.date(1)) }}
+                  sx={sxDatePicker} />
               </>
             }
           </div>
@@ -163,7 +218,7 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
               <Spinner className="fill-lime-400" aria-label="Loading" size="lg" />
             }
             <Button.Group>
-              <Button color="secondary" className={(group == "daily" ? "bg-lime-400" : "bg-neutral-50")}
+              <Button color="secondary" className={(group == "daily" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
                 onClick={() => {
                   setGroup("daily");
                   setDate1(dayjs().subtract(1, "day"));
@@ -171,7 +226,7 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
                 }}>
                 Daily
               </Button>
-              <Button color="secondary" className={(group == "monthly" ? "bg-lime-400" : "bg-neutral-50")}
+              <Button color="secondary" className={(group == "monthly" ? "bg-lime-400 dark:text-black" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
                 onClick={() => {
                   setGroup("monthly");
                   setDate1(dayjs().subtract(1, "month").date(1));
@@ -189,7 +244,7 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
           className=""
           dataset={dataset}
           xAxis={[{
-            scaleType: 'band', dataKey: 'date',colorMap: {
+            scaleType: 'band', dataKey: 'date', colorMap: {
               type: 'ordinal',
               colors: ['#a3e635', '#65A30D']
             }
@@ -199,6 +254,7 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
           borderRadius={4}
           height={heightGraph}
           margin={{ left: 70 }}
+          sx={sxGraph}
         />
       </div>
     </div>

@@ -56,9 +56,8 @@ export default function AnimateMap2({ maps, appliances }) {
                         variants={variants} initial="initial" animate="animate" exit="exit"
                     >
                         <img src={maps[indexImg].url} alt=""
+                            className="border-solid border-2 dark:border-slate-600"
                             style={{
-                                borderStyle: "solid",
-                                borderWidth: "3px",
                                 objectFit: "contain",
                                 width: "100%",
                                 height: "70vh"
@@ -69,7 +68,7 @@ export default function AnimateMap2({ maps, appliances }) {
                     </motion.div>
             </AnimatePresence>
             <div className="flex flex-col justify-center items-center">
-                <h1>Floors</h1>
+                <h1 className="text-lg dark:text-white ">Floors</h1>
                 <ListButtons dataButtons={floorBtn} index={indexImg} />
             </div>
         </div >

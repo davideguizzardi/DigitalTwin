@@ -5,7 +5,7 @@ import { ThemeButton } from "../Commons/ThemeButton";
 import Cookies from "js-cookie";
 
 
-export default function modalChangePassword({ open, closeCallback }) {
+export default function modalChangePassword({ open=true, closeCallback }) {
     const [passwords, setPasswords] = useState({
         old: "",
         new: "",

@@ -6,7 +6,7 @@ import DragDropFile from '@/Components/ConfigurationMap/DragDropFile';
 import { ThemeButton } from "@/Components/Commons/ThemeButton";
 import Cookies from "js-cookie";
 
-export default function ModalUploadPhoto({ open, closeCallback}) {
+export default function ModalUploadPhoto({ open=true, closeCallback}) {
     const [file, setFile] = useState(null)
 
     const onDrop = useCallback(acceptedFiles => {

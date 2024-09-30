@@ -17,19 +17,17 @@ export default function SortableItem(props) {
     transition,
   };
 
-  const icons = {"Health" : (<FaRegHeart/>),
-    "Security": (<FaShieldHalved/>),
-    "Entertainment": (<FaMusic/>),
-    "Study": (<FaBookOpen/>)
+  const icons = {"Health" : (<FaRegHeart size={36}/>),
+    "Security": (<FaShieldHalved size={36}/>),
+    "Entertainment": (<FaMusic size={36}/>),
+    "Study": (<FaBookOpen size={36}/>)
   }
   
   return (
-    <div className='w-full rounded shadow bg-lime-300 hover:bg-lime-400 hover:z-10'
-     ref={setNodeRef} style={style} {...attributes} {...listeners}>
-        <div className="w-full items-center px-4 py-2 gap-2">
+    <div className='size-full flex rounded shadow bg-lime-300 hover:bg-lime-400 hover:z-10 p-5 text-2xl justify-center items-center gap-2'
+     ref={setNodeRef} style={style} {...attributes} {...listeners} >
             {icons[props.id]}
             <h1>{props.id}</h1>
-        </div>
     </div>
   );
 }

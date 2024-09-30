@@ -9,7 +9,6 @@ export default function Sidebar() {
     const [isVisible, setVisible] = useState(false)
     const [hoverLogo, setHoverLogo] = useState(false)
     const [scopeLogo, animateLogo] = useAnimate()
-    const [userState, setUserState] = useState({})
 
     const namePage = (string) => {
         return string.replace("/", "").charAt(0).toUpperCase() + string.slice(2)
@@ -78,19 +77,6 @@ export default function Sidebar() {
 
 
     useEffect(() => {
-        const fetchUser = async () => {
-            const token = Cookies.get("auth-token")
-            const response = await fetch("http://localhost/api/user", {
-                headers: { 'Authorization': 'Bearer ' + token }
-            })
-            if(response.ok){
-                response.json().then((result) => {
-                    const user = result.user
-                    setUserState(user)
-                })
-            }
-        }
-        fetchUser()
     }, [])
 
     return <>
@@ -110,23 +96,23 @@ export default function Sidebar() {
         <motion.div className="absolute flex flex-col h-full"
             style={styleMenu} variants={menu} initial={false}
             animate={isVisible ? "visible" : "hidden"} onClick={cancelCallback}>
-            <div className="flex flex-col h-full bg-white pt-32 gap-10 shadow-2xl " style={{ width: "50%" }}>
-                <motion.a href={route("dashboard")} className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
+            <div className="flex flex-col h-full bg-white dark:bg-neutral-900 pt-32 gap-10 shadow-2xl " style={{ width: "40%" }}>
+                <motion.a href={route("home")} className="bg-slate-100 dark:bg-neutral-700 dark:text-white rounded p-3 pr-32 text-3xl size-min "
                     style={styleEntry} variants={entry} initial={false}
                 >
-                    Dashboard
+                    Home
                 </motion.a>
-                <motion.a href={route("consumption")} className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
+                <motion.a href={route("consumption")} className="bg-slate-100 dark:bg-neutral-700 dark:text-white  rounded p-3 pr-32 text-3xl size-min "
                     style={styleEntry} variants={entry} initial={false}
                 >
                     Consumption
                 </motion.a>
-                <motion.a href={"#"} className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
+                <motion.a href={"#"} className="bg-slate-100  dark:bg-neutral-700 dark:text-white  rounded p-3 pr-32 text-3xl size-min "
                     style={styleEntry} variants={entry} initial={false}
                 >
                     Automations
                 </motion.a>
-                <motion.a href={route("configuration")} className="bg-slate-100 rounded p-3 pr-32 text-3xl size-min "
+                <motion.a href={route("configuration")} className="bg-slate-100  dark:bg-neutral-700 dark:text-white  rounded p-3 pr-32 text-3xl size-min "
                     style={styleEntry} variants={entry} initial={false}
                 >
                     Configuration
@@ -136,8 +122,8 @@ export default function Sidebar() {
                         hidden: {opacity: 0, x:-500},
                         visible: {opacity: 1, x: 50}
                     }} initial={false}>
-                    <a href={route("userarea.get")} className="bg-slate-100 p-2 rounded size-min" style={styleEntry}>
-                        <CardUser user={userState}/>
+                    <a href={route("userarea.get")} className="bg-slate-100 dark:bg-neutral-700 dark:text-white  p-2 rounded size-min" style={styleEntry}>
+                        <CardUser/>
                     </a>
                 </motion.div>
             </div>

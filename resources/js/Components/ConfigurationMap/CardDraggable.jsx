@@ -18,20 +18,21 @@ export default function CardDraggable({ id, draggable, parentRef, dragConstraint
     const [oldPos, setOldPos] = useState({ top: 0, left: 0 })
     let [mode, setMode] = useState(type)
     let [firstTime, setFirstTime] = useState(true)
+    const isDark = localStorage.getItem("darkMode") =="true"
 
     const variantCard = {
         full: {
             zIndex: 0,
             border: "solid",
-            borderColor: "#f3f4f6", 
+            borderColor: isDark? "#262626" :"#f3f4f6", 
             width: '100%',
-            backgroundColor: "white",
+            backgroundColor: isDark? "#404040" : "white",
             padding: '8px',
             borderRadius: '6px'
         },
         min: {
             width: '250px',
-            backgroundColor: "white",
+            backgroundColor: isDark? "#404040" : "white",
             padding: '8px',
             borderRadius: '50px'
         },
@@ -148,7 +149,7 @@ export default function CardDraggable({ id, draggable, parentRef, dragConstraint
             <IconAppliance typeAppl={typeAppl}></IconAppliance>
             <AnimatePresence>
             {mode != ICON &&
-                <motion.p className="flex flex-col px-2 text-ellipsis overflow-hidden"
+                <motion.p className="flex flex-col px-2 text-ellipsis overflow-hidden dark:text-white"
                     initial={{ display: "none", x:-50, opacity: 0}}
                     animate={{ display: "block", x:0, opacity: 1}}
                     exit={{display: "none", x:-150, opacity: 0}}

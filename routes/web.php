@@ -19,7 +19,7 @@ Route::get('/', function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard/{firstAccess?}', [DashboardController::class, 'show'])->name('dashboard');
+    Route::get('/home/{firstAccess?}', [DashboardController::class, 'show'])->name('home');
     Route::get('/configuration', [ConfigurationController::class, "show"])->name('configuration');
     Route::get('/userarea', [UserAreaController::class, "get"])->name('userarea.get');
     Route::get('/consumption', [ConsumptionController::class, "show"])->name('consumption');

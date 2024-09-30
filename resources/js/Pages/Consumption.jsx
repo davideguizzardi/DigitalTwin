@@ -16,7 +16,7 @@ export default function Consumption() {
 
     const scopes = [scopeTotal, scopePredicted, scopeDevice, scopeAutomation]
 
-    const offset = 900
+    const offset = 1900
 
     const variants = {
         initial: {
@@ -58,15 +58,15 @@ export default function Consumption() {
     return (
         <div className="size-full flex flex-col p-3 gap-5">
             <div className="flex w-full h-min justify-center">
-                <h1 className="text-xl">Consumption</h1>
+                <h1 className="text-3xl dark:text-white">Consumption</h1>
             </div>
             <WhiteCard className="flex-col size-full gap-1 " direction="left">
-                <div className="flex w-full h-min border-b-2 border-slate-200">
+                <div className="flex w-full h-min border-b-2 border-slate-200 dark:border-neutral-800">
                     <div className="flex flex-col items-center w-full"
                         style={{ cursor: "pointer" }}
                         onClick={() => { handleClickTab(0) }}
                     >
-                        <h1 className="text-xl py-2">Total energy consumption</h1>
+                        <h1 className="text-2xl py-2 dark:text-white text-center h-full">Total energy consumption</h1>
                         <motion.div className="flex bg-lime-400 rounded"
                             animate={{
                                 width: (tab == 0 ? "50%" : "0px"),
@@ -79,7 +79,7 @@ export default function Consumption() {
                         style={{ cursor: "pointer" }}
                         onClick={() => { handleClickTab(1) }}
                     >
-                        <h1 className="text-xl py-2">Predicted energy consumption</h1>
+                        <h1 className="text-2xl dark:text-white py-2 text-center h-full">Predicted energy consumption</h1>
                         <motion.div className="flex bg-lime-400 rounded"
                             animate={{
                                 width: (tab == 1 ? "50%" : "0px"),
@@ -92,7 +92,7 @@ export default function Consumption() {
                         style={{ cursor: "pointer" }}
                         onClick={() => { handleClickTab(2) }}
                     >
-                        <h1 className="text-xl py-2">Consumption per device</h1>
+                        <h1 className="text-2xl dark:text-white py-2 text-center h-full">Consumption per device</h1>
                         <motion.div className="flex bg-lime-400 rounded"
                             animate={{
                                 width: (tab == 2 ? "50%" : "0px"),
@@ -105,7 +105,7 @@ export default function Consumption() {
                         style={{ cursor: "pointer" }}
                         onClick={() => { handleClickTab(3) }}
                     >
-                        <h1 className="text-xl py-2">Consumption per automation</h1>
+                        <h1 className="text-2xl dark:text-white py-2 text-center h-full">Consumption per automation</h1>
                         <motion.div className="flex bg-lime-400 rounded"
                             animate={{
                                 width: (tab == 3 ? "50%" : "0px"),
@@ -115,7 +115,7 @@ export default function Consumption() {
                         />
                     </div>
                 </div>
-                <div className="bg-slate-200 w-full" />
+                <div className="bg-slate-200 dark:bg-neutral-700 w-full" />
                 <div className="flex w-full h-full">
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <AnimatePresence>

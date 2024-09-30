@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Spinner, Button, Select , Label} from "flowbite-react";
+import { Spinner, Button, Select, Label } from "flowbite-react";
 import { BarChart } from '@mui/x-charts/BarChart';
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -14,7 +14,57 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
   const [deviceId, setDeviceId] = useState("")
   const [devicesList, setDeviceList] = useState([])
 
-  const heightGraph = window.innerHeight > 1000 ? 850 : 600
+  const heightGraph = window.innerHeight > 1000 ? 900 : 600
+  const isDark = localStorage.getItem("darkTheme") =="true"
+  
+  const sxDatePicker = {
+    '.MuiInputBase-root': {
+      color: isDark ?"white" : "black",
+      "&:hover > .MuiOutlinedInput-notchedOutline":{
+        border: "1px " +( isDark ? " white " : " black " )+ " solid"
+      }
+    },
+    '.MuiIconButton-root': {
+      color: isDark ?"white" : "black",
+    },
+    '.MuiInputLabel-root': {
+      color: isDark ?"white" : "black",
+    },
+    '.MuiOutlinedInput-notchedOutline ': {
+      border: "1px " + (isDark ? " white " : " black ") + " solid"
+    },
+  }
+
+  const sxGraph = {
+    //change left yAxis label styles
+    "& .MuiChartsAxis-left .MuiChartsAxis-tickLabel": {
+      strokeWidth: "0.4",
+      fill: isDark ? "white" : "black"
+    },
+    // change bottom label styles
+    "& .MuiChartsAxis-bottom .MuiChartsAxis-tickLabel": {
+      strokeWidth: "0.5",
+      fill: isDark ? "white" : "black"
+    },
+    // bottomAxis Line Styles
+    "& .MuiChartsAxis-bottom .MuiChartsAxis-line": {
+      stroke: isDark ? "white" : "black",
+      strokeWidth: 1
+    },
+    // leftAxis Line Styles
+    "& .MuiChartsAxis-left .MuiChartsAxis-line": {
+      stroke: isDark ? "white" : "black",
+      strokeWidth: 1
+    },
+    "& .MuiChartsAxis-bottom .MuiChartsAxis-tick": {
+      stroke: isDark ? "white" : "black",
+      strokeWidth: 1
+    },
+    "& .MuiChartsAxis-left .MuiChartsAxis-tick": {
+      stroke: isDark ? "white" : "black",
+      strokeWidth: 1
+    }
+  }
 
   useEffect(() => {
     fetchDevices()
@@ -41,7 +91,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
     }
   }
 
-  function handleNameChange(event){
+  function handleNameChange(event) {
     const index = event.target.selectedIndex;
     const optionElement = event.target.childNodes[index];
     const optionElementId = optionElement.getAttribute('id');
@@ -126,35 +176,41 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
         <div className="flex flex-row gap-2 col-span-1">
           <div className="flex flex-col w-fit">
 
-          <Label htmlFor="device" value="Energy consumption of" />
-          <Select id="device" onChange={(event) => handleNameChange(event)} required>
-            {
-              devicesList
-              .filter(d=>!["Sun","Forecast"].includes(d.name))
-              .map(dev => (
-                <option id={dev.device_id} key={dev.device_id}>{dev.name}</option>
-              ))
-            }
-          </Select>
-            </div>
+            <Label htmlFor="device" value="Energy consumption of" />
+            <Select id="device" onChange={(event) => handleNameChange(event)} required>
+              {
+                devicesList
+                  .filter(d => !["Sun", "Forecast"].includes(d.name))
+                  .map(dev => (
+                    <option id={dev.device_id} key={dev.device_id}>{dev.name}</option>
+                  ))
+              }
+            </Select>
+          </div>
         </div>
         <div className="flex flex-row gap-6 items-center justify-end flex-wrap col-span-4">
           <div className="flex flex-row gap-2 items-center">
             {group == "hourly" &&
-              <DatePicker value={from} size='small' className="w-40" label={'day'} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => { setFrom(val); setTo(val) }} />
+              <DatePicker value={from} size='medium' className="w-40" label={'day'} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => { setFrom(val); setTo(val) }}
+                sx={sxDatePicker}
+              />
             }
             {group == "daily" &&
               <>
-                <DatePicker value={from} size="small" className="w-40" label={'from'} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => setFrom(val)} />
+                <DatePicker value={from} size="small" className="w-40" label={'from'} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => setFrom(val)} 
+                  sx={sxDatePicker}/>
                 <span className="font-bold text-2xl">-</span>
-                <DatePicker value={to} className="w-40" label={'to'} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => setTo(val)} />
+                <DatePicker value={to} className="w-40" label={'to'} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => setTo(val)}
+                sx={sxDatePicker}/>
               </>
             }
             {group == "monthly" &&
               <>
-                <DatePicker value={from} className="w-40" label={'from'} views={['year', 'month']} format="MM-YYYY" onChange={(val) => { setFrom(val.date(1)) }} />
+                <DatePicker value={from} className="w-40" label={'from'} views={['year', 'month']} format="MM-YYYY" onChange={(val) => { setFrom(val.date(1)) }}
+                sx={sxDatePicker}/>
                 <span className="font-bold text-2xl">-</span>
-                <DatePicker value={to} className="w-40" label={'to'} views={['year', 'month']} format="MM-YYYY" onChange={(val) => { setTo(val.endOf("month")) }} />
+                <DatePicker value={to} className="w-40" label={'to'} views={['year', 'month']} format="MM-YYYY" onChange={(val) => { setTo(val.endOf("month")) }} 
+                  sx={sxDatePicker}/>
               </>
             }
           </div>
@@ -164,7 +220,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
               <Spinner className="fill-lime-400" aria-label="Loading" size="lg" />
             }
             <Button.Group>
-              <Button color="secondary" className={(group == "hourly" ? "bg-lime-400" : "bg-neutral-50")}
+              <Button color="secondary" className={(group == "hourly" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
                 onClick={() => {
                   setGroup("hourly");
                   setFrom(dayjs().hour(0));
@@ -172,7 +228,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
                 }}>
                 Hourly
               </Button>
-              <Button color="secondary" className={(group == "daily" ? "bg-lime-400" : "bg-neutral-50")}
+              <Button color="secondary" className={(group == "daily" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
                 onClick={() => {
                   setGroup("daily");
                   setFrom(dayjs().subtract(7, "day"));
@@ -180,7 +236,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
                 }}>
                 Daily
               </Button>
-              <Button color="secondary" className={(group == "monthly" ? "bg-lime-400" : "bg-neutral-50")}
+              <Button color="secondary" className={(group == "monthly" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
                 onClick={() => {
                   setGroup("monthly");
                   setFrom(dayjs().subtract(1, "month"));
@@ -204,6 +260,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
           margin={{ left: 70 }}
           height={heightGraph}
           onItemClick={(event, params) => handleItemClick(params)}
+          sx={sxGraph}
         />
       </div>
     </div>
