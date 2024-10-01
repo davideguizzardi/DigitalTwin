@@ -18,8 +18,8 @@ export default function ForgotPassword({ status }) {
     return (
         <>
             <Head title="Forgot Password" />
-            <div className="">
-                <div className="mb-4 text-sm text-gray-600">
+            <div className="p-2">
+                <div className="mb-4 text-sm text-gray-600 dark:text-gray-300">
                     Forgot your password? No problem. Just let us know your email address and we will email you a password
                     reset link that will allow you to choose a new one.
                 </div>
@@ -35,7 +35,7 @@ export default function ForgotPassword({ status }) {
                     />
                     <InputError message={errors.email} className="mt-2" />
                     <Button
-                        className="bg-lime-200 text-black"
+                        className="bg-lime-400 text-black"
                         type="submit">
                         Email Password Reset Link
                     </Button>

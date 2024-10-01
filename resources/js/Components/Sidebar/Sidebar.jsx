@@ -11,9 +11,10 @@ export default function Sidebar() {
     const [scopeLogo, animateLogo] = useAnimate()
 
     const namePage = (string) => {
+        const [, path, ] = string.split("/", 3)
         if(string=="/userarea")
             return "User area"
-        return string.replace("/", "").charAt(0).toUpperCase() + string.slice(2)
+        return path.charAt(0).toUpperCase() + path.slice(1)
     }
 
     const animationLogo = () => {

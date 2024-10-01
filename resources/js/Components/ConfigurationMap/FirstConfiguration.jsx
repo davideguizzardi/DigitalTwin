@@ -4,6 +4,7 @@ import ConfigurationAppliance from '@/Components/ConfigurationMap/ConfigurationA
 import { useState } from 'react';
 import { ThemeButton } from '@/Components/Commons/ThemeButton';
 import ConfigurationEnergyPlan from './ConfigurationEnergyPlan';
+import WhiteCard from '../Commons/WhiteCard';
 
 const STATE_UPLOAD_MAP = 0
 const STATE_CONFIGURATION_APPLIANCE = 1
@@ -23,14 +24,14 @@ const FirstConfiguration = () => {
             case STATE_CONFIGURATION_ENERGY_PLAN:
                 return <ConfigurationEnergyPlan endSection={() => setProgressState(STATE_FINISH)}/>;
             case STATE_FINISH:
-                return  <div className="size-full flex flex-col gap-5 py-5 bg-white shadow-xl rounded">
+                return <WhiteCard className="flex-col gap-5 py-5">
                     <div className="h-5/6 flex justify-center items-center">
                         <h1>Configuration complete</h1>
                     </div>
                     <div className="w-full flex justify-center">
                         <ThemeButton href={route('configuration')}>Finish</ThemeButton>
                     </div>
-                </div>
+                </WhiteCard>  
         } 
     }
 

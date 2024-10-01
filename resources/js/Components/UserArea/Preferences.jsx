@@ -44,12 +44,9 @@ export default function Preferences({ }) {
         const response = await fetch("http://localhost:8000/user/preferences")
         if (response.ok) {
             const result = await response.json()
-            console.log(result)
             const updatePreferences = result.filter(e => e.user_id == user.username)[0].preferences
-            console.log(updatePreferences)
             setItems(updatePreferences)
         } else {
-            console.log(response.statusText)
         }
     }
     

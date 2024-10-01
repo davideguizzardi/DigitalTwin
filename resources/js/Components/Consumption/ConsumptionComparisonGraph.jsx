@@ -15,7 +15,7 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
   const [devicesList, setDeviceList] = useState([])
 
   const heightGraph = window.innerHeight > 1000 ? 850 : 600
-  const isDark = localStorage.getItem("darkTheme") =="true"
+  const isDark = localStorage.getItem("darkMode") =="true"
 
   const sxDatePicker = {
     '.MuiInputBase-root': {

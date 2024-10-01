@@ -5,6 +5,7 @@ import { Button } from 'flowbite-react';
 import ModalUploadMap from './ModalUploadMap';
 import Cookies from 'js-cookie';
 import AnimateMap from '../Commons/AnimateMap';
+import WhiteCard from '../Commons/WhiteCard';
 
 let counter = -1;
 const token = Cookies.get("auth-token")
@@ -47,6 +48,7 @@ export default function UploadMap({ endSection }) {
             <ThemeButton className="size-min" onClick={submit} >Upload</ThemeButton>
         </div>
     );
+
     const buttons = listMap.map((map, index) => (
         <ThemeButton className='size-min  my-2' onClick={() => { setIndexThumbs(index) }}
             pill key={map.file.name}>{map.floor}</ThemeButton>
@@ -87,7 +89,8 @@ export default function UploadMap({ endSection }) {
     ));
 
     return (
-        <div className="w-full lg:w-3/5 h-full items-center justify-around flex flex-col bg-white shadow">
+        <WhiteCard className="w-full lg:w-3/5 h-full items-center justify-around flex-col dark:text-white">
+
             <ModalUploadMap open={openModal} saveCallback={saveCallback}
                 cancelCallback={cancelCallback} indexUsed={listMap.map(m => m.floor)} />
             <p className='h-min w-full p-2 text-center text-2xl'>Upload map house</p>
@@ -96,7 +99,7 @@ export default function UploadMap({ endSection }) {
                     {indexThumbs >= 0 ?
                         <div>
                             <div className="w-full h-fit py-1 flex items-center self-start">
-                                <Button className='bg-red-500 enabled:hover:bg-red-700 mx-2' pill
+                                <Button className='bg-red-500 enabled:hover:bg-red-700 dark:bg-red-500  enabled:hover:bg-red-700 mx-2' pill
                                     onClick={handleDeleteButton}>
                                     <FaTrashCan className='size-4' color='white' />
                                 </Button>
@@ -109,7 +112,7 @@ export default function UploadMap({ endSection }) {
                             <p className='pl-16'>No maps uploaded</p>
                         </div>
                     }
-                    <div className="flex flex-col justify-center items-center w-min m-2 p-1 rounded-full bg-gray-100 shadow">
+                    <div className="flex flex-col justify-center items-center w-min m-2 p-1 rounded-full bg-gray-100 dark:bg-neutral-700 shadow">
                         {indexThumbs >= 0 &&
                             buttons
                         }
@@ -120,6 +123,6 @@ export default function UploadMap({ endSection }) {
                 </div>
                 {listMap.length > 0 ? submitButton : (<div></div>)}
             </form>
-        </div>
+        </WhiteCard>
     );
 }

@@ -29,7 +29,7 @@ export default function ResetPassword({ token, email }) {
             <Head title="Reset Password" />
 
             <form onSubmit={submit}>
-                <div>
+                <div className="p-2">
                     <div className="mb-2 block">
                         <Label className="text-lg" htmlFor="email" value="Your email" />
                     </div>

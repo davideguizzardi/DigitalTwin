@@ -1,6 +1,7 @@
 import { UserContext } from "@/Layouts/UserLayout";
 import { useContext } from "react";
-import { FaLock, FaCamera } from "react-icons/fa6"
+import { FaLock, FaCamera, FaUser } from "react-icons/fa6"
+import { IconContext } from "react-icons";
 import Preferences from "./Preferences";
 import { useState } from "react";
 import ModalChangePassword from "./ModalChangePassword";
@@ -9,6 +10,7 @@ import ModalUploadPhoto from "./ModalUploadPhoto";
 export default function Profile({ }) {
     const user = useContext(UserContext)
 
+    const darkMode = localStorage.getItem("darkMode") == "true"
     const [visiblePassword, isVisiblePassword] = useState(false)
     const [visiblePhoto, isVisiblePhoto] = useState(false)
 
@@ -41,8 +43,14 @@ export default function Profile({ }) {
                     </div>
                 </div>
                 <div className="relative flex h-full w-fit items-center justify-center bg-gray-300 dark:bg-neutral-700 rounded-full">
+                    {user.url_photo!=null && user.url_photo!= undefined && user.url_photo!="" ?
                     <img className="rounded-full p-5" src={user.url_photo} style={{ width: "65vh" }} />
-                    <div className="absolute top-6 2xl:top-10 right-12 2xl:right-16 p-5 rounded-full border border-neutral-600 z-100 bg-lime-400"
+                    :
+                        <IconContext.Provider value={{ color: (darkMode ? "white" : "black") }}>
+                            <FaUser className="rounded-full p-5" style={{ width: "60vh", height: "60vh" }} size={128} />
+                        </IconContext.Provider>
+                    }
+                    <div className="absolute top-6 2xl:top-14 right-12 2xl:right-20 p-5 rounded-full border border-neutral-600 z-100 bg-lime-400"
                         style={{cursor: "pointer"}}
                         onClick={() => {isVisiblePhoto(true)}}
                     >

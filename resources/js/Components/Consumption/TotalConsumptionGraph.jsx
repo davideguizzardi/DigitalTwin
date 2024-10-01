@@ -14,9 +14,9 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
   const [deviceId, setDeviceId] = useState("")
   const [devicesList, setDeviceList] = useState([])
 
-  const heightGraph = window.innerHeight > 1000 ? 900 : 600
-  const isDark = localStorage.getItem("darkTheme") =="true"
-  
+  const heightGraph = window.innerHeight > 1000 ? 800 : 550
+  console.log(heightGraph)
+  const isDark = localStorage.getItem("darkMode") =="true"
   const sxDatePicker = {
     '.MuiInputBase-root': {
       color: isDark ?"white" : "black",
