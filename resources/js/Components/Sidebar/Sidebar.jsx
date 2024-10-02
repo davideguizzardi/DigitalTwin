@@ -4,6 +4,7 @@ import { AnimatePresence, delay, motion, useAnimate } from "framer-motion"
 import Cookies from "js-cookie";
 import { Avatar } from "flowbite-react";
 import CardUser from "../Commons/CardUser";
+import DarkButton from "../Commons/DarkButton";
 
 export default function Sidebar() {
     const [isVisible, setVisible] = useState(false)
@@ -99,7 +100,10 @@ export default function Sidebar() {
         <motion.div className="absolute flex flex-col h-full"
             style={styleMenu} variants={menu} initial={false}
             animate={isVisible ? "visible" : "hidden"} onClick={cancelCallback}>
-            <div className="flex flex-col h-full bg-white dark:bg-neutral-900 pt-32 gap-10 shadow-2xl " style={{ width: "40%" }}>
+            <div className="flex flex-col h-full bg-white dark:bg-neutral-900 gap-10 shadow-2xl" style={{ width: "40%" }}>
+                <motion.div variants={{hidden: {x:-500}, visible: {x:0}}} initial={false} className="flex w-full justify-end p-4">
+                    <DarkButton />
+                </motion.div>
                 <motion.a href={route("home")} className="bg-slate-100 dark:bg-neutral-700 dark:text-white rounded p-3 pr-32 text-3xl size-min "
                     style={styleEntry} variants={entry} initial={false}
                 >

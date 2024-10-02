@@ -82,7 +82,7 @@ export default function ConfigurationEnergyPlan({ endSection }) {
                     return (
                         <>
                             <div className="py-0 dark:bg-neutral-700 dark:text-white text-center" style={{ cursor: "pointer" }}
-                                onClick={() => { setHour(j) }} key={"row_" + j}>
+                                onClick={() => { setHour(j) }} >
                                 {j + ":00-" + (j + 1) + ":00"}
                             </div>
                             {
@@ -90,7 +90,7 @@ export default function ConfigurationEnergyPlan({ endSection }) {
                                     const swh = slotWeekHour[i][j]
                                     const colorCell = swh >= 0 ? colors[swh] : ""
                                     return (
-                                        <div className={"py-3 border dark:border-neutral-700" + colorCell} key={"cell_" + i +"_"+ j}
+                                        <div className={"py-3 border w-full dark:border-neutral-700" + colorCell} key={"cell_" + i + "_" + j}
                                             style={{ cursor: selecting ? "grabbing" : "pointer" }}
                                             onMouseDown={(e) => {
                                                 e.preventDefault()
@@ -195,19 +195,19 @@ export default function ConfigurationEnergyPlan({ endSection }) {
             console.log(result)
             if (timeSlots < 2) {
                 console.log(timeSlots)
-                const response = await fetch("http://localhost:8000/configuration/cost_slot_2",{
+                const response = await fetch("http://localhost:8000/configuration/cost_slot_2", {
                     method: "DELETE",
-                    headers: {"Content-Type": 'application/json'}
+                    headers: { "Content-Type": 'application/json' }
                 })
                 const result2 = await response.json()
                 console.log(result2)
             }
         }
-        const dataCalendar = JSON.stringify({ data: slotWeekHour.map((day)=> day.map((hour) => hour)) })
+        const dataCalendar = JSON.stringify({ data: slotWeekHour.map((day) => day.map((hour) => hour)) })
         //before save delete old calendar
         fetch("http://localhost:8000/calendar", {
             method: "DELETE",
-            headers: {"Content-Type": "application/json"}
+            headers: { "Content-Type": "application/json" }
         })
 
         const responseCalendar = await fetch("http://localhost:8000/calendar", {
@@ -282,7 +282,7 @@ export default function ConfigurationEnergyPlan({ endSection }) {
                                             />
                                             <p className="text-xl px-2 dark:text-white">€/kWh</p>
                                             <Button className="bg-gray-100 dark:bg-neutral-700 enabled:hover:bg-gray-100 dark:enabled:hover:bg-neutral-700 focus:ring-0"
-                                            onClick={() => { setCurrentSlot(index); console.log(index) }}>
+                                                onClick={() => { setCurrentSlot(index); console.log(index) }}>
                                                 <IconContext.Provider value={{ size: "24", color: colorsRGB[index] }}>
                                                     <FaCalendarPlus />
                                                 </IconContext.Provider>

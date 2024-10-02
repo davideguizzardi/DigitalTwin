@@ -3,6 +3,7 @@ import { Checkbox } from "flowbite-react"
 import { useState } from "react"
 import { useEffect } from "react"
 import { useContext } from "react"
+import WhiteCard from "../Commons/WhiteCard"
 
 export default function PermissionPrivacy() {
     const user = useContext(UserContext)
@@ -35,7 +36,7 @@ export default function PermissionPrivacy() {
     }
 
     return (
-        <div className="flex flex-col h-full dark:text-white">
+        <WhiteCard className="flex flex-col h-full dark:text-white">
             <h1 className="text-2xl p-2 dark:text-white">Privacy consent</h1>
             <div className="flex flex-col h-full justify-around">
                 <div className="flex flex-col">
@@ -69,6 +70,6 @@ export default function PermissionPrivacy() {
                     </div>
                 </div>
             </div>
-        </div>
+        </WhiteCard>
     )
 }

@@ -2,11 +2,50 @@ import { animate, AnimatePresence, motion, useAnimate } from "framer-motion"
 import { useState } from "react"
 import ListButtons from "./ListButtons"
 import CardAppliance from "./CardAppliance"
+import { useSwipeable } from "react-swipeable"
 
 export default function AnimateMap2({ maps, appliances }) {
     const [indexImg, setIndexImg] = useState(0)
     const [previousIndex, setPreviousIndex] = useState(0)
     const offset = 100
+
+    const floorAbove = () =>{
+        if(indexImg <= maps.length - 1 && indexImg > 0 ){
+            animate("div.floor",
+                { y: offset },
+                { duration: 0.25 }
+            )
+            setPreviousIndex(indexImg)
+            setIndexImg(indexImg - 1)
+        }else if(indexImg==0){
+            animate("div.floor", 
+                { y: [0, offset, 0]},
+                { duration: 0.50}
+            )
+        }
+
+    }
+
+    const floorBelow = () =>{
+        if (indexImg < maps.length - 1 && indexImg >= 0) {
+            animate("div.floor",
+                { y: -offset },
+                { duration: 0.25 }
+            )
+            setPreviousIndex(indexImg)
+            setIndexImg(indexImg + 1)
+        }else if(indexImg == maps.length-1){
+            animate("div.floor", 
+                { y: [0, -offset, 0]},
+                { duration: 0.50}
+            )
+        }
+    }
+
+    const handlerSwipe = useSwipeable({
+        onSwipedDown: () => floorAbove(),
+        onSwipedUp: () => floorBelow()
+    })
 
     const floorBtn = maps.map((element, index) => {
         return {
@@ -49,7 +88,9 @@ export default function AnimateMap2({ maps, appliances }) {
 
     return (
         <div className="flex size-full items-center justify-center">
-            <AnimatePresence>
+            <div {...handlerSwipe}>
+
+                <AnimatePresence>
 
                     <motion.div className="floor flex w-full h-min relative"
                         id={"floor" + maps[indexImg].url} key={maps[indexImg].url}
@@ -64,9 +105,10 @@ export default function AnimateMap2({ maps, appliances }) {
                             }}
 
                         />
-                        {appliances.filter((e) => e.floor == maps[indexImg].floor).map((e) => (<CardAppliance key={e.id} appliance={e} />))}
+                        {appliances.filter((e) => e.floor == maps[indexImg].floor).map((e) => (<CardAppliance key={e.id} appliancePos={e} />))}
                     </motion.div>
-            </AnimatePresence>
+                </AnimatePresence>
+            </div>
             <div className="flex flex-col justify-center items-center">
                 <h1 className="text-lg dark:text-white ">Floors</h1>
                 <ListButtons dataButtons={floorBtn} index={indexImg} />

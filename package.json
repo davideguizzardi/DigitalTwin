@@ -25,10 +25,11 @@
         "@dnd-kit/sortable": "^8.0.0",
         "@emotion/react": "^11.13.3",
         "@emotion/styled": "^11.13.0",
+        "@heroicons/react": "^2.1.5",
         "@inertiajs/react": "^1.1.0",
         "@mui/material": "^6.1.1",
-        "@mui/x-charts": "^7.17.0",
-        "@mui/x-date-pickers": "^7.17.0",
+        "@mui/x-charts": "^7.18.0",
+        "@mui/x-date-pickers": "^7.18.0",
         "autoprefixer": "^10.4.19",
         "dayjs": "^1.11.13",
         "flowbite": "^2.3.0",
@@ -37,9 +38,11 @@
         "js-cookie": "^3.0.5",
         "plotly.js": "^2.35.0",
         "postcss": "^8.4.38",
+        "react-color": "^2.19.3",
         "react-dropzone": "^14.2.3",
         "react-icon": "^1.0.0",
         "react-plotly.js": "^2.6.0",
+        "react-swipeable": "^7.0.1",
         "tailwindcss": "^3.4.3"
     }
 }

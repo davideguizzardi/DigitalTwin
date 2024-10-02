@@ -64,16 +64,16 @@ export default function RoutineConfiguration() {
         <div className="size-full flex flex-col">
             <div className="w-full flex justify-center pb-2">
                 <div className={"flex items-center p-3 m-1 shadow rounded " + 
-                (section==0 ? " bg-lime-200 dark:bg-lime-500":" bg-white dark:bg-neutral-700" )}
+                (section==0 ? " bg-lime-200 dark:bg-lime-500":" bg-white dark:bg-neutral-600" )}
                     onClick={() => setSection(0)} style={{ cursor: "pointer" }}>
                     <FaLightbulb size={32}></FaLightbulb>
-                    <h1 className="dark:text-white">Appliance</h1>
+                    <h1>Appliance</h1>
                 </div>
                 <div className={"p-3 m-1 shadow rounded flex items-center " +
                 (section==1 ? " bg-lime-200 dark:bg-lime-500":" bg-white dark:bg-neutral-700" )}
                     onClick={() => setSection(1)} style={{ cursor: "pointer" }}>
                     <FaBolt size={32}></FaBolt>
-                    <h1 className="dark:text-white">Energy Plan</h1>
+                    <h1>Energy Plan</h1>
                 </div>
             </div>
             <AnimatePresence>

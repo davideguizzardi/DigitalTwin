@@ -33,7 +33,7 @@ export function UserLayout({ children }) {
 
     return (
         <main>
-            <div className="overflow-x-hidden bg-gray-100 dark:bg-neutral-800 ">
+            <div className="overflow-x-hidden bg-gray-200 dark:bg-neutral-800 ">
                 <UserContext.Provider value={userState}>
                     <div className="h-full relative min-h-screen lg:h-screen flex flex-grow-1">
                         <Sidebar />

@@ -22,6 +22,7 @@ import { UserContext } from '@/Layouts/UserLayout';
 export default function Preferences({ }) {
     const user = useContext(UserContext)
     const [items, setItems] = useState([])
+    const colors = ["#d9f99d", "#bef264", "#84cc16", "#4d7c0f"]
     
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -56,16 +57,16 @@ export default function Preferences({ }) {
     }, [user])
 
     return (
-        <div className="flex flex-col size-full px-2 py-4 gap-3">
-            <h1 className="text-2xl py-2 dark:text-white">Preferences</h1>
-            <p className='dark:text-white'>Arrange the cards in order of importance, from the most important to the least important.  
-                <span className='font-bold'> Drag</span> each card by clicking and holding it, then <span className='font-bold'>drop</span> it into the position
-                you believe is correct. Continue adjusting the cards until all are in the proper order.</p>
-            <div className="flex flex-col h-full justify-center gap-2 size-full">
+        <div className="flex flex-col p-4 gap-3">
+                <h1 className="text-2xl py-2 dark:text-white">Preferences</h1>
+                <p className='dark:text-white'>Arrange the cards in order of importance, from the most important to the least important.  
+                    <span className='font-bold'> Drag</span> each card by clicking and holding it, then <span className='font-bold'>drop</span> it into the position
+                    you believe is correct. Continue adjusting the cards until all are in the proper order.</p>
+            <div className="flex flex-col h-full justify-center items-center gap-2">
                 <h1 className='dark:text-white text-xl'>Most important</h1>
-                <div className="flex size-full gap-3 p-1">
-                    <div className="flex flex-col px-2 bg-gradient-to-b from-lime-200 to-lime-800 rounded"></div>
-                    <div className="flex flex-col gap-2 size-full">
+                <div className="flex w-full h-3/4 justify-center gap-3 p-1">
+                    <div className="flex flex-col px-2 bg-gradient-to-b from-lime-100 to-lime-900 rounded"></div>
+                    <div className="flex flex-col gap-2 h-full">
 
                         <DndContext onDragEnd={handleDragEnd} sensors={sensors}
                             collisionDetection={closestCenter} modifiers={[restrictToVerticalAxis]}
@@ -73,7 +74,7 @@ export default function Preferences({ }) {
                             <SortableContext items={items}
                                 strategy={verticalListSortingStrategy}
                             >
-                                {items.map(id => <SortableItem key={id} id={id} />)}
+                                {items.map((id, index) => <SortableItem key={id} id={id} color={colors[index]} />)}
 
                             </SortableContext>
                         </DndContext>

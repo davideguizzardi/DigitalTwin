@@ -1,34 +1,43 @@
 import {FaSun, FaMoon} from "react-icons/fa6"
+import WhiteCard from "./WhiteCard"
+import { useState } from "react"
+import { useEffect } from "react"
 
 export default function DarkButton(){
-    const setDarkMode = (dark) =>{
+    const [darkMode, setDarkMode] = useState()
+
+    const handleDarkMode = (dark) =>{
         if(dark)
             document.documentElement.classList.add("dark")
         else
             document.documentElement.classList.remove("dark")
         localStorage.setItem("darkMode", dark)
-        
+        setDarkMode(dark)
     }
 
+    useEffect(() =>{
+        setDarkMode( document.documentElement.classList.contains("dark"))
+    })
+
     return (
-        <div className="border-2 rounded border-gray-400 dark:border-neutral-600 bg-gray-300 dark:bg-neutral-700 flex justify-around items-center px-3 gap-2">
-            <div className="w-full p-2 "
+        <WhiteCard className="border-2 rounded flex justify-around items-center p-1 gap-1">
+            <div className="w-full py-2 px-4 rounded bg-zinc-300 dark:bg-neutral-900"
                 style={{cursor: "pointer"}}
                 onClick={() =>{
-                    setDarkMode(false)
+                    handleDarkMode(false)
                 }}
             >
-                <FaSun />
+                <FaSun color={darkMode ? "#e4e4e7" : "#404040" } size={24}/>
             </div>
-            <div className="w-2 h-full bg-gray-400 dark:bg-neutral-600" />
-            <div className="w-full p-2"
+            <div className="w-2 h-full bg-gray-400 dark:bg-neutral-700" />
+            <div className="w-full py-2 px-4 dark:bg-neutral-700 rounded"
                 style={{cursor: "pointer"}}
                 onClick={() =>{
-                    setDarkMode(true)
+                    handleDarkMode(true)
                 }}
             >
-                <FaMoon />
+                <FaMoon color={darkMode ? "#e4e4e7": "#404040" } size={24}/>
             </div>
-        </div>
+        </WhiteCard>
     )
 }

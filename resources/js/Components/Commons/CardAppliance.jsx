@@ -1,8 +1,14 @@
 import { motion } from "framer-motion"
 import IconAppliance from "./IconAppliance"
+import { LightPopup } from "../ControlAppliance/LightPopup"
+import { useState } from "react"
+import { useEffect } from "react"
+import { MediaPlayerPopup } from "../ControlAppliance/MediaPlayerPopup"
+import ControlPopup from "../ControlAppliance/ControlPopup"
 
-export default function CardAppliance({ appliance }) {
-    const [typeAppl, name] = appliance.id.split(".", 2)
+export default function CardAppliance({ appliancePos }) {
+    const [openControl, isOpenControl] = useState(false)
+    const [typeAppl, ] = appliancePos.id.split(".", 2)
 
     const variants = {
         initial: {
@@ -22,13 +28,25 @@ export default function CardAppliance({ appliance }) {
         }
     }
 
+    const closeFun = () => {
+        isOpenControl(false)
+
+    }
+
     return (
         <motion.div
-            className="absolute py-1 rounded-full p-1 bg-white z-10"
-            style={{ top: appliance.top + "%", left: appliance.left + "%" }}
+            className="absolute rounded-full p-1 bg-gray-200"
+            style={{ top: appliancePos.top + "%", left: appliancePos.left + "%" }}
             variants={variants} initial="initial" animate="animate"
         >
-            <IconAppliance typeAppl={typeAppl}></IconAppliance>
+            <ControlPopup applianceId={appliancePos.id} open={openControl} closeFun={closeFun} classDevice={typeAppl}/> 
+            <div className="z-10"
+                    style={{ cursor: "pointer", zIndex: "20" }}
+                    onClick={() => isOpenControl(true)}
+            >
+                <IconAppliance typeAppl={typeAppl} className="z-20"
+                ></IconAppliance>
+            </div>
         </motion.div>
     )
 }

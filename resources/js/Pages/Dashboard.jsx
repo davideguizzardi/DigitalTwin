@@ -23,7 +23,6 @@ const Dashboard = ({ maps, token }) => {
             const response = await fetch("http://localhost:8000/virtual/device")
             const result = await response.json()
             setDeviceContext(result)
-            console.log(result)
         }
         fetchDeviceContext()
     }, [])
@@ -59,13 +58,11 @@ const Dashboard = ({ maps, token }) => {
 
     return (
         <div className="size-full flex gap-2 p-2">
-            <WhiteCard className=" flex-col gap-4 p-2 w-full" direction="left">
-                <IconContext.Provider value={{ color: (darkMode ? "white" : "black") }}>
-                    <div className="w-full flex items-center justify-center mt-6 gap-2 p-3">
+            <WhiteCard className=" flex-col gap-4 p-2 w-full " >
+                    <div className="w-full flex items-center justify-center mt-6 gap-2 p-3 dark:text-white">
                         <FaHouse size={36} />
                         <h1 className="text-2xl dark:text-white">Your Home</h1>
                     </div>
-                </IconContext.Provider>
                     {
                         maps.length > 0 ?
                             <AnimateMap2 maps={maps} appliances={appliances} />
@@ -75,10 +72,9 @@ const Dashboard = ({ maps, token }) => {
                                     <a style={{ color: "blue" }} href={route("configuration")}> here</a></p>
                             </div>
                     }
-                <IconContext.Provider value={{ color: (darkMode ? "white" : "black") }}>
                     <div className="flex items-center justify-around p-2 dark:text-white">
-                        <div className="lg:w-48 flex flex-col p-2 bg-slate-100 dark:bg-neutral-700 rounded shadow">
-                            <div className="flex items-center gap-1">
+                        <div className="lg:w-48 flex flex-col p-2 bg-gray-200 dark:bg-neutral-700 rounded shadow">
+                            <div className="flex items-center gap-1 text-black dark:text-white">
                                 <FaBolt size={16} /> <h1>Power usage</h1>
                             </div>
                             <div className="flex justify-end">
@@ -86,29 +82,28 @@ const Dashboard = ({ maps, token }) => {
                             </div>
                         </div>
                         <div className="lg:w-48 flex flex-col p-2 bg-gray-200  dark:bg-neutral-700 rounded shadow">
-                            <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-1 text-black dark:text-white">
                                 <FaLaptop size={16} /> <h1>Active devices</h1>
                             </div>
                             <div className="flex justify-end">
                                 {homeContext.power_usage}
                             </div>
                         </div>
-                        <div className="lg:w-48 flex flex-col p-2 bg-gray-200  dark:bg-neutral-700 rounded shadow">
-                            <div className="flex items-center gap-1">
-                                <FaCloud size={16} /> <h1>Emissions</h1>
+                        <div className="lg:w-48 flex flex-col p-2 bg-gray-200  dark:bg-neutral-600 rounded shadow">
+                            <div className="flex items-center gap-1 text-black dark:text-white">
+                                <FaCloud /> <h1 >Emissions</h1>
                             </div>
                             <div className="flex justify-end">
                                 {homeContext.emissions} {homeContext.emissions_unit}
                             </div>
                         </div>
                     </div>
-                </IconContext.Provider>
             </WhiteCard>
             <div className='h-full xl:w-full flex flex-col gap-2 w-2/5 '>
-                <WhiteCard className="size-full " direction="right">
+                <WhiteCard className="size-full " >
                     <EcologicalFootprint energyConsumptionIn={100} />
                 </WhiteCard>
-                <WhiteCard className="size-full " direction="right">
+                <WhiteCard className="size-full overflow-y-scroll" >
                     <DeviceTable deviceContext={deviceContext} />
                 </WhiteCard>
 

@@ -63,6 +63,9 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
     "& .MuiChartsAxis-left .MuiChartsAxis-tick": {
       stroke: isDark ? "white" : "black",
       strokeWidth: 1
+    },
+    "& .css-1j25yxu-MuiResponsiveChart-container":{
+      color: isDark ? "white" : "black"
     }
   }
 
