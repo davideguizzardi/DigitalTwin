@@ -50,6 +50,30 @@ export default function ConfigurationEnergyPlan({ endSection }) {
         }
     }
 
+    const insertSlotHour = (i,j) =>{
+        let tempSlotWeekHour = [...slotWeekHour]
+        tempSlotWeekHour[i][j] = currentSlot
+        setSlotWeekHour([...tempSlotWeekHour])
+    }
+
+    const startSelecting = (e,i,j)=>{
+        e.preventDefault()
+        setSelecting(true)
+        console.log("start selecting")
+        if (currentSlot >= 0) {
+            insertSlotHour(i,j)
+        }
+    }
+
+    const moveSelecting = (e,i,j) =>{
+        e.preventDefault()
+        if (currentSlot >= 0 && selecting) {
+            console.log("Move selecting")
+            insertSlotHour(i,j)
+        }
+    }
+
+
     let table = (
         <div
             className="grid grid-cols-8 gap-0 h-full justify-center"
@@ -90,26 +114,12 @@ export default function ConfigurationEnergyPlan({ endSection }) {
                                     const swh = slotWeekHour[i][j]
                                     const colorCell = swh >= 0 ? colors[swh] : ""
                                     return (
-                                        <div className={"py-3 border w-full dark:border-neutral-700" + colorCell} key={"cell_" + i + "_" + j}
+                                        <div className={"border w-full dark:border-neutral-700" + colorCell} key={"cell_" + i + "_" + j}
                                             style={{ cursor: selecting ? "grabbing" : "pointer" }}
-                                            onMouseDown={(e) => {
-                                                e.preventDefault()
-                                                setSelecting(true)
-                                                let tempSlotWeekHour = [...slotWeekHour]
-                                                if (currentSlot >= 0) {
-                                                    tempSlotWeekHour[i][j] = currentSlot
-                                                    setSlotWeekHour([...tempSlotWeekHour])
-                                                }
-                                            }}
-                                            onMouseOver={(e) => {
-                                                e.preventDefault()
-                                                if (currentSlot >= 0 && selecting) {
-                                                    let tempSlotWeekHour = [...slotWeekHour]
-                                                    tempSlotWeekHour[i][j] = currentSlot
-                                                    setSlotWeekHour([...tempSlotWeekHour])
-                                                }
-                                            }}
-                                            onMouseUp={(e) => {
+                                            onClick={()=>{insertSlotHour(i,j)}}
+                                            onPointerDown={(e) => startSelecting(e,i,j)}
+                                            onPointerOver={(e) => moveSelecting(e,i,j)}
+                                            onPointerUp={(e) => {
                                                 e.preventDefault()
                                                 setSelecting(false)
                                             }}
@@ -215,7 +225,6 @@ export default function ConfigurationEnergyPlan({ endSection }) {
             headers: { "Content-Type": "application/json" },
             body: dataCalendar
         })
-        console.log(dataCalendar)
         const result = await responseCalendar.json()
         endSection()
     }
@@ -242,7 +251,6 @@ export default function ConfigurationEnergyPlan({ endSection }) {
         const getCalendar = async () => {
             const response = await fetch("http://localhost:8000/calendar")
             const result = await response.json()
-            console.log(result.data)
             setSlotWeekHour([...result.data])
         }
         getCalendar()
@@ -250,32 +258,29 @@ export default function ConfigurationEnergyPlan({ endSection }) {
     }, [])
 
     return (
-        <WhiteCard className="size-full flex-col min-w-fit min-h-fit p-2">
-            <div className="flex flex-col w-full h-min pt-3">
-                <h1 className="text-3xl text-center w-full dark:text-white">Configure your energy plan schedule</h1>
-            </div>
-            <div className="flex size-full min-w-fit min-h-fit">
-                <div className="flex flex-col lg:p-2 h-full min-w-fit w-1/2">
+        <div className="size-full flex-col min-w-fit p-2">
+            <div className="flex size-full min-w-fit ">
+                <div className="flex flex-col h-full min-w-fit w-1/2">
                     {table}
                 </div>
-                <div className="flex flex-col h-full w-1/2">
-                    <div className="flex flex-col size-full justify-start gap-4 pt-10 ">
+                <div className="flex flex-col p-1 h-full w-1/2">
+                    <div className="flex flex-col size-full justify-start gap-3 2xl:gap-10 2xl:pt-10 ">
 
-                        <div className="flex px-5 py-1 items-center">
+                        <div className="flex py-1 items-center">
                             <p className="text-xl px-1 dark:text-white">Maximum capacity</p>
                             <input className="px-1 dark:text-white dark:bg-neutral-700" style={{ width: "64px" }} type="number" value={powerCapacity} min="0" max="15" step="0.5" onChange={e => setPowerCapacity(e.target.value)} />
                             <p className="text-xl px-1">kW</p>
                         </div>
-                        <div className="flex px-5 py-1 items-center">
+                        <div className="flex py-1 items-center">
                             <p className="text-xl px-2 dark:text-white">Number of slots</p>
                             <ListButtons dataButtons={dataBtn}
                                 index={timeSlots - 1} vertical={false} />
                         </div>
-                        <div className="flex flex-col">
+                        <div className="flex flex-col 2xl:gap-10">
                             {
                                 powerPrice.map((element, index) => {
                                     return (
-                                        <div className="flex px-5 py-3 items-center" key={index}>
+                                        <div className="flex py-3 items-center" key={index}>
                                             <p className="text-xl px-2 dark:text-white">Slot {index + 1}</p>
                                             <input className="px-1" style={{ width: "128px" }} type="number" value={element} min="0" max="15" step="0.0001"
                                                 onChange={(e) => setInputValue(e, index)}
@@ -292,22 +297,22 @@ export default function ConfigurationEnergyPlan({ endSection }) {
                                 })
                             }
                         </div>
-                        <div className={"flex w-full h-full px-5 pb-3 items-end 2xl:pb-16 2xl:px-16 " + (currentSlot >= 0 ? " justify-center " : " justify-start ")}>
+                        <div className={"flex w-full h-full pb-3 items-end 2xl:pb-16 px-1" + (currentSlot >= 0 ? " justify-center " : " justify-start ")}>
                             {
                                 currentSlot >= 0 ?
-                                    <p className={"text-lg p-3 rounded shadow text-center" + colors[currentSlot]}>Insert {currentSlot + 1} slot in calendar</p>
+                                    <p className={"text-lg rounded shadow text-center" + colors[currentSlot]}>Insert {currentSlot + 1} slot in calendar</p>
                                     :
                                     <p className="dark:text-white text-xl ">Specify the number of available slots. Then, drag and drop the slots into the weekly agenda,
                                         or simply click on the desired day or hour to assign them. Adjust and organize your schedule as needed.</p>
                             }
                         </div>
-                        <div className="flex w-full h-min px-5 py-3 items-end justify-center">
+                        <div className="flex w-full h-min py-3 items-end justify-center">
                             <ThemeButton onClick={() => { saveConfiguration() }}>Save</ThemeButton>
                         </div>
                     </div>
                 </div>
 
             </div>
-        </WhiteCard>
+        </div>
     )
 }

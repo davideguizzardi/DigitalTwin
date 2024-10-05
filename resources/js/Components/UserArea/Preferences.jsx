@@ -57,8 +57,8 @@ export default function Preferences({ }) {
     }, [user])
 
     return (
-        <div className="flex flex-col p-4 gap-3">
-                <h1 className="text-2xl py-2 dark:text-white">Preferences</h1>
+        <div className="flex flex-col p-2 gap-1">
+                <h1 className="text-2xl dark:text-white">Preferences</h1>
                 <p className='dark:text-white'>Arrange the cards in order of importance, from the most important to the least important.  
                     <span className='font-bold'> Drag</span> each card by clicking and holding it, then <span className='font-bold'>drop</span> it into the position
                     you believe is correct. Continue adjusting the cards until all are in the proper order.</p>

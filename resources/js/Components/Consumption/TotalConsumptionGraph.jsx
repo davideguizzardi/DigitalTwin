@@ -194,8 +194,8 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
         <div className="flex flex-row gap-6 items-center justify-end flex-wrap col-span-4">
           <div className="flex flex-row gap-2 items-center">
             {group == "hourly" &&
-              <DatePicker value={from} size='medium' className="w-40" label={'day'} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => { setFrom(val); setTo(val) }}
-                sx={sxDatePicker}
+              <DatePicker value={from} size='medium' className="w-40 focus:ring-0" label={'day'} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => { setFrom(val); setTo(val) }}
+                sx={sxDatePicker} 
               />
             }
             {group == "daily" &&
@@ -252,7 +252,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
 
         </div>
       </div>
-      <div className="pl-3">
+      <div className="pl-3 flex h-full items-center">
         <BarChart
           className=""
           dataset={dataset}

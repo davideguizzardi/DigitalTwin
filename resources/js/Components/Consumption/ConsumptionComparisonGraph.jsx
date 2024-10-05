@@ -14,7 +14,7 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
   const [deviceId, setDeviceId] = useState("")
   const [devicesList, setDeviceList] = useState([])
 
-  const heightGraph = window.innerHeight > 1000 ? 850 : 600
+  const heightGraph = window.innerHeight > 1000 ? 850 : 500
   const isDark = localStorage.getItem("darkMode") =="true"
 
   const sxDatePicker = {
@@ -239,7 +239,7 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
 
         </div>
       </div>
-      <div className="pl-3">
+      <div className="pl-3 flex h-full items-center">
         <BarChart
           className=""
           dataset={dataset}

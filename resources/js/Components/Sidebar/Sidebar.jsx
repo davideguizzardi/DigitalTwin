@@ -100,10 +100,7 @@ export default function Sidebar() {
         <motion.div className="absolute flex flex-col h-full"
             style={styleMenu} variants={menu} initial={false}
             animate={isVisible ? "visible" : "hidden"} onClick={cancelCallback}>
-            <div className="flex flex-col h-full bg-white dark:bg-neutral-900 gap-10 shadow-2xl" style={{ width: "40%" }}>
-                <motion.div variants={{hidden: {x:-500}, visible: {x:0}}} initial={false} className="flex w-full justify-end p-4">
-                    <DarkButton />
-                </motion.div>
+            <div className="flex flex-col h-full bg-white dark:bg-neutral-900 gap-10 shadow-2xl pt-32" style={{ width: "40%" }}>
                 <motion.a href={route("home")} className="bg-slate-100 dark:bg-neutral-700 dark:text-white rounded p-3 pr-32 text-3xl size-min "
                     style={styleEntry} variants={entry} initial={false}
                 >
@@ -129,9 +126,9 @@ export default function Sidebar() {
                         hidden: {opacity: 0, x:-500},
                         visible: {opacity: 1, x: 50}
                     }} initial={false}>
-                    <a href={route("userarea.get")} className="bg-slate-100 dark:bg-neutral-700 dark:text-white  p-2 rounded size-min" style={styleEntry}>
+                    <div className="bg-slate-100 dark:bg-neutral-700 dark:text-white  p-2 rounded size-min" style={styleEntry}>
                         <CardUser/>
-                    </a>
+                    </div>
                 </motion.div>
             </div>
         </motion.div>

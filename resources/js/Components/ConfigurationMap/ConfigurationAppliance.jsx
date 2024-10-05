@@ -247,7 +247,7 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
     }, [])
     return (
         <div className="relative flex size-full" ref={configRef} >
-            <WhiteCard className="flex-col size-full px-3 justify-around" direction="left">
+            <div className="flex flex-col size-full px-3 justify-around">
                 <Modal size="3xl" show={openModal} onClose={() => setOpenModal(false)}>
                     <Modal.Header>Unconfigured Appliances</Modal.Header>
                     <Modal.Body>
@@ -272,7 +272,6 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
                         </div>
                     </Modal.Body>
                 </Modal>
-                <p className='h-min w-full p-1 text-center text-3xl dark:text-white'>Configure Appliance</p>
                 <div className="flex w-full">
                     <div className="w-3/5 h-full flex justify-center items-center">
                         <div className="relative size-full flex justify-center items-center shadow">
@@ -316,7 +315,7 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
                 <div className="flex items-center justify-center">
                     <ThemeButton onClick={() => { saveCallback() }}> Save </ThemeButton>
                 </div>
-            </WhiteCard>
+            </div>
         </div>
     )
 }
