@@ -93,5 +93,21 @@ To stop all running Docker containers:
 
 ### URL
 
-Frontend: ```http://localhost```
-Mailpit: ```http://localhost:8025``
+Frontend: ```http://ip-address```
+Digital: ```http://ip-address:8000```
+Mailpit: ```http://ip-address:8025``
+HomeAssistant: ```http://ip-address:8123```
+
+## Troubleshooting 
+
+### CORS Errors
+
+If client and server are not on the same machine it will be raise a CORS Error. To fix this problem in file ```vite.config.js``` change row 7 from:
+
+```origin: 'http://localhost:5173' ```
+
+to
+
+```origin: 'http://ip-address:5173' ```
+
+where ip-address is server's ip
