@@ -5,6 +5,7 @@ import { FaCalendarPlus } from "react-icons/fa6";
 import { IconContext } from "react-icons";
 import { ThemeButton } from "../Commons/ThemeButton";
 import WhiteCard from "../Commons/WhiteCard";
+import { backend } from "../Commons/Constants";
 
 export default function ConfigurationEnergyPlan({ endSection }) {
     const [powerCapacity, setPowerCapacity] = useState(1)
@@ -51,9 +52,11 @@ export default function ConfigurationEnergyPlan({ endSection }) {
     }
 
     const insertSlotHour = (i,j) =>{
-        let tempSlotWeekHour = [...slotWeekHour]
-        tempSlotWeekHour[i][j] = currentSlot
-        setSlotWeekHour([...tempSlotWeekHour])
+        if(currentSlot >=0){
+            let tempSlotWeekHour = [...slotWeekHour]
+            tempSlotWeekHour[i][j] = currentSlot
+            setSlotWeekHour([...tempSlotWeekHour])
+        }
     }
 
     const startSelecting = (e,i,j)=>{
@@ -105,7 +108,7 @@ export default function ConfigurationEnergyPlan({ endSection }) {
                 Array.from(Array(24).keys()).map((element, j) => {
                     return (
                         <>
-                            <div className="py-0 dark:bg-neutral-700 dark:text-white text-center" style={{ cursor: "pointer" }}
+                            <div className="py-0 dark:bg-neutral-700 dark:text-white text-center justify-center text-sm 2xl:text-lg" style={{ cursor: "pointer" }}
                                 onClick={() => { setHour(j) }} >
                                 {j + ":00-" + (j + 1) + ":00"}
                             </div>
@@ -117,6 +120,9 @@ export default function ConfigurationEnergyPlan({ endSection }) {
                                         <div className={"border w-full dark:border-neutral-700" + colorCell} key={"cell_" + i + "_" + j}
                                             style={{ cursor: selecting ? "grabbing" : "pointer" }}
                                             onClick={()=>{insertSlotHour(i,j)}}
+                                            onTouchStart={() =>{console.log("startTouch")}}
+                                            onTouchMove={()=>{console.log("touchMove")}}
+                                            onTouchEnd={()=>{console.log("touchEnd")}}
                                             onPointerDown={(e) => startSelecting(e,i,j)}
                                             onPointerOver={(e) => moveSelecting(e,i,j)}
                                             onPointerUp={(e) => {
@@ -191,13 +197,13 @@ export default function ConfigurationEnergyPlan({ endSection }) {
                 }]
             }
         })
-        fetch("http://localhost:8000/configuration/", {
+        fetch(backend +"/configuration/", {
             method: "PUT",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ data: dataConf })
         })
         if (timeSlots < 3) {
-            const response = await fetch("http://localhost:8000/configuration/cost_slot_3", {
+            const response = await fetch(backend + "/configuration/cost_slot_3", {
                 method: "DELETE",
                 headers: { 'Content-Type': 'application/json' }
             })
@@ -205,7 +211,7 @@ export default function ConfigurationEnergyPlan({ endSection }) {
             console.log(result)
             if (timeSlots < 2) {
                 console.log(timeSlots)
-                const response = await fetch("http://localhost:8000/configuration/cost_slot_2", {
+                const response = await fetch(backend +"/configuration/cost_slot_2", {
                     method: "DELETE",
                     headers: { "Content-Type": 'application/json' }
                 })
@@ -215,23 +221,24 @@ export default function ConfigurationEnergyPlan({ endSection }) {
         }
         const dataCalendar = JSON.stringify({ data: slotWeekHour.map((day) => day.map((hour) => hour)) })
         //before save delete old calendar
-        fetch("http://localhost:8000/calendar", {
+        fetch(backend +"/calendar", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" }
         })
 
-        const responseCalendar = await fetch("http://localhost:8000/calendar", {
+        const responseCalendar = await fetch(backend +"/calendar", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: dataCalendar
         })
         const result = await responseCalendar.json()
+        console.log(result)
         endSection()
     }
 
     useEffect(() => {
         const getConfiguration = async () => {
-            const response = await fetch("http://localhost:8000/configuration/")
+            const response = await fetch(backend +"/configuration/")
             const result = await response.json()
             let updatePrice = [0.0000]
             result.forEach((conf) => {
@@ -249,38 +256,45 @@ export default function ConfigurationEnergyPlan({ endSection }) {
             setPowerPrice([...updatePrice])
         }
         const getCalendar = async () => {
-            const response = await fetch("http://localhost:8000/calendar")
+            const response = await fetch(backend + "/calendar")
             const result = await response.json()
-            setSlotWeekHour([...result.data])
+            if(result.data.length > 0){
+                setSlotWeekHour([...result.data])
+            }
+                
         }
         getCalendar()
         getConfiguration()
     }, [])
 
     return (
-        <div className="size-full flex-col min-w-fit p-2">
+        <div className="size-full flex-col min-w-fit 2xl:p-2">
             <div className="flex size-full min-w-fit ">
                 <div className="flex flex-col h-full min-w-fit w-1/2">
                     {table}
                 </div>
                 <div className="flex flex-col p-1 h-full w-1/2">
                     <div className="flex flex-col size-full justify-start gap-3 2xl:gap-10 2xl:pt-10 ">
-
+                        <p className="dark:text-white 2xl:text-xl ">
+                            To configure energy price slots, first set the meter's maximum power capacity. Then, define the number of slots and enter the cost for each.
+                            To assign slots in the weekly schedule, select the desired slot and click on the cell corresponding to a specific hour and day. 
+                            To apply a slot to all hours of a day, click on that day. To set the same slot for a specific hour across all days, click on the hour instead.
+                        </p>
                         <div className="flex py-1 items-center">
                             <p className="text-xl px-1 dark:text-white">Maximum capacity</p>
                             <input className="px-1 dark:text-white dark:bg-neutral-700" style={{ width: "64px" }} type="number" value={powerCapacity} min="0" max="15" step="0.5" onChange={e => setPowerCapacity(e.target.value)} />
-                            <p className="text-xl px-1">kW</p>
+                            <p className="text-xl px-1 dark:text-white">kW</p>
                         </div>
                         <div className="flex py-1 items-center">
                             <p className="text-xl px-2 dark:text-white">Number of slots</p>
                             <ListButtons dataButtons={dataBtn}
                                 index={timeSlots - 1} vertical={false} />
                         </div>
-                        <div className="flex flex-col 2xl:gap-10">
+                        <div className="flex h-full flex-col 2xl:gap-10">
                             {
                                 powerPrice.map((element, index) => {
                                     return (
-                                        <div className="flex py-3 items-center" key={index}>
+                                        <div className="flex py-3 items-center gap-2" key={index}>
                                             <p className="text-xl px-2 dark:text-white">Slot {index + 1}</p>
                                             <input className="px-1" style={{ width: "128px" }} type="number" value={element} min="0" max="15" step="0.0001"
                                                 onChange={(e) => setInputValue(e, index)}
@@ -292,18 +306,12 @@ export default function ConfigurationEnergyPlan({ endSection }) {
                                                     <FaCalendarPlus />
                                                 </IconContext.Provider>
                                             </Button>
+                                            {currentSlot==index &&
+                                                <p className={"text-lg rounded shadow text-center ml-2 px-2" + colors[currentSlot]}>Insert slot {currentSlot + 1} in calendar</p>
+                                            }
                                         </div>
                                     )
                                 })
-                            }
-                        </div>
-                        <div className={"flex w-full h-full pb-3 items-end 2xl:pb-16 px-1" + (currentSlot >= 0 ? " justify-center " : " justify-start ")}>
-                            {
-                                currentSlot >= 0 ?
-                                    <p className={"text-lg rounded shadow text-center" + colors[currentSlot]}>Insert {currentSlot + 1} slot in calendar</p>
-                                    :
-                                    <p className="dark:text-white text-xl ">Specify the number of available slots. Then, drag and drop the slots into the weekly agenda,
-                                        or simply click on the desired day or hour to assign them. Adjust and organize your schedule as needed.</p>
                             }
                         </div>
                         <div className="flex w-full h-min py-3 items-end justify-center">

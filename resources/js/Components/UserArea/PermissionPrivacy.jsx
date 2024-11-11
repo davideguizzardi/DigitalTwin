@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useEffect } from "react"
 import { useContext } from "react"
 import WhiteCard from "../Commons/WhiteCard"
+import { backend } from "../Commons/Constants"
 
 export default function PermissionPrivacy() {
     const user = useContext(UserContext)
@@ -11,19 +12,22 @@ export default function PermissionPrivacy() {
 
     const fetchPrivacy = async () => {
         if(!user.username) return null
-        const response = await fetch("http://localhost:8000/user/preferences")
+        const response = await fetch(backend + "/user/preferences")
         if(response.ok){
             const result = await response.json()
-            const userData = result.filter(e => e.user_id == user.username)[0]
-            const updatePrivacy = {
-                privacy_disclosure: userData.data_disclosure,
-                privacy_collection: userData.data_collection 
+            const userData = result.filter(e => e.user_id == user.username)
+            console.log(userData)
+            if (userData.lenght > 0) {
+                const updatePrivacy = {
+                    privacy_disclosure: userData[0].data_disclosure,
+                    privacy_collection: userData[0].data_collection
+                }
+                setPrivacy(updatePrivacy)
             }
-            setPrivacy(updatePrivacy)
         }
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchPrivacy()
     },[user])
 
@@ -32,11 +36,11 @@ export default function PermissionPrivacy() {
     }
 
     const handlePrivacyDisclosure = (cond) =>{
-        setPrivacy({...privacy, privacy_collection: cond})
+        setPrivacy({...privacy, privacy_disclosure: cond})
     }
 
     return (
-        <WhiteCard className="flex flex-col h-full dark:text-white">
+        <div className="flex flex-col h-full dark:text-white">
             <h1 className="text-2xl p-2 dark:text-white">Privacy consent</h1>
             <div className="flex flex-col h-full justify-around">
                 <div className="flex flex-col">
@@ -70,6 +74,6 @@ export default function PermissionPrivacy() {
                     </div>
                 </div>
             </div>
-        </WhiteCard>
+        </div>
     )
 }

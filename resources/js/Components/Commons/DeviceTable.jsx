@@ -6,7 +6,7 @@ import DeviceRecord from "./DeviceRecord";
 export function DeviceTable({ deviceContext }) {
     const [deviceList, setDeviceList] = useState([])
     const [searchQuery, setSearchQuery] = useState("")
-
+    console.log(deviceContext)
     useEffect(() => {
         setDeviceList(deviceContext)
     }, [deviceContext])

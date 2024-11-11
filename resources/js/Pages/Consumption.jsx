@@ -63,7 +63,6 @@ export default function Consumption() {
         ),
         "Predicted consumption": (<TotalConsumptionGraph device_id={""} device_name={""} />),
         "Consumption comparison": (<ConsumptionComparisonGraph device_id={""} device_name={""} />),
-        "Consumption per device": (<ConsumptionComparisonGraph device_id={""} device_name={""} />)
     }
 
     return (

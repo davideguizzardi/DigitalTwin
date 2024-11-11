@@ -2,9 +2,11 @@ import WhiteCard from "@/Components/Commons/WhiteCard"
 import { animate, AnimatePresence, motion, useAnimate } from "framer-motion"
 import { useRef } from "react"
 import { useState } from "react"
+import { useSwipeable } from "react-swipeable"
 
 export default function TabLayout({sections}){
     const titles = Object.keys(sections)
+    const sizeSection = titles.length
     const [tab, setTab] = useState(0)
     const [previousTab, setPreviousTab] = useState(0)
     
@@ -36,7 +38,9 @@ export default function TabLayout({sections}){
         }
     }
 
-    const handleClickTab = (ntab) => {
+
+
+    const changeTab = (ntab) => {
         if (ntab != tab) {
             animate(".custom-tab",
                 { x: (tab < ntab ? -offset : offset) },
@@ -47,6 +51,31 @@ export default function TabLayout({sections}){
         }
     }
 
+    const swipeNext = (cond = true) =>{
+        if(cond && tab < sizeSection -1){
+            changeTab(tab+1)
+        }else if(cond){
+            animate(".custom-tab",
+                { x: [0, -offset/3, 0]},
+                {duration: 0.50}
+            )
+        }else if(tab > 0){
+
+            changeTab(tab-1)
+        }else{
+            animate(".custom-tab",
+                { x: [0, offset/3, 0]},
+                {duration: 0.50}
+            )
+        }
+
+    }
+
+    const handleSwipeTab = useSwipeable({
+        onSwipedLeft: () => swipeNext(true),
+        onSwipedRight: () => swipeNext(false)
+    })
+
     return (
         <WhiteCard className="flex-col size-full gap-1 ">
             <div className="flex w-full h-min border-b-2 border-slate-200 dark:border-neutral-800">
@@ -54,7 +83,7 @@ export default function TabLayout({sections}){
                     titles.map((title, index) => (
                         <div className="flex flex-col items-center w-full"
                             style={{cursor: "pointer"}}
-                            onClick={()=> handleClickTab(index)}
+                            onClick={()=> changeTab(index)}
                             key={index}
                         >
                             <h1 className="text-2xl py-2 dark:text-white text-center h-full">
@@ -72,20 +101,22 @@ export default function TabLayout({sections}){
                 }
             </div>
             <div className="flex w-full h-full">
-                <AnimatePresence>
-                    {
-                        sections[titles[tab]] &&
-                        <motion.div className="flex size-full custom-tab"
-                            key={tab}
-                            variants={variants}
-                            initial="initial"
-                            animate="animate"
-                            exit="exit"
+                <div className="size-full" {...handleSwipeTab}>
+                    <AnimatePresence>
+                        {
+                            sections[titles[tab]] &&
+                            <motion.div className="flex size-full custom-tab"
+                                key={tab}
+                                variants={variants}
+                                initial="initial"
+                                animate="animate"
+                                exit="exit"
                             >
                                 {sections[titles[tab]]}
-                        </motion.div>
-                    }
-                </AnimatePresence>
+                            </motion.div>
+                        }
+                    </AnimatePresence>
+                </div>
             </div>
 
         </WhiteCard>

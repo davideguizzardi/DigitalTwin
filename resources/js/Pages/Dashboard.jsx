@@ -10,7 +10,7 @@ import { AnimatePresence } from "framer-motion";
 import AnimateMap2 from "@/Components/Commons/AnimateMap2";
 import WhiteCard from "@/Components/Commons/WhiteCard";
 import { IconContext } from "react-icons";
-
+import { backend } from "@/Components/Commons/Constants";
 
 const Dashboard = ({ maps, token }) => {
     const [homeContext, setHomeContext] = useState({})
@@ -20,8 +20,9 @@ const Dashboard = ({ maps, token }) => {
 
     useEffect(() => {
         const fetchDeviceContext = async () => {
-            const response = await fetch("http://localhost:8000/virtual/device")
+            const response = await fetch(backend + '/device')
             const result = await response.json()
+            console.log(result)
             setDeviceContext(result)
         }
         fetchDeviceContext()
@@ -29,7 +30,7 @@ const Dashboard = ({ maps, token }) => {
 
     useEffect(() => {
         const fetchHomeContext = async () => {
-            const response = await fetch("http://localhost:8000/virtual/home")
+            const response = await fetch(backend + "/virtual/home")
             const result = await response.json()
             setHomeContext(result)
         }
@@ -38,8 +39,8 @@ const Dashboard = ({ maps, token }) => {
 
 
     useEffect(() => {
-        const fetchAppliance = async () => {
-            const response = await fetch("http://localhost:8000/map")
+        const fetchMap = async () => {
+            const response = await fetch(backend + "/map")
             response.json().then((result) => {
                 const updateState = result.map((e) => {
                     return {
@@ -52,7 +53,7 @@ const Dashboard = ({ maps, token }) => {
                 setAppliance([...updateState])
             })
         }
-        fetchAppliance()
+        fetchMap()
         Cookies.set("auth-token", token)
     }, [])
 

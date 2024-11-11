@@ -52,7 +52,7 @@ export default function ModalUploadMap({ open, saveCallback, cancelCallback, ind
             <Modal.Body>
                 <div className="flex flex-col h-3/6">
                     <div className="flex w-full h-fit pb-4 gap-2 justify-center items-center ">
-                        <p>Floor number</p>
+                        <p className="dark:text-white">Floor number</p>
                         <input type="number" defaultValue="0" min="-5" max="5" onChange={e => setFloor(e.target.value)}/>
                     </div>
                     <div className="flex justify-center">

@@ -23,7 +23,7 @@ export default function Preferences({ }) {
     const user = useContext(UserContext)
     const [items, setItems] = useState([])
     const colors = ["#d9f99d", "#bef264", "#84cc16", "#4d7c0f"]
-    
+
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
@@ -41,30 +41,37 @@ export default function Preferences({ }) {
     }
 
     const fetchItems = async () => {
-        if(!user.username) return null 
+        if (!user.username) return null
         const response = await fetch("http://localhost:8000/user/preferences")
         if (response.ok) {
             const result = await response.json()
-            const updatePreferences = result.filter(e => e.user_id == user.username)[0].preferences
-            setItems(updatePreferences)
+            console.log(result)
+            const filterResult = result.filter(e => e.user_id == user.username)
+            if (filterResult.lenght > 0) {
+                const updatePreferences = filterResult[0].preferences
+                setItems(updatePreferences)
+            }
+            else
+                setItems(["Health", "Security", "Entertainment", "Study"])
         } else {
+            setItems(["Health", "Security", "Entertainment", "Study"])
         }
     }
-    
-    useEffect(()=>{
+
+    useEffect(() => {
         fetchItems()
-        return () =>{}
+        return () => { }
     }, [user])
 
     return (
-        <div className="flex flex-col p-2 gap-1">
-                <h1 className="text-2xl dark:text-white">Preferences</h1>
-                <p className='dark:text-white'>Arrange the cards in order of importance, from the most important to the least important.  
-                    <span className='font-bold'> Drag</span> each card by clicking and holding it, then <span className='font-bold'>drop</span> it into the position
-                    you believe is correct. Continue adjusting the cards until all are in the proper order.</p>
-            <div className="flex flex-col h-full justify-center items-center gap-2">
+        <div className="flex flex-col h-full p-2 gap-1">
+            <h1 className="text-2xl dark:text-white">Preferences</h1>
+            <p className='dark:text-white'>Arrange the cards in order of importance, from the most important to the least important.
+                <span className='font-bold'> Drag</span> each card by clicking and holding it, then <span className='font-bold'>drop</span> it into the position
+                you believe is correct. Continue adjusting the cards until all are in the proper order.</p>
+            <div className="flex flex-col h-full justify-center items-center gap-1">
                 <h1 className='dark:text-white text-xl'>Most important</h1>
-                <div className="flex w-full h-3/4 justify-center gap-3 p-1">
+                <div className="flex w-full h-3/4 justify-center gap-2 p-1">
                     <div className="flex flex-col px-2 bg-gradient-to-b from-lime-100 to-lime-900 rounded"></div>
                     <div className="flex flex-col gap-2 h-full">
 

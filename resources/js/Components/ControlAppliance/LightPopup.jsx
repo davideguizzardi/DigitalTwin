@@ -6,6 +6,8 @@ import { SliderPicker } from "react-color";
 import { MdBrightness6 } from "react-icons/md";
 import { IoIosColorPalette } from "react-icons/io";
 
+import { backend } from "../Commons/Constants";
+
 export function LightPopup({ selectedEntity, open, closeFun }) {
     const [entityId, setEntityId] = useState(null)
     const [friendlyName, setFriendlyName] = useState("")
@@ -30,9 +32,8 @@ export function LightPopup({ selectedEntity, open, closeFun }) {
         body["entity_id"] = entityId
         body["service"] = service
         body["data"] = data;
-        body["user"]="Davide" //TODO: Mettere il nome giusto
-        /*
-        const response = await fetch(`http://127.0.0.1:8000${"/service"}`, {
+        body["user"]="mauro" //TODO: Mettere il nome giusto
+        const response = await fetch(backend + `${"/service"}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -41,20 +42,20 @@ export function LightPopup({ selectedEntity, open, closeFun }) {
         });
         if (response.ok) {
             const updated_entity = await response.json();
+            console.log(updated_entity)
             setEntityValues(updated_entity[0])
         }
         else {
             alert("Error")
         }
-            */
     }
 
     function setEntityValues(entity_in){
-        if (entity_in) {
+        if (entity_in && entity_in.attributes ) {
             setEntityId(entity_in.entity_id)
             setLightOn(entity_in.state == "on")
-            if (entity_in.friendly_name){
-                setFriendlyName(entity_in.friendly_name)
+            if (entity_in.attributes.friendly_name){
+                setFriendlyName(entity_in.attributes.friendly_name)
             }
             setBrightnessSupported("brightness" in entity_in.attributes)
             if (entity_in.attributes.brightness)
@@ -73,7 +74,7 @@ export function LightPopup({ selectedEntity, open, closeFun }) {
     }
 
     const initializeEntity = async () =>{
-        const response = await fetch(`http://127.0.0.1:8000${"/virtual/entity/"+selectedEntity}`, {
+        const response = await fetch(backend + "/entity/"+selectedEntity, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -82,6 +83,7 @@ export function LightPopup({ selectedEntity, open, closeFun }) {
         });
         if (response.ok) {
             const entity_in = await response.json();
+            console.log(entity_in)
             setEntityValues(entity_in)
         }
         else {
@@ -135,7 +137,7 @@ export function LightPopup({ selectedEntity, open, closeFun }) {
     useEffect(() => {
         if(selectedEntity!="")
             initializeEntity(selectedEntity)
-    }, [selectedEntity])
+    }, [selectedEntity, open])
 
     return (
         <Modal className="rounded" popup show={open} size="lg" onClose={() => resetPopup()}>
@@ -154,7 +156,7 @@ export function LightPopup({ selectedEntity, open, closeFun }) {
                                         onClick={() => callService("toggle", {})}>
                                         <FaPowerOff className="size-8" />
                                     </Button>
-                                    {!lightOn &&
+                                    {lightOn &&
                                         <div className="flex gap-1">
                                             {brightnessSupported &&
                                                 <Button
@@ -184,12 +186,15 @@ export function LightPopup({ selectedEntity, open, closeFun }) {
                                             }
                                         </div>
 
+                                    }{
+                                        lightOn=="unavailable" &&
+                                        <h1>Device is unavailable</h1>
                                     }
                                 </div>
                             </div>
                         </div>
                     </div>
-                    {brightnessTab && !lightOn && brightnessSupported &&
+                    {brightnessTab && lightOn && brightnessSupported &&
                         <div className="flex flex-row mt-10 items-center">
                             <Slider
                                 value={brightness}
@@ -217,7 +222,7 @@ export function LightPopup({ selectedEntity, open, closeFun }) {
                             </div>
                         </div>
                     }
-                    {colorTab && !lightOn && colorSupported &&
+                    {colorTab && lightOn && colorSupported &&
                         <div className="mt-10">
                             <SliderPicker
                                 onChangeComplete={() => callService("turn_on", { "rgb_color": [red, green, blue] })}
@@ -226,7 +231,7 @@ export function LightPopup({ selectedEntity, open, closeFun }) {
                             />
                         </div>
                     }
-                    {temperatureTab && !lightOn && temperatureSupported &&
+                    {temperatureTab && lightOn && temperatureSupported &&
                         <div className="flex flex-row mt-10 items-center">
                             <Slider
                                 value={temperature}

@@ -111,7 +111,7 @@ export default function Sidebar() {
                 >
                     Consumption
                 </motion.a>
-                <motion.a href={"#"} className="bg-slate-100  dark:bg-neutral-700 dark:text-white  rounded p-3 pr-32 text-3xl size-min "
+                <motion.a href={route("automation")} className="bg-slate-100  dark:bg-neutral-700 dark:text-white  rounded p-3 pr-32 text-3xl size-min "
                     style={styleEntry} variants={entry} initial={false}
                 >
                     Automations

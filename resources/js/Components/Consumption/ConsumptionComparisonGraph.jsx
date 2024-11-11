@@ -239,23 +239,28 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
 
         </div>
       </div>
-      <div className="pl-3 flex h-full items-center">
-        <BarChart
-          className=""
-          dataset={dataset}
-          xAxis={[{
-            scaleType: 'band', dataKey: 'date', colorMap: {
-              type: 'ordinal',
-              colors: ['#a3e635', '#65A30D']
-            }
-          }]}
-          yAxis={[{ valueFormatter: valueFormatter }]}
-          series={[{ dataKey: "energy_consumption", valueFormatter }]}
-          borderRadius={4}
-          height={heightGraph}
-          margin={{ left: 70 }}
-          sx={sxGraph}
-        />
+      <div className="pl-3 flex h-full items-center dark:text-white justify-center">
+        {
+          dataset.length > 0 ?
+            <BarChart
+              className=""
+              dataset={dataset}
+              xAxis={[{
+                scaleType: 'band', dataKey: 'date', colorMap: {
+                  type: 'ordinal',
+                  colors: ['#a3e635', '#65A30D']
+                }
+              }]}
+              yAxis={[{ valueFormatter: valueFormatter }]}
+              series={[{ dataKey: "energy_consumption", valueFormatter }]}
+              borderRadius={4}
+              height={heightGraph}
+              margin={{ left: 70 }}
+              sx={sxGraph}
+            />
+            :
+            <h1>No data present</h1>
+        }
       </div>
     </div>
   )

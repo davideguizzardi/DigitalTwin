@@ -12,19 +12,19 @@ export default function ({ state, setState }) {
                 >
                     <FaHouse size={32}></FaHouse>
                 </div>
-                <div className={"w-full p-2 mx-2 rounded " + (state > 0 ? "bg-lime-400" : "bg-gray-300 dark:bg-neutral-800")}></div>
+                <div className={"w-full p-2 mx-2 rounded " + (state > 0 ? "bg-lime-400" : "bg-gray-300 dark:bg-neutral-700")}></div>
                 <div className={"rounded-full p-1 size-min border solid " + (state > 0 ? "bg-lime-400" : "bg-gray-300")}
                     onClick={() => setState(1)}
                 >
                     <FaLightbulb size={32}></FaLightbulb>
                 </div>
-                <div className={"w-full p-2 mx-2 rounded " + (state > 1 ? "bg-lime-400" : "bg-gray-300")}></div>
+                <div className={"w-full p-2 mx-2 rounded " + (state > 1 ? "bg-lime-400" : "bg-gray-300 dark:bg-neutral-700")}></div>
                 <div className={"rounded-full p-1 size-min border solid " + (state > 1 ? "bg-lime-400" : "bg-gray-300")}
                     onClick={() => setState(2)}
                 >
                     <FaBolt size={32}></FaBolt>
                 </div>
-                <div className={"w-full p-2 mx-2 rounded " + (state > 2 ? "bg-lime-400" : "bg-gray-300")}></div>
+                <div className={"w-full p-2 mx-2 rounded " + (state > 2 ? "bg-lime-400" : "bg-gray-300 dark:bg-neutral-700")}></div>
                 <div className={"rounded-full p-1 size-min border solid " + (state > 2 ? "bg-lime-400" : "bg-gray-300")}
                     onClick={() => setState(3)}
                 >

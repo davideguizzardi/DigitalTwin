@@ -24,8 +24,8 @@ const FirstConfiguration = () => {
             case STATE_CONFIGURATION_ENERGY_PLAN:
                 return <ConfigurationEnergyPlan endSection={() => setProgressState(STATE_FINISH)}/>;
             case STATE_FINISH:
-                return <WhiteCard className="flex-col gap-5 py-5">
-                    <div className="h-5/6 flex justify-center items-center">
+                return <WhiteCard className="flex-col size-full gap-5 py-5">
+                    <div className="h-5/6 flex dark:text-white justify-center items-center text-3xl">
                         <h1>Configuration complete</h1>
                     </div>
                     <div className="w-full flex justify-center">

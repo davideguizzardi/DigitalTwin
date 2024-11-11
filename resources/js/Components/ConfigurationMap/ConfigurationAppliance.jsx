@@ -10,7 +10,7 @@ import AnimateMap from "../Commons/AnimateMap";
 import AnimateMap2 from "../Commons/AnimateMap2";
 import WhiteCard from "../Commons/WhiteCard";
 import { useSwipeable } from "react-swipeable";
-
+import { backend } from "../Commons/Constants";
 const token = Cookies.get("auth-token")
 
 export default function ConfigurationAppliance({ editMode, endSection }) {
@@ -172,7 +172,7 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
                 floor: e.floor
             }
         })
-        const response = await fetch("http://localhost:8000/map", {
+        const response = await fetch(backend + "/map", {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -211,7 +211,7 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
 
     useEffect(() => {
         const fetchApplOnFloor = async () => {
-            const response = await fetch("http://localhost:8000/map", {
+            const response = await fetch(backend + "/map", {
                 headers: { 'Authorization': 'Bearer ' + token }
             })
             response.json().then((result) => {
@@ -223,9 +223,11 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
                         floor: e.floor
                     }
                 })
+                console.log(updateState)
                 setApplOnFloor([...updateState])
                 setFirst(false)
             })
+            
         }
         fetchApplOnFloor()
         refApplOnfFloor.current = applOnFloor
@@ -233,18 +235,19 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
 
     useEffect(() => {
         const fetchUnconfAppl = async () => {
-            const response = await fetch("http://localhost:8000/virtual/entity", {
+            const response = await fetch(backend + "/device", {
                 headers: { 'Authorization': 'Bearer ' + token }
             })
             const result = await response.json()
+            console.log(result)
             const updateState = result.filter((appl) => {
-                return !applOnFloor.some(e => appl.entity_id == e.id)
-            }).map(e => e.entity_id).sort()
+                return appl.state_entity_id!="" && !applOnFloor.some(e => appl.state_entity_id == e.id)
+            }).map(e => e.state_entity_id).sort()
             setUnconfAppl([...updateState])
             refUnconfAppl.current = [...updateState]
         }
         fetchUnconfAppl()
-    }, [])
+    }, [applOnFloor])
     return (
         <div className="relative flex size-full" ref={configRef} >
             <div className="flex flex-col size-full px-3 justify-around">

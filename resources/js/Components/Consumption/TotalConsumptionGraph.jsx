@@ -15,7 +15,6 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
   const [devicesList, setDeviceList] = useState([])
 
   const heightGraph = window.innerHeight > 1000 ? 800 : 550
-  console.log(heightGraph)
   const isDark = localStorage.getItem("darkMode") =="true"
   const sxDatePicker = {
     '.MuiInputBase-root': {
@@ -157,8 +156,6 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
     setLoading(false)
   }
 
-
-
   useEffect(() => {
     setLoading(true)
     fetchConsumption()
@@ -252,19 +249,24 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
 
         </div>
       </div>
-      <div className="pl-3 flex h-full items-center">
-        <BarChart
-          className=""
-          dataset={dataset}
-          xAxis={[{ scaleType: 'band', dataKey: 'date' }]}
-          yAxis={[{ valueFormatter: valueFormatter }]}
-          series={[{ dataKey: "energy_consumption", color: '#a3e635', valueFormatter }]}
-          borderRadius={4}
-          margin={{ left: 70 }}
-          height={heightGraph}
-          onItemClick={(event, params) => handleItemClick(params)}
-          sx={sxGraph}
-        />
+      <div className="pl-3 flex h-full items-center justify-center dark:text-white">
+        {
+          dataset.length > 0 ?
+            <BarChart
+              className=""
+              dataset={dataset}
+              xAxis={[{ scaleType: 'band', dataKey: 'date' }]}
+              yAxis={[{ valueFormatter: valueFormatter }]}
+              series={[{ dataKey: "energy_consumption", color: '#a3e635', valueFormatter }]}
+              borderRadius={4}
+              margin={{ left: 70 }}
+              height={heightGraph}
+              onItemClick={(event, params) => handleItemClick(params)}
+              sx={sxGraph}
+            />
+            :
+            <h1>No data present</h1>
+        }
       </div>
     </div>
   )

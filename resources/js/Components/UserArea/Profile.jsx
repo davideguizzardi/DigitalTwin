@@ -28,23 +28,23 @@ export default function Profile({ }) {
         <div className="flex flex-col size-full">
             {visiblePassword && <ModalChangePassword closeCallback={closePasswordCallback} />}
             {visiblePhoto && <ModalUploadPhoto closeCallback={closePhotoCallback} />}
-            <div className="flex p-2 gap-1 border-0 ">
-                <div className="relative flex h-fit w-1/6 items-center justify-center bg-gray-300 dark:bg-neutral-700 rounded-full">
+            <div className="flex p-2 gap-4 border-0 ">
+                <div className="relative flex h-min items-center justify-center bg-gray-300 dark:bg-neutral-700 rounded-full" style={{width: "13%"}}>
                     {user.url_photo != null && user.url_photo != undefined && user.url_photo != "" ?
                         <img className="rounded-full p-3 2xl:p-5 aspect-square" src={user.url_photo} />
                         :
-                        <IconContext.Provider value={{ color: (darkMode ? "white" : "black") }}>
-                            <FaUser className="rounded-full p-5" size={42} />
+                        <IconContext.Provider value={{ color: (darkMode ? "white" : "black"), size: 150 }}>
+                            <FaUser className="rounded-full p-5" />
                         </IconContext.Provider>
                     }
                     <div className="absolute top-0 2xl:top-3 right-0 2xl:right-3 p-2 2xl:p-3 rounded-full border border-neutral-600 z-100 bg-lime-400"
                         style={{ cursor: "pointer" }}
                         onClick={() => { isVisiblePhoto(true) }}
                     >
-                        <FaCamera size={36} />
+                        <FaCamera size={24} />
                     </div>
                 </div>
-                <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-2">
                     <div className="text-2xl px-2 pt-5 dark:text-white w-full">
                         {user.username}
                     </div>

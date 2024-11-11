@@ -5,6 +5,7 @@ import { useState } from "react"
 import { useEffect } from "react"
 import { MediaPlayerPopup } from "../ControlAppliance/MediaPlayerPopup"
 import ControlPopup from "../ControlAppliance/ControlPopup"
+import { getIcon } from "./Constants"
 
 export default function CardAppliance({ appliancePos }) {
     const [openControl, isOpenControl] = useState(false)
