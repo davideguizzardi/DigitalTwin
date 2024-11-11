@@ -1,5 +1,5 @@
 services:
-    laravel.test:
+    frontend:
         build:
             context: ./vendor/laravel/sail/runtimes/8.3
             dockerfile: Dockerfile
@@ -23,10 +23,7 @@ services:
             - sail
         depends_on:
             - mysql
-            - redis
-            - meilisearch
             - mailpit
-            - selenium
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -39,7 +36,7 @@ services:
             MYSQL_PASSWORD: '${DB_PASSWORD}'
             MYSQL_ALLOW_EMPTY_PASSWORD: 1
         volumes:
-            - 'sail-mysql:/var/lib/mysql'
+            - 'sail-vol:/var/lib/mysql'
             - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
         networks:
             - sail
@@ -56,11 +53,30 @@ services:
         ports:
             - '${FORWARD_MAILPIT_PORT:-1025}:1025'
             - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
+    digital-twin-api:
+        build: './vendor/digitaltwin/'
+        ports:
+            - '8000:8000'
+        networks:
+            - sail
+        depends_on:
+            - homeassitant
+    homeassitant:
+        container_name: homeassistant
+        image: "ghcr.io/home-assistant/home-assistant:stable"
+        volumes:
+            - 'sail-vol:/config'
+            - '/etc/localtime:/etc/localtime:ro'
+            - '/run/dbus:/run/dbus:ro'
+        privileged: true
+        ports:
+            - '8123:8123'
+            - '5683:5683'
         networks:
             - sail
 networks:
     sail:
         driver: bridge
 volumes:
-    sail-mysql:
+    sail-vol:
         driver: local
