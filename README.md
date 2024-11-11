@@ -51,6 +51,10 @@ Create the database tables based on your migration files
 
 ``` sail artisan migrate ```
 
+**8. Add digital twin inside vendor**
+
+Download [Digital Twin API](https://github.com/davideguizzardi/Digital-Twin-API/tree/docker) and copy it into the vendor folder, renaming it to digitaltwin. Important to download branch ```docker``` because there are ```Dockerfile``` and ```requirements.txt``` to build the container.
+
 ## Usage
 
 ### Start Application
