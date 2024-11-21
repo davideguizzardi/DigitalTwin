@@ -167,8 +167,8 @@ export function AutomationDetails({ automation_in }) {
                         <h2 className="text-xl font-normal">Do</h2>
                         <div className="flex flex-col gap-1">
                             {
-                                automation.action.map(action => (
-                                    <div className={block_class}>
+                                automation.action.map((action, i) => (
+                                    <div className={block_class} key={i + "_" +action.device_name}>
                                             {getIcon(action.domain)}{formatServiceName(action.service)} "{action.device_name}"
                                         </div>
                                     ))

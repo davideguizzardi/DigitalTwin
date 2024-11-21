@@ -172,8 +172,8 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
   //        <h1 className="text-gray-800 text-base font-semibold font-[Inter]">{deviceName}</h1>
   return (
     <div className="size-full rounded-lg shadow-md flex flex-col">
-      <div className="grid grid-cols-5 mx-3 my-2 items-center">
-        <div className="flex flex-row gap-2 col-span-1">
+      <div className="flex w-full mx-3 my-2 items-center justify-center gap-4">
+        <div className="flex flex-row gap-2 ">
           <div className="flex flex-col w-fit">
 
             <Label htmlFor="device" value="Energy consumption of" />
@@ -188,7 +188,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
             </Select>
           </div>
         </div>
-        <div className="flex flex-row gap-6 items-center justify-end flex-wrap col-span-4">
+        <div className="flex flex-row gap-6 h-full items-end justify-end">
           <div className="flex flex-row gap-2 items-center">
             {group == "hourly" &&
               <DatePicker value={from} size='medium' className="w-40 focus:ring-0" label={'day'} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => { setFrom(val); setTo(val) }}

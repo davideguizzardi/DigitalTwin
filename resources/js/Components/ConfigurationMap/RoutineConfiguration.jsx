@@ -3,6 +3,7 @@ import { useState } from "react";
 import { FaLightbulb, FaBolt } from "react-icons/fa6";
 import ConfigurationAppliance from "./ConfigurationAppliance";
 import ConfigurationEnergyPlan from "./ConfigurationEnergyPlan";
+import ConfigurationEnergy from "./ConfigurationEnergy";
 import { AnimatePresence, delay, motion } from "framer-motion";
 import TabLayout from "@/Layouts/TabLayout";
 import SubMenuLayout from "@/Layouts/SubMenuLayout";
@@ -18,7 +19,7 @@ export default function RoutineConfiguration() {
         "Configure Appliance" : 
             (<ConfigurationAppliance editMode={true} endSection={endSection} />),
         "Configure Energy Plan" :
-            (<ConfigurationEnergyPlan endSection={endSection} />)
+            (<ConfigurationEnergy endSection={endSection} />)
     }
 
     const variantsAppliance = {

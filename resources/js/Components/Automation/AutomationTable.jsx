@@ -15,7 +15,6 @@ export function AutomationTable({ automation_context }) {
     const [currentDay, setCurrentDay] = useState("")
 
 
-
     const handleSwitchChange = async (event, entity_id) => {
         const checked = event.target.checked;
         let service = "turn_off"
@@ -43,6 +42,8 @@ export function AutomationTable({ automation_context }) {
 
     useEffect(() => {
         setAutomationList(automation_context)
+        if (automation_context.length > 0)
+            setOpenAutomation(automation_context[0])
     }, [automation_context])
 
     return (
@@ -58,8 +59,8 @@ export function AutomationTable({ automation_context }) {
                                 .filter(a => a.name.toUpperCase().includes(searchQuery.toUpperCase()))
                                 .map(automation => (
                                     <List.Item key={automation.id} >
-                                        <div className="grid grid-cols-6 gap-3 items-center m-3  text-sm">
-                                            <div className="col-span-3 flex flex-row gap-3 hover:cursor-pointer" onClick={() => setOpenAutomation(automation)}>
+                                        <div className="grid grid-cols-8 gap-3 items-center m-3  text-sm">
+                                            <div className="col-span-4 flex flex-row gap-3 hover:cursor-pointer" onClick={() => setOpenAutomation(automation)}>
                                                 <p className={openAutomation==automation? "font-bold":"font-semibold"}>{automation.name}</p>
                                                 {automation.suggestions.length > 0 &&
                                                     <Tooltip content="Green suggestions are available">
@@ -67,6 +68,9 @@ export function AutomationTable({ automation_context }) {
                                                     </Tooltip>
 
                                                 }
+                                            </div>
+                                            <div className="flex justify-end" onClick={() => setOpenAutomation(automation)} style={{cursor:"pointer"}}>
+                                                {getIcon("info")}
                                             </div>
                                             <div className="">
 

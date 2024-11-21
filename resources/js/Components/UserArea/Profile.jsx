@@ -1,6 +1,6 @@
 import { UserContext } from "@/Layouts/UserLayout";
 import { useContext } from "react";
-import { FaLock, FaCamera, FaUser } from "react-icons/fa6"
+import { FaLock, FaCamera, FaUser, FaPencil } from "react-icons/fa6"
 import { IconContext } from "react-icons";
 import Preferences from "./Preferences";
 import { useState } from "react";
@@ -41,7 +41,7 @@ export default function Profile({ }) {
                         style={{ cursor: "pointer" }}
                         onClick={() => { isVisiblePhoto(true) }}
                     >
-                        <FaCamera size={24} />
+                        <FaPencil size={24} />
                     </div>
                 </div>
                 <div className="flex flex-col gap-2">

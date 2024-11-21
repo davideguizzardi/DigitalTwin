@@ -176,8 +176,8 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
   //        <h1 className="text-gray-800 text-base font-semibold font-[Inter]">{deviceName}</h1>
   return (
     <div className="rounded-lg shadow-md size-full flex flex-col">
-      <div className="grid grid-cols-5 mx-6 my-2 items-center">
-        <div className="flex flex-col gap-2 col-span-1">
+      <div className="flex w-full items-center justify-center mx-6 my-2 gap-4">
+        <div className="flex flex-col gap-2">
 
 
           <Label htmlFor="device" value="Energy consumption of" />
@@ -191,7 +191,7 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
             }
           </Select>
         </div>
-        <div className="flex flex-row gap-6 items-center justify-end flex-wrap col-span-4">
+        <div className="flex flex-row gap-6 h-full items-end justify-end pt-1">
           <div className="flex flex-row gap-2 items-center dark:text-white">
             {group == "daily" &&
               <>
