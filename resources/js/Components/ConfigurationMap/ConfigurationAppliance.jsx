@@ -11,6 +11,8 @@ import AnimateMap2 from "../Commons/AnimateMap2";
 import WhiteCard from "../Commons/WhiteCard";
 import { useSwipeable } from "react-swipeable";
 import { backend } from "../Commons/Constants";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+
 const token = Cookies.get("auth-token")
 
 export default function ConfigurationAppliance({ editMode, endSection }) {
@@ -26,6 +28,7 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
     const [previousIndex, setPreviousIndex] = useState(0)
     const [first, setFirst] = useState(true)
     const [openModal, setOpenModal] = useState(false)
+    const {t} = useLaravelReactI18n()
     let dataBtn = []
     
     const offset = 100
@@ -235,7 +238,7 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
 
     useEffect(() => {
         const fetchUnconfAppl = async () => {
-            const response = await fetch(backend + "/device", {
+            const response = await fetch(backend + "/virtual/device", {
                 headers: { 'Authorization': 'Bearer ' + token }
             })
             const result = await response.json()
@@ -246,17 +249,18 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
             setUnconfAppl([...updateState])
             refUnconfAppl.current = [...updateState]
         }
-        fetchUnconfAppl()
+        //if(applOnFloor.length > 0)
+            fetchUnconfAppl()
     }, [applOnFloor])
     return (
         <div className="relative flex size-full" ref={configRef} >
             <div className="flex flex-col size-full px-3 justify-around">
                 <Modal size="3xl" show={openModal} onClose={() => setOpenModal(false)}>
-                    <Modal.Header>Unconfigured Appliances</Modal.Header>
+                    <Modal.Header>{t("Unconfigured Appliances")}</Modal.Header>
                     <Modal.Body>
                         <div className="flex flex-col h-3/6">
                             <div className="flex w-full h-fit pb-4 gap-2 justify-center items-center text-white">
-                                <p>Those appliances are not configured</p>
+                                <p>{t("Those appliances are not configured")}</p>
                             </div>
                             <div className="w-full h-full p-5">
                                 <ListAppliances appliances={unconfAppl} dragConstraints={configRef}
@@ -264,20 +268,20 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
                                 />
                             </div>
                             <div className="flex items-center justify-around p-2 mt-2">
-                                <ThemeButton className="text-lg" onClick={() => { setOpenModal(false) }}>Cancel</ThemeButton>
+                                <ThemeButton className="text-lg" onClick={() => { setOpenModal(false) }}>{t("Cancel")}</ThemeButton>
                                 <ThemeButton className="text-lg" onClick={() => {
                                     deleteUnconfAppl()
                                     putApplOnFloor()
                                     setOpenModal(false)
                                     endSection()
-                                }}>Save</ThemeButton>
+                                }}>{t("Save")}</ThemeButton>
                             </div>
                         </div>
                     </Modal.Body>
                 </Modal>
                 <div className="flex w-full">
                     <div className="w-3/5 h-full flex justify-center items-center">
-                        <div className="relative size-full flex justify-center items-center shadow">
+                        <div className="relative flex justify-center items-center shadow">
                             <div {...handlerSwipe}>
                                 <AnimatePresence>
                                     {maps[indexImg] &&
@@ -304,19 +308,19 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
 
                         <motion.div className="flex flex-col justify-center items-center w-min m-2 p-1 rounded-full"
                         >
-                            <p className="dark:text-white">Floors</p>
+                            <p className="dark:text-white">{t("Floors")}</p>
                             <ListButtons dataButtons={dataBtn} index={indexImg} />
                         </motion.div>
                     </div>
                     <div className="w-2/5" style={{ height: "68vh" }}>
-                        <p className="text-center text-2xl dark:text-white">Appliances</p>
+                        <p className="text-center text-2xl dark:text-white">{t("Appliances")}</p>
                         <ListAppliances appliances={unconfAppl} dragConstraints={configRef} isEditMode={true}
                             addAppl={addUnconfAppl} removeAppl={removeUnconAppl}
                         />
                     </div>
                 </div>
                 <div className="flex items-center justify-center">
-                    <ThemeButton onClick={() => { saveCallback() }}> Save </ThemeButton>
+                    <ThemeButton onClick={() => { saveCallback() }}>{t("Save")}</ThemeButton>
                 </div>
             </div>
         </div>

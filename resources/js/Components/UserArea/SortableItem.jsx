@@ -2,6 +2,7 @@ import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { FaRegHeart, FaShieldHalved, FaMusic, FaBookOpen } from 'react-icons/fa6'
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 export default function SortableItem(props) {
   const {
@@ -11,6 +12,7 @@ export default function SortableItem(props) {
     transform,
     transition,
   } = useSortable({ id: props.id });
+    const {t} = useLaravelReactI18n()
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -25,10 +27,10 @@ export default function SortableItem(props) {
   }
 
   return (
-    <div className='flex rounded h-full shadow hover:z-11 px-5 py-2 text-xl justify-start items-center gap-2'
+    <div className='flex rounded h-full shadow hover:z-11 px-16 py-4 text-xl justify-start items-center gap-2'
       ref={setNodeRef} style={{...style, backgroundColor: props.color}} {...attributes} {...listeners} >
       {icons[props.id]}
-      <h1>{props.id}</h1>
+      <h1>{t(props.id)}</h1>
     </div>
   );
 }

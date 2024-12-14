@@ -3,6 +3,7 @@ import { Spinner, Button, Select, Label } from "flowbite-react";
 import { BarChart } from '@mui/x-charts/BarChart';
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 export function ConsumptionComparisonGraph({ device_name, device_id }) {
   const [date1, setDate1] = useState(dayjs())
@@ -14,6 +15,7 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
   const [deviceId, setDeviceId] = useState("")
   const [devicesList, setDeviceList] = useState([])
 
+  const {t} = useLaravelReactI18n()
   const heightGraph = window.innerHeight > 1000 ? 850 : 500
   const isDark = localStorage.getItem("darkMode") =="true"
 
@@ -103,7 +105,6 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
 
 
   const fetchConsumption = async () => {
-    if (deviceName != "") {
       var url1, url2
       var endDate1 = date1
       var endDate2 = date2
@@ -154,7 +155,6 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
         const data2 = await response2.json();
         setDataset(data1.concat(data2))
       }
-    }
     setLoading(false)
   }
 
@@ -180,8 +180,8 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
         <div className="flex flex-col gap-2">
 
 
-          <Label htmlFor="device" value="Energy consumption of" />
-          <Select id="device" onChange={(event) => handleNameChange(event)} required>
+          <Label htmlFor="device" value={t("Energy consumption of")} />
+          <Select id="device" defaultValue={"Entire House"} onChange={(event) => handleNameChange(event)} required>
             {
               devicesList
                 .filter(d => !["Sun", "Forecast"].includes(d.name))
@@ -195,19 +195,19 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
           <div className="flex flex-row gap-2 items-center dark:text-white">
             {group == "daily" &&
               <>
-                <DatePicker value={date1} size="small" className="w-[146px]" label={'Day 1'} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => setDate1(val)}
+                <DatePicker value={date1} size="small" className="w-[146px]" label={t('Day') +' 1'} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => setDate1(val)}
                   sx={sxDatePicker} />
                 <span className="text-2xl">vs</span>
-                <DatePicker value={date2} className="w-[146px]" label={'Day 2'} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => setDate2(val)}
+                <DatePicker value={date2} className="w-[146px]" label={t('Day') +' 2'} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => setDate2(val)}
                   sx={sxDatePicker} />
               </>
             }
             {group == "monthly" &&
               <>
-                <DatePicker value={date1} className="w-[146px]" label={'Month 1'} views={['year', 'month']} format="MM-YYYY" onChange={(val) => { setDate1(val.date(1)) }}
+                <DatePicker value={date1} className="w-[146px]" label={t('Month') +' 1'} views={['year', 'month']} format="MM-YYYY" onChange={(val) => { setDate1(val.date(1)) }}
                   sx={sxDatePicker} />
                 <span className="text-2xl">vs</span>
-                <DatePicker value={date2} className="w-[146px]" label={'Month 2'} views={['year', 'month']} format="MM-YYYY" onChange={(val) => { setDate2(val.date(1)) }}
+                <DatePicker value={date2} className="w-[146px]" label={t('Month') +' 2'} views={['year', 'month']} format="MM-YYYY" onChange={(val) => { setDate2(val.date(1)) }}
                   sx={sxDatePicker} />
               </>
             }
@@ -224,7 +224,7 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
                   setDate1(dayjs().subtract(1, "day"));
                   setDate2(dayjs())
                 }}>
-                Daily
+                {t("Daily")}
               </Button>
               <Button color="secondary" className={(group == "monthly" ? "bg-lime-400 dark:text-black" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
                 onClick={() => {
@@ -232,7 +232,7 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
                   setDate1(dayjs().subtract(1, "month").date(1));
                   setDate2(dayjs().date(1))
                 }}>
-                Monthly
+                {t("Monthly")}
               </Button>
             </Button.Group>
           </div>
@@ -259,7 +259,7 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
               sx={sxGraph}
             />
             :
-            <h1>No data present</h1>
+            <h1>{t("No data present")}</h1>
         }
       </div>
     </div>

@@ -3,8 +3,9 @@ import '../css/app.css';
 
 import { createRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
-import {UserLayout} from './Layouts/UserLayout';
+import { UserLayout } from './Layouts/UserLayout';
 import GuestLayout from './Layouts/GuestLayout';
+import { LaravelReactI18nProvider } from 'laravel-react-i18n';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -13,7 +14,7 @@ createInertiaApp({
     resolve: (name) => {
         const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
         let page = pages[`./Pages/${name}.jsx`]
-        page.default.layout = name.startsWith('Auth/') ? 
+        page.default.layout = name.startsWith('Auth/') ?
             page => <GuestLayout children={page} /> :
             page => <UserLayout children={page} />
         return page
@@ -21,7 +22,16 @@ createInertiaApp({
     setup({ el, App, props }) {
         const root = createRoot(el);
 
-        root.render(<App {...props} />);
+        root.render(
+            <LaravelReactI18nProvider
+                locale={'it'}
+                fallbackLocale={'it'}
+                files={import.meta.glob('/lang/*.json')}
+            >
+                <App {...props} />
+            </LaravelReactI18nProvider>
+        );
+
     },
     progress: {
         color: '#4B5563',

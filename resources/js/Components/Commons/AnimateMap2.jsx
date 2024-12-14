@@ -3,11 +3,13 @@ import { useState } from "react"
 import ListButtons from "./ListButtons"
 import CardAppliance from "./CardAppliance"
 import { useSwipeable } from "react-swipeable"
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 export default function AnimateMap2({ maps, appliances }) {
     const [indexImg, setIndexImg] = useState(0)
     const [previousIndex, setPreviousIndex] = useState(0)
     const offset = 100
+    const {t} = useLaravelReactI18n()
 
     const floorAbove = () =>{
         if(indexImg <= maps.length - 1 && indexImg > 0 ){
@@ -110,7 +112,7 @@ export default function AnimateMap2({ maps, appliances }) {
                 </AnimatePresence>
             </div>
             <div className="flex flex-col justify-center items-center">
-                <h1 className="text-lg dark:text-white ">Floors</h1>
+                <h1 className="text-lg dark:text-white ">{t("Floors")}</h1>
                 <ListButtons dataButtons={floorBtn} index={indexImg} />
             </div>
         </div >

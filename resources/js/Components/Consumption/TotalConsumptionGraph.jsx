@@ -3,6 +3,7 @@ import { Spinner, Button, Select, Label } from "flowbite-react";
 import { BarChart } from '@mui/x-charts/BarChart';
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 export function TotalConsumptionGraph({ device_name, device_id }) {
   const [from, setFrom] = useState(dayjs())
@@ -10,10 +11,10 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
   const [dataset, setDataset] = useState([])
   const [group, setGroup] = useState("hourly")
   const [loading, setLoading] = useState(false)
-  const [deviceName, setDeviceName] = useState("")
+  const [deviceName, setDeviceName] = useState("Entire House")
   const [deviceId, setDeviceId] = useState("")
   const [devicesList, setDeviceList] = useState([])
-
+  const {t} = useLaravelReactI18n()
   const heightGraph = window.innerHeight > 1000 ? 800 : 550
   const isDark = localStorage.getItem("darkMode") =="true"
   const sxDatePicker = {
@@ -124,7 +125,6 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
 
 
   const fetchConsumption = async () => {
-    if (deviceName != "") {
       var url;
       if (deviceName == "Entire House") {
         url = `http://127.0.0.1:8000/consumption/total?` +
@@ -152,7 +152,6 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
         data.map(item => item.date = item.date.split(" ").length > 1 ? item.date.split(" ")[1] : item.date)
         setDataset(data)
       }
-    }
     setLoading(false)
   }
 
@@ -166,7 +165,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
     setDeviceId(device_id)
   }, [device_name, device_id])
 
-  const valueFormatter = (value) => `${value} Wh`;
+  const valueFormatter = (value) => `${value.toFixed(2)} Wh`;
 
   //const series=Object.keys(dataset).map(key=> ({ dataKey: "energy_consumption",color: '#a3e635', label:key, valueFormatter }))
   //        <h1 className="text-gray-800 text-base font-semibold font-[Inter]">{deviceName}</h1>
@@ -176,7 +175,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
         <div className="flex flex-row gap-2 ">
           <div className="flex flex-col w-fit">
 
-            <Label htmlFor="device" value="Energy consumption of" />
+            <Label htmlFor="device" value={t("Energy consumption of")} />
             <Select id="device" onChange={(event) => handleNameChange(event)} required>
               {
                 devicesList
@@ -191,25 +190,25 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
         <div className="flex flex-row gap-6 h-full items-end justify-end">
           <div className="flex flex-row gap-2 items-center">
             {group == "hourly" &&
-              <DatePicker value={from} size='medium' className="w-40 focus:ring-0" label={'day'} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => { setFrom(val); setTo(val) }}
+              <DatePicker value={from} size='medium' className="w-40 focus:ring-0" label={t('Day')} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => { setFrom(val); setTo(val) }}
                 sx={sxDatePicker} 
               />
             }
             {group == "daily" &&
               <>
-                <DatePicker value={from} size="small" className="w-40" label={'from'} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => setFrom(val)} 
+                <DatePicker value={from} size="small" className="w-40" label={t('From')} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => setFrom(val)} 
                   sx={sxDatePicker}/>
                 <span className="font-bold text-2xl">-</span>
-                <DatePicker value={to} className="w-40" label={'to'} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => setTo(val)}
+                <DatePicker value={to} className="w-40" label={t('To')} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => setTo(val)}
                 sx={sxDatePicker}/>
               </>
             }
             {group == "monthly" &&
               <>
-                <DatePicker value={from} className="w-40" label={'from'} views={['year', 'month']} format="MM-YYYY" onChange={(val) => { setFrom(val.date(1)) }}
+                <DatePicker value={from} className="w-40" label={t('From')} views={['year', 'month']} format="MM-YYYY" onChange={(val) => { setFrom(val.date(1)) }}
                 sx={sxDatePicker}/>
                 <span className="font-bold text-2xl">-</span>
-                <DatePicker value={to} className="w-40" label={'to'} views={['year', 'month']} format="MM-YYYY" onChange={(val) => { setTo(val.endOf("month")) }} 
+                <DatePicker value={to} className="w-40" label={t('To')} views={['year', 'month']} format="MM-YYYY" onChange={(val) => { setTo(val.endOf("month")) }} 
                   sx={sxDatePicker}/>
               </>
             }
@@ -226,7 +225,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
                   setFrom(dayjs().hour(0));
                   setTo(dayjs())
                 }}>
-                Hourly
+                {t("Hourly")}
               </Button>
               <Button color="secondary" className={(group == "daily" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
                 onClick={() => {
@@ -234,7 +233,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
                   setFrom(dayjs().subtract(7, "day"));
                   setTo(dayjs())
                 }}>
-                Daily
+                {t("Daily")}
               </Button>
               <Button color="secondary" className={(group == "monthly" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
                 onClick={() => {
@@ -242,7 +241,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
                   setFrom(dayjs().subtract(1, "month"));
                   setTo(dayjs())
                 }}>
-                Monthly
+                {t("Monthly")}
               </Button>
             </Button.Group>
           </div>
@@ -265,7 +264,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
               sx={sxGraph}
             />
             :
-            <h1>No data present</h1>
+            <h1>{t("No data present")}</h1>
         }
       </div>
     </div>

@@ -5,12 +5,14 @@ import Cookies from "js-cookie";
 import { Avatar } from "flowbite-react";
 import CardUser from "../Commons/CardUser";
 import DarkButton from "../Commons/DarkButton";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 export default function Sidebar() {
     const [isVisible, setVisible] = useState(false)
     const [hoverLogo, setHoverLogo] = useState(false)
     const [scopeLogo, animateLogo] = useAnimate()
 
+    const {t} = useLaravelReactI18n()
     const namePage = (string) => {
         const [, path, ] = string.split("/", 3)
         if(string=="/userarea")
@@ -92,7 +94,7 @@ export default function Sidebar() {
                 <FaBars size={24} />
             </motion.div>
             <motion.p className="text-xl pl-2">
-                {namePage(window.location.pathname)}
+                {namePage(window.location.pathname)=="Home" ? "Home" : t(namePage(window.location.pathname))}
             </motion.p>
         </motion.div >
 
@@ -109,17 +111,17 @@ export default function Sidebar() {
                 <motion.a href={route("consumption")} className="bg-slate-100 dark:bg-neutral-700 dark:text-white  rounded p-3 pr-32 text-3xl size-min "
                     style={styleEntry} variants={entry} initial={false}
                 >
-                    Consumption
+                    {t("Consumption")}
                 </motion.a>
                 <motion.a href={route("automation")} className="bg-slate-100  dark:bg-neutral-700 dark:text-white  rounded p-3 pr-32 text-3xl size-min "
                     style={styleEntry} variants={entry} initial={false}
                 >
-                    Automations
+                    {t("Automations")}
                 </motion.a>
                 <motion.a href={route("configuration")} className="bg-slate-100  dark:bg-neutral-700 dark:text-white  rounded p-3 pr-32 text-3xl size-min "
                     style={styleEntry} variants={entry} initial={false}
                 >
-                    Configuration
+                    {t("Configuration")}
                 </motion.a>
                 <motion.div className="h-full w-content flex items-end py-4"
                     variants={{

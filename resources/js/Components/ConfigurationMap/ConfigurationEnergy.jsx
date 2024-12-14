@@ -3,6 +3,7 @@ import { useState } from "react";
 import { backend } from "../Commons/Constants";
 import { FaPencil} from "react-icons/fa6"
 import { ThemeButton } from "../Commons/ThemeButton";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 export default function ConfigurationEnergy({endSection}){
     const templateSWH1 = Array.from(Array(7).keys()).map(() => Array(24).fill(0))
@@ -20,7 +21,7 @@ export default function ConfigurationEnergy({endSection}){
             }
         }
     }
-
+    const {t} = useLaravelReactI18n()
 
     const [timeSlots, setTimeSlots] = useState(0)
     const [powerCapacity, setPowerCapacity] = useState(3.5)
@@ -47,7 +48,7 @@ export default function ConfigurationEnergy({endSection}){
         if( value < len){
             setPowerPrice([...powerPrice.slice(0, value)])
         }else if ( value > timeSlots){
-            const updateState = [...powerPrice, ...Array(value-len).fill(0)]
+            const updateState = [...powerPrice, ...Array(value-len).fill(0.001)]
             setPowerPrice([...updateState])
         }
         setTimeSlots(value)
@@ -187,13 +188,13 @@ export default function ConfigurationEnergy({endSection}){
                 unit: ""
             },
             {
-                key: "maximum_capacity",
+                key: "power_threshold",
                 value: powerCapacity.toString(),
                 unit: "kW"
             }
         ]
         powerPrice.forEach((el, i) => {
-            const index = i + 1
+            const index = i
             if (i < timeSlots) {
                 dataConf = [...dataConf, {
                     key: "cost_slot_" + index,
@@ -226,18 +227,19 @@ export default function ConfigurationEnergy({endSection}){
         }
         const dataCalendar = JSON.stringify({ data: slotWeekHour.map((day) => day.map((hour) => hour)) })
         //before to save delete old calendar
-        fetch(backend +"/calendar", {
+        const deleteCalendar = await fetch(backend +"/calendar", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" }
         })
-
-        const responseCalendar = await fetch(backend +"/calendar", {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: dataCalendar
-        })
-        const result = await responseCalendar.json()
-        console.log(result)
+        if (deleteCalendar.ok){
+            const responseCalendar = await fetch(backend +"/calendar", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: dataCalendar
+            })
+            const result = await responseCalendar.json()
+            console.log(result)
+        }
         endSection()
     }
 
@@ -257,7 +259,7 @@ export default function ConfigurationEnergy({endSection}){
                     updatePrice[1] = conf.value
                 else if (conf.key == "cost_slot_2" && conf.value > 0)
                     updatePrice[2] = conf.value
-                else if (conf.key == "maximum_capacity")
+                else if (conf.key == "power_threshold")
                     setPowerCapacity(conf.value)
                 
             })
@@ -279,13 +281,13 @@ export default function ConfigurationEnergy({endSection}){
         <div className="size-full flex min-w-fit 2xl:p-2">
             <div className="flex flex-col p-1 h-full w-1/2">
                 <div className="flex py-3 items-center">
-                    <p className="text-xl px-1 dark:text-white">Maximum capacity</p>
+                    <p className="text-xl px-1 dark:text-white">{t("Maximum capacity")}</p>
                     <input className="px-1 dark:text-white dark:bg-neutral-700" style={{ width: "64px" }} type="number"
                     value={powerCapacity} min="0" max="15" step="0.5" onChange={e => setPowerCapacity(e.target.value)} />
                     <p className="text-xl px-1 dark:text-white">kW</p>
                 </div>
                 <div className="flex py-3 items-center">
-                    <p className="text-xl px-1 dark:text-white">Number of slot</p>
+                    <p className="text-xl px-1 dark:text-white">{t("Number of slot")}</p>
                     <input className="px-1 dark:text-white dark:bg-neutral-700" style={{ width: "64px" }} type="number"
                     value={timeSlots > 0 ? timeSlots : ''}
                     min="1" max="3" onChange={e => updateTimeSlots(e.target.value)} />
@@ -296,16 +298,16 @@ export default function ConfigurationEnergy({endSection}){
                             return(<div className={"flex flex-col py-3 gap-2 " + (currentSlot == index && " border-2 " +borderColors[3 -timeSlots +index]) }key={index}>
                                 <div className="flex">
                                     <p className="text-xl px-2 dark:text-white">
-                                        Slot {index + 1}
+                                        {t("Slot")} {index + 1}
                                     </p>
-                                    <input className="px-1 dark:text-white dark:bg-neutral-700" style={{ width: "128px" }} type="number" value={parseFloat(element).toFixed(3)} min="0" max="15" step="0.001"
+                                    <input className="px-1 dark:text-white dark:bg-neutral-700" style={{ width: "128px" }} type="number" value={element} min="0.001" max="15" step="0.001"
                                         defaultValue={0.001} onChange={(e) => setInputValue(e, index)}
                                     />
                                     <p className="text-xl px-2 dark:text-white">€/kWh</p>
                                 </div>
                                 <div className="flex">
                                     <p className="text-lg px-2 dark:text-white">
-                                        Insert in calendar 
+                                        {t("Insert in calendar")} 
                                     </p>
                                     <div className={"rounded-full p-2 " + backgroundColors[3- timeSlots +index]} style={{"cursor": "pointer"}}
                                     onClick={()=>setCurrentSlot(index)}
@@ -318,7 +320,7 @@ export default function ConfigurationEnergy({endSection}){
                     }
                 </div>
                 <div className="flex w-full h-min py-3 items-end justify-center">
-                    <ThemeButton onClick={() => { saveConfiguration()}}>Save</ThemeButton>
+                    <ThemeButton onClick={() => { saveConfiguration()}}>{t("Save")}</ThemeButton>
                 </div>
             </div>
             <div className="flex flex-col h-full min-w-fit w-1/2">
@@ -326,8 +328,9 @@ export default function ConfigurationEnergy({endSection}){
                     table
                     :
                     <div className="flex size-full justify-center items-center dark:text-white text-2xl">
-                        Before to start insert<br/>
-                        number of slot
+                        {t("Before to start insert")}
+                        <br/>
+                        {t("Number of slot")}
                     </div>
                 }
             </div>

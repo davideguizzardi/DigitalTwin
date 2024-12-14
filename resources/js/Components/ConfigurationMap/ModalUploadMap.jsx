@@ -48,11 +48,11 @@ export default function ModalUploadMap({ open, saveCallback, cancelCallback, ind
 
     return (
         <Modal size="3xl" show={open} onClose={cancelCallback}>
-            <Modal.Header>Upload Floor Map</Modal.Header>
+            <Modal.Header>{t("Upload floor map")}</Modal.Header>
             <Modal.Body>
                 <div className="flex flex-col h-3/6">
                     <div className="flex w-full h-fit pb-4 gap-2 justify-center items-center ">
-                        <p className="dark:text-white">Floor number</p>
+                        <p className="dark:text-white">{t("Floor number")}</p>
                         <input type="number" defaultValue="0" min="-5" max="5" onChange={e => setFloor(e.target.value)}/>
                     </div>
                     <div className="flex justify-center">
@@ -64,8 +64,8 @@ export default function ModalUploadMap({ open, saveCallback, cancelCallback, ind
                         }
                     </div>
                     <div className="flex items-center justify-around p-2 mt-2">
-                        <ThemeButton onClick={cancelCall}>Cancel</ThemeButton>
-                        <ThemeButton onClick={saveCall}>Add</ThemeButton>
+                        <ThemeButton onClick={cancelCall}>{t("Cancel")}</ThemeButton>
+                        <ThemeButton onClick={saveCall}>{t("Add")}</ThemeButton>
                     </div>
                 </div>
 

@@ -18,11 +18,14 @@ import { useEffect, useState } from 'react';
 import SortableItem from './SortableItem';
 import { useContext } from 'react';
 import { UserContext } from '@/Layouts/UserLayout';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 export default function Preferences({ }) {
     const user = useContext(UserContext)
     const [items, setItems] = useState([])
     const colors = ["#d9f99d", "#bef264", "#84cc16", "#4d7c0f"]
+    
+    const {t} = useLaravelReactI18n()
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -65,12 +68,10 @@ export default function Preferences({ }) {
 
     return (
         <div className="flex flex-col h-full p-2 gap-1">
-            <h1 className="text-2xl dark:text-white">Preferences</h1>
-            <p className='dark:text-white'>Arrange the cards in order of importance, from the most important to the least important.
-                <span className='font-bold'> Drag</span> each card by clicking and holding it, then <span className='font-bold'>drop</span> it into the position
-                you believe is correct. Continue adjusting the cards until all are in the proper order.</p>
+            <h1 className="text-2xl dark:text-white">{t("Preferences")}</h1>
+            <p className='dark:text-white'>{t("Arrange the cards in order of importance, from the most important to the least important. Drag each card by clicking and holding it, then drop it into the position you believe is correct. Continue adjusting the cards until all are in the proper order.")}</p>
             <div className="flex flex-col h-full justify-center items-center gap-1">
-                <h1 className='dark:text-white text-xl'>Most important</h1>
+                <h1 className='dark:text-white text-xl'>{t("Most important")}</h1>
                 <div className="flex w-full h-3/4 justify-center gap-2 p-1">
                     <div className="flex flex-col px-2 bg-gradient-to-b from-lime-100 to-lime-900 rounded"></div>
                     <div className="flex flex-col gap-2 h-full">
@@ -87,7 +88,7 @@ export default function Preferences({ }) {
                         </DndContext>
                     </div>
                 </div>
-                <h1 className='dark:text-white text-xl'>Less important</h1>
+                <h1 className='dark:text-white text-xl'>{t("Less important")}</h1>
             </div>
         </div>
     )

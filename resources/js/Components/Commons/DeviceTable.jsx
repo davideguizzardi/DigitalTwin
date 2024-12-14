@@ -2,18 +2,19 @@ import { useState, useEffect } from "react";
 import { List, TextInput} from "flowbite-react"
 import { CiCircleQuestion ,CiSearch} from "react-icons/ci";
 import DeviceRecord from "./DeviceRecord";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 export function DeviceTable({ deviceContext }) {
     const [deviceList, setDeviceList] = useState([])
     const [searchQuery, setSearchQuery] = useState("")
-    console.log(deviceContext)
+    const {t} = useLaravelReactI18n()
     useEffect(() => {
         setDeviceList(deviceContext)
     }, [deviceContext])
 
     return (
         <div className="size-full flex flex-col">
-            <h1 className="text-2xl dark:text-white text-center">Device List</h1>
+            <h1 className="text-2xl dark:text-white text-center">{t("Device List")}</h1>
             <div>
                 <TextInput id="device_search" type="text" icon={CiSearch} placeholder="Enter device name..." onKeyUp={(value) => setSearchQuery(value.target.value)} />
             </div>

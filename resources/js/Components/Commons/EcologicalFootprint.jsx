@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { CiUser, CiPizza } from "react-icons/ci";
 import { FaCarSide } from "react-icons/fa";
+import { FaHouse } from "react-icons/fa6";
 import { LuSmartphoneCharging } from "react-icons/lu";
 import { animate, motion, useMotionValue, useTransform } from "framer-motion"
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
-export function EcologicalFootprint({ energyConsumptionIn }) {
+export function EcologicalFootprint({ energyConsumptionIn, home=true }) {
     const [gCO2, setGCO2] = useState(0)
     const averageGCO2 = 50000
     const gCO2PerKwh = 431.14
@@ -14,13 +16,15 @@ export function EcologicalFootprint({ energyConsumptionIn }) {
     const [averageBarWidth, setAverageBarWidth] = useState(50)
     const [yourBarWidth, setYourBarWidth] = useState(50)
 
+    const {t} = useLaravelReactI18n()
+
     const countKm = useMotionValue(0)
     const countPizza = useMotionValue(0)
     const countCharge = useMotionValue(0)
 
     const roundedKm = useTransform(countKm, latest => Math.round(latest) + " km")
-    const roundedPizza = useTransform(countPizza, latest => Math.round(latest) + " Margheritas")
-    const roundedCharge = useTransform(countCharge, latest => Math.round(latest) + " times")
+    const roundedPizza = useTransform(countPizza, latest => Math.round(latest) + " Margherita")
+    const roundedCharge = useTransform(countCharge, latest => Math.round(latest) + " " + t("times"))
     
     const animationProp = {
         duration: 0.7,
@@ -56,24 +60,28 @@ export function EcologicalFootprint({ energyConsumptionIn }) {
     return (
         <div className="w-full h-full rounded-lg items-center flex flex-col gap-3 text-gray-800 p-4 dark:text-white">
             <div className="w-full flex justify-center">
-                <h1 className="uppercase font-bold text-3xl">Your <span className="text-lime-600 dark:text-lime-400  underline underline-offset-1">Ecological</span> footprint</h1>
+                <h1 className="uppercase font-bold text-3xl">{home ? t("Home Ecological Footprint"):t("Your Ecological Footprint")}</h1>
             </div>
             <div className="w-full flex flex-col">
                 {gCO2 < averageGCO2 ? 
-                    <p className="text-base"> The past month your actions produced <span className="font-bold">{Math.round(gCO2 / 1000)} kg of CO2e</span>.
-                    Congratulations your emissions were <span className="font-bold text-lime-600 dark:text-lime-400">{Math.round((1 - gCO2 / averageGCO2) * 100)}% less</span> than the average person!
+                    <p className="text-base"> {t("The past month your actions produced")} <span className="font-bold">{Math.round(gCO2 / 1000)} kgCO2e</span>. 
+                    {t("Congratulations your emissions were")} <span className="font-bold text-lime-600 dark:text-lime-400">{Math.round((1 - gCO2 / averageGCO2) * 100)}% {t("less")}</span> {t("than the average person")}!
                     </p>
                     :
-                    <p className="text-base"> The past month your actions produced <span className="font-bold">{Math.round(gCO2 / 1000)} kg of CO2e</span>.
-                    Congratulations your emissions were <span className="font-bold text-red-400">{Math.round((gCO2 / averageGCO2 - 1) * 100)}% more</span> than the average person!
+                    <p className="text-base"> {t("The past month your actions produced")} <span className="font-bold">{Math.round(gCO2 / 1000)} kgCO2e</span>. 
+                    {t("Congratulations your emissions were")} <span className="font-bold text-red-400">{Math.round((gCO2 / averageGCO2 - 1) * 100)}% {t("more")}</span> {t("than the average person")}!
                     </p>
                 }
 
             </div>
             <div className="flex flex-col size-full justify-center gap-3">
                 <div className="flex flex-row gap-2 w-full 2xl:pl-24">
+                    {home? 
+                    <FaHouse className="size-9"></FaHouse>
+                    :
                     <CiUser className="size-9" />
-                    <p className="w-24">Average user</p>
+                    }
+                    <p className="w-24">{home? t("Average Home") : t("Average User")}</p>
                     <motion.div className="bg-green-800 h-5 rounded-tr rounded-br"
                         initial={{ width: "0px" }}
                         animate={{ width: averageBarWidth + "%" }}
@@ -82,8 +90,12 @@ export function EcologicalFootprint({ energyConsumptionIn }) {
                     <p>{Math.round(averageGCO2 / 1000)} kgCO2e</p>
                 </div>
                 <div className="flex flex-row gap-2 w-full 2xl:pl-24">
+                    {home? 
+                    <FaHouse className="size-9"></FaHouse>
+                    :
                     <CiUser className="size-9" />
-                    <p className="w-24">You</p>
+                    }
+                    <p className="w-24">{home ? t("Home"):t("You")}</p>
                     <motion.div className="bg-lime-400 h-5 rounded-tr rounded-br"
                         initial={{ width: "0px" }}
                         animate={{ width: yourBarWidth + "%" }}
@@ -93,21 +105,21 @@ export function EcologicalFootprint({ energyConsumptionIn }) {
                 </div>
             </div>
             <div>
-                <p>You produced as much CO2 as:</p>
+                <p>{t("You produced as much CO2 as")}:</p>
             </div>
             <div className="flex size-full grid grid-cols-3 gap-2">
                 <div className="flex flex-col items-center">
                     <FaCarSide className="size-16" />
-                    <p>Driving a car for </p>
+                    <p>{t("Driving a car for")} </p>
                     <motion.div className="font-bold text-lime-600 dark:text-lime-400 underline">{roundedKm}</motion.div>
                 </div>
                 <div className="flex flex-col items-center">
                     <CiPizza className="size-16" />
-                    <p>Eating <motion.span className="font-bold text-lime-600 dark:text-lime-400 underline">{roundedPizza}</motion.span> <br /> at the pizzeria</p>
+                    <p>{t("Eating")} <motion.span className="font-bold text-lime-600 dark:text-lime-400 underline">{roundedPizza}</motion.span> <br /> {t("at the pizzeria")}</p>
                 </div>
                 <div className="flex flex-col items-center">
                     <LuSmartphoneCharging className="size-16" />
-                    <p>Charging an average <br /> smartphone <motion.span className="font-bold text-lime-600 dark:text-lime-400 underline">{roundedCharge}</motion.span></p>
+                    <p>{t("Charging an average")} <br /> <motion.span className="font-bold text-lime-600 dark:text-lime-400 underline">{roundedCharge}</motion.span> {t("smartphone")} </p>
                 </div>
             </div>
         </div>

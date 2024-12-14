@@ -21,8 +21,6 @@ export default function UserArea({ }) {
     const [tab, setTab] = useState(0)
     const mapTab = {
         "Profile":<Profile />,
-        "Notification ":<div />,
-        "History":<div />,
         "Privacy":<PermissionPrivacy />
     }
 

@@ -67,7 +67,7 @@ export default function ModalUploadPhoto({ open=true, closeCallback}) {
                     </div>
                     <div className="flex items-center justify-around p-2 mt-2">
                         <ThemeButton onClick={cancelCall}>Cancel</ThemeButton>
-                        <ThemeButton onClick={saveCall}>Add</ThemeButton>
+                        <ThemeButton onClick={saveCall}>Save</ThemeButton>
                     </div>
                 </div>
 

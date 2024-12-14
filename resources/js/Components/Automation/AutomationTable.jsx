@@ -5,6 +5,7 @@ import { Switch } from "@mui/material";
 import { AutomationDetails } from "./AutomationDetails";
 import { callService, getIcon } from "@/Components/Commons/Constants";
 import { StyledButton } from "@/Components/Commons/StyledBasedComponents";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 export function AutomationTable({ automation_context }) {
 
@@ -13,6 +14,7 @@ export function AutomationTable({ automation_context }) {
     const [searchQuery, setSearchQuery] = useState("")
 
     const [currentDay, setCurrentDay] = useState("")
+    const {t} = useLaravelReactI18n()
 
 
     const handleSwitchChange = async (event, entity_id) => {
@@ -50,7 +52,7 @@ export function AutomationTable({ automation_context }) {
         <div className="grid grid-cols-2 gap-2 size-full">
             <div className="flex flex-col gap-2 col-span-1 p-2 pr-1">
                 <div>
-                    <TextInput id="device_search" type="text" icon={CiSearch} placeholder="Enter automation name..." onKeyUp={(value) => setSearchQuery(value.target.value)} />
+                    <TextInput id="device_search" type="text" icon={CiSearch} placeholder={t("Enter automation name") + "..."} onKeyUp={(value) => setSearchQuery(value.target.value)} />
                 </div>
                 <div className="bg-zinc-50 text-gray-800 dark:bg-neutral-800 dark:text-gray-300 rounded-md col-span-5">
                     <List unstyled className="divide-y divide-gray-300 dark:divide-neutral-600">

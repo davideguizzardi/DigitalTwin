@@ -6,6 +6,7 @@ import ModalUploadMap from './ModalUploadMap';
 import Cookies from 'js-cookie';
 import AnimateMap from '../Commons/AnimateMap';
 import WhiteCard from '../Commons/WhiteCard';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 let counter = -1;
 const token = Cookies.get("auth-token")
@@ -14,6 +15,7 @@ export default function UploadMap({ endSection }) {
     const [listMap, setListMap] = useState([]);
     const [indexThumbs, setIndexThumbs] = useState(-1);
     const [openModal, setOpenModal] = useState(false)
+    const {t} = useLaravelReactI18n()
 
     const saveCallback = useCallback((newFile) => {
         let tempList = [...listMap, newFile]
@@ -93,7 +95,7 @@ export default function UploadMap({ endSection }) {
 
             <ModalUploadMap open={openModal} saveCallback={saveCallback}
                 cancelCallback={cancelCallback} indexUsed={listMap.map(m => m.floor)} />
-            <p className='h-min w-full p-2 text-center text-2xl'>Upload map house</p>
+            <p className='h-min w-full p-2 text-center text-2xl'>{t("Upload map house")}</p>
             <form name="maps" className='h-full w-full flex flex-col justify-around items-center' onSubmit={submit}>
                 <div className="flex items-center size-full items-center justify-center" >
                     {indexThumbs >= 0 ?
@@ -103,13 +105,13 @@ export default function UploadMap({ endSection }) {
                                     onClick={handleDeleteButton}>
                                     <FaTrashCan className='size-4' color='white' />
                                 </Button>
-                                <p className="text-xl">Floor number {listMap[indexThumbs].floor}</p>
+                                <p className="text-xl">{t("Floor number")} {listMap[indexThumbs].floor}</p>
                             </div>
                             <AnimateMap map={listMap[indexThumbs].file.preview} />
                         </div>
                         :
                         <div className="size-full flex items-center justify-center">
-                            <p className='pl-16'>No maps uploaded</p>
+                            <p className='pl-16'>{t("No map uploaded")}</p>
                         </div>
                     }
                     <div className="flex flex-col justify-center items-center w-min m-2 p-1 rounded-full bg-gray-100 dark:bg-neutral-700 shadow">

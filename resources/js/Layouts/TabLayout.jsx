@@ -3,12 +3,14 @@ import { animate, AnimatePresence, motion, useAnimate } from "framer-motion"
 import { useRef } from "react"
 import { useState } from "react"
 import { useSwipeable } from "react-swipeable"
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 export default function TabLayout({sections}){
     const titles = Object.keys(sections)
     const sizeSection = titles.length
     const [tab, setTab] = useState(0)
     const [previousTab, setPreviousTab] = useState(0)
+    const {t} = useLaravelReactI18n()
     
     const offset = 1900
     
@@ -87,7 +89,7 @@ export default function TabLayout({sections}){
                             key={index}
                         >
                             <h1 className="text-2xl py-2 dark:text-white text-center h-full">
-                                {title}
+                                {t(title)}
                             </h1>
                             <motion.div className="flex bg-lime-400 rounded"
                                 animate={{
