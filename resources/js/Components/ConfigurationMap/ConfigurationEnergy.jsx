@@ -181,6 +181,8 @@ export default function ConfigurationEnergy({endSection}){
         </div>
     )
     const saveConfiguration = async () => {
+        console.log(timeSlots)
+        console.log(powerPrice)
         let dataConf = [
             {
                 key: "energy_slots_number",
@@ -294,7 +296,7 @@ export default function ConfigurationEnergy({endSection}){
                 </div>
                 <div className="flex flex-col py-4 px-6 gap-2 h-full">
                     { timeSlots > 0  &&
-                        powerPrice.map((element, index) =>{
+                        powerPrice.filter((e, i) => { return i < timeSlots}).map((element, index) =>{
                             return(<div className={"flex flex-col py-3 gap-2 " + (currentSlot == index && " border-2 " +borderColors[3 -timeSlots +index]) }key={index}>
                                 <div className="flex">
                                     <p className="text-xl px-2 dark:text-white">
