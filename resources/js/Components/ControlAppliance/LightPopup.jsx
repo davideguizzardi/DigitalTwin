@@ -83,7 +83,6 @@ export function LightPopup({ selectedEntity, open, closeFun }) {
         });
         if (response.ok) {
             const entity_in = await response.json();
-            console.log(entity_in)
             setEntityValues(entity_in)
         }
         else {

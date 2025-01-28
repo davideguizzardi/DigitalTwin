@@ -19,7 +19,7 @@ class DashboardController extends Controller
 
             return Inertia::render('Dashboard', [
                 'maps' => Map::all(),
-                'token' => $user
+                'token' => $token
             ]);
         }
         return Inertia::render('Dashboard', [

@@ -14,21 +14,21 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
   const [deviceName, setDeviceName] = useState("Entire House")
   const [deviceId, setDeviceId] = useState("")
   const [devicesList, setDeviceList] = useState([])
-  const {t} = useLaravelReactI18n()
+  const { t } = useLaravelReactI18n()
   const heightGraph = window.innerHeight > 1000 ? 800 : 550
-  const isDark = localStorage.getItem("darkMode") =="true"
+  const isDark = localStorage.getItem("darkMode") == "true"
   const sxDatePicker = {
     '.MuiInputBase-root': {
-      color: isDark ?"white" : "black",
-      "&:hover > .MuiOutlinedInput-notchedOutline":{
-        border: "1px " +( isDark ? " white " : " black " )+ " solid"
+      color: isDark ? "white" : "black",
+      "&:hover > .MuiOutlinedInput-notchedOutline": {
+        border: "1px " + (isDark ? " white " : " black ") + " solid"
       }
     },
     '.MuiIconButton-root': {
-      color: isDark ?"white" : "black",
+      color: isDark ? "white" : "black",
     },
     '.MuiInputLabel-root': {
-      color: isDark ?"white" : "black",
+      color: isDark ? "white" : "black",
     },
     '.MuiOutlinedInput-notchedOutline ': {
       border: "1px " + (isDark ? " white " : " black ") + " solid"
@@ -64,7 +64,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
       stroke: isDark ? "white" : "black",
       strokeWidth: 1
     },
-    "& .css-1j25yxu-MuiResponsiveChart-container":{
+    "& .css-1j25yxu-MuiResponsiveChart-container": {
       color: isDark ? "white" : "black"
     }
   }
@@ -125,33 +125,33 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
 
 
   const fetchConsumption = async () => {
-      var url;
-      if (deviceName == "Entire House") {
-        url = `http://127.0.0.1:8000/consumption/total?` +
-          `start_timestamp=${encodeURIComponent(from.format("YYYY-MM-DD"))}` +
-          `&end_timestamp=${encodeURIComponent(to.format("YYYY-MM-DD"))}` +
-          `&group=${group}`
-      }
-      else {
-        url = `http://127.0.0.1:8000/consumption/device?device_id=${deviceId}` +
-          `&start_timestamp=${encodeURIComponent(from.format("YYYY-MM-DD"))}` +
-          `&end_timestamp=${encodeURIComponent(to.format("YYYY-MM-DD"))}` +
-          `&group=${group}`
-      }
+    var url;
+    if (deviceName == "Entire House") {
+      url = `http://127.0.0.1:8000/consumption/total?` +
+        `start_timestamp=${encodeURIComponent(from.format("YYYY-MM-DD"))}` +
+        `&end_timestamp=${encodeURIComponent(to.format("YYYY-MM-DD"))}` +
+        `&group=${group}`
+    }
+    else {
+      url = `http://127.0.0.1:8000/consumption/device?device_id=${deviceId}` +
+        `&start_timestamp=${encodeURIComponent(from.format("YYYY-MM-DD"))}` +
+        `&end_timestamp=${encodeURIComponent(to.format("YYYY-MM-DD"))}` +
+        `&group=${group}`
+    }
 
-      const response = await fetch(
-        url,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-      if (response.ok) {
-        const data = await response.json();
-        data.map(item => item.date = item.date.split(" ").length > 1 ? item.date.split(" ")[1] : item.date)
-        setDataset(data)
-      }
+    const response = await fetch(
+      url,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    if (response.ok) {
+      const data = await response.json();
+      data.map(item => item.date = item.date.split(" ").length > 1 ? item.date.split(" ")[1] : item.date)
+      setDataset(data)
+    }
     setLoading(false)
   }
 
@@ -191,59 +191,62 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
           <div className="flex flex-row gap-2 items-center">
             {group == "hourly" &&
               <DatePicker value={from} size='medium' className="w-40 focus:ring-0" label={t('Day')} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => { setFrom(val); setTo(val) }}
-                sx={sxDatePicker} 
+                sx={sxDatePicker}
               />
             }
             {group == "daily" &&
               <>
-                <DatePicker value={from} size="small" className="w-40" label={t('From')} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => setFrom(val)} 
-                  sx={sxDatePicker}/>
+                <DatePicker value={from} size="small" className="w-40" label={t('From')} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => setFrom(val)}
+                  sx={sxDatePicker} />
                 <span className="font-bold text-2xl">-</span>
                 <DatePicker value={to} className="w-40" label={t('To')} views={['year', 'month', 'day']} format="DD-MM-YYYY" onChange={(val) => setTo(val)}
-                sx={sxDatePicker}/>
+                  sx={sxDatePicker} />
               </>
             }
             {group == "monthly" &&
               <>
                 <DatePicker value={from} className="w-40" label={t('From')} views={['year', 'month']} format="MM-YYYY" onChange={(val) => { setFrom(val.date(1)) }}
-                sx={sxDatePicker}/>
+                  sx={sxDatePicker} />
                 <span className="font-bold text-2xl">-</span>
-                <DatePicker value={to} className="w-40" label={t('To')} views={['year', 'month']} format="MM-YYYY" onChange={(val) => { setTo(val.endOf("month")) }} 
-                  sx={sxDatePicker}/>
+                <DatePicker value={to} className="w-40" label={t('To')} views={['year', 'month']} format="MM-YYYY" onChange={(val) => { setTo(val.endOf("month")) }}
+                  sx={sxDatePicker} />
               </>
             }
           </div>
 
-          <div className="flex flex-row gap-2 items-center">
-            {loading &&
-              <Spinner className="fill-lime-400" aria-label="Loading" size="lg" />
-            }
-            <Button.Group>
-              <Button color="secondary" className={(group == "hourly" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
-                onClick={() => {
-                  setGroup("hourly");
-                  setFrom(dayjs().hour(0));
-                  setTo(dayjs())
-                }}>
-                {t("Hourly")}
-              </Button>
-              <Button color="secondary" className={(group == "daily" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
-                onClick={() => {
-                  setGroup("daily");
-                  setFrom(dayjs().subtract(7, "day"));
-                  setTo(dayjs())
-                }}>
-                {t("Daily")}
-              </Button>
-              <Button color="secondary" className={(group == "monthly" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
-                onClick={() => {
-                  setGroup("monthly");
-                  setFrom(dayjs().subtract(1, "month"));
-                  setTo(dayjs())
-                }}>
-                {t("Monthly")}
-              </Button>
-            </Button.Group>
+          <div className="flex flex-col">
+            <h1>{t("Consumption")}</h1>
+            <div className="flex flex-row gap-2 items-center">
+              {loading &&
+                <Spinner className="fill-lime-400" aria-label="Loading" size="lg" />
+              }
+              <Button.Group>
+                <Button color="secondary" className={(group == "hourly" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
+                  onClick={() => {
+                    setGroup("hourly");
+                    setFrom(dayjs().hour(0));
+                    setTo(dayjs())
+                  }}>
+                  {t("Hourly")}
+                </Button>
+                <Button color="secondary" className={(group == "daily" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
+                  onClick={() => {
+                    setGroup("daily");
+                    setFrom(dayjs().subtract(7, "day"));
+                    setTo(dayjs())
+                  }}>
+                  {t("Daily")}
+                </Button>
+                <Button color="secondary" className={(group == "monthly" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
+                  onClick={() => {
+                    setGroup("monthly");
+                    setFrom(dayjs().subtract(1, "month"));
+                    setTo(dayjs())
+                  }}>
+                  {t("Monthly")}
+                </Button>
+              </Button.Group>
+            </div>
           </div>
 
         </div>

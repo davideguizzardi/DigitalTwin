@@ -1,3 +1,4 @@
+import { domain } from "@/Components/Commons/Constants";
 import Sidebar from "@/Components/Sidebar/Sidebar"
 import { motion } from "framer-motion";
 import Cookies from "js-cookie";
@@ -14,11 +15,13 @@ export function UserLayout({ children }) {
     const [dark, isDark] = useState(false)
     useEffect(() => {
         const fetchUser = async () => {
-            const response = await fetch("http://localhost/api/user", {
+            const response = await fetch(domain+"/api/user", {
                 headers: {"Authorization" : "Bearer " + token}
             })
+            console.log(response)
             if(response.ok){
                 const result = await response.json()
+                console.log(result)
                 setUserState({...result.user})
             }
         }

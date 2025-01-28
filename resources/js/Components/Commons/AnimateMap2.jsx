@@ -11,7 +11,6 @@ export default function AnimateMap2({ maps, appliances }) {
     const [previousIndex, setPreviousIndex] = useState(0)
     const offset = 100
     const {t} = useLaravelReactI18n()
-    console.log(maps)
     const floorAbove = () =>{
         if(indexImg <= maps.length - 1 && indexImg > 0 ){
             animate("div.floor",

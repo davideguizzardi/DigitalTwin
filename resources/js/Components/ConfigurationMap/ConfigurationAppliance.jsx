@@ -238,7 +238,7 @@ export default function ConfigurationAppliance({ editMode, endSection }) {
 
     useEffect(() => {
         const fetchUnconfAppl = async () => {
-            const response = await fetch(backend + "/virtual/device", {
+            const response = await fetch(backend + "/device", {
                 headers: { 'Authorization': 'Bearer ' + token }
             })
             const result = await response.json()

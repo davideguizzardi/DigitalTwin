@@ -2,7 +2,6 @@ import { LightPopup } from "./LightPopup"
 import { MediaPlayerPopup } from "./MediaPlayerPopup"
 
 export default function ControlPopup({ applianceId, open, closeFun, classDevice }) {
-    console.log(applianceId)
     return (
         <>
             {classDevice == "light" && 
