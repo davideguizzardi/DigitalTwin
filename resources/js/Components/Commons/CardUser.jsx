@@ -13,7 +13,6 @@ import { domain } from "./Constants";
 
 export default function CardUser({ }) {
     const user = useContext(UserContext)
-    console.log(user)
     const submit = (e) =>{
         e.preventDefault();
         router.post('/logout')

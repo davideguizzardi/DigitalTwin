@@ -40,7 +40,7 @@ class UserController extends Controller
                         "detail" => "old_password",
                         "message" => "Current password is incorrect"
                     );
-                    return response()->json($errorData, 500);
+                    return response()->json($errorData);
                 }
                 $validator = Validator::make($values, [
                     "new_password" => [Password::min(8)]
@@ -51,7 +51,7 @@ class UserController extends Controller
                         "detail" => "new_password",
                         "message" => "Password too short"
                     );
-                    return response()->json($errorData, 500);
+                    return response()->json($errorData);
                 }else{
                     $password = $validator->safe()->only(["new_password"])["new_password"];
                     $user->password = Hash::make($password);

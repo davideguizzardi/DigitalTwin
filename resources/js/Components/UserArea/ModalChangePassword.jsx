@@ -3,6 +3,7 @@ import { useState } from "react";
 import InputError from "@/Components/Commons/InputError";
 import { ThemeButton } from "../Commons/ThemeButton";
 import Cookies from "js-cookie";
+import { domain } from "../Commons/Constants";
 
 
 export default function modalChangePassword({ open=true, closeCallback }) {
@@ -33,7 +34,7 @@ export default function modalChangePassword({ open=true, closeCallback }) {
             const formData = new FormData()
             formData.append("old_password", passwords.old)
             formData.append("new_password", passwords.new)
-            const response = await fetch("http://localhost/api/user", {
+            const response = await fetch(domain +"/api/user", {
                 method: "POST",
                 headers: {
                     "Authorization": "Bearer " + token
@@ -41,6 +42,7 @@ export default function modalChangePassword({ open=true, closeCallback }) {
                 body: formData
             })
             const result = await response.json()
+            console.log(result)
             if (result.status == "error") {
                 if (result.detail == "old_password")
                     setErrors({
@@ -54,7 +56,7 @@ export default function modalChangePassword({ open=true, closeCallback }) {
                         new: result.message,
                         confirm: ""
                     })
-
+                return
             }
             closeCallback()
         }

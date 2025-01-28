@@ -18,10 +18,8 @@ export function UserLayout({ children }) {
             const response = await fetch(domain+"/api/user", {
                 headers: {"Authorization" : "Bearer " + token}
             })
-            console.log(response)
             if(response.ok){
                 const result = await response.json()
-                console.log(result)
                 setUserState({...result.user})
             }
         }
