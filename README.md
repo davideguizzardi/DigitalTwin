@@ -51,7 +51,13 @@ Create the database tables based on your migration files
 
 ``` sail artisan migrate ```
 
-**8. Add digital twin inside vendor**
+**8. Add public disk**
+
+Create the symbolic link from ```storage/app/public``` to ```public/storage```
+
+``` sail artisan storage:link ```
+
+**9. Add digital twin inside vendor**
 
 Download [Digital Twin API](https://github.com/davideguizzardi/Digital-Twin-API/tree/docker) and copy it into the vendor folder, renaming it to digitaltwin. Important to download branch ```docker``` because there are ```Dockerfile``` and ```requirements.txt``` to build the container.
 
@@ -95,8 +101,8 @@ To stop all running Docker containers:
 
 Frontend: ```http://ip-address```
 Digital: ```http://ip-address:8000```
-Mailpit: ```http://ip-address:8025``
-HomeAssistant: ```http://ip-address:8123```
+Mailpit: ```http://ip-address:8025```
+HomeAssistant:```http://ip-address:8123```
 
 ## Troubleshooting 
 
