@@ -9,15 +9,22 @@ import { backend } from "@/Components/Commons/Constants";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 const Dashboard = ({ maps, token }) => {
+    console.log(maps)
     const [homeContext, setHomeContext] = useState({})
     const [deviceContext, setDeviceContext] = useState({})
     const [appliances, setAppliance] = useState([])
 
     const {t} = useLaravelReactI18n()
 
+    useEffect(()=>{
+        if(token){
+            Cookies.set("auth-token", token)
+        }
+    },[])
+
     useEffect(() => {
         const fetchDeviceContext = async () => {
-            const response = await fetch(backend + '/virtual/device')
+            const response = await fetch(backend + '/device')
             const result = await response.json()
             console.log(result)
             setDeviceContext(result)
@@ -51,7 +58,6 @@ const Dashboard = ({ maps, token }) => {
             })
         }
         fetchMap()
-        Cookies.set("auth-token", token)
     }, [])
     return (
         <div className="size-full flex gap-2 p-2">

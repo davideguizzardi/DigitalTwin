@@ -24,6 +24,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/userarea', [UserAreaController::class, "get"])->name('userarea.get');
     Route::get('/consumption', [ConsumptionController::class, "show"])->name('consumption');
     Route::get('/automation', function(Request $request){ return Inertia::render("Automation");})->name("automation");
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+                ->name('logout');
     //Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     //Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     //Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

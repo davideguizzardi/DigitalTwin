@@ -14,6 +14,7 @@ import { CiSpeaker, CiClock1, CiSearch } from "react-icons/ci";
 import { FiSunrise, FiSunset, FiClock, FiCalendar } from "react-icons/fi";
 
 export const backend = "http://localhost:8000"
+export const domain = "http://localhost"
 
 export const daysOrder = [
     "mon",

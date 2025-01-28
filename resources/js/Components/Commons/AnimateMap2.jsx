@@ -4,13 +4,14 @@ import ListButtons from "./ListButtons"
 import CardAppliance from "./CardAppliance"
 import { useSwipeable } from "react-swipeable"
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { domain } from "./Constants"
 
 export default function AnimateMap2({ maps, appliances }) {
     const [indexImg, setIndexImg] = useState(0)
     const [previousIndex, setPreviousIndex] = useState(0)
     const offset = 100
     const {t} = useLaravelReactI18n()
-
+    console.log(maps)
     const floorAbove = () =>{
         if(indexImg <= maps.length - 1 && indexImg > 0 ){
             animate("div.floor",
@@ -98,7 +99,7 @@ export default function AnimateMap2({ maps, appliances }) {
                         id={"floor" + maps[indexImg].url} key={maps[indexImg].url}
                         variants={variants} initial="initial" animate="animate" exit="exit"
                     >
-                        <img src={maps[indexImg].url} alt=""
+                        <img src={domain+"/"+maps[indexImg].url} alt=""
                             className="border-solid border-2 dark:border-slate-600"
                             style={{
                                 objectFit: "contain",

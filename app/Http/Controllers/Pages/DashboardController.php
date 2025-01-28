@@ -14,11 +14,16 @@ class DashboardController extends Controller
     public function show($firstAccess = false): Response
     {
         $user = Auth::user();
-        $token = $user->createToken("auth-api")->plainTextToken;
+        if($firstAccess){
+            $token = $user->createToken("auth-api")->plainTextToken;
 
+            return Inertia::render('Dashboard', [
+                'maps' => Map::all(),
+                'token' => $user
+            ]);
+        }
         return Inertia::render('Dashboard', [
-            'maps' => Map::all(),
-            'token' => $token
+            'maps' => Map::all()
         ]);
     }
 
