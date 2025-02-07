@@ -1,27 +1,30 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { backend } from "../Commons/Constants";
-import { FaPencil} from "react-icons/fa6"
+import { FaPencil } from "react-icons/fa6"
 import { ThemeButton } from "../Commons/ThemeButton";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { StyledButton } from "../Commons/StyledBasedComponents";
+import { getIcon } from "../Commons/Constants";
+import { TextInput, Label, Button } from "flowbite-react";
 
-export default function ConfigurationEnergy({endSection}){
+export default function ConfigurationEnergy({ endSection, backSection, isInitialConfiguration = true }) {
     const templateSWH1 = Array.from(Array(7).keys()).map(() => Array(24).fill(0))
-    const templateSWH2 =  Array.from(Array(7).keys()).map(() => Array(24).fill(1))
-    const templateSWH3 =  Array.from(Array(7).keys()).map(() => Array(24).fill(2))
+    const templateSWH2 = Array.from(Array(7).keys()).map(() => Array(24).fill(1))
+    const templateSWH3 = Array.from(Array(7).keys()).map(() => Array(24).fill(2))
     for (let i = 0; i < 6; i++) {
-        for(let j = 0; j < 24; j++){
-            if(j>6 && j<22){
+        for (let j = 0; j < 24; j++) {
+            if (j > 6 && j < 22) {
                 templateSWH2[i][j] = 0
-                if(i<5 && j>7 && j<19){
+                if (i < 5 && j > 7 && j < 19) {
                     templateSWH3[i][j] = 0
-                }else{
+                } else {
                     templateSWH3[i][j] = 1
                 }
             }
         }
     }
-    const {t} = useLaravelReactI18n()
+    const { t } = useLaravelReactI18n()
 
     const [timeSlots, setTimeSlots] = useState(0)
     const [powerCapacity, setPowerCapacity] = useState(3.5)
@@ -30,7 +33,7 @@ export default function ConfigurationEnergy({endSection}){
     const [selecting, setSelecting] = useState(false)
     const [slotWeekHour, setSlotWeekHour] = useState([...templateSWH1])
 
-    
+
     const backgroundColors = [
         " bg-red-400 ",
         " bg-amber-400 ",
@@ -43,26 +46,26 @@ export default function ConfigurationEnergy({endSection}){
         " border-emerald-400 "
     ]
 
-    const updateTimeSlots = (value) =>{
+    const updateTimeSlots = (value) => {
         const len = powerPrice.length
-        if( value < len){
+        if (value < len) {
             setPowerPrice([...powerPrice.slice(0, value)])
-        }else if ( value > timeSlots){
-            const updateState = [...powerPrice, ...Array(value-len).fill(0.001)]
+        } else if (value > timeSlots) {
+            const updateState = [...powerPrice, ...Array(value - len).fill(0.001)]
             setPowerPrice([...updateState])
         }
         setTimeSlots(value)
         setCurrentSlot(-1)
-        if(value == 1) setSlotWeekHour([...templateSWH1])
-        else if(value == 2) setSlotWeekHour([...templateSWH2])
-        else if(value == 3) setSlotWeekHour([...templateSWH3])
+        if (value == 1) setSlotWeekHour([...templateSWH1])
+        else if (value == 2) setSlotWeekHour([...templateSWH2])
+        else if (value == 3) setSlotWeekHour([...templateSWH3])
     }
 
-    const setInputValue = (e, index) =>{
-        const tempPower = [...powerPrice.map((el, i) =>{
-            if (index==i)
-                return e.target.value 
-            else 
+    const setInputValue = (e, index) => {
+        const tempPower = [...powerPrice.map((el, i) => {
+            if (index == i)
+                return e.target.value
+            else
                 return el
         })]
         setPowerPrice(tempPower)
@@ -92,28 +95,28 @@ export default function ConfigurationEnergy({endSection}){
         }
     }
 
-    const insertSlotHour = (i,j) =>{
-        if(currentSlot >=0){
+    const insertSlotHour = (i, j) => {
+        if (currentSlot >= 0) {
             let tempSlotWeekHour = [...slotWeekHour]
             tempSlotWeekHour[i][j] = currentSlot
             setSlotWeekHour([...tempSlotWeekHour])
         }
     }
 
-    const startSelecting = (e,i,j)=>{
+    const startSelecting = (e, i, j) => {
         e.preventDefault()
         setSelecting(true)
         console.log("start selecting")
         if (currentSlot >= 0) {
-            insertSlotHour(i,j)
+            insertSlotHour(i, j)
         }
     }
 
-    const moveSelecting = (e,i,j) =>{
+    const moveSelecting = (e, i, j) => {
         e.preventDefault()
         if (currentSlot >= 0 && selecting) {
             console.log("Move selecting")
-            insertSlotHour(i,j)
+            insertSlotHour(i, j)
         }
     }
 
@@ -122,28 +125,28 @@ export default function ConfigurationEnergy({endSection}){
             className="grid grid-cols-8 gap-0 h-full justify-center"
             onMouseLeave={() => setSelecting(false)}
         >
-            <h1 className="dark:bg-neutral-700 dark:text-white text-center" style={{ cursor: "default" }}>Hour</h1>
+            <h1 className="dark:bg-neutral-700 dark:text-white text-center capitalize" style={{ cursor: "default" }}>{t("hour")}</h1>
             <h1 className="dark:bg-neutral-700 dark:text-white  text-center" style={{ cursor: "pointer" }}
                 onClick={() => { setDay(0) }}
-            >Monday</h1>
+            >{t("Monday")}</h1>
             <h1 className="dark:bg-neutral-700 dark:text-white text-center" style={{ cursor: "pointer" }}
                 onClick={() => { setDay(1) }}
-            >Tuesday</h1>
+            >{t("Tuesday")}</h1>
             <h1 className="dark:bg-neutral-700 dark:text-white text-center" style={{ cursor: "pointer" }}
                 onClick={() => { setDay(2) }}
-            >Wednesday</h1>
+            >{t("Wednesday")}</h1>
             <h1 className="dark:bg-neutral-700 dark:text-white text-center" style={{ cursor: "pointer" }}
                 onClick={() => { setDay(3) }}
-            >Thursday</h1>
+            >{t("Thursday")}</h1>
             <h1 className="dark:bg-neutral-700 dark:text-white text-center" style={{ cursor: "pointer" }}
                 onClick={() => { setDay(4) }}
-            >Friday</h1>
+            >{t("Friday")}</h1>
             <h1 className="dark:bg-neutral-700 dark:text-white text-center" style={{ cursor: "pointer" }}
                 onClick={() => { setDay(5) }}
-            >Saturday</h1>
+            >{t("Saturday")}</h1>
             <h1 className="dark:bg-neutral-700 dark:text-white text-center" style={{ cursor: "pointer" }}
                 onClick={() => { setDay(6) }}
-            >Sunday</h1>
+            >{t("Sunday")}</h1>
             {
                 Array.from(Array(24).keys()).map((element, j) => {
                     return (
@@ -155,16 +158,16 @@ export default function ConfigurationEnergy({endSection}){
                             {
                                 Array.from(Array(7).keys()).map((el, i) => {
                                     const swh = slotWeekHour[i][j]
-                                    const colorCell = swh >= 0 ? backgroundColors[3 - timeSlots + swh ] : ""
+                                    const colorCell = swh >= 0 ? backgroundColors[3 - timeSlots + swh] : ""
                                     return (
                                         <div className={"border w-full dark:border-neutral-700" + colorCell} key={"cell_" + i + "_" + j}
                                             style={{ cursor: selecting ? "grabbing" : "pointer" }}
-                                            onClick={()=>{insertSlotHour(i,j)}}
-                                            onTouchStart={() =>{console.log("startTouch")}}
-                                            onTouchMove={()=>{console.log("touchMove")}}
-                                            onTouchEnd={()=>{console.log("touchEnd")}}
-                                            onPointerDown={(e) => startSelecting(e,i,j)}
-                                            onPointerOver={(e) => moveSelecting(e,i,j)}
+                                            onClick={() => { insertSlotHour(i, j) }}
+                                            onTouchStart={() => { console.log("startTouch") }}
+                                            onTouchMove={() => { console.log("touchMove") }}
+                                            onTouchEnd={() => { console.log("touchEnd") }}
+                                            onPointerDown={(e) => startSelecting(e, i, j)}
+                                            onPointerOver={(e) => moveSelecting(e, i, j)}
                                             onPointerUp={(e) => {
                                                 e.preventDefault()
                                                 setSelecting(false)
@@ -205,7 +208,7 @@ export default function ConfigurationEnergy({endSection}){
                 }]
             }
         })
-        fetch(backend +"/configuration/", {
+        fetch(backend + "/configuration/", {
             method: "PUT",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ data: dataConf })
@@ -219,7 +222,7 @@ export default function ConfigurationEnergy({endSection}){
             console.log(result)
             if (timeSlots < 2) {
                 console.log(timeSlots)
-                const response = await fetch(backend +"/configuration/cost_slot_2", {
+                const response = await fetch(backend + "/configuration/cost_slot_2", {
                     method: "DELETE",
                     headers: { "Content-Type": 'application/json' }
                 })
@@ -229,12 +232,12 @@ export default function ConfigurationEnergy({endSection}){
         }
         const dataCalendar = JSON.stringify({ data: slotWeekHour.map((day) => day.map((hour) => hour)) })
         //before to save delete old calendar
-        const deleteCalendar = await fetch(backend +"/calendar", {
+        const deleteCalendar = await fetch(backend + "/calendar", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" }
         })
-        if (deleteCalendar.ok){
-            const responseCalendar = await fetch(backend +"/calendar", {
+        if (deleteCalendar.ok) {
+            const responseCalendar = await fetch(backend + "/calendar", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: dataCalendar
@@ -247,11 +250,11 @@ export default function ConfigurationEnergy({endSection}){
 
     useEffect(() => {
         const getConfiguration = async () => {
-            const response = await fetch(backend +"/configuration/")
+            const response = await fetch(backend + "/configuration/")
             const result = await response.json()
             let updatePrice = []
             result.forEach((conf) => {
-                if (conf.key == "energy_slots_number"){
+                if (conf.key == "energy_slots_number") {
                     setTimeSlots(conf.value)
                     console.log(conf.value)
                 }
@@ -263,79 +266,126 @@ export default function ConfigurationEnergy({endSection}){
                     updatePrice[2] = conf.value
                 else if (conf.key == "power_threshold")
                     setPowerCapacity(conf.value)
-                
+
             })
             setPowerPrice([...updatePrice])
         }
         const getCalendar = async () => {
             const response = await fetch(backend + "/calendar")
             const result = await response.json()
-            if(result.data.length > 0){
+            if (result.data.length > 0) {
                 setSlotWeekHour([...result.data])
             }
-                
+
         }
         getCalendar()
         getConfiguration()
     }, [])
 
-    return(
-        <div className="size-full flex min-w-fit 2xl:p-2">
-            <div className="flex flex-col p-1 h-full w-1/2">
-                <div className="flex py-3 items-center">
-                    <p className="text-xl px-1 dark:text-white">{t("Maximum capacity")}</p>
-                    <input className="px-1 dark:text-white dark:bg-neutral-700" style={{ width: "64px" }} type="number"
-                    value={powerCapacity} min="0" max="15" step="0.5" onChange={e => setPowerCapacity(e.target.value)} />
-                    <p className="text-xl px-1 dark:text-white">kW</p>
-                </div>
-                <div className="flex py-3 items-center">
-                    <p className="text-xl px-1 dark:text-white">{t("Number of slot")}</p>
-                    <input className="px-1 dark:text-white dark:bg-neutral-700" style={{ width: "64px" }} type="number"
-                    value={timeSlots > 0 ? timeSlots : ''}
-                    min="1" max="3" onChange={e => updateTimeSlots(e.target.value)} />
-                </div>
-                <div className="flex flex-col py-4 px-6 gap-2 h-full">
-                    { timeSlots > 0  &&
-                        powerPrice.filter((e, i) => { return i < timeSlots}).map((element, index) =>{
-                            return(<div className={"flex flex-col py-3 gap-2 " + (currentSlot == index && " border-2 " +borderColors[3 -timeSlots +index]) }key={index}>
-                                <div className="flex">
-                                    <p className="text-xl px-2 dark:text-white">
-                                        {t("Slot")} {index + 1}
-                                    </p>
-                                    <input className="px-1 dark:text-white dark:bg-neutral-700" style={{ width: "128px" }} type="number" value={element} min="0.001" max="15" step="0.001"
-                                        defaultValue={0.001} onChange={(e) => setInputValue(e, index)}
-                                    />
-                                    <p className="text-xl px-2 dark:text-white">€/kWh</p>
-                                </div>
-                                <div className="flex">
-                                    <p className="text-lg px-2 dark:text-white">
-                                        {t("Insert in calendar")} 
-                                    </p>
-                                    <div className={"rounded-full p-2 " + backgroundColors[3- timeSlots +index]} style={{"cursor": "pointer"}}
-                                    onClick={()=>setCurrentSlot(index)}
+
+    return (
+        <div className="size-full flex flex-col gap-2 min-w-fit 2xl:p-2 px-2">
+            <div className="size-full flex gap-3">
+                <div className="flex flex-col p-1 h-full w-1/2 ">
+                    <div className="flex py-3 items-center gap-6" onClick={() => setCurrentSlot(-1)}>
+                        <Label htmlFor="maximum_capacity" className=" dark:text-white text-lg">{t("Maximum capacity")}</Label>
+                        <div className="flex flex-row gap-2 items-center">
+                            <TextInput id="maximum_capacity" className=" dark:text-white dark:bg-neutral-700" type="number"
+                                value={powerCapacity} min="0" max="100000" step="100" onChange={e => setPowerCapacity(e.target.value)} required />
+                            <p className="text-xl dark:text-white">W</p>
+                        </div>
+                    </div>
+                    <div className="flex py-3 items-center gap-6" onClick={() => setCurrentSlot(-1)}>
+                        <Label htmlFor="slots_number" className="text-lg dark:text-white">{t("Number of slot")}</Label>
+                        <TextInput id="slots_number" className=" dark:text-white dark:bg-neutral-700" type="number"
+                            value={timeSlots > 0 ? timeSlots : ''}
+                            min="1" max="3" onChange={e => updateTimeSlots(e.target.value)} required />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        {timeSlots > 0 &&
+                            powerPrice.filter((e, i) => { return i < timeSlots }).map((element, index) => {
+                                return (
+                                    <div
+                                        key={index}
+                                        className={`flex flex-row w-fit py-3 px-2 gap-2 -mx-1 rounded-lg transition-transform duration-200 ${currentSlot == index && `translate-x-3 border-[2px] ${borderColors[3 - timeSlots + index]}`}`}
                                     >
-                                        <FaPencil size={20}/>
-                                    </div>
+                                        <div className="flex flex-row gap-6 items-center">
+                                            <Label className="text-xl dark:text-white">
+                                                {t("Slot")} {index + 1}
+                                            </Label>
+                                            <div className="flex flex-row gap-2 items-center">
+                                                <TextInput className=" dark:text-white dark:bg-neutral-700" type="number" value={element} min="0.001" max="15" step="0.001"
+                                                    onChange={(e) => setInputValue(e, index)}
+                                                />
+                                                <p className="text-xl dark:text-white">€/kWh</p>
+                                            </div>
+                                            <div
+                                                onClick={() => setCurrentSlot(index)}
+                                                className={`flex items-center rounded-lg p-2 hover:cursor-pointer ${backgroundColors[3 - timeSlots + index]}`}
+                                            >
+                                                <p className="text-lg px-2 dark:text-white">
+                                                    {t("Insert in calendar")}
+                                                </p>
+                                                <FaPencil size={20} />
+                                            </div>
+
+                                        </div>
+                                    </div>)
+                            })
+                        }
+                    </div>
+                    <div className="size-full" onClick={() => setCurrentSlot(-1)}>
+                        {currentSlot !== -1 &&
+                            <div className="p-4 mt-10 mr-5 bg-zinc-100 rounded-lg shadow-md">
+                                <div className="flex flex-row items-center gap-2 mb-2">
+                                {getIcon("info")}
+                                <h3 className="text-lg font-semibold">{t("How to Use")}</h3>
                                 </div>
-                            </div>)
-                        })
+                                <ul className="list-disc pl-5 text-sm space-y-1">
+                                    <li><strong>{t("Press")}</strong> {t("single_press_description")}</li>
+                                    <li><strong>{t("Drag")}</strong> {t("drag_description")}</li>
+                                    <li><strong>{t("Press")}</strong> {t("day_press_description")}</li>
+                                    <li><strong>{t("Press")}</strong> {t("hour_press_description")}</li>
+                                </ul>
+                            </div>
+
+                        }
+                    </div>
+                </div>
+                <div className="flex flex-col h-full min-w-fit w-1/2">
+                    {timeSlots > 0 ?
+                        table
+                        :
+                        <div className="flex size-full justify-center items-center dark:text-white text-2xl">
+                            {t("Before to start insert")}
+                            <br />
+                            {t("Number of slot")}
+                        </div>
                     }
                 </div>
-                <div className="flex w-full h-min py-3 items-end justify-center">
-                    <ThemeButton onClick={() => { saveConfiguration()}}>{t("Save")}</ThemeButton>
-                </div>
             </div>
-            <div className="flex flex-col h-full min-w-fit w-1/2">
-                {timeSlots > 0 ?
-                    table
-                    :
-                    <div className="flex size-full justify-center items-center dark:text-white text-2xl">
-                        {t("Before to start insert")}
-                        <br/>
-                        {t("Number of slot")}
+            {
+                isInitialConfiguration ?
+                    <div className="grid grid-cols-2" onClick={() => setCurrentSlot(-1)}>
+                        <div className="flex justify-start">
+                            <StyledButton onClick={() => { backSection() }}>
+                                {getIcon("arrow_left")}{t("Back")}
+                            </StyledButton>
+                        </div>
+
+                        <div className="flex justify-end">
+
+                            <StyledButton onClick={() => { saveConfiguration() }}>
+                                {t("Next")}{getIcon("arrow_right")}
+                            </StyledButton>
+
+                        </div>
                     </div>
-                }
-            </div>
-        </div>
+                    :
+                    <div className="flex w-full h-min py-3 items-end justify-center">
+                        <ThemeButton onClick={() => { saveConfiguration() }}>{t("Save")}</ThemeButton>
+                    </div>
+            }
+        </div >
     )
 }

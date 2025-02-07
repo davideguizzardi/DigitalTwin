@@ -4,6 +4,7 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { StyledButton } from "../Commons/StyledBasedComponents";
 
 export function ConsumptionComparisonGraph({ device_name, device_id }) {
   const [date1, setDate1] = useState(dayjs())
@@ -84,7 +85,7 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
   }
 
   const fetchDevices = async () => {
-    const url = "http://127.0.0.1:8000/virtual/device?get_only_names=true"
+    const url = "http://127.0.0.1:8000/device?get_only_names=true"
     const response = await fetch(
       url,
       {
@@ -153,7 +154,10 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
     if (response1.ok && response2.ok) {
       const data1 = await response1.json();
       const data2 = await response2.json();
-      setDataset(data1.concat(data2))
+      const concatDataset=data1.concat(data2)
+      if(group!="hourly")
+        concatDataset.map(item=>item.energy_consumption=item.energy_consumption/1000)
+      setDataset(concatDataset)
     }
     setLoading(false)
   }
@@ -170,13 +174,11 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
     setDeviceId(device_id)
   }, [device_name, device_id])
 
-  const valueFormatter = (value) => `${value} Wh`;
+  const valueFormatter = (value) => `${value.toFixed(2)} ${group=="hourly"? "Wh":"kWh"}`;
 
-  //const series=Object.keys(dataset).map(key=> ({ dataKey: "energy_consumption",color: '#a3e635', label:key, valueFormatter }))
-  //        <h1 className="text-gray-800 text-base font-semibold font-[Inter]">{deviceName}</h1>
   return (
-    <div className="rounded-lg shadow-md size-full flex flex-col">
-      <div className="flex w-full items-center justify-center mx-6 my-2 gap-4">
+    <div className="w-full flex flex-col">
+      <div className="flex items-center justify-center mx-6 my-2 gap-4">
         <div className="flex flex-col gap-2">
 
 
@@ -214,28 +216,28 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
           </div>
 
           <div className="flex flex-col">
-            <h1>{t("Consumption")}</h1>
+            <Label>{t("Consumption")}</Label>
             <div className="flex flex-row gap-2 items-center">
               {loading &&
                 <Spinner className="fill-lime-400" aria-label="Loading" size="lg" />
               }
               <Button.Group>
-                <Button color="secondary" className={(group == "daily" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
+                <StyledButton color="secondary" className={(group == "daily" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
                   onClick={() => {
                     setGroup("daily");
                     setDate1(dayjs().subtract(1, "day"));
                     setDate2(dayjs())
                   }}>
                   {t("Daily")}
-                </Button>
-                <Button color="secondary" className={(group == "monthly" ? "bg-lime-400 dark:text-black" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
+                </StyledButton>
+                <StyledButton color="secondary" className={(group == "monthly" ? "bg-lime-400 dark:text-black" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
                   onClick={() => {
                     setGroup("monthly");
                     setDate1(dayjs().subtract(1, "month").date(1));
                     setDate2(dayjs().date(1))
                   }}>
                   {t("Monthly")}
-                </Button>
+                </StyledButton>
               </Button.Group>
             </div>
           </div>

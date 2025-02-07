@@ -58,7 +58,7 @@ const Dashboard = ({ maps, token }) => {
         fetchMap()
     }, [])
     return (
-        <div className="size-full flex gap-2 p-2">
+        <div className="size-full flex gap-2 p-5">
             <WhiteCard className=" flex-col gap-2 p-2 w-full " >
                     <div className="w-full flex items-center justify-center mt-6 gap-2 p-3 dark:text-white">
                         <FaHouse size={36} />
@@ -104,7 +104,7 @@ const Dashboard = ({ maps, token }) => {
                 <WhiteCard className="size-full " >
                     <EcologicalFootprint energyConsumptionIn={100} />
                 </WhiteCard>
-                <WhiteCard className="size-full overflow-y-scroll" >
+                <WhiteCard className="size-full overflow-y-scroll p-4" >
                     <DeviceTable deviceContext={deviceContext} />
                 </WhiteCard>
 

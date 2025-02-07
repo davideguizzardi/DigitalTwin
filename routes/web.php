@@ -24,6 +24,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/userarea', [UserAreaController::class, "get"])->name('userarea.get');
     Route::get('/consumption', [ConsumptionController::class, "show"])->name('consumption');
     Route::get('/automation', function(Request $request){ return Inertia::render("Automation");})->name("automation");
+    Route::get('/automation_add', function(Request $request){ return Inertia::render("AddAutomation");})->name("automation.add");
+    Route::get('/first-configuration', function (Request $request) {
+        $maps = session('maps', collect());
+        return Inertia::render("FirstConfiguration", [
+            'maps' => $maps,
+        ]);
+    })->name("firstConfiguration");
     //Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     //Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     //Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

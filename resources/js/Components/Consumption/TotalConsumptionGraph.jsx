@@ -4,6 +4,7 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { StyledButton } from "../Commons/StyledBasedComponents";
 
 export function TotalConsumptionGraph({ device_name, device_id }) {
   const [from, setFrom] = useState(dayjs())
@@ -104,7 +105,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
   }
 
   const fetchDevices = async () => {
-    const url = "http://127.0.0.1:8000/virtual/device?get_only_names=true"
+    const url = "http://127.0.0.1:8000/device?get_only_names=true"
     const response = await fetch(
       url,
       {
@@ -150,6 +151,8 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
     if (response.ok) {
       const data = await response.json();
       data.map(item => item.date = item.date.split(" ").length > 1 ? item.date.split(" ")[1] : item.date)
+      if (group!="hourly")
+        data.map(item=>item.energy_consumption=item.energy_consumption/1000)
       setDataset(data)
     }
     setLoading(false)
@@ -165,13 +168,11 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
     setDeviceId(device_id)
   }, [device_name, device_id])
 
-  const valueFormatter = (value) => `${value.toFixed(2)} Wh`;
+  const valueFormatter = (value) => `${value.toFixed(2)} ${group=="hourly"? "Wh":"kWh"}`;
 
-  //const series=Object.keys(dataset).map(key=> ({ dataKey: "energy_consumption",color: '#a3e635', label:key, valueFormatter }))
-  //        <h1 className="text-gray-800 text-base font-semibold font-[Inter]">{deviceName}</h1>
   return (
-    <div className="size-full rounded-lg shadow-md flex flex-col">
-      <div className="flex w-full mx-3 my-2 items-center justify-center gap-4">
+    <div className="w-full flex flex-col">
+      <div className="flex  mx-3 my-2 items-center justify-center gap-4">
         <div className="flex flex-row gap-2 ">
           <div className="flex flex-col w-fit">
 
@@ -215,36 +216,36 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
           </div>
 
           <div className="flex flex-col">
-            <h1>{t("Consumption")}</h1>
+            <Label>{t("Consumption")}</Label>
             <div className="flex flex-row gap-2 items-center">
               {loading &&
                 <Spinner className="fill-lime-400" aria-label="Loading" size="lg" />
               }
               <Button.Group>
-                <Button color="secondary" className={(group == "hourly" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
+                <StyledButton color="secondary" className={(group == "hourly" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
                   onClick={() => {
                     setGroup("hourly");
                     setFrom(dayjs().hour(0));
                     setTo(dayjs())
                   }}>
                   {t("Hourly")}
-                </Button>
-                <Button color="secondary" className={(group == "daily" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
+                </StyledButton>
+                <StyledButton color="secondary" className={(group == "daily" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
                   onClick={() => {
                     setGroup("daily");
                     setFrom(dayjs().subtract(7, "day"));
                     setTo(dayjs())
                   }}>
                   {t("Daily")}
-                </Button>
-                <Button color="secondary" className={(group == "monthly" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
+                </StyledButton>
+                <StyledButton color="secondary" className={(group == "monthly" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
                   onClick={() => {
                     setGroup("monthly");
                     setFrom(dayjs().subtract(1, "month"));
                     setTo(dayjs())
                   }}>
                   {t("Monthly")}
-                </Button>
+                </StyledButton>
               </Button.Group>
             </div>
           </div>

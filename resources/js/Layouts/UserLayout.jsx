@@ -6,6 +6,8 @@ import { createContext } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 
+import Navbar from "@/Components/Commons/Navbar";
+
 const token = Cookies.get("auth-token")
 
 export const UserContext = createContext({})
@@ -15,33 +17,38 @@ export function UserLayout({ children }) {
     const [dark, isDark] = useState(false)
     useEffect(() => {
         const fetchUser = async () => {
-            const response = await fetch(domain+"/api/user", {
-                headers: {"Authorization" : "Bearer " + token}
+            const response = await fetch(domain + "/api/user", {
+                headers: { "Authorization": "Bearer " + token }
             })
-            if(response.ok){
+            if (response.ok) {
                 const result = await response.json()
-                setUserState({...result.user})
+                setUserState({ ...result.user })
             }
         }
         fetchUser()
         const darkMode = localStorage.getItem("darkMode")
-        if(darkMode=="true"){
+        if (darkMode == "true") {
             document.documentElement.classList.add("dark")
-        }else{
+        } else {
             document.documentElement.classList.remove("dark")
         }
     }, [])
 
     return (
         <main>
-            <div className="overflow-hidden bg-gray-200 dark:bg-neutral-800 ">
+            <div className="overflow-hidden bg-gray-300 dark:bg-neutral-800 h-screen w-screen">
                 <UserContext.Provider value={userState}>
-                    <div className="h-full relative min-h-screen lg:h-screen flex flex-grow-1">
-                        <Sidebar />
-                        <motion.div className="size-full min-h-fit p-1 justify-center ">
+                    {children.props.isFirstConfiguration ?
+                        <></> :
+                        <Navbar />
+                    }
+                    <div className="flex w-full justify-center">
+
+                        <motion.div className={`${children.props.isFirstConfiguration?"h-screen":"h-[calc(100vh-3.25rem)]"} justify-center w-full`}>
                             {children}
                         </motion.div>
                     </div>
+
                 </UserContext.Provider>
             </div>
         </main>

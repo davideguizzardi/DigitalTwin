@@ -5,11 +5,13 @@ import { useState } from "react"
 import { useEffect } from "react"
 import { MediaPlayerPopup } from "../ControlAppliance/MediaPlayerPopup"
 import ControlPopup from "../ControlAppliance/ControlPopup"
-import { getIcon } from "./Constants"
+import { getDeviceIcon, getIcon } from "./Constants"
+
 
 export default function CardAppliance({ appliancePos }) {
     const [openControl, isOpenControl] = useState(false)
-    const [typeAppl, ] = appliancePos.id.split(".", 2)
+    const [openName,setOpenName]=useState(false)
+    //const [typeAppl,] = appliancePos.id.split(".", 2)
 
     const variants = {
         initial: {
@@ -38,15 +40,18 @@ export default function CardAppliance({ appliancePos }) {
         <motion.div
             className="absolute rounded-full p-1 bg-gray-200"
             style={{ top: appliancePos.top + "%", left: appliancePos.left + "%" }}
-            variants={variants} initial="initial" animate="animate"
+            variants={variants} initial="initial" animate="animate" onHoverStart={()=>setOpenName(true)} onHoverEnd={()=>setOpenName(false)}
         >
-            <ControlPopup applianceId={appliancePos.id} open={openControl} closeFun={closeFun} classDevice={typeAppl}/> 
-            <div className="z-10"
-                    style={{ cursor: "pointer", zIndex: "20" }}
-                    onClick={() => isOpenControl(true)}
+            <ControlPopup applianceId={appliancePos.state_entity_id} open={openControl} closeFun={closeFun} classDevice={appliancePos.device_class} />
+            <div className="z-10 flex flex-row gap-1 items-center"
+                style={{ cursor: "pointer", zIndex: "20" }}
+                onClick={() => isOpenControl(true)}
             >
-                <IconAppliance typeAppl={typeAppl} className="z-20"
-                ></IconAppliance>
+
+                {getDeviceIcon(appliancePos.category)}
+                {openName &&
+                    appliancePos.name
+                }
             </div>
         </motion.div>
     )

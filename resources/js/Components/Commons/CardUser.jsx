@@ -21,7 +21,7 @@ export default function CardUser({ }) {
     return (
         <div className="flex item-center gap-2">
             <a href={route("userarea.get")} className="flex items-center w-full gap-1">
-                <div className="h-full w-content flex rounded-full flex items-center relative p-1 bg-gray-300 dark:bg-neutral-700 ">
+                <div className="h-full w-content flex rounded-full items-center relative p-1  dark:bg-neutral-700 ">
                     <Avatar size={"lg"} rounded
                         img={user.url_photo && domain + "/" +user.url_photo}
                     >

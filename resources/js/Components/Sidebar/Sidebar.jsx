@@ -7,6 +7,8 @@ import CardUser from "../Commons/CardUser";
 import DarkButton from "../Commons/DarkButton";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 
+import { getIcon } from "../Commons/Constants";
+
 export default function Sidebar() {
     const [isVisible, setVisible] = useState(false)
     const [hoverLogo, setHoverLogo] = useState(false)

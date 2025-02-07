@@ -58,7 +58,7 @@ export function EcologicalFootprint({ energyConsumptionIn, home=true }) {
     },[gCO2])
 
     return (
-        <div className="w-full h-full rounded-lg items-center flex flex-col gap-3 text-gray-800 p-4 dark:text-white">
+        <div className="w-full h-full rounded-lg items-center flex flex-col gap-3 text-gray-800 p-4 dark:text-white bg-zinc-50 shadow-md">
             <div className="w-full flex justify-center">
                 <h1 className="uppercase font-bold text-3xl">{home ? t("Home Ecological Footprint"):t("Your Ecological Footprint")}</h1>
             </div>

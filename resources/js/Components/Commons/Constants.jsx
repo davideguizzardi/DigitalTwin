@@ -1,17 +1,71 @@
-import { CiCircleQuestion } from "react-icons/ci";
-import { FaGear, FaClock, FaInfo, FaTowerBroadcast, FaStopwatch } from "react-icons/fa6";
-import { IoMdBatteryFull } from "react-icons/io";
-import { WiHumidity } from "react-icons/wi";
+// Font Awesome 5 icons (react-icons/fa)
 import {
-    FaTemperatureThreeQuarters, FaBolt, FaCalendar,
-    FaSun, FaFan, FaCloudSun, FaCirclePlay, FaLightbulb
+    FaLeaf, FaDoorOpen, FaFan, FaCalendar, FaRobot,
+    FaWindowMaximize, FaBell, FaCamera, FaIceCream, FaShieldAlt, FaTint, FaLock,
+    FaUnlock, FaWindowClose, FaEye, FaEyeSlash, FaCheck,
+    FaInfoCircle
+} from "react-icons/fa";
+
+
+// Font Awesome 6 icons (react-icons/fa6)
+import {
+    FaCircleQuestion, FaGear, FaClock, FaInfo, FaTemperatureThreeQuarters, FaBolt, FaSun, FaCloudSun,
+    FaCirclePlay, FaLightbulb, FaHouse,
+    FaArrowRight,
+    FaArrowLeft,
+    FaPlus
 } from "react-icons/fa6";
-import { FaInfoCircle } from "react-icons/fa";
-import { RxSwitch } from "react-icons/rx";
-import { TbCircuitSwitchOpen } from "react-icons/tb";
-import { MdOutlineEnergySavingsLeaf } from "react-icons/md";
-import { CiSpeaker, CiClock1, CiSearch } from "react-icons/ci";
-import { FiSunrise, FiSunset, FiClock, FiCalendar } from "react-icons/fi";
+
+// Other icon libraries
+import {
+    CiCircleQuestion, CiSpeaker, CiClock1, CiSearch, CiWarning
+} from "react-icons/ci";
+
+import {
+    IoMdBatteryFull, IoMdLeaf
+} from "react-icons/io";
+
+import {
+    WiHumidity
+} from "react-icons/wi";
+
+import {
+    MdOutlineEnergySavingsLeaf, MdThermostat, MdAirlineSeatReclineExtra, MdOutlinePower
+} from "react-icons/md";
+
+import {
+    TbCircuitSwitchOpen
+} from "react-icons/tb";
+
+import {
+    RiMoneyEuroCircleFill
+} from "react-icons/ri";
+
+import {
+    FiSunrise, FiSunset, FiClock, FiCalendar
+} from "react-icons/fi";
+
+import {
+    GoDotFill
+} from "react-icons/go";
+
+import {
+    RxSwitch
+} from "react-icons/rx";
+
+import { PiTelevisionSimple, PiVideoCameraFill, PiDesktopTowerFill, PiForkKnife } from "react-icons/pi";
+import { TbMicrowave } from "react-icons/tb";
+import { BiSolidWasher, BiSolidFridge } from "react-icons/bi";
+import { LuBlinds } from "react-icons/lu";
+import { TbAirConditioning } from "react-icons/tb";
+import { MdSensorWindow } from "react-icons/md";
+import { IoWater } from "react-icons/io5";
+import { IoExtensionPuzzleSharp } from "react-icons/io5";
+import { RiHome2Fill } from "react-icons/ri";
+
+import { RiHomeLine } from "react-icons/ri";
+
+
 
 export const backend = "http://localhost:8000"
 export const domain = "http://localhost"
@@ -38,36 +92,118 @@ export const DAYS = {
 }
 
 export const iconMap = {
-    battery: <IoMdBatteryFull className="size-5" />,
-    humidity: <WiHumidity className="size-5" />,
-    temperature: <FaTemperatureThreeQuarters className="size-5" />,
-    power: <FaBolt className="size-5" />,
-    energy: <MdOutlineEnergySavingsLeaf className="size-5" />,
-    energy_big: <MdOutlineEnergySavingsLeaf className="size-8" />,
-    timestamp: <FaCalendar className="size-5" />,
-    sun: <FaSun className="size-5" />,
-    fan: <FaFan className="size-5" />,
-    sensor: <TbCircuitSwitchOpen className="size-5" />,
-    weather: <FaCloudSun className="size-5" />,
-    media_player: <FaCirclePlay className="size-5" />,
-    play: <FaCirclePlay className="size-5" />,
-    light: <FaLightbulb className="size-5" />,
-    button: <RxSwitch className="size-5" />,
-    switch: <RxSwitch className="size-5" />,
-    speaker: <CiSpeaker className="size-5" />,
-    info: <FaInfoCircle className="size-5" />,
-    search: <CiSearch className="size-5" />,
-    sunset: <FiSunset className="size-5" />,
-    sunrise: <FiSunrise className="size-5" />,
-    time: <FiClock className="size-5" />,
-    unknown: <CiCircleQuestion className="size-5" />,
-    weekday: <FiCalendar className="size-5" />,
-    sensorTrigger: <FaTowerBroadcast className="size-5"/>,
-    stopwatch: <FaStopwatch className="size-5"/>
+    battery: (className) => <IoMdBatteryFull className={className} />,
+    humidity: (className) => <WiHumidity className={className} />,
+    temperature: (className) => <FaTemperatureThreeQuarters className={className} />,
+    power: (className) => <FaBolt className={className} />,
+    energy: (className) => <MdOutlineEnergySavingsLeaf className={className} />,
+    energy_big: (className) => <MdOutlineEnergySavingsLeaf className={className} />,
+    timestamp: (className) => <FaCalendar className={className} />,
+    sun: (className) => <FaSun className={className} />,
+    fan: (className) => <FaFan className={className} />,
+    sensor: (className) => <TbCircuitSwitchOpen className={className} />,
+    weather: (className) => <FaCloudSun className={className} />,
+    media_player: (className) => <FaCirclePlay className={className} />,
+    play: (className) => <FaCirclePlay className={className} />,
+    light: (className) => <FaLightbulb className={className} />,
+    button: (className) => <RxSwitch className={className} />,
+    switch: (className) => <RxSwitch className={className} />,
+    speaker: (className) => <CiSpeaker className={className} />,
+    info: (className) => <FaInfoCircle className={className} />,
+    search: (className) => <CiSearch className={className} />,
+    sunset: (className) => <FiSunset className={className} />,
+    sunrise: (className) => <FiSunrise className={className} />,
+    time: (className) => <FiClock className={className} />,
+    unknown: (className) => <CiCircleQuestion className={className} />,
+    weekday: (className) => <FiCalendar className={className} />,
+    leaf: (className) => <IoMdLeaf className={className} />,
+    dot: (className) => <GoDotFill className={className} />,
+    warning: (className) => <CiWarning className={className} />,
+    money: (className) => <RiMoneyEuroCircleFill className={className} />,
+    door: (className) => <FaDoorOpen className={className} />,
+    lock: (className) => <FaLock className={className} />,
+    camera: (className) => <PiVideoCameraFill className={className} />,
+    tv: (className) => <PiTelevisionSimple className={className} />,
+    air_conditioner: (className) => <TbAirConditioning className={className} />,
+    thermostat: (className) => <MdThermostat className={className} />,
+    refrigerator: (className) => <BiSolidFridge className={className} />,
+    microwave: (className) => <TbMicrowave className={className} />,
+    light_bulb: (className) => <FaLightbulb className={className} />,
+    window: (className) => <MdSensorWindow className={className} />,
+    doorbell: (className) => <FaBell className={className} />,
+    blinds: (className) => <LuBlinds className={className} />,
+    dishwasher: (className) => <div className="relative">
+        <PiForkKnife className={className} />
+        <IoWater className="absolute -right-1 -bottom-1 size-5" />
+    </div>,
+    oven: (className) => <CiCircleQuestion className={className} />,
+    washing_machine: (className) => <BiSolidWasher className={className} />,
+    induction_stove: (className) => <CiCircleQuestion className={className} />,
+    desktop: (className) => <PiDesktopTowerFill className={className} />,
+    eye: (className) => <FaEye className={className} />,
+    eye_slash: (className) => <FaEyeSlash className={className} />,
+    puzzle: (className) => <IoExtensionPuzzleSharp className={className} />,
+    gear: (className) => <FaGear className={className} />,
+    home: (className) => <FaHouse className={className} />,
+    check: (className) => <FaCheck className={className} />,
+    home_empty: (className) => <RiHomeLine className={className} />,
+    home_full: (className) =>
+        <div className="relative flex items-center justify-center">
+            <RiHomeLine className={className} />
+            <FaLightbulb className={`size-5 absolute inset-0 m-auto`} />
+        </div>,
+    arrow_right:(className) => <FaArrowRight className={className} />,
+    arrow_left:(className) => <FaArrowLeft className={className} />,
+    plus:(className) => <FaPlus className={className} />,
+}
+
+export const DevicesTypes = {
+    fan: { color: "bg-blue-300" },
+    sensor: { color: "bg-gray-300" },
+    media_player: { color: "bg-purple-300" },
+    light: { color: "bg-yellow-200" },
+    button: { color: "bg-green-300" },
+    switch: { color: "bg-indigo-300" },
+    speaker: { color: "bg-pink-300" },
+    door: { color: "bg-red-300" },
+    lock: { color: "bg-gray-400" },
+    camera: { color: "bg-blue-400" },
+    tv: { color: "bg-purple-400" },
+    air_conditioner: { color: "bg-cyan-300" },
+    thermostat: { color: "bg-orange-300" },
+    refrigerator: { color: "bg-teal-300" },
+    microwave: { color: "bg-amber-300" },
+    window: { color: "bg-sky-300" },
+    doorbell: { color: "bg-lime-300" },
+    blinds: { color: "bg-violet-300" },
+    dishwasher: { color: "bg-blue-200" },
+    oven: { color: "bg-red-400" },
+    washing_machine: { color: "bg-indigo-200" },
+    induction_stove: { color: "bg-gray-500" },
+    desktop: { color: "bg-zinc-300" }
+};
+
+
+export function getDeviceIcon(key, classname = "size-9") {
+    const colorclass = key in DevicesTypes ? DevicesTypes[key].color : "bg-white"
+    return <div className={`rounded-full p-2 ${colorclass}`}>
+        {getIcon(key, classname)}
+    </div>
 }
 
 
 
+
+// Function to get an icon with optional className
+export function getIcon(key, className = "size-5") {
+    if (key in iconMap) {
+        return iconMap[key](className); // Pass the className to the icon function
+    } else {
+        return iconMap["unknown"](className); // Fallback icon
+    }
+}
+
+/*
 export function getIcon(key, size=null) {
     if (key in iconMap) {
         if (size){
@@ -80,16 +216,16 @@ export function getIcon(key, size=null) {
     else {
         return (iconMap["unknown"])
     }
-}
+}*/
 
 
-export const callService = async (entity_id,service, data) => {
+export const callService = async (entity_id, service, data) => {
     let body = {}
     body["entity_id"] = entity_id
     body["service"] = service
     body["data"] = data;
-    body["user"]="Davide" //TODO: Mettere il nome giusto
-    const response = await fetch(`http://127.0.0.1:8000${"/service"}`, {
+    body["user"] = "Davide" //TODO: Mettere il nome giusto
+    const response = await fetch(`${backend}${"/service"}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -104,3 +240,14 @@ export const callService = async (entity_id,service, data) => {
         return {}
     }
 }
+
+export const apiFetch = async (url, method = "GET", body = null) => {
+    const response = await fetch(url, {
+        method,
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+    const data = await response.json();
+    return data;
+};

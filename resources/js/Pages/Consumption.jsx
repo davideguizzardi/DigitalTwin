@@ -66,9 +66,7 @@ export default function Consumption() {
     }
 
     return (
-        <div className="size-full flex flex-col">
-            <div className="flex w-full py-8">
-            </div>
+        <div className="size-full flex flex-col p-5">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <TabLayout sections={sections}/>        
             </LocalizationProvider>

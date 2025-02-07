@@ -7,15 +7,17 @@ import Cookies from 'js-cookie';
 import AnimateMap from '../Commons/AnimateMap';
 import WhiteCard from '../Commons/WhiteCard';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { getIcon } from '../Commons/Constants';
+import { domain } from '../Commons/Constants';
 
 let counter = -1;
 const token = Cookies.get("auth-token")
 
-export default function UploadMap({ endSection }) {
+export default function UploadMap({maps, endSection }) {
     const [listMap, setListMap] = useState([]);
     const [indexThumbs, setIndexThumbs] = useState(-1);
     const [openModal, setOpenModal] = useState(false)
-    const {t} = useLaravelReactI18n()
+    const { t } = useLaravelReactI18n()
 
     const saveCallback = useCallback((newFile) => {
         let tempList = [...listMap, newFile]
@@ -46,26 +48,41 @@ export default function UploadMap({ endSection }) {
         endSection()
     }
     const submitButton = (
-        <div className='w-full flex py-5 justify-center'>
-            <ThemeButton className="size-min" onClick={submit} >Upload</ThemeButton>
+        <div className='absolute right-0 bottom-0 w-fit flex py-5 justify-end px-2'>
+            <ThemeButton className="size-min" onClick={submit} >{t("Next")}{getIcon("arrow_right")}</ThemeButton>
         </div>
     );
 
     const buttons = listMap.map((map, index) => (
-        <ThemeButton className='size-min  my-2' onClick={() => { setIndexThumbs(index) }}
-            pill key={map.file.name}>{map.floor}</ThemeButton>
+        <ThemeButton className={`size-min  my-2 ${index==indexThumbs && "bg-lime-500"}`} onClick={() => { setIndexThumbs(index) }}
+            pill key={map.file.name}><div className='text-lg'>{map.floor}</div></ThemeButton>
     ));
+
+    useEffect(() => {
+        const uploadedMaps=maps.sort((m1,m2)=>m1.floor>m2.floor)
+        .map((m, index) => ({
+            
+            floor: m.floor,
+            file: {
+              preview: domain+"/"+m.url,
+              name: m.url.split("/")[2]  // Extract the name from the URL
+            }
+          }
+    ))
+        setListMap(uploadedMaps)
+        setIndexThumbs(uploadedMaps.length-1)
+    }, [maps]);
 
     // clean up
     useEffect(() => {
         listMap.forEach(file => URL.revokeObjectURL(file.preview));
     }, [listMap]);
 
-    const handleDeleteButton = () =>{
-        const updateState =listMap.filter(m=>m.file.name !== listMap[indexThumbs].file.name)
+    const handleDeleteButton = () => {
+        const updateState = listMap.filter(m => m.file.name !== listMap[indexThumbs].file.name)
         setListMap(updateState)
         console.log(updateState)
-        setIndexThumbs(indexThumbs -1)
+        setIndexThumbs(indexThumbs - 1)
         console.log(indexThumbs)
     }
 
@@ -91,17 +108,18 @@ export default function UploadMap({ endSection }) {
     ));
 
     return (
-        <WhiteCard className="w-full lg:w-3/5 h-full items-center justify-around flex-col dark:text-white">
+        <div className="w-full h-full items-center flex-col flex dark:text-white">
 
             <ModalUploadMap open={openModal} saveCallback={saveCallback}
                 cancelCallback={cancelCallback} indexUsed={listMap.map(m => m.floor)} />
-            <p className='h-min w-full p-2 text-center text-2xl'>{t("Upload map house")}</p>
-            <form name="maps" className='h-full w-full flex flex-col justify-around items-center' onSubmit={submit}>
-                <div className="flex items-center size-full items-center justify-center" >
+            <p className='h-min w-full p-2 text-start text-2xl'>{t("Upload map house")}</p>
+            <form name="maps" className='relative h-full w-full flex flex-row justify-center items-center ' onSubmit={submit}>
+
+                <div className="flex size-full items-center justify-center w-2/3" >
                     {indexThumbs >= 0 ?
-                        <div>
+                        <div className='w-full'>
                             <div className="w-full h-fit py-1 flex items-center self-start">
-                                <Button className='bg-red-500 enabled:hover:bg-red-700 dark:bg-red-500  enabled:hover:bg-red-700 mx-2' pill
+                                <Button className='bg-red-500 dark:bg-red-500  enabled:hover:bg-red-700 mx-2' pill
                                     onClick={handleDeleteButton}>
                                     <FaTrashCan className='size-4' color='white' />
                                 </Button>
@@ -118,13 +136,13 @@ export default function UploadMap({ endSection }) {
                         {indexThumbs >= 0 &&
                             buttons
                         }
-                        <ThemeButton className='size-min mx-px my-2' pill onClick={() => { setOpenModal(true) }} >
-                            <span className='text-lg'>+</span>
+                        <ThemeButton className='my-2 size-fit' pill onClick={() => { setOpenModal(true) }} >
+                            {getIcon("plus")}
                         </ThemeButton>
                     </div>
                 </div>
                 {listMap.length > 0 ? submitButton : (<div></div>)}
             </form>
-        </WhiteCard>
+        </div>
     );
 }

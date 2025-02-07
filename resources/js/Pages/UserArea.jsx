@@ -42,7 +42,7 @@ export default function UserArea({ }) {
 
 
     return (
-        <div className="flex flex-col min-h-fit size-full p-1 gap-2">
+        <div className="flex flex-col min-h-fit size-full p-5 gap-2">
             <div className="w-full flex justify-between text-center text-2xl px-2 pt-1">
                 <div />
                 <h1 className="dark:text-white">

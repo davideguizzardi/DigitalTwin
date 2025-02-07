@@ -1,5 +1,5 @@
 services:
-    frontend:
+    laravel.test:
         build:
             context: ./vendor/laravel/sail/runtimes/8.3
             dockerfile: Dockerfile
@@ -53,27 +53,6 @@ services:
         ports:
             - '${FORWARD_MAILPIT_PORT:-1025}:1025'
             - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
-    digital-twin-api:
-        build: './vendor/digitaltwin/'
-        ports:
-            - '8000:8000'
-        networks:
-            - sail
-        depends_on:
-            - homeassitant
-    homeassitant:
-        container_name: homeassistant
-        image: "ghcr.io/home-assistant/home-assistant:stable"
-        volumes:
-            - 'sail-vol:/config'
-            - '/etc/localtime:/etc/localtime:ro'
-            - '/run/dbus:/run/dbus:ro'
-        privileged: true
-        ports:
-            - '8123:8123'
-            - '5683:5683'
-        networks:
-            - sail
 networks:
     sail:
         driver: bridge

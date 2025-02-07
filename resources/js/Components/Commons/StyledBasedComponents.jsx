@@ -12,7 +12,7 @@ export const StyledDiv = ({ variant = "primary",className="", children }) => {
 };
 
 
-export const StyledButton = ({ variant = "primary",className="", onClick={},children }) => {
+export const StyledButton = ({ variant = "primary",className="", onClick={},children , disabled=false, ...props}) => {
   const theme = {
     primary: "bg-lime-400 hover:bg-lime-500 text-gray-800 shadow-md",
     secondary: "bg-neutral-50 rounded-lg shadow-md hover:bg-lime-400",
@@ -20,5 +20,5 @@ export const StyledButton = ({ variant = "primary",className="", onClick={},chil
   };
 
   const classSyle=`${theme[variant]} ${className}`
-  return <Button className={classSyle} color="test" onClick={onClick}>{children}</Button>;
+  return <Button {...props} className={classSyle} color="test" onClick={onClick} disabled={disabled}>{children}</Button>;
 };

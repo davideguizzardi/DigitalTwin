@@ -5,15 +5,15 @@ import { useState } from "react"
 import { useSwipeable } from "react-swipeable"
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 
-export default function TabLayout({sections}){
+export default function TabLayout({ sections }) {
     const titles = Object.keys(sections)
     const sizeSection = titles.length
     const [tab, setTab] = useState(0)
     const [previousTab, setPreviousTab] = useState(0)
-    const {t} = useLaravelReactI18n()
-    
+    const { t } = useLaravelReactI18n()
+
     const offset = 1900
-    
+
     const variants = {
         initial: {
             x: (tab < previousTab ? -offset : offset),
@@ -53,21 +53,21 @@ export default function TabLayout({sections}){
         }
     }
 
-    const swipeNext = (cond = true) =>{
-        if(cond && tab < sizeSection -1){
-            changeTab(tab+1)
-        }else if(cond){
+    const swipeNext = (cond = true) => {
+        if (cond && tab < sizeSection - 1) {
+            changeTab(tab + 1)
+        } else if (cond) {
             animate(".custom-tab",
-                { x: [0, -offset/3, 0]},
-                {duration: 0.50}
+                { x: [0, -offset / 3, 0] },
+                { duration: 0.50 }
             )
-        }else if(tab > 0){
+        } else if (tab > 0) {
 
-            changeTab(tab-1)
-        }else{
+            changeTab(tab - 1)
+        } else {
             animate(".custom-tab",
-                { x: [0, offset/3, 0]},
-                {duration: 0.50}
+                { x: [0, offset / 3, 0] },
+                { duration: 0.50 }
             )
         }
 
@@ -79,13 +79,13 @@ export default function TabLayout({sections}){
     })
 
     return (
-        <WhiteCard className="flex-col size-full gap-1 ">
+        <WhiteCard className="flex-col size-full gap-1">
             <div className="flex w-full h-min border-b-2 border-slate-200 dark:border-neutral-800">
                 {
                     titles.map((title, index) => (
                         <div className="flex flex-col items-center w-full"
-                            style={{cursor: "pointer"}}
-                            onClick={()=> changeTab(index)}
+                            style={{ cursor: "pointer" }}
+                            onClick={() => changeTab(index)}
                             key={index}
                         >
                             <h1 className="text-2xl py-2 dark:text-white text-center h-full">
@@ -102,19 +102,21 @@ export default function TabLayout({sections}){
                     ))
                 }
             </div>
-            <div className="flex w-full h-full">
+            <div className="flex w-full h-full overflow-auto">
                 <div className="size-full" /*{...handleSwipeTab}*/>
                     <AnimatePresence>
                         {
                             sections[titles[tab]] &&
-                            <motion.div className="flex size-full custom-tab"
+                            <motion.div className="flex flex-row justify-center w-full h-fit custom-tab"
                                 key={tab}
                                 variants={variants}
                                 initial="initial"
                                 animate="animate"
                                 exit="exit"
                             >
-                                {sections[titles[tab]]}
+                                <div className="flex flex-col items-center">
+                                    {sections[titles[tab]]}
+                                </div>
                             </motion.div>
                         }
                     </AnimatePresence>

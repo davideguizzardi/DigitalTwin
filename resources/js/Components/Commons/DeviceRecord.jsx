@@ -9,31 +9,13 @@ import { MdOutlineEnergySavingsLeaf } from "react-icons/md";
 import { CiSpeaker } from "react-icons/ci";
 import { useState } from "react";
 import ControlPopup from "../ControlAppliance/ControlPopup";
-import { useEffect } from "react";
+import { getIcon } from "./Constants";
 
 export default function DeviceRecord({ device }) {
     const [openControl, isOpenControl] = useState(false)
 
     const closeFun = () =>{
         isOpenControl(false)
-    }
-
-    const iconMap = {
-        battery: <IoMdBatteryFull className="size-5" />,
-        humidity: <WiHumidity className="size-5" />,
-        temperature: <FaTemperatureThreeQuarters className="size-5" />,
-        power: <FaBolt className="size-5" />,
-        energy: <MdOutlineEnergySavingsLeaf className="size-5" />,
-        timestamp: <FaCalendar className="size-5" />,
-        sun: <FaSun className="size-5" />,
-        fan: <FaFan className="size-5" />,
-        sensor: <TbCircuitSwitchOpen className="size-5" />,
-        weather: <FaCloudSun className="size-5" />,
-        media_player: <FaCirclePlay className="size-5" />,
-        light: <FaLightbulb className="size-5" />,
-        button: <RxSwitch className="size-5" />,
-        switch: <RxSwitch className="size-5" />,
-        speaker: <CiSpeaker className="size-5" />
     }
 
     return (
@@ -46,8 +28,8 @@ export default function DeviceRecord({ device }) {
                 style={{cursor: "pointer", zIndex: "20"}}
             >
                 <div className="flex flex-row gap-4 items-center col-span-1">
-                    {iconMap[device.device_class] != null ? iconMap[device.device_class] : <CiCircleQuestion className="size-5" />}
-                    <p className="font-semibold">{device.name_by_user == null ? device.name : device.name_by_user}</p>
+                    {getIcon(device.category,"size-7")}
+                    <p className="font-semibold">{device.name}</p>
                 </div>
                 {device.state != "" &&
                     <div>
@@ -60,7 +42,7 @@ export default function DeviceRecord({ device }) {
                         .sort((a, b) => a.entity_class > b.entity_class ? -1 : 1)
                         .map((sensor, index) => (
                             <div className="flex flex-row gap-1 items-center" key={index}>
-                                {iconMap[sensor.entity_class] != null ? iconMap[sensor.entity_class] : <CiCircleQuestion className="size-5" />}
+                                {getIcon(sensor.entity_class)}
                                 {sensor.state} {sensor.unit_of_measurement != undefined && sensor.unit_of_measurement}
                             </div>
                         ))

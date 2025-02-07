@@ -27,6 +27,7 @@ createInertiaApp({
                 locale={'it'}
                 fallbackLocale={'it'}
                 files={import.meta.glob('/lang/*.json')}
+
             >
                 <App {...props} />
             </LaravelReactI18nProvider>

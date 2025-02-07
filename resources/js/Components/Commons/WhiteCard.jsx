@@ -19,7 +19,7 @@ export default function WhiteCard({children, className="", direction="none"}){
         }
     }
     return (
-        <motion.div className={"flex bg-zinc-50 dark:bg-neutral-900 border-2 border-gray-300 dark:border-black shadow rounded " + className} 
+        <motion.div className={"flex bg-zinc-50 dark:bg-neutral-900 shadow-md dark:border-black rounded-md " + className} 
         variants={variants} initial="initial" animate="animate" exit="exit">
             {children}
         </motion.div>
