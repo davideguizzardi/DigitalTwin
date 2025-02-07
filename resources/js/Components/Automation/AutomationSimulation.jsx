@@ -23,7 +23,7 @@ dayjs.extend(timezone);
 
 const THRESHOLD=2300
 
-export function AutomationSimulationVertical({ automation_to_simulate }) {
+export function AutomationSimulation({ automation_to_simulate }) {
   const {t}=useLaravelReactI18n()
   const [updatedStateMatrix, setUpdatedStateMatrix] = useState({})
   const [automationToAdd, setAutomationToAdd] = useState("")

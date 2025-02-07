@@ -6,7 +6,7 @@ import { TimePicker } from "@mui/x-date-pickers";
 import { Label, TextInput, List, Select, Textarea } from "flowbite-react";
 import { ServicePopup } from "@/Components/Automation/ServicePopup";
 
-import { AutomationSimulationVertical } from "@/Components/Automation/AutomationSimulationVertical";
+import { AutomationSimulation } from "@/Components/Automation/AutomationSimulation";
 import { formatServiceName } from "@/Components/Commons/DataFormatter";
 
 import { StyledDiv,StyledButton } from "@/Components/Commons/StyledBasedComponents";
@@ -273,7 +273,7 @@ export default function AddAutomation({ }) {
             <div className="flex flex-col gap-3">
                 {simulateAutomationAddition &&
                     <div className="col-span-2">
-                        <AutomationSimulationVertical automation_to_simulate={JSON.stringify(automation)} />
+                        <AutomationSimulation automation_to_simulate={JSON.stringify(automation)} />
                     </div>
                 }
                 {Object.keys(automation).length > 0 &&

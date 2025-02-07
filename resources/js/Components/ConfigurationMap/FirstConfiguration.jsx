@@ -1,5 +1,5 @@
 import UploadMap from '@/Components/ConfigurationMap/UploadMap';
-import ConfigurationApplianceRef from '@/Components/ConfigurationMap/ConfigurationApplianceRef';
+import ConfigurationAppliance from '@/Components/ConfigurationMap/ConfigurationAppliance';
 import { useState } from 'react';
 import ConfigurationEnergy from './ConfigurationEnergy';
 import WhiteCard from '../Commons/WhiteCard';
@@ -61,7 +61,7 @@ const FirstConfiguration = ({maps}) => {
                     backSection={() => setProgressState(stepIndexes.UPLOAD_MAP)}
                     endSection={() => setProgressState(stepIndexes.SET_DEVICES_ON_MAP)} />
             case stepIndexes.SET_DEVICES_ON_MAP:
-                return <ConfigurationApplianceRef
+                return <ConfigurationAppliance
                     editMode={true}
                     backSection={() => setProgressState(stepIndexes.CONFIGURATION_APPLIANCE)}
                     endSection={() => setProgressState(stepIndexes.CONFIGURATION_ENERGY_PLAN)} />;

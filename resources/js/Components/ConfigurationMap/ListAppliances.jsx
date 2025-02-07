@@ -1,10 +1,10 @@
-import CardDraggableRef,{ FULL } from "./CardDraggableRef";
+import CardDraggable,{ FULL } from "./CardDraggable";
 import { useEffect, useRef, useState } from "react"
 import { DRAG_START, DRAG_END, DRAG_END_OUT, AVAILABLE_DROP, emit, subscribe, unsubscribe } from "@/Utils/events";
 import { useLaravelReactI18n } from "laravel-react-i18n";
 
 
-export default function ListAppliancesRef({ appliances, dragConstraints, isEditMode = false, addAppl, removeAppl }) {
+export default function ListAppliances({ appliances, dragConstraints, isEditMode = false, addAppl, removeAppl }) {
     const listRef = useRef()
     const {t}=useLaravelReactI18n()
 
@@ -49,7 +49,7 @@ export default function ListAppliancesRef({ appliances, dragConstraints, isEditM
         >
             {appliances.length > 0 ?
                 appliances.map((e) => (
-                    <CardDraggableRef id={e.device_id} key={e.device_id} name={e.name} category={e.category} type={FULL}
+                    <CardDraggable id={e.device_id} key={e.device_id} name={e.name} category={e.category} type={FULL}
                         draggable={isEditMode} dragConstraints={dragConstraints} parentRef={listRef} />
                 ))
                 :

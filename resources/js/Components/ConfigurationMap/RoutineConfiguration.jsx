@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 
-import ConfigurationApplianceRef from "./ConfigurationApplianceRef";
+import ConfigurationAppliance from "./ConfigurationAppliance";
 
 import ConfigurationEnergy from "./ConfigurationEnergy";
 
@@ -84,7 +84,7 @@ export default function RoutineConfiguration() {
                 <DeviceConfiguration isInitialConfiguration={false} endSection={endSection} />
             </DeviceProvider>),
         "Configure Appliance":
-            (<ConfigurationApplianceRef isInitialConfiguration={false} editMode={true} endSection={endSection} />),
+            (<ConfigurationAppliance isInitialConfiguration={false} editMode={true} endSection={endSection} />),
         "Configure Energy Plan":
             (<ConfigurationEnergy isInitialConfiguration={false} endSection={endSection} />)
     }

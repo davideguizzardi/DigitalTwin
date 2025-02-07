@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
-import { List, Button, TextInput, Tooltip } from "flowbite-react"
+import { List,TextInput, Tooltip } from "flowbite-react"
 
 
 import { CiSearch } from "react-icons/ci";
 import { Switch } from "@mui/material";
-import { AutomationDetails2 } from "./AutomationDetailsV2";
+import { AutomationDetails } from "./AutomationDetails";
 import { callService, getIcon } from "@/Components/Commons/Constants";
 import { StyledButton } from "@/Components/Commons/StyledBasedComponents";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 
-export function AutomationTable2({ automation_context }) {
+export function AutomationTable({ automation_context }) {
 
     const [automationList, setAutomationList] = useState([])
     const [openAutomation, setOpenAutomation] = useState("")
@@ -106,7 +106,7 @@ export function AutomationTable2({ automation_context }) {
             </div>
 
             <div className="col-span-1">
-                <AutomationDetails2 automation_in={openAutomation} />
+                <AutomationDetails automation_in={openAutomation} />
             </div>
         </div>
     )

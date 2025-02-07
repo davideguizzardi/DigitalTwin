@@ -1,13 +1,13 @@
 import { AVAILABLE_DROP, DRAG_END, DRAG_END_OUT, DRAG_START, subscribe, unsubscribe } from "@/Utils/events"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { emit } from "@/Utils/events"
-import CardDraggableRef, { ICON }  from "./CardDraggableRef"
+import CardDraggable, { ICON }  from "./CardDraggable"
 import { useContext } from "react"
 
 import { DeviceContext } from "../ContextProviders/DeviceProvider"
 
 
-export default function DroppableLayerRef({ isEditMode, listAppliancesPos, dragConstraints, index, addAppl, removeAppl }) {
+export default function DroppableLayer({ isEditMode, listAppliancesPos, dragConstraints, index, addAppl, removeAppl }) {
     const layerRef = useRef()
     const refIndex = useRef()
     refIndex.current = index
@@ -69,7 +69,7 @@ export default function DroppableLayerRef({ isEditMode, listAppliancesPos, dragC
             <div className="size-full absolute relative">
                 {
                     listAppliancesPos.filter(element => element.floor == index).map((e) => (
-                        <CardDraggableRef key={e.device_id} id={e.device_id} name={e.name} category={e.category} type={ICON} style={{ position: "absolute", left: e.left + "%", top: e.top + "%" }}
+                        <CardDraggable key={e.device_id} id={e.device_id} name={e.name} category={e.category} type={ICON} style={{ position: "absolute", left: e.left + "%", top: e.top + "%" }}
                             draggable={isEditMode} dragConstraints={dragConstraints} parentRef={layerRef} />
                     ))
                 }

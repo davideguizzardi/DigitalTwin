@@ -5,11 +5,10 @@ import { getIcon } from "@/Components/Commons/Constants";
 import { SuggestionsDisplay } from "./SuggestionDisplay";
 
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { DAYS } from "@/Components/Commons/Constants";
 import { getTriggerDescription, getConditionDescription } from "@/Components/Commons/DataFormatter";
-import Navbar from "@/Components/Commons/Navbar";
 
-export function AutomationDetails2({ automation_in }) {
+
+export function AutomationDetails({ automation_in }) {
     const [automation, setAutomation] = useState({})
     const {t} = useLaravelReactI18n()
 

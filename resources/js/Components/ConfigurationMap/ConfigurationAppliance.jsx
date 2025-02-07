@@ -2,8 +2,8 @@ import { useCallback, useEffect, useRef, useState, useContext } from "react";
 import { ThemeButton } from "@/Components/Commons/ThemeButton"
 import { animate, AnimatePresence, motion } from "framer-motion";
 import ListButtons from "@/Components/Commons/ListButtons"
-import ListAppliancesRef from "@/Components/ConfigurationMap/ListAppliancesRef"
-import DroppableLayerRef from "@/Components/ConfigurationMap/DroppableLayerRef";
+import ListAppliances from "@/Components/ConfigurationMap/ListAppliances"
+import DroppableLayer from "@/Components/ConfigurationMap/DroppableLayer";
 import { Modal } from "flowbite-react";
 import Cookies from 'js-cookie';
 import AnimateMap from "../Commons/AnimateMap";
@@ -18,7 +18,7 @@ import { getIcon } from "../Commons/Constants";
 
 const token = Cookies.get("auth-token")
 
-export default function ConfigurationApplianceRef({ editMode, endSection, backSection,isInitialConfiguration }) {
+export default function ConfigurationAppliance({ editMode, endSection, backSection,isInitialConfiguration }) {
     const { deviceList, setDeviceList } = useContext(DeviceContext);
     const configRef = useRef()
     const refApplOnfFloor = useRef()
@@ -271,7 +271,7 @@ export default function ConfigurationApplianceRef({ editMode, endSection, backSe
                                 <p>{t("Those appliances are not configured")}</p>
                             </div>
                             <div className="w-full h-full">
-                                <ListAppliancesRef appliances={unconfAppl} dragConstraints={configRef}
+                                <ListAppliances appliances={unconfAppl} dragConstraints={configRef}
                                     addAppl={addUnconfAppl} removeAppl={removeUnconAppl}
                                 />
                             </div>
@@ -304,7 +304,7 @@ export default function ConfigurationApplianceRef({ editMode, endSection, backSe
                                                     height: "70vh"
                                                 }}
                                             />
-                                            <DroppableLayerRef isEditMode={editMode} dragConstraints={configRef}
+                                            <DroppableLayer isEditMode={editMode} dragConstraints={configRef}
                                                 listAppliancesPos={refApplOnfFloor.current} index={floor}
                                                 addAppl={addApplOnFloor} removeAppl={removeApplOnFloor}
                                             />
@@ -322,7 +322,7 @@ export default function ConfigurationApplianceRef({ editMode, endSection, backSe
                     </div>
                     <div className="w-2/5" style={{ height: "68vh" }}>
                         <p className="text-center text-2xl dark:text-white">{t("Appliances")}</p>
-                        <ListAppliancesRef appliances={unconfAppl} dragConstraints={configRef} isEditMode={true}
+                        <ListAppliances appliances={unconfAppl} dragConstraints={configRef} isEditMode={true}
                             addAppl={addUnconfAppl} removeAppl={removeUnconAppl}
                         />
                     </div>

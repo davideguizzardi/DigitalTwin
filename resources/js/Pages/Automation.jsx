@@ -1,4 +1,4 @@
-import { AutomationTable2 } from "@/Components/Automation/AutomationTableV2";
+import { AutomationTable } from "@/Components/Automation/AutomationTable";
 import { ThemeButton } from "@/Components/Commons/ThemeButton";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -20,7 +20,7 @@ export default function Automation({ }) {
 
     return (
         <div className="p-5 h-full max-h-screen">
-            <AutomationTable2 className="" automation_context={automationContext} />
+            <AutomationTable className="" automation_context={automationContext} />
             <a href={route("automation.add")}>
                 <ThemeButton className="absolute bottom-0 right-0 m-5 rounded-full bg">
                     {getIcon("plus", "size-8")}
