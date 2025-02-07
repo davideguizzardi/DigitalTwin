@@ -1,8 +1,7 @@
 import { AVAILABLE_DROP, DRAG_END, DRAG_END_OUT, DRAG_START, subscribe, unsubscribe } from "@/Utils/events"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { emit } from "@/Utils/events"
-import CardDraggable, { ICON } from "@/Components/ConfigurationMap/CardDraggable"
-import CardDraggableRef from "./CardDraggableRef"
+import CardDraggableRef, { ICON }  from "./CardDraggableRef"
 import { useContext } from "react"
 
 import { DeviceContext } from "../ContextProviders/DeviceProvider"

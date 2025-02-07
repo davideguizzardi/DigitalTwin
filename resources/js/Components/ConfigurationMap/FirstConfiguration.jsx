@@ -1,10 +1,6 @@
 import UploadMap from '@/Components/ConfigurationMap/UploadMap';
-import ProgressConfiguration from '@/Components/ConfigurationMap/ProgressConfiguration';
-import ConfigurationAppliance from './ConfigurationAppliance';
 import ConfigurationApplianceRef from '@/Components/ConfigurationMap/ConfigurationApplianceRef';
 import { useState } from 'react';
-import { ThemeButton } from '@/Components/Commons/ThemeButton';
-import ConfigurationEnergyPlan from './ConfigurationEnergyPlan';
 import ConfigurationEnergy from './ConfigurationEnergy';
 import WhiteCard from '../Commons/WhiteCard';
 import { useLaravelReactI18n } from 'laravel-react-i18n';

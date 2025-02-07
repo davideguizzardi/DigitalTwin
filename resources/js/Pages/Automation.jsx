@@ -1,5 +1,3 @@
-import WhiteCard from "@/Components/Commons/WhiteCard";
-import { AutomationTable } from "@/Components/Automation/AutomationTable";
 import { AutomationTable2 } from "@/Components/Automation/AutomationTableV2";
 import { ThemeButton } from "@/Components/Commons/ThemeButton";
 import { useState } from "react";

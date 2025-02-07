@@ -1,12 +1,12 @@
-import { ThemeButton } from "@/Components/Commons/ThemeButton";
+
 import { useState, useEffect } from "react";
-import { FaLightbulb, FaBolt } from "react-icons/fa6";
+
 import ConfigurationApplianceRef from "./ConfigurationApplianceRef";
-import ConfigurationEnergyPlan from "./ConfigurationEnergyPlan";
+
 import ConfigurationEnergy from "./ConfigurationEnergy";
-import { AnimatePresence, delay, motion } from "framer-motion";
+
 import TabLayout from "@/Layouts/TabLayout";
-import SubMenuLayout from "@/Layouts/SubMenuLayout";
+
 
 import { DeviceProvider } from "../ContextProviders/DeviceProvider";
 import { DeviceConfiguration } from "./DeviceConfiguration";

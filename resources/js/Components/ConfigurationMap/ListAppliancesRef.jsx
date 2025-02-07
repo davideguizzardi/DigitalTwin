@@ -1,5 +1,4 @@
-import CardDraggable, { FULL } from "@/Components/ConfigurationMap/CardDraggable";
-import CardDraggableRef from "./CardDraggableRef";
+import CardDraggableRef,{ FULL } from "./CardDraggableRef";
 import { useEffect, useRef, useState } from "react"
 import { DRAG_START, DRAG_END, DRAG_END_OUT, AVAILABLE_DROP, emit, subscribe, unsubscribe } from "@/Utils/events";
 import { useLaravelReactI18n } from "laravel-react-i18n";
