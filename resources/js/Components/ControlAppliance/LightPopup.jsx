@@ -10,7 +10,6 @@ import { backend } from "../Commons/Constants";
 
 export function LightPopup({ selectedEntity, open, closeFun }) {
     const [entityId, setEntityId] = useState(null)
-    const [friendlyName, setFriendlyName] = useState("")
     const [lightOn, setLightOn] = useState(false)
     const [brightness, setBrightness] = useState(0)
     const [red, setRed] = useState(255)
@@ -139,11 +138,6 @@ export function LightPopup({ selectedEntity, open, closeFun }) {
     }, [selectedEntity, open])
 
     return (
-        <Modal className="rounded" popup show={open} size="lg" onClose={() => resetPopup()}>
-            <Modal.Header className="bg-gray-100 dark:bg-neutral-800">
-                {friendlyName}
-            </Modal.Header>
-            <Modal.Body className="bg-gray-100 dark:bg-neutral-800">
                 <div className="flex flex-col">
                     <div className="p-1">
                         <div className="flex flex-col justify-center items-center">
@@ -261,7 +255,5 @@ export function LightPopup({ selectedEntity, open, closeFun }) {
                         </div>
                     }
                 </div>
-            </Modal.Body>
-        </Modal>
     )
 }

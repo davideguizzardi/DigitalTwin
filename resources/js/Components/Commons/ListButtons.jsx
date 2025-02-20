@@ -28,7 +28,7 @@ export default function listButtons({ dataButtons, index = null, vertical = true
                         whileHover={{ scale: "1.2", zIndex: "50" }}
                         key={"div_" + i}
                     >
-                        <ThemeButton className={index == i ? " bg-lime-600 dark:bg-lime-600" : ""}
+                        <ThemeButton className={index == i ? " bg-lime-600 dark:bg-lime-600 scale-125" : ""}
                             key={dataBtn.text} pill onClick={dataBtn.callback}>
                             <div className="flex justify-center items-center gap-1">
                                 {dataBtn.icon} <h1 className="text-center">{dataBtn.text}</h1>

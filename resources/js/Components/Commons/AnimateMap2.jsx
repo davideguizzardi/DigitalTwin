@@ -5,8 +5,10 @@ import CardAppliance from "./CardAppliance"
 import { useSwipeable } from "react-swipeable"
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { domain } from "./Constants"
+import ControlPopup from "../ControlAppliance/ControlPopup"
 
 export default function AnimateMap2({ maps, appliances }) {
+    const [openDevice,setOpenDevice]=useState({})
     const [indexImg, setIndexImg] = useState(0)
     const [previousIndex, setPreviousIndex] = useState(0)
     const offset = 100
@@ -90,6 +92,7 @@ export default function AnimateMap2({ maps, appliances }) {
 
     return (
         <div className="flex size-full items-center justify-center">
+            <ControlPopup openDevice={openDevice}/>
             <div {...handlerSwipe}>
 
                 <AnimatePresence>
@@ -103,11 +106,11 @@ export default function AnimateMap2({ maps, appliances }) {
                             style={{
                                 objectFit: "contain",
                                 width: "100%",
-                                height: "70vh"
+                                height: "78vh"
                             }}
 
                         />
-                        {appliances.filter((e) => e.floor == maps[indexImg].floor).map((e) => (<CardAppliance key={e.id} appliancePos={e} />))}
+                        {appliances.filter((e) => e.floor == maps[indexImg].floor).map((e) => (<CardAppliance key={e.id} appliancePos={e} setClickedDevice={setOpenDevice} />))}
                     </motion.div>
                 </AnimatePresence>
             </div>

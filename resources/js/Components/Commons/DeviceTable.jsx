@@ -20,7 +20,7 @@ export function DeviceTable({ deviceContext }) {
             </div>
             <div className="bg-zinc-50 text-gray-800 dark:bg-neutral-900 dark:text-gray-300 rounded-md col-span-5 h-full overflow-auto">
                 <List unstyled className="divide-y divide-gray-300 p-1 h-full">
-                    {deviceList.length > 0 &&
+                    {deviceList && deviceList.length > 0 &&
                         deviceList
                             .filter(d=>d.show)
                             .filter(d => d.name != "Sun" && d.name != "Forecast")

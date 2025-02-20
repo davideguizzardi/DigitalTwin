@@ -20,9 +20,6 @@ export default function DeviceRecord({ device }) {
 
     return (
         <List.Item key={device.device_id} className="">
-
-            <ControlPopup applianceId={device.state_entity_id} open={openControl}
-            closeFun={closeFun} classDevice={device.device_class}/> 
             <div className="grid grid-cols-3 gap-3 items-center p-3  text-sm"
                 onClick={() => {isOpenControl(true)}}
                 style={{cursor: "pointer", zIndex: "20"}}

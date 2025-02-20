@@ -3,12 +3,12 @@ import IconAppliance from "./IconAppliance"
 import { LightPopup } from "../ControlAppliance/LightPopup"
 import { useState } from "react"
 import { useEffect } from "react"
-import { MediaPlayerPopup } from "../ControlAppliance/MediaPlayerPopup"
+import { MediaPlayerControl } from "../ControlAppliance/MediaPlayerPopup"
 import ControlPopup from "../ControlAppliance/ControlPopup"
 import { getDeviceIcon, getIcon } from "./Constants"
 
 
-export default function CardAppliance({ appliancePos }) {
+export default function CardAppliance({ appliancePos,setClickedDevice }) {
     const [openControl, isOpenControl] = useState(false)
     const [openName,setOpenName]=useState(false)
     //const [typeAppl,] = appliancePos.id.split(".", 2)
@@ -42,10 +42,9 @@ export default function CardAppliance({ appliancePos }) {
             style={{ top: appliancePos.top + "%", left: appliancePos.left + "%" }}
             variants={variants} initial="initial" animate="animate" onHoverStart={()=>setOpenName(true)} onHoverEnd={()=>setOpenName(false)}
         >
-            <ControlPopup applianceId={appliancePos.state_entity_id} open={openControl} closeFun={closeFun} classDevice={appliancePos.device_class} />
             <div className="z-10 flex flex-row gap-1 items-center"
                 style={{ cursor: "pointer", zIndex: "20" }}
-                onClick={() => isOpenControl(true)}
+                onClick={() => setClickedDevice(appliancePos)}
             >
 
                 {getDeviceIcon(appliancePos.category)}

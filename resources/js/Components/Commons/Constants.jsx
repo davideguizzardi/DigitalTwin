@@ -55,8 +55,8 @@ import {
 
 import { PiTelevisionSimple, PiVideoCameraFill, PiDesktopTowerFill, PiForkKnife } from "react-icons/pi";
 import { TbMicrowave } from "react-icons/tb";
-import { BiSolidWasher, BiSolidFridge } from "react-icons/bi";
-import { LuBlinds } from "react-icons/lu";
+import { BiSolidWasher, BiSolidFridge,BiError } from "react-icons/bi";
+import { LuBlinds,LuPower,LuPowerOff} from "react-icons/lu";
 import { TbAirConditioning } from "react-icons/tb";
 import { MdSensorWindow } from "react-icons/md";
 import { IoWater } from "react-icons/io5";
@@ -155,6 +155,9 @@ export const iconMap = {
     arrow_right:(className) => <FaArrowRight className={className} />,
     arrow_left:(className) => <FaArrowLeft className={className} />,
     plus:(className) => <FaPlus className={className} />,
+    power_on:(className) => <LuPower className={className} />,
+    power_off:(className) => <LuPowerOff className={className} />,
+    error:(className) => <BiError className={className} />,
 }
 
 export const DevicesTypes = {
@@ -219,12 +222,12 @@ export function getIcon(key, size=null) {
 }*/
 
 
-export const callService = async (entity_id, service, data) => {
+export const callService = async (entity_id, service, data,user="No user") => {
     let body = {}
     body["entity_id"] = entity_id
     body["service"] = service
     body["data"] = data;
-    body["user"] = "Davide" //TODO: Mettere il nome giusto
+    body["user"] = user
     const response = await fetch(`${backend}${"/service"}`, {
         method: "POST",
         headers: {
@@ -248,6 +251,13 @@ export const apiFetch = async (url, method = "GET", body = null) => {
             "Content-Type": "application/json",
         },
     });
-    const data = await response.json();
-    return data;
+    if(response.ok){
+        const data = await response.json();
+        return data;
+    }
+    else{
+        return null
+    }
 };
+
+export const kgCO2e_kWh = 0.270; // Italy grid emissions: 0.270 kg CO2e per kWh

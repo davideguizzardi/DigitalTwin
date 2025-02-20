@@ -127,8 +127,6 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
             )
         );
         if (!refApplOnfFloor.current.includes(posAppl)) {
-            //const updateState = [...refApplOnfFloor.current.filter(el => el.id !== posAppl.id),
-            //    posAppl]
 
             const updateState = [...refApplOnfFloor.current.filter(el => el.device_id !== posAppl.id),
             { ...deviceList.find(e => e.device_id == posAppl.id), top: posAppl.top, left: posAppl.left, floor: posAppl.floor }]
@@ -224,7 +222,7 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
 
     }
 
-    const fetchApplOnFloor = async () => {
+    const fetchApplOnFloorOld = async () => {
         const response = await fetch(backend + "/map", {
             headers: { 'Authorization': 'Bearer ' + token }
         });
@@ -236,6 +234,14 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
                 ? { ...device, top: e.y, left: e.x, floor: e.floor }
                 : {};
         })
+        await setApplOnFloor(onFloor);
+        setFirst(false);
+    };
+
+    const fetchApplOnFloor = async () => {
+        const onFloor = deviceList
+        .filter(dev=>dev.map_data)
+        .map(dev=>({ ...dev, top: dev.map_data.y, left: dev.map_data.x, floor: dev.map_data.floor }))
         await setApplOnFloor(onFloor);
         setFirst(false);
     };
