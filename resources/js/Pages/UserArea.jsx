@@ -12,6 +12,7 @@ import PermissionPrivacy from "@/Components/UserArea/PermissionPrivacy"
 import { useForm } from "@inertiajs/react"
 import SubMenuLayout from "@/Layouts/SubMenuLayout"
 import TabLayout from "@/Layouts/TabLayout"
+import Profile2 from "@/Components/UserArea/Profile2"
 
 const token = Cookies.get("auth-token")
 
@@ -43,13 +44,8 @@ export default function UserArea({ }) {
 
     return (
         <div className="flex flex-col min-h-fit size-full p-5 gap-2">
-            <div className="w-full flex justify-between text-center text-2xl px-2 pt-1">
-                <div />
-                <h1 className="dark:text-white">
-                </h1>
-                <DarkButton />
-            </div>
-            <TabLayout sections={mapTab}/>
+            <Profile2/>
+            {/*<TabLayout sections={mapTab}/>*/}
         </div>
     )
 }

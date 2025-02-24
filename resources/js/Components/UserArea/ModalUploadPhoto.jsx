@@ -3,7 +3,8 @@ import { Modal } from "flowbite-react";
 import { useState } from "react";
 import { useDropzone } from 'react-dropzone';
 import DragDropFile from '@/Components/ConfigurationMap/DragDropFile';
-import { ThemeButton } from "@/Components/Commons/ThemeButton";
+import { MdOutlineFileUpload } from "react-icons/md";
+import { StyledButton } from "../Commons/StyledBasedComponents";
 import Cookies from "js-cookie";
 
 export default function ModalUploadPhoto({ open=true, closeCallback}) {
@@ -65,10 +66,15 @@ export default function ModalUploadPhoto({ open=true, closeCallback}) {
                                 isDragAccept={isDragAccept} isDragActive={isDragActive} isDragReject={isDragReject} />
                         }
                     </div>
+                    {file && 
                     <div className="flex items-center justify-around p-2 mt-2">
-                        <ThemeButton onClick={cancelCall}>Cancel</ThemeButton>
-                        <ThemeButton onClick={saveCall}>Save</ThemeButton>
+                        <StyledButton onClick={cancelCall}>Cancel</StyledButton>
+                        <StyledButton className="flex flex-row items-center" variant="secondary" onClick={saveCall}>
+                            <MdOutlineFileUpload className="size-5"/>
+                            Upload photo
+                            </StyledButton>
                     </div>
+                    }
                 </div>
 
             </Modal.Body>

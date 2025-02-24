@@ -67,8 +67,8 @@ import { RiHomeLine } from "react-icons/ri";
 
 
 
-export const backend = "http://localhost:8000"
-export const domain = "http://localhost"
+export const backend = "http://192.168.1.200:8000"
+export const domain = "http://192.168.1.200"
 
 export const daysOrder = [
     "mon",

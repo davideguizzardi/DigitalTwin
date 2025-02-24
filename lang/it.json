@@ -84,8 +84,7 @@
     "Upload floor map":"Carica la mappa del piano",
     "Add": "Aggiungi",
     "Change Password": "Cambia Password",
-    "Arrange the cards in order of importance, from the most important to the least important. Drag each card by clicking and holding it, then drop it into the position you believe is correct. Continue adjusting the cards until all are in the proper order.":
-    "Ordina le card in ordine di importanza, da quella più importante a quella meno. Trascina ogni card cliccando e tenendo premuto, poi rilascia nella posizione che pensi sia corretta. Continua fin quando non hai sistemato tutte le carte nell'ordine corretto ",
+    "preferences_description":"Ordina le card in ordine di importanza, da quella più importante a quella meno. Trascina ogni card cliccando e tenendo premuto, poi rilascia nella posizione che pensi sia corretta. Continua fin quando non hai sistemato tutte le carte nell'ordine corretto ",
     "Most important": "Più importante",
     "Less important": "Meno importante",
     "Health": "Salute",
@@ -218,5 +217,20 @@
     "induction_stove": "Piano a induzione",
     "desktop": "Desktop",
     "No appliance":"Non sono presenti altri dispositivi da configurare",
-    "Configuration saved successfully":"Salvataggio avvenuto con successo."
+    "Configuration saved successfully":"Salvataggio avvenuto con successo.",
+    "privacy_consent": "Consenso sulla Privacy",
+    "data_collection_info": "Per prevedere il consumo energetico e suggerire miglioramenti, raccogliamo dati sulle interazioni degli utenti con il Digital Twin.",
+    "consent_collection": "Acconsenti alla raccolta dei dati sulle tue interazioni?",
+    "data_sharing_info": "Il Digital Twin consente agli utenti di vedere i contenuti di altri, come automazioni e azioni manuali sui dispositivi, per migliorare la consapevolezza della disponibilità dei dispositivi.",
+    "consent_sharing": "Acconsenti alla condivisione dei tuoi dati?",
+    "change_password_title": "Cambia Password",
+    "current_password": "Password attuale",
+    "new_password": "Nuova password",
+    "confirm_new_password": "Conferma nuova password",
+    "password_mismatch": "Le password non corrispondono",
+    "cancel": "Annulla",
+    "confirm": "Conferma",
+    "Drag and drop your images here.":"Trascina e rilascia le tue immagini qui",
+    "or":"o",
+    "Browse files":"Sfoglia i file"
 }

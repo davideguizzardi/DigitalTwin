@@ -67,9 +67,9 @@ export default function Preferences({ }) {
     }, [user])
 
     return (
-        <div className="flex flex-col h-full p-2 gap-1">
+        <div className="flex flex-col h-full p-5 gap-1">
             <h1 className="text-2xl dark:text-white">{t("Preferences")}</h1>
-            <p className='dark:text-white'>{t("Arrange the cards in order of importance, from the most important to the least important. Drag each card by clicking and holding it, then drop it into the position you believe is correct. Continue adjusting the cards until all are in the proper order.")}</p>
+            <p className='dark:text-white'>{t("preferences_description")}</p>
             <div className="flex flex-col h-full justify-center items-center gap-1">
                 <h1 className='dark:text-white text-xl'>{t("Most important")}</h1>
                 <div className="flex w-full h-3/4 justify-center gap-2 p-1">

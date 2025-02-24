@@ -1,4 +1,7 @@
 import { useMemo } from "react";
+import { CiImageOn } from "react-icons/ci";
+import { StyledButton } from "../Commons/StyledBasedComponents";
+import { useLaravelReactI18n } from "laravel-react-i18n";
 
 
 const baseStyle = {
@@ -33,6 +36,8 @@ export default function DragDropFile({getRootProps,
         isDragAccept,
         isDragReject}){
 
+    const{t}=useLaravelReactI18n()
+
     const style = useMemo(() => ({
         ...baseStyle,
         ...(isDragActive ? activeStyle : {}),
@@ -45,10 +50,13 @@ export default function DragDropFile({getRootProps,
     ]);
 
     return (
-        <div className='h-96 w-full' {...getRootProps({ style })}>
+        <div className='h-96 w-full items-center flex flex-col gap-2' {...getRootProps({ style })}>
 
             <input {...getInputProps()} />
-            <div>Drag and drop your images here.</div>
+            <CiImageOn className="size-40 text-gray-600"/>
+            <div className="text-2xl font-semibold text-gray-600">{t("Drag and drop your images here.")}</div>
+            <div className="text-2xl text-gray-600">{t("or")}</div>
+            <div className="text-xl bg-lime-400 rounded-lg p-2 text-gray-600 shadow-md">{t("Browse files")}</div>
         </div>
     );
 
