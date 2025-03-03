@@ -9,7 +9,7 @@ import { callService, getIcon } from "@/Components/Commons/Constants";
 import { StyledButton } from "@/Components/Commons/StyledBasedComponents";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 
-export function AutomationTable({ automation_context }) {
+export function AutomationTable({ automation_context, openId = ""}) {
 
     const [automationList, setAutomationList] = useState([])
     const [openAutomation, setOpenAutomation] = useState("")
@@ -46,7 +46,19 @@ export function AutomationTable({ automation_context }) {
 
 
     useEffect(() => {
-        setAutomationList(automation_context)
+        if(Object.keys(automation_context).length>0){
+
+            setAutomationList(automation_context)
+            if(openId){
+                const auto=automation_context.find(automation=>automation.id==openId)
+                if(auto){
+                    setOpenAutomation(auto)
+                }
+            }
+            else{
+                setOpenAutomation(automation_context[0])
+            }
+        }
     }, [automation_context])
 
     return (

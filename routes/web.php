@@ -23,7 +23,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/configuration', [ConfigurationController::class, "show"])->name('configuration');
     Route::get('/userarea', [UserAreaController::class, "get"])->name('userarea.get');
     Route::get('/consumption', [ConsumptionController::class, "show"])->name('consumption');
-    Route::get('/automation', function(Request $request){ return Inertia::render("Automation");})->name("automation");
+    Route::get('/automation/{id?}', function(Request $request, $id = null) { 
+        return Inertia::render("Automation", ["id" => $id]);
+    })->name("automation");
     Route::get('/automation_add', function(Request $request){ return Inertia::render("AddAutomation");})->name("automation.add");
     Route::get('/first-configuration', function (Request $request) {
         $maps = session('maps', collect());
