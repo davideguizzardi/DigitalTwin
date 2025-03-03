@@ -59,7 +59,7 @@ Create the symbolic link from ```storage/app/public``` to ```public/storage```
 
 **9. Add digital twin inside vendor**
 
-Download [Digital Twin API](https://github.com/davideguizzardi/Digital-Twin-API/tree/docker) and copy it into the vendor folder, renaming it to digitaltwin. Important to download branch ```docker``` because there are ```Dockerfile``` and ```requirements.txt``` to build the container.
+Download [Digital Twin API](https://github.com/davideguizzardi/Digital-Twin-API) and copy it into the vendor folder, renaming it to digitaltwin. Important to download branch ```docker``` because there are ```Dockerfile``` and ```requirements.txt``` to build the container.
 
 ## Usage
 
