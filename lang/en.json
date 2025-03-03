@@ -237,5 +237,7 @@
     "unavailable":"Unavailable",
     "playing":"Playing",
     "paused":"Paused",
-    "Load house map":"Load house map"
+    "Load house map":"Load house map",
+    "Past real consumption":"Past real consumption",
+    "Future predicted consumption": "Future predicted consumption"
 }
