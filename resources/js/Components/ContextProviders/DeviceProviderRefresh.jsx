@@ -8,7 +8,7 @@ export const DeviceContextRefresh = createContext();
 
 export const DeviceProviderRefresh = ({ children }) => {
   const [deviceList, setDeviceList] = useState([]);
-  const refreshFrequency=5*1000 //in milliseconds
+  const refreshFrequency=3*1000 //in milliseconds
   
   const fetchDevices = async () => {
     try {

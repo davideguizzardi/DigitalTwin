@@ -96,7 +96,7 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
       });
     if (response.ok) {
       const data = await response.json();
-      var devices = [{ "device_id": "", "name": "Entire House" }]
+      var devices = [{ "device_id": "", "name": t("Entire House") }]
       devices = devices.concat(data)
       setDeviceList(devices)
     }
@@ -183,7 +183,7 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
 
 
           <Label htmlFor="device" value={t("Energy consumption of")} />
-          <Select id="device" defaultValue={"Entire House"} onChange={(event) => handleNameChange(event)} required>
+          <Select id="device" defaultValue={t("Entire House")} onChange={(event) => handleNameChange(event)} required>
             {
               devicesList
                 .filter(d => !["Sun", "Forecast"].includes(d.name))

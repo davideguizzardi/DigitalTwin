@@ -43,7 +43,7 @@ export default function PermissionPrivacy() {
                     <div className="flex">
                         <p className="font-bold p-1">{t("consent_collection")}</p>
                         <div className="flex items-center gap-1">
-                            <p className="font-bold p-1">Yes</p>
+                            <p className="font-bold p-1">{t("Yes")}</p>
                             <Checkbox className="text-lime-500" checked={privacy.privacy_collection} onChange={() => handlePrivacyChange("privacy_collection", true)} />
                             <p className="font-bold p-1 ml-1">No</p>
                             <Checkbox className="text-lime-500" checked={!privacy.privacy_collection} onChange={() => handlePrivacyChange("privacy_collection", false)} />
@@ -56,7 +56,7 @@ export default function PermissionPrivacy() {
                     <div className="flex">
                         <p className="font-bold p-1">{t("consent_sharing")}</p>
                         <div className="flex items-center gap-1">
-                            <p className="font-bold p-1">Yes</p>
+                            <p className="font-bold p-1">{t("Yes")}</p>
                             <Checkbox className="text-lime-500" checked={privacy.privacy_disclosure} onChange={() => handlePrivacyChange("privacy_disclosure", true)} />
                             <p className="font-bold p-1 ml-1">No</p>
                             <Checkbox className="text-lime-500" checked={!privacy.privacy_disclosure} onChange={() => handlePrivacyChange("privacy_disclosure", false)} />

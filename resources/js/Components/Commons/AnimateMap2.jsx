@@ -106,7 +106,7 @@ export default function AnimateMap2({ maps, appliances }) {
                             style={{
                                 objectFit: "contain",
                                 width: "100%",
-                                height: "78vh"
+                                height: "80vh"
                             }}
 
                         />

@@ -61,9 +61,19 @@ import { TbAirConditioning } from "react-icons/tb";
 import { MdSensorWindow } from "react-icons/md";
 import { IoWater } from "react-icons/io5";
 import { IoExtensionPuzzleSharp } from "react-icons/io5";
-import { RiHome2Fill } from "react-icons/ri";
+import {
+    BackwardIcon,
+    ForwardIcon,
+    PauseCircleIcon,
+    SpeakerWaveIcon,
+    SpeakerXMarkIcon,
+    PlayCircleIcon,
+  } from "@heroicons/react/24/outline";
 
 import { RiHomeLine } from "react-icons/ri";
+import { MdBrightness6 } from "react-icons/md";
+import { IoIosColorPalette } from "react-icons/io";
+import { MdFileUpload } from "react-icons/md";
 
 
 
@@ -158,6 +168,15 @@ export const iconMap = {
     power_on:(className) => <LuPower className={className} />,
     power_off:(className) => <LuPowerOff className={className} />,
     error:(className) => <BiError className={className} />,
+    brightness: (className) => <MdBrightness6 className={className} />, 
+    color: (className) => <IoIosColorPalette className={className} />,
+    backward:(className)=> <BackwardIcon className={className}/>,
+    forward:(className)=> <ForwardIcon className={className}/>,
+    pause:(className)=> <PauseCircleIcon className={className}/>,
+    volume_max:(className)=> <SpeakerWaveIcon className={className}/>,
+    volume_min:(className)=> <SpeakerXMarkIcon className={className}/>,
+    play_media:(className)=> <PlayCircleIcon className={className}/>,
+    upload:(className)=> <MdFileUpload className={className}/>
 }
 
 export const DevicesTypes = {
@@ -181,14 +200,14 @@ export const DevicesTypes = {
     blinds: { color: "bg-violet-300" },
     dishwasher: { color: "bg-blue-200" },
     oven: { color: "bg-red-400" },
-    washing_machine: { color: "bg-indigo-200" },
+    washing_machine: { color: "bg-indigo-400" },
     induction_stove: { color: "bg-gray-500" },
-    desktop: { color: "bg-zinc-300" }
+    desktop: { color: "bg-blue-300" }
 };
 
 
-export function getDeviceIcon(key, classname = "size-9") {
-    const colorclass = key in DevicesTypes ? DevicesTypes[key].color : "bg-white"
+export function getDeviceIcon(key, classname = "size-9",active=true) {
+    const colorclass = active && key in DevicesTypes? DevicesTypes[key].color : "bg-gray-400"
     return <div className={`rounded-full p-2 ${colorclass}`}>
         {getIcon(key, classname)}
     </div>
@@ -206,20 +225,7 @@ export function getIcon(key, className = "size-5") {
     }
 }
 
-/*
-export function getIcon(key, size=null) {
-    if (key in iconMap) {
-        if (size){
-            let iconSize = iconMap[key]
-            console.log(iconSize)
-            return iconSize
-        }
-        return (iconMap[key])
-    }
-    else {
-        return (iconMap["unknown"])
-    }
-}*/
+
 
 
 export const callService = async (entity_id, service, data,user="No user") => {

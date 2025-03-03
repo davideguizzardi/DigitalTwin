@@ -194,7 +194,7 @@ const Dashboard3 = ({ maps, token }) => {
                             </p>
                             <p>
 
-                            gCO2/h
+                            gCO<sub>2</sub>/h
                             </p>
                         </div>
                     </WhiteCard>

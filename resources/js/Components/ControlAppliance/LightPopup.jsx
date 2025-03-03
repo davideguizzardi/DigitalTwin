@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
-import { Modal, Button, Avatar } from "flowbite-react";
-import { FaPowerOff, FaRegSun } from "react-icons/fa6";
+import { Button} from "flowbite-react";
 import Slider from '@mui/material/Slider';
 import { SliderPicker } from "react-color";
-import { MdBrightness6 } from "react-icons/md";
-import { IoIosColorPalette } from "react-icons/io";
+import { StyledButton } from "../Commons/StyledBasedComponents";
+import { getIcon } from "../Commons/Constants";
 
 import { backend } from "../Commons/Constants";
+import { getCircularProgressUtilityClass } from "@mui/material";
 
-export function LightPopup({ selectedEntity, open, closeFun }) {
+export function LightPopup({ selectedEntity,user,setErrorFun}) {
     const [entityId, setEntityId] = useState(null)
     const [lightOn, setLightOn] = useState(false)
     const [brightness, setBrightness] = useState(0)
@@ -31,7 +31,7 @@ export function LightPopup({ selectedEntity, open, closeFun }) {
         body["entity_id"] = entityId
         body["service"] = service
         body["data"] = data;
-        body["user"]="mauro" //TODO: Mettere il nome giusto
+        body["user"]=user
         const response = await fetch(backend + `${"/service"}`, {
             method: "POST",
             headers: {
@@ -45,7 +45,7 @@ export function LightPopup({ selectedEntity, open, closeFun }) {
             setEntityValues(updated_entity[0])
         }
         else {
-            alert("Error")
+            setErrorFun()
         }
     }
 
@@ -53,9 +53,6 @@ export function LightPopup({ selectedEntity, open, closeFun }) {
         if (entity_in && entity_in.attributes ) {
             setEntityId(entity_in.entity_id)
             setLightOn(entity_in.state == "on")
-            if (entity_in.attributes.friendly_name){
-                setFriendlyName(entity_in.attributes.friendly_name)
-            }
             setBrightnessSupported("brightness" in entity_in.attributes)
             if (entity_in.attributes.brightness)
                 setBrightness(Math.round(entity_in.attributes.brightness / 255 * 100))
@@ -138,17 +135,17 @@ export function LightPopup({ selectedEntity, open, closeFun }) {
     }, [selectedEntity, open])
 
     return (
-                <div className="flex flex-col">
+                <div className="flex flex-col w-full px-5">
                     <div className="p-1">
                         <div className="flex flex-col justify-center items-center">
-                            <div className="flex flex-row bg-white shadow-md items-center justify-start rounded-full">
+                            <div className="flex flex-row bg-white shadow-md items-center justify-start rounded-full border">
 
                                 <div className="flex gap-1 dark:bg-neutral-700 rounded p-1">
-                                    <Button className="rounded-full bg-inherit mr-1 text-black dark:text-white
+                                    <StyledButton variant="secondary" className="rounded-full bg-inherit shadow-none text-black dark:text-white
                                         ring-0 focus:ring-0 dark:bg-neutral-700"
                                         onClick={() => callService("toggle", {})}>
-                                        <FaPowerOff className="size-8" />
-                                    </Button>
+                                        {getIcon(lightOn?"power_off":"power_on","size-8")}
+                                    </StyledButton>
                                     {lightOn &&
                                         <div className="flex gap-1">
                                             {brightnessSupported &&
@@ -157,7 +154,7 @@ export function LightPopup({ selectedEntity, open, closeFun }) {
                                                         ${brightnessTab ? "" : "dark:text-white"}`}
                                                     style={{ background: brightnessTab ? "rgb(" + red + "," + green + "," + blue + ")" : "inherit" }}
                                                     onClick={() => tabClicked("brightness")}>
-                                                    <MdBrightness6 className="size-8" />
+                                                    {getIcon("brightness","size-8")}
                                                 </Button>
                                             }
                                             {colorSupported &&
@@ -166,7 +163,7 @@ export function LightPopup({ selectedEntity, open, closeFun }) {
                                                         ${colorTab ? "" : "dark:text-white"}`}
                                                     style={{ background: colorTab ? "rgb(" + red + "," + green + "," + blue + ")" : "inherit" }}
                                                     onClick={() => tabClicked("color")}>
-                                                    <IoIosColorPalette className="size-8" />
+                                                    {getIcon("color","size-8")}
                                                 </Button>}
                                             {temperatureSupported &&
                                                 <Button

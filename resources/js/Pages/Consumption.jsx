@@ -3,7 +3,9 @@ import { animate, AnimatePresence, motion, useAnimate } from "framer-motion"
 import { ConsumptionComparisonGraph } from "@/Components/Consumption/ConsumptionComparisonGraph"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
+import { backend } from "@/Components/Commons/Constants"
 import { TotalConsumptionGraph } from "@/Components/Consumption/TotalConsumptionGraph"
+import { ConsumptionPredictionGraph } from "@/Components/Consumption/ConsumptionPredictionGraph"
 import WhiteCard from "@/Components/Commons/WhiteCard"
 import TabLayout from "@/Layouts/TabLayout"
 import SubMenuLayout from "@/Layouts/SubMenuLayout"
@@ -61,7 +63,7 @@ export default function Consumption() {
         "Total energy consumption": (
             <TotalConsumptionGraph device_id={""} device_name={""} />
         ),
-        "Predicted consumption": (<TotalConsumptionGraph device_id={""} device_name={""} />),
+        "Predicted consumption": (<ConsumptionPredictionGraph url_in={`${backend}/prediction/recursive`} future_steps={12} />),
         "Consumption comparison": (<ConsumptionComparisonGraph device_id={""} device_name={""} />),
     }
 

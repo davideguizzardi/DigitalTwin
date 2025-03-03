@@ -2,11 +2,13 @@ import { LightPopup } from "./LightPopup"
 import { MediaPlayerControl } from "./MediaPlayerPopup"
 import { Modal } from "flowbite-react"
 import { useState, useEffect, useContext } from "react"
-import { getIcon } from "../Commons/Constants"
+import { getIcon, backend } from "../Commons/Constants"
 import { callService } from "../Commons/Constants"
 import { UserContext } from "@/Layouts/UserLayout"
 import ToastNotification from "../Commons/ToastNotification"
 import { SwitchToggle } from "./SwitchToggle"
+import { useLaravelReactI18n } from "laravel-react-i18n"
+import { AutomationTable } from "../Automation/AutomationTable"
 
 function ControlSelector({ device, user, errorFun }) {
   switch (device.device_class) {
@@ -19,7 +21,19 @@ function ControlSelector({ device, user, errorFun }) {
       />
 
     case "media_player":
-      return <MediaPlayerControl selectedEntity={device.state_entity_id} />
+      return <MediaPlayerControl
+        selectedEntity={device.state_entity_id}
+        user={user.username}
+        setErrorFun={errorFun}
+
+      />
+
+    case "light":
+      return <LightPopup
+        selectedEntity={device.state_entity_id}
+        user={user.username}
+        setErrorFun={errorFun}
+      />
 
     default: <>
     </>
@@ -35,7 +49,24 @@ export default function ControlPopup({ openDevice }) {
   const [device, setDevice] = useState({})
   const [open, setOpen] = useState(false)
   const [isError, setIsError] = useState(false)
+  const [deviceAutomations, setDeviceAutomations] = useState([])
   const user = useContext(UserContext)
+  const { t } = useLaravelReactI18n()
+
+
+  useEffect(() => {
+    const fetchAutomationContext = async () => {
+      const response = await fetch(`${backend}/automation?get_suggestions=false`)
+      if (response.ok) {
+        const result = await response.json()
+        const devAutomations = result.filter(a => a.action.some(action => action.device_id == openDevice.device_id))
+        setDeviceAutomations(devAutomations)
+      }
+    }
+    if (Object.keys(openDevice).length > 0) {
+      fetchAutomationContext()
+    }
+  }, [openDevice])
 
   useEffect(() => {
     setDevice(openDevice)
@@ -50,7 +81,7 @@ export default function ControlPopup({ openDevice }) {
   return (
     <>
       <ToastNotification message={"Some error occurred while trying to change device state..."} isVisible={isError} onClose={() => setIsError(false)} type="error" />
-      <Modal show={open} onClose={() => setOpen(false)} popup dismissible>
+      <Modal show={open} onClose={() => { setOpen(false); setDevice({}) }} popup dismissible>
         <Modal.Header>
           <div className="flex flex-col ml-2">
             <div className="text-2xl font-semibold">{device.name}</div>
@@ -58,24 +89,47 @@ export default function ControlPopup({ openDevice }) {
           </div>
         </Modal.Header>
         <Modal.Body>
-          {device.list_of_entities &&
+          <div className="-ml-2 flex flex-row gap-4 items-center mb-2">
+            <div className="font-light font-[Inter]">
 
-            <div className={"flex flex-row gap-4 items-center justify-end " + (device.state != "" ? "" : "col-span-2")}>
-              {device.list_of_entities
-                .filter(e => e.entity_id.startsWith('sensor') && e.entity_class != "energy")
-                .sort((a, b) => a.entity_class > b.entity_class ? -1 : 1)
-                .map((sensor, index) => (
-                  <div className="flex flex-row gap-1 items-center" key={index}>
-                    {getIcon(sensor.entity_class, "size-8")}
-                    <span className="text-lg">
-
-                      {sensor.state} {sensor.unit_of_measurement != undefined && sensor.unit_of_measurement}
-                    </span>
-                  </div>
-                ))
-              }
+              {t("State")}: <span className="font-semibold">{t(device.state)}</span>
             </div>
-          }
+
+            {device.list_of_entities &&
+
+              <div className="flex flex-row gap-4 items-center justify-end ">
+                {device.list_of_entities
+                  .filter(e => e.entity_id.startsWith('sensor') && e.entity_class != "energy")
+                  .sort((a, b) => a.entity_class > b.entity_class ? -1 : 1)
+                  .map((sensor, index) => (
+                    <div className="flex flex-row gap-1 items-center" key={index}>
+                      {getIcon(sensor.entity_class, "size-7")}
+                      <span className="text-lg">
+
+                        {sensor.state} {sensor.unit_of_measurement != undefined && sensor.unit_of_measurement}
+                      </span>
+                    </div>
+                  ))
+                }
+              </div>
+            }
+          </div>
+          {deviceAutomations.length>0&&
+
+          <div className="flex flex-col w-full -ml-2">
+            <span className="font-light font-[Inter]">{t("Automations")}:{" "}
+              {deviceAutomations.map((automation, index) => (
+                <span key={automation.id}>
+                  <a className="underline text-blue-500" href={route("automation", { id: automation.id })}>
+                    {automation.name}
+                  </a>
+                  {index < deviceAutomations.length - 1 ? ", " : "."}
+                </span>
+              ))}
+            </span>
+          </div>
+            }
+
         </Modal.Body>
         <Modal.Footer>
 

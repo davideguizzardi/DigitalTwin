@@ -21,6 +21,7 @@
     "Average User": "Average User",
     "Home": "Home",
     "You": "You",
+    "Yes":"Yes",
     "You produced as much CO2 as": "You produced as much CO2 as",
     "Driving for :value km": "Driving for :value km",
     "Eating :value pizzas": "Eating :value pizzas",
@@ -51,7 +52,6 @@
     "Green suggestions": "Green suggestions",
     "If you move the activation time to": "If you move the activation time to",
     "you could save": "you could save",
-    "on": "on",
     "each month": "each month",
     "Monday": "Monday",
     "Tuesday": "Tuesday",
@@ -229,5 +229,13 @@
     "confirm": "Confirm",
     "Drag and drop your images here.":"Drag and drop your images here.",
     "or":"or",
-    "Browse files":"Browse files"
+    "Browse files":"Browse files",
+    "Enter device name":"Enter device name...",
+    "Entire House":"Entire house",
+    "on":"On",
+    "off":"Off",
+    "unavailable":"Unavailable",
+    "playing":"Playing",
+    "paused":"Paused",
+    "Load house map":"Load house map"
 }

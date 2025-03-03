@@ -1,5 +1,5 @@
 import { useState,useEffect } from "react";
-import { callService,getIcon } from "../Commons/Constants";
+import { callService,getIcon,apiFetch,backend } from "../Commons/Constants";
 
 export function SwitchToggle({state,stateId,user,setErrorFun={}}) {
   const [isOn, setIsOn] = useState(false);
@@ -7,15 +7,10 @@ export function SwitchToggle({state,stateId,user,setErrorFun={}}) {
 
   const handleClick=async()=>{
     const service=isOn? "turn_off":"turn_on"
-    //const ret=await callService(stateId,service,{},user)
-    const ret={}
-    if(Object.keys(ret).lenght>0){
-      setIsOn(!isOn)
-    }
-    else{
-      setErrorFun()
-    }
+    const ret=await callService(stateId,service,{},user)
+    setIsOn(!isOn)
   }
+
   return (
     <>
     <div

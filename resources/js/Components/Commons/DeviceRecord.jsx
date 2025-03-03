@@ -11,17 +11,11 @@ import { useState } from "react";
 import ControlPopup from "../ControlAppliance/ControlPopup";
 import { getIcon } from "./Constants";
 
-export default function DeviceRecord({ device }) {
-    const [openControl, isOpenControl] = useState(false)
-
-    const closeFun = () =>{
-        isOpenControl(false)
-    }
-
+export default function DeviceRecord({ device,onClickFun }) {
     return (
         <List.Item key={device.device_id} className="">
             <div className="grid grid-cols-3 gap-3 items-center p-3  text-sm"
-                onClick={() => {isOpenControl(true)}}
+                onClick={() => {onClickFun(true)}}
                 style={{cursor: "pointer", zIndex: "20"}}
             >
                 <div className="flex flex-row gap-4 items-center col-span-1">

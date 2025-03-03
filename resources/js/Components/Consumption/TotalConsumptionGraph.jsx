@@ -12,10 +12,10 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
   const [dataset, setDataset] = useState([])
   const [group, setGroup] = useState("hourly")
   const [loading, setLoading] = useState(false)
-  const [deviceName, setDeviceName] = useState("Entire House")
+  const { t } = useLaravelReactI18n()
+  const [deviceName, setDeviceName] = useState(t("Entire House"))
   const [deviceId, setDeviceId] = useState("")
   const [devicesList, setDeviceList] = useState([])
-  const { t } = useLaravelReactI18n()
   const heightGraph = window.innerHeight > 1000 ? 800 : 550
   const isDark = localStorage.getItem("darkMode") == "true"
   const sxDatePicker = {
@@ -116,7 +116,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
       });
     if (response.ok) {
       const data = await response.json();
-      var devices = [{ "device_id": "", "name": "Entire House" }]
+      var devices = [{ "device_id": "", "name": t("Entire House")}]
       devices = devices.concat(data)
       setDeviceList(devices)
     }
@@ -127,7 +127,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
 
   const fetchConsumption = async () => {
     var url;
-    if (deviceName == "Entire House") {
+    if (deviceName == t("Entire House")) {
       url = `http://127.0.0.1:8000/consumption/total?` +
         `start_timestamp=${encodeURIComponent(from.format("YYYY-MM-DD"))}` +
         `&end_timestamp=${encodeURIComponent(to.format("YYYY-MM-DD"))}` +
