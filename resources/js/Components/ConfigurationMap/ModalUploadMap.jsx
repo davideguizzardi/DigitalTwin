@@ -1,9 +1,9 @@
 import { useCallback } from "react";
-import { Modal } from "flowbite-react";
+import { Modal,TextInput } from "flowbite-react";
 import { useState } from "react";
 import { useDropzone } from 'react-dropzone';
 import DragDropFile from '@/Components/ConfigurationMap/DragDropFile';
-import { ThemeButton } from "../Commons/ThemeButton";
+import { StyledButton } from "../Commons/StyledBasedComponents";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 export default function ModalUploadMap({ open, saveCallback, cancelCallback, indexUsed }) {
@@ -44,7 +44,7 @@ export default function ModalUploadMap({ open, saveCallback, cancelCallback, ind
         } else{
             saveCallback({file: file, floor: floor})
             setFile(null)
-            setFloor(0)
+            setFloor(parseInt(floor)+1)
         }
     }
 
@@ -55,7 +55,7 @@ export default function ModalUploadMap({ open, saveCallback, cancelCallback, ind
                 <div className="flex flex-col h-3/6">
                     <div className="flex w-full h-fit pb-4 gap-2 justify-center items-center ">
                         <p className="dark:text-white">{t("Floor number")}</p>
-                        <input type="number" defaultValue="0" min="-5" max="5" onChange={e => setFloor(e.target.value)}/>
+                        <TextInput type="number" value={floor} min="-5" max="5" onChange={e => setFloor(e.target.value)}/>
                     </div>
                     <div className="flex justify-center">
                         {file ?
@@ -65,10 +65,15 @@ export default function ModalUploadMap({ open, saveCallback, cancelCallback, ind
                                 isDragAccept={isDragAccept} isDragActive={isDragActive} isDragReject={isDragReject} />
                         }
                     </div>
+                    {file&&
+                    <>
+
                     <div className="flex items-center justify-around p-2 mt-2">
-                        <ThemeButton onClick={cancelCall}>{t("Cancel")}</ThemeButton>
-                        <ThemeButton onClick={saveCall}>{t("Add")}</ThemeButton>
+                        <StyledButton onClick={cancelCall}>{t("Cancel")}</StyledButton>
+                        <StyledButton variant="secondary" onClick={saveCall}>{t("Add")}</StyledButton>
                     </div>
+                    </>
+                    }
                 </div>
 
             </Modal.Body>

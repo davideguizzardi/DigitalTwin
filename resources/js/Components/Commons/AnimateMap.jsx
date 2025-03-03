@@ -39,7 +39,7 @@ export default function AnimateMap({ map, up = true }) {
                 style={{
                     objectFit: "contain",
                     width: "100%",
-                    height: "70vh"
+                    height: "65vh"
                 }}
             />
     )

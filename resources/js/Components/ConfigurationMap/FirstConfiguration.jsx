@@ -25,7 +25,7 @@ const stepIndexes = steps.reduce((acc, step, index) => {
 
 function StepProgress({ state, setState,t }) {
     return (
-        <div className="flex flex-row items-center pb-7 pt-2 px-20 rounded bg-white dark:bg-neutral-900 shadow">
+        <div className="flex flex-row items-center pb-7 pt-2 px-20 rounded bg-white dark:bg-neutral-900 shadow row-span-2 ">
             {steps.map((step, index) => (
                 <>
                     <div key={index} className="relative flex flex-col items-center justify-center">
@@ -64,7 +64,9 @@ const FirstConfiguration = ({maps}) => {
                 return <ConfigurationAppliance
                     editMode={true}
                     backSection={() => setProgressState(stepIndexes.CONFIGURATION_APPLIANCE)}
-                    endSection={() => setProgressState(stepIndexes.CONFIGURATION_ENERGY_PLAN)} />;
+                    endSection={() => setProgressState(stepIndexes.CONFIGURATION_ENERGY_PLAN)} 
+                    isInitialConfiguration={true}
+                    />;
             case stepIndexes.CONFIGURATION_ENERGY_PLAN:
                 return <ConfigurationEnergy
                     isInitialConfiguration={true}
@@ -83,9 +85,9 @@ const FirstConfiguration = ({maps}) => {
     };
 
     return (
-        <div className="flex flex-col size-full min-h-fit min-w-fit gap-1">
-            <StepProgress t={t} state={progressState} setState={setProgressState} />
-            <WhiteCard className="size-full p-1 mt-2 items-center flex flex-col min-w-fit min-h-fit overflow-y-auto">
+        <div className="grid grid-rows-12 size-full gap-1">
+            <StepProgress t={t} state={progressState} setState={setProgressState}/>
+            <WhiteCard className="relative w-full row-span-11  p-1 mt-2 items-center flex flex-col overflow-y-auto">
                 {renderCard()}
             </WhiteCard>
         </div>

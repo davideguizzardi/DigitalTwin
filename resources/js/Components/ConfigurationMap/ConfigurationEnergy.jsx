@@ -284,7 +284,7 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
 
 
     return (
-        <div className="size-full flex flex-col gap-2 min-w-fit 2xl:p-2 px-2">
+        <div className="w-full flex flex-col gap-2 min-w-fit  px-2">
             <div className="size-full flex gap-3">
                 <div className="flex flex-col p-1 h-full w-1/2 ">
                     <div className="flex py-3 items-center gap-6" onClick={() => setCurrentSlot(-1)}>

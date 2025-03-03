@@ -1,11 +1,10 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { ThemeButton } from '@/Components/Commons/ThemeButton';
+import { StyledButton } from '../Commons/StyledBasedComponents';
 import { FaTrashCan } from "react-icons/fa6";
 import { Button } from 'flowbite-react';
 import ModalUploadMap from './ModalUploadMap';
 import Cookies from 'js-cookie';
 import AnimateMap from '../Commons/AnimateMap';
-import WhiteCard from '../Commons/WhiteCard';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { getIcon } from '../Commons/Constants';
 import { domain } from '../Commons/Constants';
@@ -13,7 +12,7 @@ import { domain } from '../Commons/Constants';
 let counter = -1;
 const token = Cookies.get("auth-token")
 
-export default function UploadMap({maps, endSection }) {
+export default function UploadMap({ maps, endSection }) {
     const [listMap, setListMap] = useState([]);
     const [indexThumbs, setIndexThumbs] = useState(-1);
     const [openModal, setOpenModal] = useState(false)
@@ -48,29 +47,29 @@ export default function UploadMap({maps, endSection }) {
         endSection()
     }
     const submitButton = (
-        <div className='absolute right-0 bottom-0 w-fit flex py-5 justify-end px-2'>
-            <ThemeButton className="size-min" onClick={submit} >{t("Next")}{getIcon("arrow_right")}</ThemeButton>
+        <div className='absolute bottom-0 right-0 w-fit flex py-5 justify-end px-2'>
+            <StyledButton className="size-min" onClick={submit} >{t("Next")}{getIcon("arrow_right")}</StyledButton>
         </div>
     );
 
     const buttons = listMap.map((map, index) => (
-        <ThemeButton className={`size-min  my-2 ${index==indexThumbs && "bg-lime-500"}`} onClick={() => { setIndexThumbs(index) }}
-            pill key={map.file.name}><div className='text-lg'>{map.floor}</div></ThemeButton>
+        <StyledButton className={`size-min  my-2 ${index == indexThumbs && "bg-lime-500"}`} onClick={() => { setIndexThumbs(index) }}
+            pill key={map.file.name}><div className='text-lg'>{map.floor}</div></StyledButton>
     ));
 
     useEffect(() => {
-        const uploadedMaps=maps.sort((m1,m2)=>m1.floor>m2.floor)
-        .map((m, index) => ({
-            
-            floor: m.floor,
-            file: {
-              preview: domain+"/"+m.url,
-              name: m.url.split("/")[2]  // Extract the name from the URL
+        const uploadedMaps = maps.sort((m1, m2) => m1.floor > m2.floor)
+            .map((m, index) => ({
+
+                floor: m.floor,
+                file: {
+                    preview: domain + "/" + m.url,
+                    name: m.url.split("/")[2]  // Extract the name from the URL
+                }
             }
-          }
-    ))
+            ))
         setListMap(uploadedMaps)
-        setIndexThumbs(uploadedMaps.length-1)
+        setIndexThumbs(uploadedMaps.length - 1)
     }, [maps]);
 
     // clean up
@@ -108,14 +107,12 @@ export default function UploadMap({maps, endSection }) {
     ));
 
     return (
-        <div className="w-full h-full items-center flex-col flex dark:text-white">
-
+        <div className="w-full h-full items-center flex-col flex dark:text-white overflow-auto">
             <ModalUploadMap open={openModal} saveCallback={saveCallback}
                 cancelCallback={cancelCallback} indexUsed={listMap.map(m => m.floor)} />
-            <p className='h-min w-full p-2 text-start text-2xl'>{t("Upload map house")}</p>
-            <form name="maps" className='relative h-full w-full flex flex-row justify-center items-center ' onSubmit={submit}>
+            <form name="maps" className='relative h-full w-full flex flex-row justify-center items-center' onSubmit={submit}>
 
-                <div className="flex size-full items-center justify-center w-2/3" >
+                <div className="flex h-full items-center justify-center w-2/3" >
                     {indexThumbs >= 0 ?
                         <div className='w-full'>
                             <div className="w-full h-fit py-1 flex items-center self-start">
@@ -128,18 +125,21 @@ export default function UploadMap({maps, endSection }) {
                             <AnimateMap map={listMap[indexThumbs].file.preview} />
                         </div>
                         :
-                        <div className="size-full flex items-center justify-center">
-                            <p className='pl-16'>{t("No map uploaded")}</p>
+                        <StyledButton className='absolute text-2xl' size="xl" onClick={() => { setOpenModal(true) }}>
+                            <div className='flex flex-row items-center'>
+                            {getIcon("upload","size-7")}
+                            {t("Load house map")}
+                            </div>
+                        </StyledButton>
+                    }
+                    {indexThumbs >= 0 &&
+                        <div className="flex flex-col justify-center items-center w-min m-2 p-1 rounded-full bg-gray-100 dark:bg-neutral-700 shadow">
+                            {buttons}
+                            <StyledButton className='size-12 rounded-full items-center' pill onClick={() => { setOpenModal(true) }} >
+                                {getIcon("plus")}
+                            </StyledButton>
                         </div>
                     }
-                    <div className="flex flex-col justify-center items-center w-min m-2 p-1 rounded-full bg-gray-100 dark:bg-neutral-700 shadow">
-                        {indexThumbs >= 0 &&
-                            buttons
-                        }
-                        <ThemeButton className='my-2 size-fit' pill onClick={() => { setOpenModal(true) }} >
-                            {getIcon("plus")}
-                        </ThemeButton>
-                    </div>
                 </div>
                 {listMap.length > 0 ? submitButton : (<div></div>)}
             </form>
