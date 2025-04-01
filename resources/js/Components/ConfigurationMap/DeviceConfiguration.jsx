@@ -27,7 +27,7 @@ function IconSelector({ default_icon, onIconChange, open, toggleDropdown, t }) {
             {
                 open && (<>
 
-                    <div className="absolute 2xl:-left-52 mt-2 bg-zinc-50  border border-gray-300 rounded-md shadow-lg z-10">
+                    <div className="absolute mt-2 bg-zinc-50  border border-gray-300 rounded-md shadow-lg z-10">
                         <div className="p-2  grid grid-flow-col grid-rows-4 gap-2">
                             {iconOptions.map((icon) => (
                                 <div

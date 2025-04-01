@@ -68,7 +68,7 @@ export default function CardAppliance({ appliancePos, setClickedDevice }) {
                 onClick={() => setClickedDevice(appliancePos)}
             >
 
-                {getDeviceIcon(appliancePos.category, "size-9", getPower(appliancePos) > 0)}
+                {getDeviceIcon(appliancePos.category, "size-9", getPower(appliancePos) > 1)}
                 {openName && false &&
                     appliancePos.name
                 }

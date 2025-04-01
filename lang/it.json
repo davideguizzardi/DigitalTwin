@@ -242,5 +242,17 @@
     "paused":"In pausa",
     "Load house map":"Carica la mappa della casa",
     "Past real consumption":"Consumo passato",
-    "Future predicted consumption": "Consumo futuro"
+    "Future predicted consumption": "Consumo futuro",
+    "Predicted energy consumption":"Consumo energetico previsto",
+    "Upload Profile Photo":"Carica immagine del Profilo",
+    "Upload photo":"Carica foto",
+    "Suggestions":"Suggerimenti",
+    "predicted_excessive":"La Digital Twin ha previsto un eccessivo consumo energetico in seguito alla tua azione",
+    "possible_interruptions":"Ci potrebbero essere delle interruzioni elettriche se attivi il dispositivo ora.",
+    "stop_devices":"Ferma i dispositivi attualmente in uso",
+    "stop_automations":"Disattiva le automazione programmate per la giornata",
+    "action_okay":"Non è stato trovato nessun problema con la tua azione. L'azione è stata eseguita con successo",
+    "action_okay_desc":"La tua azione non porta ad un consumo eccessivo di energia o a qualsiasi altro problema energetico",
+    "Why?":"Perché?",
+    "help":"Aiutami"
 }

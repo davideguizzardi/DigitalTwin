@@ -9,7 +9,7 @@ export default function Automation({id=""}) {
 
     useEffect(() => {
         const fetchAutomationContext = async () => {
-            const response = await fetch("http://localhost:8000/automation?get_suggestions=false")
+            const response = await fetch("http://localhost:8000/automation?get_suggestions=true")
             if (response.ok) {
                 const result = await response.json()
                 setAutomationContext(result)

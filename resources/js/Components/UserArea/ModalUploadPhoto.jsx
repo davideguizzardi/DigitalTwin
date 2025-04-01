@@ -6,9 +6,11 @@ import DragDropFile from '@/Components/ConfigurationMap/DragDropFile';
 import { MdOutlineFileUpload } from "react-icons/md";
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import Cookies from "js-cookie";
+import { useLaravelReactI18n } from "laravel-react-i18n";
 
 export default function ModalUploadPhoto({ open=true, closeCallback}) {
     const [file, setFile] = useState(null)
+    const {t}=useLaravelReactI18n()
 
     const onDrop = useCallback(acceptedFiles => {
         const firstFile = acceptedFiles.at(0);
@@ -55,7 +57,7 @@ export default function ModalUploadPhoto({ open=true, closeCallback}) {
 
     return (
         <Modal size="3xl" show={open} onClose={cancelCall}>
-            <Modal.Header>Upload Profile Photo</Modal.Header>
+            <Modal.Header>{t("Upload Profile Photo")}</Modal.Header>
             <Modal.Body>
                 <div className="flex flex-col h-3/6">
                     <div className="flex justify-center">
@@ -71,7 +73,7 @@ export default function ModalUploadPhoto({ open=true, closeCallback}) {
                         <StyledButton onClick={cancelCall}>Cancel</StyledButton>
                         <StyledButton className="flex flex-row items-center" variant="secondary" onClick={saveCall}>
                             <MdOutlineFileUpload className="size-5"/>
-                            Upload photo
+                            {t("Upload photo")}
                             </StyledButton>
                     </div>
                     }

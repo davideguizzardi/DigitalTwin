@@ -1,17 +1,10 @@
 import { List } from "flowbite-react";
-import { CiCircleQuestion } from "react-icons/ci";
-import { IoMdBatteryFull } from "react-icons/io";
-import { WiHumidity } from "react-icons/wi";
-import { FaTemperatureThreeQuarters, FaBolt, FaCalendar, FaSun, FaFan, FaCloudSun, FaCirclePlay, FaLightbulb } from "react-icons/fa6";
-import { RxSwitch } from "react-icons/rx";
-import { TbCircuitSwitchOpen } from "react-icons/tb";
-import { MdOutlineEnergySavingsLeaf } from "react-icons/md";
-import { CiSpeaker } from "react-icons/ci";
-import { useState } from "react";
+import { useLaravelReactI18n } from "laravel-react-i18n";
 import ControlPopup from "../ControlAppliance/ControlPopup";
 import { getIcon } from "./Constants";
 
 export default function DeviceRecord({ device,onClickFun }) {
+    const {t}=useLaravelReactI18n()
     return (
         <List.Item key={device.device_id} className="">
             <div className="grid grid-cols-3 gap-3 items-center p-3  text-sm"
@@ -24,7 +17,7 @@ export default function DeviceRecord({ device,onClickFun }) {
                 </div>
                 {device.state != "" &&
                     <div>
-                        <p>{device.state}</p>
+                        <p>{t(device.state)}</p>
                     </div>
                 }
                 <div className={"flex flex-row gap-4 items-center justify-end " + (device.state != "" ? "" : "col-span-2")}>

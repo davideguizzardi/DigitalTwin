@@ -266,4 +266,4 @@ export const apiFetch = async (url, method = "GET", body = null) => {
     }
 };
 
-export const kgCO2e_kWh = 0.270; // Italy grid emissions: 0.270 kg CO2e per kWh
+export const kgCO2e_kWh = 0.270; // Italy grid emissions: 0.270 kg CO2e per kWh in 2024

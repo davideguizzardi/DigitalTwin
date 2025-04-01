@@ -2,6 +2,7 @@ import FirstConfiguration from '@/Components/ConfigurationMap/FirstConfiguration
 import RoutineConfiguration from '@/Components/ConfigurationMap/RoutineConfiguration';
 import { useEffect } from 'react';
 import { DeviceProvider } from '@/Components/ContextProviders/DeviceProvider';
+import Cookies from "js-cookie";
 
 const FirstConfigurationPage = ({ maps,token }) => {
     useEffect(() => {

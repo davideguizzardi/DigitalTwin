@@ -239,5 +239,17 @@
     "paused":"Paused",
     "Load house map":"Load house map",
     "Past real consumption":"Past real consumption",
-    "Future predicted consumption": "Future predicted consumption"
+    "Future predicted consumption": "Future predicted consumption",
+    "Predicted energy consumption":"Predicted energy consumption",
+    "Upload Profile Photo":"Upload Profile Photo",
+    "Upload photo":"Upload photo",
+    "Suggestions":"Suggestions",
+    "predicted_excessive":"The Digital Twin predicted excessive energy demand after your action.",
+    "possible_interruptions":"There may be electrical interruptions if you start the appliance right now.",
+    "stop_devices":"Stop devices that are currently running",
+    "stop_automations":"Deactivate automations that are scheduled for the day",
+    "action_okay":"No problem where found with your action, action successfully executed",
+    "action_okay_desc":"Your action doesn't lead to excessive energy consumption or any other energy problems",
+    "Why?":"Why?",
+    "help":"I need help"
 }
