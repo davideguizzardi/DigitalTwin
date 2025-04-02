@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import { createContext } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-
+import { DeviceProviderRefresh } from "@/Components/ContextProviders/DeviceProviderRefresh";
 import Navbar from "@/Components/Commons/Navbar";
 
 const token = Cookies.get("auth-token")
@@ -38,17 +38,18 @@ export function UserLayout({ children }) {
         <main>
             <div className="overflow-hidden bg-gray-300 dark:bg-neutral-800 h-screen w-screen">
                 <UserContext.Provider value={userState}>
-                    {children.props.isFirstConfiguration ?
-                        <></> :
-                        <Navbar />
-                    }
-                    <div className="flex w-full justify-center">
+                    <DeviceProviderRefresh>
+                        {children.props.isFirstConfiguration ?
+                            <></> :
+                            <Navbar />
+                        }
+                        <div className="flex w-full justify-center">
 
-                        <motion.div className={`${children.props.isFirstConfiguration?"h-screen":"h-[calc(100vh-3.25rem)]"} justify-center w-full`}>
-                            {children}
-                        </motion.div>
-                    </div>
-
+                            <motion.div className={`${children.props.isFirstConfiguration ? "h-screen" : "h-[calc(100vh-3.25rem)]"} justify-center w-full`}>
+                                {children}
+                            </motion.div>
+                        </div>
+                    </DeviceProviderRefresh>
                 </UserContext.Provider>
             </div>
         </main>

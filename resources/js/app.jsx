@@ -7,7 +7,7 @@ import { UserLayout } from './Layouts/UserLayout';
 import GuestLayout from './Layouts/GuestLayout';
 import { LaravelReactI18nProvider } from 'laravel-react-i18n';
 
-import { DeviceProviderRefresh } from './Components/ContextProviders/DeviceProviderRefresh';
+
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -31,10 +31,10 @@ createInertiaApp({
                 files={import.meta.glob('/lang/*.json')}
 
             >
-                <DeviceProviderRefresh>
+                
 
                 <App {...props} />
-                </DeviceProviderRefresh>
+                
             </LaravelReactI18nProvider>
         );
 

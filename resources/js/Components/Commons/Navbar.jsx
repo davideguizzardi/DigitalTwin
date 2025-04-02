@@ -56,7 +56,7 @@ export default function Navbar({ }) {
                     </div>
                 </a>
                 <a href={route("automation")}>
-                    <div className={`${linkStyle} ${t(namePage(window.location.pathname)) == t("Automations") ? "bg-lime-400" : ""}`}>
+                    <div className={`${linkStyle} ${t(namePage(window.location.pathname)) == t("Automation") ? "bg-lime-400" : ""}`}>
                         {getIcon("puzzle")}
                         {t("Automations")}
                     </div>
