@@ -16,7 +16,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
   const [deviceName, setDeviceName] = useState(t("Entire House"))
   const [deviceId, setDeviceId] = useState("")
   const [devicesList, setDeviceList] = useState([])
-  const heightGraph = window.innerHeight > 1000 ? 800 : 550
+  const heightGraph = window.innerHeight > 1000 ? 800 : 500
   const isDark = localStorage.getItem("darkMode") == "true"
   const sxDatePicker = {
     '.MuiInputBase-root': {
@@ -172,7 +172,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
 
   return (
     <div className="w-full flex flex-col">
-      <div className="flex  mx-3 my-2 items-center justify-center gap-4">
+      <div className="flex  mx-3 my-1 items-center justify-center gap-4">
         <div className="flex flex-row gap-2 ">
           <div className="flex flex-col w-fit">
 

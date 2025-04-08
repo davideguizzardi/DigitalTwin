@@ -17,7 +17,7 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
   const [devicesList, setDeviceList] = useState([])
 
   const { t } = useLaravelReactI18n()
-  const heightGraph = window.innerHeight > 1000 ? 850 : 500
+  const heightGraph = window.innerHeight > 1000 ? 850 : 480
   const isDark = localStorage.getItem("darkMode") == "true"
 
   const sxDatePicker = {
@@ -178,7 +178,7 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
 
   return (
     <div className="w-full flex flex-col">
-      <div className="flex items-center justify-center mx-6 my-2 gap-4">
+      <div className="flex items-center justify-center mx-6 my-1 gap-4">
         <div className="flex flex-col gap-2">
 
 

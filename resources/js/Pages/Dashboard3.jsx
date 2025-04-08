@@ -164,7 +164,7 @@ const Dashboard3 = ({ maps, token }) => {
             <div className="col-span-2">
                 <TabLayout sections={sections} />
             </div>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
                 <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-2 dark:text-white">
                     <WhiteCard className="flex flex-col p-2 bg-gray-200 dark:bg-neutral-700 rounded shadow 2xl:row-span-1 xl:row-span-2">
                         <div className="flex items-center gap-1 text-black dark:text-white">

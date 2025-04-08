@@ -20,10 +20,10 @@ export default function SortableItem(props) {
   };
 
   const icons = {
-    "Health": (<FaRegHeart size={36} />),
-    "Security": (<FaShieldHalved size={36} />),
-    "Entertainment": (<FaMusic size={36} />),
-    "Study": (<FaBookOpen size={36} />)
+    "Health": (<FaRegHeart size={30} />),
+    "Security": (<FaShieldHalved size={30} />),
+    "Entertainment": (<FaMusic size={30} />),
+    "Study": (<FaBookOpen size={30} />)
   }
 
   return (

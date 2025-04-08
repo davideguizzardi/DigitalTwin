@@ -30,7 +30,7 @@ export function EcologicalFootprint({ energyConsumptionIn, home = true }) {
     const yourBarWidth = Math.round((kgCO2 / maxBarWidth) * 100);
 
     return (
-        <div className="w-full h-full flex flex-col xl:gap-8 2xl:gap-10 rounded-lg p-4 bg-zinc-50 shadow-md text-gray-800 dark:text-white">
+        <div className="w-full h-fit flex flex-col xl:gap-5 2xl:gap-10 rounded-lg p-4 bg-zinc-50 shadow-md text-gray-800 dark:text-white">
             <h1 className="uppercase text-xl font-semibold text-center">
                 {home ? t("Home Ecological Footprint") : t("Your Ecological Footprint")}
             </h1>

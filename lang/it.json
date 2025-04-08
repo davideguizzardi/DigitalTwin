@@ -84,7 +84,7 @@
     "Upload floor map":"Carica la mappa del piano",
     "Add": "Aggiungi",
     "Change Password": "Cambia Password",
-    "preferences_description":"Ordina le card in ordine di importanza, da quella più importante a quella meno. Trascina ogni card cliccando e tenendo premuto, poi rilascia nella posizione che pensi sia corretta. Continua fin quando non hai sistemato tutte le carte nell'ordine corretto ",
+    "preferences_description":"Per configurare le preferenze ordina le card in base alla loro importanza per te. La carta più in alto è la più importante mentre quella più in basso la meno. ",
     "Most important": "Più importante",
     "Less important": "Meno importante",
     "Health": "Salute",

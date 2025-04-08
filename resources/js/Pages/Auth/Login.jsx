@@ -1,10 +1,12 @@
 import { Checkbox, Label, TextInput } from "flowbite-react";
 import {ThemeButton as Button} from "@/Components/Commons/ThemeButton";
 import { Head, Link, useForm } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState ,useContext} from 'react';
 import InputError from "@/Components/Commons/InputError";
+import { TouchKeyboard2 } from "@/Components/Commons/TouchKeyboard2";
 
 export default function Login({ status, canResetPassword }) {
+
   const { data, setData, post, processing, errors, reset } = useForm({
     email: '',
     password: '',
@@ -33,11 +35,10 @@ export default function Login({ status, canResetPassword }) {
             <div className="mb-2 block">
               <Label className="text-lg" htmlFor="email" value="Your email" />
             </div>
-            <TextInput
+            <TouchKeyboard2
               id="email"
               type="email"
               placeholder="your@email.com"
-              autoComplete="username"
               onChange={(e) => setData('email', e.target.value)}
               required />
             <InputError message={errors.email} className="mt-2" />
@@ -48,7 +49,8 @@ export default function Login({ status, canResetPassword }) {
             <div className="mb-2 block" >
               <Label className="text-lg" htmlFor="password" value="Your password" />
             </div>
-            <TextInput
+            <TouchKeyboard2
+              inputValue={data.password}
               id="password"
               type="password"
               name="password"

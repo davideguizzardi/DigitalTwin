@@ -2,12 +2,13 @@ import { useState, useEffect, useContext } from "react";
 import { Table, TextInput, } from "flowbite-react"
 import { getIcon } from "../Commons/Constants";
 import { DeviceContext } from "../ContextProviders/DeviceProvider";
+import { TouchKeyboard2 } from "../Commons/TouchKeyboard2";
 import { DevicesTypes } from "../Commons/Constants";
 
 import { StyledButton } from "../Commons/StyledBasedComponents";
 
 import { useLaravelReactI18n } from "laravel-react-i18n";
-
+import { backend } from "../Commons/Constants";
 function IconSelector({ default_icon, onIconChange, open, toggleDropdown, t }) {
     const iconOptions = Object.keys(DevicesTypes)
 
@@ -90,7 +91,7 @@ export function DeviceConfiguration({ backSection, endSection, isInitialConfigur
                 show: show ? 1 : 0,  // Convert boolean to 1 or 0
             }))
         }
-        const response = await fetch(`http://127.0.0.1:8000${"/device_configuration/"}`, {
+        const response = await fetch(`${backend}/device_configuration`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -153,11 +154,13 @@ export function DeviceConfiguration({ backSection, endSection, isInitialConfigur
                                             />
                                         </Table.Cell>
                                         <Table.Cell>
-                                            <TextInput
+                                            <TouchKeyboard2
+                                                inputValue={device.name}
+                                                onChange={(value) => handleNameChange(device.originalIndex, value.target.value)}
                                                 id="device_name"
                                                 type="text"
-                                                value={device.name}
-                                                onChange={(value) => handleNameChange(device.originalIndex, value.target.value)} />
+
+                                            />
                                         </Table.Cell>
                                         <Table.Cell>
                                             {device.manufacturer}-{device.model}

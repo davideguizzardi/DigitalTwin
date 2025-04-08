@@ -31,7 +31,7 @@ export default function Profile2({ }) {
     return (
         <div className="flex flex-col size-full gap-5">
 
-            <WhiteCard className="flex flex-row w-full px-5 py-3 gap-9 items-center">
+            <WhiteCard className="flex flex-row w-full px-5 py-2 gap-9 items-center">
                 {visiblePassword && <ModalChangePassword closeCallback={closePasswordCallback} />}
                 {visiblePhoto && <ModalUploadPhoto closeCallback={closePhotoCallback} />}
                 <div className="relative">
@@ -42,9 +42,9 @@ export default function Profile2({ }) {
                             <FaUser className="rounded-2xl p-5" />
                         </IconContext.Provider>
                     }
-                    <StyledButton className="absolute bottom-0 right-0 rounded-2xl flex size-12 items-center" onClick={() => { isVisiblePhoto(true) }}>
+                    <StyledButton className="absolute bottom-0 right-0 rounded-2xl flex size-10 items-center" onClick={() => { isVisiblePhoto(true) }}>
 
-                        <FaPencil size={24} />
+                        <FaPencil size={18} />
 
                     </StyledButton>
                 </div>
@@ -54,7 +54,7 @@ export default function Profile2({ }) {
                         <p className="text-3xl"><span className="capitalize font-semibold">{user.username}</span>   ({user.email})</p>
                     </div>
                     <StyledButton className="w-fit" onClick={() => { isVisiblePassword(true) }}>
-                        <div className="flex flex-row items-center gap-2 text-lg">
+                        <div className="flex flex-row items-center gap-2 text-base">
 
                             <FaLock />
                             {t("Change Password")}

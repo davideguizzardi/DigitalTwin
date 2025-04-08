@@ -175,7 +175,7 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
     const deleteUnconfAppl = async () => {
         unconfAppl.forEach((appl) => {
             console.log(appl)
-            deleteAppl(appl)
+            deleteAppl(appl.device_id)
         })
     }
 

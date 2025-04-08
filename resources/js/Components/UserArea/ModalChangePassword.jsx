@@ -2,7 +2,7 @@ import { Label, Modal, TextInput } from "flowbite-react";
 import { useState } from "react";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import InputError from "@/Components/Commons/InputError";
-import { ThemeButton } from "../Commons/ThemeButton";
+import { TouchKeyboard2 } from "../Commons/TouchKeyboard2";
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import Cookies from "js-cookie";
 import { domain } from "../Commons/Constants";
@@ -99,7 +99,8 @@ const PasswordInput = ({ id, label, value, onChange, error }) => {
         <div className="flex flex-col gap-1">
             <Label className="text-base" htmlFor={id} value={label} />
             <div className="relative w-full">
-                <TextInput
+                <TouchKeyboard2
+                    inputValue={value}
                     id={id}
                     type={showPassword ? "text" : "password"}
                     value={value}
