@@ -36,9 +36,11 @@ export default function Login({ status, canResetPassword }) {
               <Label className="text-lg" htmlFor="email" value="Your email" />
             </div>
             <TouchKeyboard2
+            inputValue={data.email}
               id="email"
               type="email"
               placeholder="your@email.com"
+              value={data.email}
               onChange={(e) => setData('email', e.target.value)}
               required />
             <InputError message={errors.email} className="mt-2" />

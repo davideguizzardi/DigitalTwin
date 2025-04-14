@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use App\Models\User; 
 
 class UserController extends Controller
 {
@@ -16,6 +17,17 @@ class UserController extends Controller
     {
         return ["user" => Auth::user()];
     }
+
+
+    public function index()
+    {
+        $users = User::all();
+        return response()->json([
+            "status" => "success",
+            "users" => $users
+        ]);
+    }
+
 
     public function update(Request $request)
     {

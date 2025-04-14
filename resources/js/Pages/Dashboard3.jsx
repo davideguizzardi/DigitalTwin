@@ -81,12 +81,12 @@ const Dashboard3 = ({ maps, token }) => {
             await fetchDevices();
             const end = dayjs();
             const start = end.add(-1, "month");
-            const url = `${backend}/consumption/total?` +
+            const url = `/consumption/total?` +
                 `start_timestamp=${encodeURIComponent(start.format("YYYY-MM-DD"))}` +
                 `&end_timestamp=${encodeURIComponent(end.format("YYYY-MM-DD"))}` +
-                `&group=total`;
+                `&group=total&minutes=60`;
     
-            const resp = await apiFetch(url, "GET", {});
+            const resp = await apiFetch(url, "GET", null);
             if (resp) {
                 setPastConsumption(
                     resp[0].energy_consumption_unit === "Wh"
@@ -160,7 +160,7 @@ const Dashboard3 = ({ maps, token }) => {
     }), [deviceList]);
 
     return (
-        <div className="size-full xl:grid xl:grid-cols-3 gap-4 p-5 overflow-auto md:flex md:flex-col">
+        <div className="h-fit w-full xl:grid xl:grid-cols-3 gap-4 p-5 overflow-auto md:flex md:flex-col">
             <div className="col-span-2">
                 <TabLayout sections={sections} />
             </div>

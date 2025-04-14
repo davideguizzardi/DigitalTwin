@@ -11,6 +11,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/maps', [MapController::class, "store"])->name('map.store');
     Route::delete("/maps", [MapController::class, "delete"])->name('map.delete');
     Route::get("/user",  [UserController::class, "get"])->name("user.index");
+    Route::get("/users",  [UserController::class, "index"])->name("users.index");
     Route::post("/user", [UserController::class, "update"])->name("user.update");
     Route::get("/logout", [AuthController::class, "logout"])->name("user.logout");
 });

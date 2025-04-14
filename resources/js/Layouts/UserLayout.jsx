@@ -38,18 +38,24 @@ export function UserLayout({ children }) {
         <main>
             <div className="overflow-hidden bg-gray-300 dark:bg-neutral-800 h-screen w-screen">
                 <UserContext.Provider value={userState}>
-                    <DeviceProviderRefresh>
-                        {children.props.isFirstConfiguration ?
-                            <></> :
-                            <Navbar />
-                        }
+                    {children.props.isFirstConfiguration ?
                         <div className="flex w-full justify-center">
 
-                            <motion.div className={`${children.props.isFirstConfiguration ? "h-screen" : "h-[calc(100vh-3.25rem)]"} justify-center w-full`}>
+                            <motion.div className={`h-screen justify-center w-full`}>
                                 {children}
                             </motion.div>
                         </div>
-                    </DeviceProviderRefresh>
+                        :
+                        <DeviceProviderRefresh>
+                                <Navbar />                           
+                            <div className="flex w-full justify-center">
+
+                                <motion.div className={`h-[calc(100vh-3.25rem)] justify-center w-full`}>
+                                    {children}
+                                </motion.div>
+                            </div>
+                        </DeviceProviderRefresh>
+                    }
                 </UserContext.Provider>
             </div>
         </main>

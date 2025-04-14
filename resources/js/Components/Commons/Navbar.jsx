@@ -9,12 +9,14 @@ import { FaUser } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { domain } from "@/Components/Commons/Constants"
 import { router } from '@inertiajs/react'
-
+import { DeviceContextRefresh } from "../ContextProviders/DeviceProviderRefresh"
+import { Tooltip } from "flowbite-react"
 
 
 export default function Navbar({ }) {
 
     const user = useContext(UserContext)
+    const { connectionOk, isDemo } = useContext(DeviceContextRefresh)
     const { t, setLocale, currentLocale } = useLaravelReactI18n()
 
     const namePage = (string) => {
@@ -69,8 +71,38 @@ export default function Navbar({ }) {
                 </a>
             </div>
             <div className="flex justify-end items-center gap-2">
-                <div className="w-[0.1px] h-3/4 bg-gray-800" />
-                <DarkThemeToggle className="rounded-full text-gray-800" />
+                <div className="w-[0.1px] h-3/4 bg-gray-800 text-gray-800" />
+                {isDemo==false ?
+                    <Tooltip
+                        content={connectionOk ? t("Connection ok") : t("Connection fail")}
+                    >
+                        <div className="relative size-fit">
+                            {getIcon("homeassistant", "size-7 text-sky-500")}
+                            {connectionOk ?
+
+                                <div className="bg-lime-400 rounded-full absolute -bottom-2 -right-2 p-0.5 items-center">
+
+                                    {getIcon("check", "size-2")}
+                                </div>
+                                :
+                                <div className="bg-red-400 rounded-full absolute -bottom-2 -right-2 items-center p-0.5">
+
+                                    {getIcon("close", "size-3")}
+                                </div>
+                            }
+                        </div>
+                    </Tooltip>
+                    :
+                    <Tooltip
+                        content={t("Demo mode")}
+                    >
+                        <div className="relative size-fit text-sm justify-center flex flex-col items-center">
+                            {getIcon("media_player")}
+                            Demo
+                        </div>
+                    </Tooltip>
+                }
+
                 <Dropdown
                     label={<Avatar
                         size={"md"}

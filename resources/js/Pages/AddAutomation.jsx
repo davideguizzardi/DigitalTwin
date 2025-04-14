@@ -138,9 +138,9 @@ export default function AddAutomation({ }) {
     }, [servicesToAdd])
 
     useEffect( async () => {
-        var data = await apiFetch(`${backend}${"/entity"}`)
+        var data = await apiFetch("/entity")
         setEntityList(data)
-        data = await apiFetch(`${backend}${"/device?skip_services=true"}`)
+        data = await apiFetch("/device?skip_services=true")
         setDeviceList(data)
     }, [])
 

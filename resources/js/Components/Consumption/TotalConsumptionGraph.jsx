@@ -5,6 +5,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { StyledButton } from "../Commons/StyledBasedComponents";
+import { apiFetch } from "../Commons/Constants";
 
 export function TotalConsumptionGraph({ device_name, device_id }) {
   const [from, setFrom] = useState(dayjs())
@@ -105,17 +106,10 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
   }
 
   const fetchDevices = async () => {
-    const url = "http://127.0.0.1:8000/device?get_only_names=true"
-    const response = await fetch(
-      url,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-    if (response.ok) {
-      const data = await response.json();
+    const url = "/device?get_only_names=true"
+    const response = await apiFetch(url);
+    if (response) {
+      const data =response
       var devices = [{ "device_id": "", "name": t("Entire House")}]
       devices = devices.concat(data)
       setDeviceList(devices)
@@ -128,28 +122,21 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
   const fetchConsumption = async () => {
     var url;
     if (deviceName == t("Entire House")) {
-      url = `http://127.0.0.1:8000/consumption/total?` +
+      url = `/consumption/total?` +
         `start_timestamp=${encodeURIComponent(from.format("YYYY-MM-DD"))}` +
         `&end_timestamp=${encodeURIComponent(to.format("YYYY-MM-DD"))}` +
         `&group=${group}`
     }
     else {
-      url = `http://127.0.0.1:8000/consumption/device?device_id=${deviceId}` +
+      url = `/consumption/device?device_id=${deviceId}` +
         `&start_timestamp=${encodeURIComponent(from.format("YYYY-MM-DD"))}` +
         `&end_timestamp=${encodeURIComponent(to.format("YYYY-MM-DD"))}` +
         `&group=${group}`
     }
 
-    const response = await fetch(
-      url,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-    if (response.ok) {
-      const data = await response.json();
+    const response = await apiFetch(url);
+    if (response) {
+      const data = response
       data.map(item => item.date = item.date.split(" ").length > 1 ? item.date.split(" ")[1] : item.date)
       if (group!="hourly")
         data.map(item=>item.energy_consumption=item.energy_consumption/1000)

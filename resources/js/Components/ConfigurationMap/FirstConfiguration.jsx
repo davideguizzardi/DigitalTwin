@@ -5,12 +5,13 @@ import ConfigurationEnergy from './ConfigurationEnergy';
 import WhiteCard from '../Commons/WhiteCard';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { getIcon } from "../Commons/Constants";
-
+import ConfigurationHomeAssistant from './ConfigurationHomeAssistant';
 import { DeviceConfiguration } from './DeviceConfiguration';
 import { StyledButton } from '../Commons/StyledBasedComponents';
 
 const iconsSize = "size-10";
 const steps = [
+    { key: "CONFIGURATION_HOME_ASSISTANT", icon: getIcon("homeassistant", iconsSize), label: "Configure Home Assistant" },
     { key: "UPLOAD_MAP", icon: getIcon("home_empty", iconsSize), label: "Add house map" },
     { key: "CONFIGURATION_APPLIANCE", icon: getIcon("light", iconsSize), label: "Configure devices" },
     { key: "SET_DEVICES_ON_MAP", icon: getIcon("home_full", iconsSize), label: "Add devices to map" },
@@ -54,8 +55,12 @@ const FirstConfiguration = ({maps}) => {
 
     const renderCard = () => {
         switch (progressState) {
+            case stepIndexes.CONFIGURATION_HOME_ASSISTANT:
+                return <ConfigurationHomeAssistant endSection={() => setProgressState(stepIndexes.UPLOAD_MAP)}/>
             case stepIndexes.UPLOAD_MAP:
-                return <UploadMap maps={maps} endSection={() => setProgressState(stepIndexes.CONFIGURATION_APPLIANCE)} />;
+                return <UploadMap 
+                maps={maps} 
+                endSection={() => setProgressState(stepIndexes.CONFIGURATION_APPLIANCE)} />;
             case stepIndexes.CONFIGURATION_APPLIANCE:
                 return <DeviceConfiguration
                     backSection={() => setProgressState(stepIndexes.UPLOAD_MAP)}

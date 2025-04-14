@@ -3,7 +3,7 @@ import { TextInput } from 'flowbite-react';
 import { Button } from 'flowbite-react';
 import { StyledButton } from './StyledBasedComponents';
 
-export const TouchKeyboard2 = ({ inputValue, ...textInputProps }) => {
+export const TouchKeyboard2 = ({inputValue, ...textInputProps }) => {
   const [value, setValue] = useState("")
   const [maiusc, setMaiusc] = useState(false)
   const [showKeyboard, setShowKeyboard] = useState(false)
@@ -65,13 +65,13 @@ export const TouchKeyboard2 = ({ inputValue, ...textInputProps }) => {
   };
 
   return (
-    <div className="relative flex flex-col gap-2 shadow-md rounded-md bg-zinc-100">
+    <div className={"relative flex flex-col gap-2 shadow-md rounded-md bg-zinc-100 "}>
 
       <TextInput
         value={value}
         onFocus={() => setShowKeyboard(true)}
         onBlur={() => setShowKeyboard(false)}
-
+        className='w-full'
         {...textInputProps}
       />
 

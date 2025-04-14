@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import { backend } from "../Commons/Constants";
+import { apiFetch, backend } from "../Commons/Constants";
 
 export const DeviceContext = createContext();
 
@@ -8,12 +8,11 @@ export const DeviceProvider = ({ children }) => {
   
   const fetchDevices = async () => {
     try {
-      const response = await fetch(`${backend}/device`);
-      if (!response.ok) throw new Error("Failed to fetch devices");
-      const data = await response.json();
-      setDeviceList(data);
+      const response = await apiFetch(`/device`);
+      if (!response) throw new Error("Failed to fetch devices");
+      setDeviceList(response);
     } catch (err) {
-      alert(err.message);
+      //alert(err.message);
     } 
   };
 

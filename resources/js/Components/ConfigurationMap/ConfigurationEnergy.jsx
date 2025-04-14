@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { backend } from "../Commons/Constants";
+import { apiFetch, backend } from "../Commons/Constants";
 import { FaPencil } from "react-icons/fa6"
 import { ThemeButton } from "../Commons/ThemeButton";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
@@ -214,28 +214,19 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
             body: JSON.stringify({ data: dataConf })
         })
         if (timeSlots < 3) {
-            const response = await fetch(backend + "/configuration/cost_slot_3", {
-                method: "DELETE",
-                headers: { 'Content-Type': 'application/json' }
-            })
-            const result = await response.json()
+            const response = await apiFetch("/configuration/cost_slot_3","DELETE")
+            const result = response
             console.log(result)
             if (timeSlots < 2) {
                 console.log(timeSlots)
-                const response = await fetch(backend + "/configuration/cost_slot_2", {
-                    method: "DELETE",
-                    headers: { "Content-Type": 'application/json' }
-                })
-                const result2 = await response.json()
+                const response = await apiFetch("/configuration/cost_slot_2","DELETE")
+                const result2 = response
                 console.log(result2)
             }
         }
         const dataCalendar = JSON.stringify({ data: slotWeekHour.map((day) => day.map((hour) => hour)) })
         //before to save delete old calendar
-        const deleteCalendar = await fetch(backend + "/calendar", {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" }
-        })
+        const deleteCalendar = await apiFetch("/calendar","DELETE")
         if (deleteCalendar.ok) {
             const responseCalendar = await fetch(backend + "/calendar", {
                 method: "PUT",

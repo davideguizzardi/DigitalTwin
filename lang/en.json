@@ -251,5 +251,15 @@
     "action_okay":"No problem where found with your action, action successfully executed",
     "action_okay_desc":"Your action doesn't lead to excessive energy consumption or any other energy problems",
     "Why?":"Why?",
-    "help":"I need help"
+    "help":"I need help",
+    "Try connection":"Try connection",
+    "Server Url":"Sever Url",
+    "Api Token":"Api Token",
+    "Home Assistant Server":"Home Assistant Server",
+    "Test in progress...":"Test in progress...",
+    "Test successful!":"Test successful!",
+    "Test failed...":"Test failed...",
+    "Connection ok":"Connection to Home Assistant is okay",
+    "Connection fail":"There are some problems with the connection \n to the Home Assistant server",
+    "Demo mode":"The server is running in demo mode"
 }

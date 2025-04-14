@@ -6,7 +6,7 @@ import { StyledDiv } from "../Commons/StyledBasedComponents";
 
 import { DAYS } from "../Commons/DataFormatter";
 
-import { backend } from "../Commons/Constants";
+import { apiFetch, backend } from "../Commons/Constants";
 
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -52,15 +52,9 @@ export function AutomationSimulation({ automation_to_simulate }) {
     let body = {}
     body["automation"] = JSON.parse(automationToAdd)
 
-    const response = await fetch(`${backend}${"/automation/simulate"}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body)
-    });
-    if (response.ok) {
-      const updated_matrix = await response.json();
+    const response = await apiFetch(`${"/automation/simulate"}`,"POST",JSON.stringify(body));
+    if (response) {
+      const updated_matrix = response
       setUpdatedStateMatrix(updated_matrix["state_matrix"])
 
       const startOfDay = new dayjs().startOf("day");

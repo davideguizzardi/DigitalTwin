@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import { backend } from "../Commons/Constants";
+import { apiFetch, backend } from "../Commons/Constants";
 
 export const DeviceContextRefresh = createContext();
 
@@ -8,16 +8,22 @@ export const DeviceContextRefresh = createContext();
 
 export const DeviceProviderRefresh = ({ children }) => {
   const [deviceList, setDeviceList] = useState([]);
-  const refreshFrequency=3*1000 //in milliseconds
+  const [connectionOk,setConnectionOk]=useState(true)
+  const [isDemo,setIsDemo]=useState(false)
+  const refreshFrequency=10*1000 //in milliseconds
   
   const fetchDevices = async () => {
     try {
-      const response = await fetch(`${backend}/device`);
-      if (!response.ok) throw new Error("Failed to fetch devices");
-      const data = await response.json();
-      setDeviceList(data);
+      const response = await apiFetch(`/device`);
+      if (!response) throw new Error("Failed to fetch devices");
+      setDeviceList(response);
+      setConnectionOk(true)
+
+      const demo_response=await apiFetch(`/configuration/enable_demo`);
+      if (!demo_response) throw new Error("Failed to fetch demo info");
+      setIsDemo(demo_response.value=="1")
     } catch (err) {
-      alert(err.message);
+      setConnectionOk(false)
     } 
   };
 
@@ -33,7 +39,7 @@ export const DeviceProviderRefresh = ({ children }) => {
   }, []);
 
   return (
-    <DeviceContextRefresh.Provider value={{ deviceList,fetchDevices}}>
+    <DeviceContextRefresh.Provider value={{ deviceList,connectionOk,isDemo,fetchDevices}}>
       {children}
     </DeviceContextRefresh.Provider>
   );

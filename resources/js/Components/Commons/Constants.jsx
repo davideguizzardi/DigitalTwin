@@ -74,6 +74,8 @@ import { RiHomeLine } from "react-icons/ri";
 import { MdBrightness6 } from "react-icons/md";
 import { IoIosColorPalette } from "react-icons/io";
 import { MdFileUpload } from "react-icons/md";
+import { IoMdClose } from "react-icons/io";
+import { SiHomeassistant } from "react-icons/si";
 
 
 
@@ -168,6 +170,7 @@ export const iconMap = {
     power_on:(className) => <LuPower className={className} />,
     power_off:(className) => <LuPowerOff className={className} />,
     error:(className) => <BiError className={className} />,
+    close:(className) => <IoMdClose className={className} />,
     brightness: (className) => <MdBrightness6 className={className} />, 
     color: (className) => <IoIosColorPalette className={className} />,
     backward:(className)=> <BackwardIcon className={className}/>,
@@ -176,7 +179,8 @@ export const iconMap = {
     volume_max:(className)=> <SpeakerWaveIcon className={className}/>,
     volume_min:(className)=> <SpeakerXMarkIcon className={className}/>,
     play_media:(className)=> <PlayCircleIcon className={className}/>,
-    upload:(className)=> <MdFileUpload className={className}/>
+    upload:(className)=> <MdFileUpload className={className}/>,
+    homeassistant:(className)=><SiHomeassistant className={className}/>
 }
 
 export const DevicesTypes = {
@@ -249,21 +253,26 @@ export const callService = async (entity_id, service, data,user="No user") => {
         return {}
     }
 }
-
 export const apiFetch = async (url, method = "GET", body = null) => {
-    const response = await fetch(url, {
-        method,
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
-    if(response.ok){
-        const data = await response.json();
-        return data;
-    }
-    else{
-        return null
+    try {
+        const response = await fetch(`${backend}${url}`, {
+            method,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: body ? JSON.stringify(body) : null,
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.error("API Fetch error:", error);
+        return null;
     }
 };
 
 export const kgCO2e_kWh = 0.270; // Italy grid emissions: 0.270 kg CO2e per kWh in 2024
+

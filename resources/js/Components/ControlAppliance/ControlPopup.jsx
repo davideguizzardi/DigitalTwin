@@ -8,7 +8,7 @@ import { UserContext } from "@/Layouts/UserLayout"
 import ToastNotification from "../Commons/ToastNotification"
 import { SwitchToggle } from "./SwitchToggle"
 import { useLaravelReactI18n } from "laravel-react-i18n"
-import { AutomationTable } from "../Automation/AutomationTable"
+import { ConsumptionPredictionGraph } from "../Consumption/ConsumptionPredictionGraph"
 
 function ControlSelector({ device, user, errorFun }) {
   switch (device.device_class) {
@@ -16,9 +16,10 @@ function ControlSelector({ device, user, errorFun }) {
       return <SwitchToggle
         state={device.state == "on"}
         stateId={device.state_entity_id}
+        devId={device.device_id}
         user={user.username}
         setErrorFun={errorFun}
-      />
+        />
 
     case "media_player":
       return <MediaPlayerControl
@@ -36,6 +37,7 @@ function ControlSelector({ device, user, errorFun }) {
       />
 
     default: <>
+
     </>
       break
   }
@@ -68,7 +70,10 @@ export default function ControlPopup({ openDevice }) {
     }
   }, [openDevice])
 
-  useEffect(() => {
+  useEffect(() => {//TODO:remove this
+    if(openDevice.device_id=="73f90a95e5dba7d52e5ad10517b1dec6" || openDevice.device_id=="60eb315bfa05ddf285ce4bf519497d3e"){
+      openDevice.state="off"
+    }
     setDevice(openDevice)
     setOpen(Object.keys(openDevice).length > 0)
   }, [openDevice]);
