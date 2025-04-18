@@ -10,6 +10,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Models\Map;
 
 Route::get('/', function () {
     if(Auth::check()){
@@ -27,10 +28,14 @@ Route::middleware('auth')->group(function () {
         return Inertia::render("Automation", ["id" => $id]);
     })->name("automation");
     Route::get('/automation_add', function(Request $request){ return Inertia::render("AddAutomation");})->name("automation.add");
+    Route::get('/room', function(Request $request){ return Inertia::render("RoomConfiguration",[
+        'maps' => Map::all() 
+    ]);})->name("room");
     Route::get('/first-configuration', function (Request $request) {
-        $maps = session('maps', collect());
-        return Inertia::render("FirstConfiguration", [
-            'maps' => $maps,
+        return Inertia::render("FirstConfigurationPage", [
+            'maps' => session('maps', collect()),
+            'token' => session('token'),
+            'isFirstConfiguration' => session('isFirstConfiguration', false),
         ]);
     })->name("firstConfiguration");
     //Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

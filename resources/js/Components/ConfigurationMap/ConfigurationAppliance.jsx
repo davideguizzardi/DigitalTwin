@@ -15,6 +15,7 @@ import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { DeviceContext } from "../ContextProviders/DeviceProvider";
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import { getIcon } from "../Commons/Constants";
+import RoomMap from "../Commons/RoomMap";
 
 const token = Cookies.get("auth-token")
 

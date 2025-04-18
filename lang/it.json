@@ -264,5 +264,14 @@
     "Test failed...":"Test fallito...",
     "Connection ok":"La connessione a Home Assistant è stabile",
     "Connection fail":"Ci sono problemi con la connessione ad Home Assistant",
-    "Demo mode":"il server sta funzionando in modalità demo"
+    "Demo mode":"il server sta funzionando in modalità demo",
+    "Room":"Stanza",
+    "No Room":"Nessuna stanza",
+    "Your password":"La tua password",
+    "Forgot your password?":"Hai dimenticato la password?",
+    "Remember me":"Ricordami",
+    "Enter":"Accedi",
+    "Rooms list":"Lista stanze",
+    "Add room":"Aggiungi stanza",
+    "Room name":"Nome stanza"
 }

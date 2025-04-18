@@ -9,7 +9,7 @@ import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 import { DeviceContextRefresh } from "@/Components/ContextProviders/DeviceProviderRefresh";
 import WhiteCard from "@/Components/Commons/WhiteCard";
-import { apiFetch, backend} from "@/Components/Commons/Constants";
+import { apiFetch, backend } from "@/Components/Commons/Constants";
 import dayjs from "dayjs";
 
 function PowerConsumptionGauge({ powerUsage = 0, maxPower = 3000 }) {
@@ -65,8 +65,9 @@ function PowerConsumptionGauge({ powerUsage = 0, maxPower = 3000 }) {
 
 const Dashboard3 = ({ maps, token }) => {
     const [appliances, setAppliance] = useState([]);
+    const [rooms, setRooms] = useState([])
 
-    const [pastConsumption,setPastConsumption] = useState(0)
+    const [pastConsumption, setPastConsumption] = useState(0)
     const [totalPower, setTotalPower] = useState(0)
     const [activeDevices, setActiveDevices] = useState(0)
 
@@ -78,6 +79,18 @@ const Dashboard3 = ({ maps, token }) => {
 
     useEffect(() => {
         const fetchData = async () => {
+            const data = await apiFetch("/room");
+
+            if (data && data.length > 0) {
+                setRooms(data);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
             await fetchDevices();
             const end = dayjs();
             const start = end.add(-1, "month");
@@ -85,7 +98,7 @@ const Dashboard3 = ({ maps, token }) => {
                 `start_timestamp=${encodeURIComponent(start.format("YYYY-MM-DD"))}` +
                 `&end_timestamp=${encodeURIComponent(end.format("YYYY-MM-DD"))}` +
                 `&group=total&minutes=60`;
-    
+
             const resp = await apiFetch(url, "GET", null);
             if (resp) {
                 setPastConsumption(
@@ -137,14 +150,16 @@ const Dashboard3 = ({ maps, token }) => {
     }, [deviceList])
 
     const pastEnergyConsumption = useMemo(() => {
-        return pastConsumption; 
+        return pastConsumption;
     }, [pastConsumption]);
 
     const sections = useMemo(() => ({
         "Home": (
-            <div className="flex-col gap-2 w-full">
+            <div className="flex-col gap-2 size-full">
                 {maps.length > 0 ? (
-                    <AnimateMap2 maps={maps} appliances={appliances} />
+                        <AnimateMap2 maps={maps} appliances={appliances} rooms={rooms}/>
+                    
+
                 ) : (
                     <div className="size-full flex justify-center items-center">
                         <p className='text-center dark:text-white'>
@@ -156,7 +171,7 @@ const Dashboard3 = ({ maps, token }) => {
                 )}
             </div>
         ),
-        "Devices": (<DeviceTable deviceContext={deviceList} />),
+        "Devices": (<DeviceTable deviceContext={deviceList} />)
     }), [deviceList]);
 
     return (
@@ -181,7 +196,7 @@ const Dashboard3 = ({ maps, token }) => {
                         <div className="flex justify-center items-center h-full lg:flex-col 2xl:flex-row">
                             <p className="text-3xl mr-1">
                                 {activeDevices}
-                                </p>
+                            </p>
                         </div>
                     </WhiteCard>
                     <WhiteCard className="flex flex-col p-2 rounded shadow">
@@ -190,11 +205,11 @@ const Dashboard3 = ({ maps, token }) => {
                         </div>
                         <div className="flex justify-center items-center h-full lg:flex-col 2xl:flex-row">
                             <p className="text-3xl mr-1">
-                                {(totalPower * w2gCO2).toFixed(2) }
+                                {(totalPower * w2gCO2).toFixed(2)}
                             </p>
                             <p>
 
-                            gCO<sub>2</sub>/h
+                                gCO<sub>2</sub>/h
                             </p>
                         </div>
                     </WhiteCard>

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('maps', function (Blueprint $table) {
             $table->id();
-            $table->integer('floor');
+            $table->integer('floor')->unique();;
             $table->string('url');
         });
     }

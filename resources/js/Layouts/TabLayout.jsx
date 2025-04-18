@@ -102,7 +102,7 @@ export default function TabLayout({ sections }) {
                     ))
                 }
             </div>
-            <div className="flex w-full h-full overflow-auto">
+            <div className="flex w-full h-full">
                 <div className="size-full" /*{...handleSwipeTab}*/>
                     <AnimatePresence>
                         {

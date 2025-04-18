@@ -227,7 +227,7 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
         const dataCalendar = JSON.stringify({ data: slotWeekHour.map((day) => day.map((hour) => hour)) })
         //before to save delete old calendar
         const deleteCalendar = await apiFetch("/calendar","DELETE")
-        if (deleteCalendar.ok) {
+        if (deleteCalendar) {
             const responseCalendar = await fetch(backend + "/calendar", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },

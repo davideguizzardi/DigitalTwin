@@ -26,7 +26,7 @@ export function DeviceTable({ deviceContext }) {
                         deviceList
                             .filter(d=>d.show)
                             .filter(d => d.name != "Sun" && d.name != "Forecast")
-                            .filter(d => (d.name_by_user == null ? d.name : d.name_by_user).toUpperCase().includes(searchQuery.toUpperCase()))
+                            .filter(d => d.name.toUpperCase().includes(searchQuery.toUpperCase()))
                             .sort((a, b) => a.device_class < b.device_class ? -1 : 1)
                             .map(device => (<DeviceRecord device={device} key={device.device_id} onClickFun={()=>setOpenDevice(device)}/>))
                     }

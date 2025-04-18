@@ -11,7 +11,6 @@ const FirstConfigurationPage = ({ maps,token }) => {
         }
     }, [])
 
-    const mapsLength = maps.length
     return (
         <div className='size-full flex min-w-fit min-h-fit p-4'>
             <DeviceProvider>

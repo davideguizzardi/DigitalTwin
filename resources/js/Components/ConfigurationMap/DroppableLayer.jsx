@@ -66,7 +66,7 @@ export default function DroppableLayer({ isEditMode, listAppliancesPos, dragCons
         <div className={' bg-blue-100 absolute top-0 left-0 size-full z-10 ' + (isEditMode ? ' bg-opacity-50 ' : ' bg-opacity-0 ')}
             ref={layerRef} id="droppable_layer"
         >
-            <div className="size-full absolute relative">
+            <div className="size-full relative">
                 {
                     listAppliancesPos.filter(element => element.floor == index).map((e) => (
                         <CardDraggable key={e.device_id} id={e.device_id} name={e.name} category={e.category} type={ICON} style={{ position: "absolute", left: e.left + "%", top: e.top + "%" }}

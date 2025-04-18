@@ -16,7 +16,7 @@ export const StyledButton = ({ variant = "primary",className="", onClick={},chil
   const theme = {
     primary: "bg-lime-400 hover:bg-lime-500 text-gray-800 shadow-md",
     secondary: "bg-neutral-50 rounded-lg shadow-md hover:bg-lime-400",
-    delete: "bg-red-400 rounded-lg shadow-md hover:bg-red-500"
+    delete: "bg-red-400 rounded-lg shadow-md hover:bg-red-500 text-gray-800"
   };
 
   const classSyle=`${theme[variant]} ${className}`

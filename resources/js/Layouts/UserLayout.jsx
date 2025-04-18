@@ -47,7 +47,7 @@ export function UserLayout({ children }) {
                         </div>
                         :
                         <DeviceProviderRefresh>
-                                <Navbar />                           
+                            <Navbar />
                             <div className="flex w-full justify-center">
 
                                 <motion.div className={`h-[calc(100vh-3.25rem)] justify-center w-full`}>

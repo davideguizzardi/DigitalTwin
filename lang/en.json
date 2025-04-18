@@ -261,5 +261,14 @@
     "Test failed...":"Test failed...",
     "Connection ok":"Connection to Home Assistant is okay",
     "Connection fail":"There are some problems with the connection \n to the Home Assistant server",
-    "Demo mode":"The server is running in demo mode"
+    "Demo mode":"The server is running in demo mode",
+    "Room":"Room",
+    "No Room":"No Room",
+    "Your password":"Your password",
+    "Forgot your password?":"Forgot your password?",
+    "Remember me":"Remember me",
+    "Enter":"Enter",
+    "Rooms list":"Rooms list",
+    "Add room":"Add room",
+    "Room name":"Room name"
 }

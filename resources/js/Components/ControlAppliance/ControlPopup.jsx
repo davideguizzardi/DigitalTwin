@@ -19,7 +19,7 @@ function ControlSelector({ device, user, errorFun }) {
         devId={device.device_id}
         user={user.username}
         setErrorFun={errorFun}
-        />
+      />
 
     case "media_player":
       return <MediaPlayerControl
@@ -71,8 +71,8 @@ export default function ControlPopup({ openDevice }) {
   }, [openDevice])
 
   useEffect(() => {//TODO:remove this
-    if(openDevice.device_id=="73f90a95e5dba7d52e5ad10517b1dec6" || openDevice.device_id=="60eb315bfa05ddf285ce4bf519497d3e"){
-      openDevice.state="off"
+    if (openDevice.device_id == "73f90a95e5dba7d52e5ad10517b1dec6" || openDevice.device_id == "60eb315bfa05ddf285ce4bf519497d3e") {
+      openDevice.state = "off"
     }
     setDevice(openDevice)
     setOpen(Object.keys(openDevice).length > 0)
@@ -94,6 +94,9 @@ export default function ControlPopup({ openDevice }) {
           </div>
         </Modal.Header>
         <Modal.Body>
+          <div className="-ml-2 font-light font-[Inter]">
+            {t("Room")}: <span className="font-semibold">{t(device.map_data ? device.map_data.room? device.map_data.room:t("No room") : t("No room"))}</span>
+          </div>
           <div className="-ml-2 flex flex-row gap-4 items-center mb-2">
             <div className="font-light font-[Inter]">
 
@@ -119,21 +122,21 @@ export default function ControlPopup({ openDevice }) {
               </div>
             }
           </div>
-          {deviceAutomations.length>0&&
+          {deviceAutomations.length > 0 &&
 
-          <div className="flex flex-col w-full -ml-2">
-            <span className="font-light font-[Inter]">{t("Automations")}:{" "}
-              {deviceAutomations.map((automation, index) => (
-                <span key={automation.id}>
-                  <a className="underline text-blue-500" href={route("automation", { id: automation.id })}>
-                    {automation.name}
-                  </a>
-                  {index < deviceAutomations.length - 1 ? ", " : "."}
-                </span>
-              ))}
-            </span>
-          </div>
-            }
+            <div className="flex flex-col w-full -ml-2">
+              <span className="font-light font-[Inter]">{t("Automations")}:{" "}
+                {deviceAutomations.map((automation, index) => (
+                  <span key={automation.id}>
+                    <a className="underline text-blue-500" href={route("automation", { id: automation.id })}>
+                      {automation.name}
+                    </a>
+                    {index < deviceAutomations.length - 1 ? ", " : "."}
+                  </span>
+                ))}
+              </span>
+            </div>
+          }
 
         </Modal.Body>
         <Modal.Footer>

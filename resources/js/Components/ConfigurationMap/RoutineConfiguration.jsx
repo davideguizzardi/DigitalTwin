@@ -16,6 +16,8 @@ import { useLaravelReactI18n } from "laravel-react-i18n";
 
 import ToastNotification from "../Commons/ToastNotification";
 
+import RoomConfiguration from "./RoomConfiguration";
+
 
 
 
@@ -37,8 +39,12 @@ export default function RoutineConfiguration() {
             (
                 <DeviceConfiguration isInitialConfiguration={false} endSection={endSection} />
             ),
-        "Configure Appliance":
+        "Configure map":
             (<ConfigurationAppliance isInitialConfiguration={false} editMode={true} endSection={endSection} />),
+        "Configure rooms":
+            (
+                <RoomConfiguration isInitialConfiguration={false} endSection={endSection} />
+            ),
         "Configure Energy Plan":
             (<ConfigurationEnergy isInitialConfiguration={false} endSection={endSection} />)
     }

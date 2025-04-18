@@ -6,8 +6,9 @@ import { useSwipeable } from "react-swipeable"
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { domain } from "./Constants"
 import ControlPopup from "../ControlAppliance/ControlPopup"
+import RoomMap from "./RoomMap"
 
-export default function AnimateMap2({ maps, appliances }) {
+export default function AnimateMap2({ maps, appliances ,rooms=[]}) {
     const [openDevice,setOpenDevice]=useState({})
     const [indexImg, setIndexImg] = useState(0)
     const [previousIndex, setPreviousIndex] = useState(0)
@@ -101,15 +102,7 @@ export default function AnimateMap2({ maps, appliances }) {
                         id={"floor" + maps[indexImg].url} key={maps[indexImg].url}
                         variants={variants} initial="initial" animate="animate" exit="exit"
                     >
-                        <img src={domain+"/"+maps[indexImg].url} alt=""
-                            className="border-solid border-2 dark:border-slate-600"
-                            style={{
-                                objectFit: "contain",
-                                width: "100%",
-                                height: "80vh"
-                            }}
-
-                        />
+                        <RoomMap image_url={domain + "/" + maps[indexImg].url} floor={maps[indexImg].floor}/>
                         {appliances.filter((e) => e.floor == maps[indexImg].floor).map((e) => (<CardAppliance key={e.id} appliancePos={e} setClickedDevice={setOpenDevice} />))}
                     </motion.div>
                 </AnimatePresence>

@@ -58,7 +58,7 @@ import { TbMicrowave } from "react-icons/tb";
 import { BiSolidWasher, BiSolidFridge,BiError } from "react-icons/bi";
 import { LuBlinds,LuPower,LuPowerOff} from "react-icons/lu";
 import { TbAirConditioning } from "react-icons/tb";
-import { MdSensorWindow } from "react-icons/md";
+import { MdSensorWindow,MdDelete } from "react-icons/md";
 import { IoWater } from "react-icons/io5";
 import { IoExtensionPuzzleSharp } from "react-icons/io5";
 import {
@@ -76,6 +76,7 @@ import { IoIosColorPalette } from "react-icons/io";
 import { MdFileUpload } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import { SiHomeassistant } from "react-icons/si";
+import { MdMeetingRoom } from "react-icons/md";
 
 
 
@@ -180,7 +181,9 @@ export const iconMap = {
     volume_min:(className)=> <SpeakerXMarkIcon className={className}/>,
     play_media:(className)=> <PlayCircleIcon className={className}/>,
     upload:(className)=> <MdFileUpload className={className}/>,
-    homeassistant:(className)=><SiHomeassistant className={className}/>
+    homeassistant:(className)=><SiHomeassistant className={className}/>,
+    delete:(className)=><MdDelete className={className}/>,
+    room:(className)=><MdMeetingRoom className={className}/>
 }
 
 export const DevicesTypes = {

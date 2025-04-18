@@ -8,11 +8,13 @@ import { getIcon } from "../Commons/Constants";
 import ConfigurationHomeAssistant from './ConfigurationHomeAssistant';
 import { DeviceConfiguration } from './DeviceConfiguration';
 import { StyledButton } from '../Commons/StyledBasedComponents';
+import RoomConfiguration from './RoomConfiguration';
 
 const iconsSize = "size-10";
 const steps = [
     { key: "CONFIGURATION_HOME_ASSISTANT", icon: getIcon("homeassistant", iconsSize), label: "Configure Home Assistant" },
     { key: "UPLOAD_MAP", icon: getIcon("home_empty", iconsSize), label: "Add house map" },
+    { key: "CONFIGURATION_ROOM", icon: getIcon("room", iconsSize), label: "Configure rooms" },
     { key: "CONFIGURATION_APPLIANCE", icon: getIcon("light", iconsSize), label: "Configure devices" },
     { key: "SET_DEVICES_ON_MAP", icon: getIcon("home_full", iconsSize), label: "Add devices to map" },
     { key: "CONFIGURATION_ENERGY_PLAN", icon: getIcon("power", iconsSize), label: "Energy plan configuration" },
@@ -60,7 +62,11 @@ const FirstConfiguration = ({maps}) => {
             case stepIndexes.UPLOAD_MAP:
                 return <UploadMap 
                 maps={maps} 
-                endSection={() => setProgressState(stepIndexes.CONFIGURATION_APPLIANCE)} />;
+                endSection={() => setProgressState(stepIndexes.CONFIGURATION_ROOM)} />;
+            case stepIndexes.CONFIGURATION_ROOM:
+                    return <RoomConfiguration 
+                    backSection={() => setProgressState(stepIndexes.UPLOAD_MAP)}
+                    endSection={() => setProgressState(stepIndexes.CONFIGURATION_APPLIANCE)} />;
             case stepIndexes.CONFIGURATION_APPLIANCE:
                 return <DeviceConfiguration
                     backSection={() => setProgressState(stepIndexes.UPLOAD_MAP)}

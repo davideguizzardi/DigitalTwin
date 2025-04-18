@@ -18,6 +18,8 @@ export default function UploadMap({ maps, endSection }) {
     const [openModal, setOpenModal] = useState(false)
     const { t } = useLaravelReactI18n()
 
+
+
     const saveCallback = useCallback((newFile) => {
         let tempList = [...listMap, newFile]
         tempList.sort((a, b) => b.floor - a.floor)
@@ -64,7 +66,7 @@ export default function UploadMap({ maps, endSection }) {
                 floor: m.floor,
                 file: {
                     preview: domain + "/" + m.url,
-                    name: m.url.split("/")[2]  // Extract the name from the URL
+                    name: m.url.split("/")[2]  
                 }
             }
             ))

@@ -118,8 +118,7 @@ export function DeviceConfiguration({ backSection, endSection, isInitialConfigur
     }, [])
 
     return (
-        <div className="xl:w-full 2xl:w-3/4 px-2 flex flex-col gap-4 mb-4 overflow-y-auto">
-
+        <div className="xl:w-full 2xl:w-3/4 px-2 flex flex-col gap-4 mb-4 overflow-auto h-[80vh]">
             <div className="flex flex-col gap-1 bg-zinc-50 rounded-md">
                 <div>
                     <Table className="table-auto">
