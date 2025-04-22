@@ -68,7 +68,7 @@ export default function Consumption() {
     }
 
     return (
-        <div className="size-full flex flex-col p-5">
+        <div className="size-full flex flex-col p-3">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <TabLayout sections={sections}/>        
             </LocalizationProvider>

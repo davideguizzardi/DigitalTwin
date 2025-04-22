@@ -8,7 +8,7 @@ const Configuration = ({ maps }) => {
     return (
         <DeviceProvider>
 
-            <div className='size-full flex min-w-fit min-h-fit p-5'>
+            <div className='size-full flex min-w-fit min-h-fit p-3'>
                 {
                     mapsLength > 0 ?
                         <RoutineConfiguration /> : <FirstConfiguration />

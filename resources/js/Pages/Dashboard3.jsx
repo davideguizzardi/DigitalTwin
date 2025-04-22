@@ -175,7 +175,7 @@ const Dashboard3 = ({ maps, token }) => {
     }), [deviceList]);
 
     return (
-        <div className="h-fit w-full xl:grid xl:grid-cols-3 gap-4 p-5 overflow-auto md:flex md:flex-col">
+        <div className="h-fit w-full xl:grid xl:grid-cols-3 gap-4 p-3 overflow-auto md:flex md:flex-col">
             <div className="col-span-2">
                 <TabLayout sections={sections} />
             </div>

@@ -39,7 +39,7 @@ export default function RoutineConfiguration() {
             (
                 <DeviceConfiguration isInitialConfiguration={false} endSection={endSection} />
             ),
-        "Configure map":
+        "Configure Appliance":
             (<ConfigurationAppliance isInitialConfiguration={false} editMode={true} endSection={endSection} />),
         "Configure rooms":
             (

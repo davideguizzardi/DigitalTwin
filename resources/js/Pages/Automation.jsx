@@ -19,7 +19,7 @@ export default function Automation({id=""}) {
     }, [])
 
     return (
-        <div className="p-5 h-full max-h-screen">
+        <div className="p-3 h-full max-h-screen">
             <AutomationTable className="" automation_context={automationContext} openId={id}/>
             <a href={route("automation.add")}>
                 <ThemeButton className="absolute bottom-0 right-0 m-5 rounded-full bg">
