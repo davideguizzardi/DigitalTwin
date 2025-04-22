@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Stage, Layer, Line, Text, Image, Circle, Label, Tag } from "react-konva";
 import { Table } from "flowbite-react";
 import useImage from "use-image";
@@ -12,28 +12,21 @@ import Cookies from 'js-cookie';
 import ListButtons from "../Commons/ListButtons";
 import { domain } from "../Commons/Constants";
 
-// Utility
-const isPointInPolygon = (point, polygon) => {
-  let inside = false;
-  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-    const xi = polygon[i].x, yi = polygon[i].y;
-    const xj = polygon[j].x, yj = polygon[j].y;
-    const intersect = ((yi > point.y) !== (yj > point.y)) &&
-      (point.x < ((xj - xi) * (point.y - yi)) / (yj - yi) + xi);
-    if (intersect) inside = !inside;
-  }
-  return inside;
-};
-
+window.Konva.hitOnDragEnabled = true;
 const token = Cookies.get("auth-token");
+const zoomScale=3
 
 const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = true }) => {
   const [maps, setMaps] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const currentFloor = maps[currentIndex]?.floor;
+
+
   const [image] = useImage(`${domain}/${maps[currentIndex]?.url}`);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const [frameWidth, setFrameWidth] = useState(0);
   const [frameHeight, setFrameHeight] = useState(0);
+  const [scale,setScale]=useState(1)
 
   const [rooms, setRooms] = useState([]);
   const [currentRoom, setCurrentRoom] = useState([]);
@@ -42,7 +35,73 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
   const [addingRoom, setAddingRoom] = useState(false);
   const { t } = useLaravelReactI18n();
 
+  const [lastCenter, setLastCenter] = useState(null);
+  const [dragStopped, setDragStopped] = useState(false);
 
+  const getCenter = (p1, p2) => {
+    return {
+      x: (p1.x + p2.x) / 2,
+      y: (p1.y + p2.y) / 2,
+    };
+  };
+
+  const handleTouchMove = useCallback((e) => {
+    if(scale!=1){
+
+      e.evt.preventDefault();
+      const touch1 = e.evt.touches[0];
+      const touch2 = e.evt.touches[1];
+      const stage = e.target.getStage();
+      
+      // we need to restore dragging, if it was cancelled by multi-touch
+      if (touch1 && !touch2 && !stage.isDragging() && dragStopped) {
+        stage.startDrag();
+        setDragStopped(false);
+      }
+      
+      if (touch1 && touch2) {
+        // if the stage was under Konva's drag&drop
+        // we need to stop it and implement our own pan logic with two pointers
+        if (stage.isDragging()) {
+          stage.stopDrag();
+          setDragStopped(true);
+      }
+      
+      const p1 = {
+        x: touch1.clientX,
+        y: touch1.clientY,
+      };
+      const p2 = {
+        x: touch2.clientX,
+        y: touch2.clientY,
+      };
+      
+      if (!lastCenter) {
+        setLastCenter(getCenter(p1, p2));
+        return;
+      }
+      
+      const newCenter = getCenter(p1, p2);
+      
+      // calculate new position of the stage
+      const dx = newCenter.x - lastCenter.x;
+      const dy = newCenter.y - lastCenter.y;
+      
+      setPosition({
+        x: position.x + dx,
+        y: position.y + dy,
+      });
+      
+      setLastCenter(newCenter);
+    }
+  }
+  }, [dragStopped, lastCenter, position]);
+  
+  const handleTouchEnd = () => {
+    setLastCenter(null);
+  };
+  
+  
   const fetchMap = async () => {
     const apiRoute = route('map.index');
     const response = await fetch(apiRoute, {
@@ -52,18 +111,18 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
     setMaps(result.maps);
     setCurrentIndex(0);
   };
-
+  
   useEffect(() => {
     fetchMap();
   }, []);
 
   useEffect(() => {
     if (!image) return;
-
+    
     const aspectRatio = image.width / image.height;
     const targetHeight = window.innerHeight * 0.7;
     const targetWidth = targetHeight * aspectRatio;
-
+    
     setFrameWidth(targetWidth);
     setFrameHeight(targetHeight);
 
@@ -86,10 +145,6 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
     fetchData();
   }, [image]);
 
-  const getRoomOfDevice = (dev) => {
-    const room = getRoomOfPoint(getFrameX(dev.map_data.x), getFrameY(dev.map_data.y), dev.map_data.floor);
-    return room ? room.name : "";
-  };
 
   const floorBtn = maps.map((element, index) => ({
     callback: () => setCurrentIndex(index),
@@ -139,61 +194,66 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
 
   const handleMouseDown = (e) => {
     if (addingRoom) {
-      const newPoint = e.target.getStage().getPointerPosition();
-      if (isRoomClosed) {
-        setCurrentRoom([]);
-        setIsRoomClosed(false);
-      }
-
-      if (currentRoom.length > 2 &&
-        Math.abs(newPoint.x - currentRoom[0].x) < 10 &&
-        Math.abs(newPoint.y - currentRoom[0].y) < 10) {
-        const roomName = currentRoomName;
-        if (roomName) {
-          setRooms([...rooms, {
-            points: currentRoom.flatMap(point => [point.x, point.y]),
-            name: roomName,
-            floor: currentFloor
-          }]);
+      const stage = e.target.getStage();
+      const pointerPos = stage.getPointerPosition();
+      const imageNode = stage.findOne('Image'); 
+  
+      if (imageNode) {
+        const imagePos = imageNode.getClientRect(); 
+        const imageX = (pointerPos.x - imagePos.x) / scale; 
+        const imageY = (pointerPos.y - imagePos.y) / scale; 
+  
+        const newPoint = { x: imageX, y: imageY };
+  
+        if (isRoomClosed) {
+          setCurrentRoom([]);
+          setIsRoomClosed(false);
         }
-        setIsRoomClosed(true);
-        setAddingRoom(false);
-        setCurrentRoomName("");
-        setCurrentRoom([]);
-      } else {
-        setCurrentRoom(prevPoints => [...prevPoints, newPoint]);
+  
+        if (currentRoom.length > 2 &&
+          Math.abs(newPoint.x - currentRoom[0].x) < 10 &&
+          Math.abs(newPoint.y - currentRoom[0].y) < 10) {
+          const roomName = currentRoomName;
+          if (roomName) {
+            setRooms([...rooms, {
+              points: currentRoom.flatMap(point => [point.x, point.y]),
+              name: roomName,
+              floor: currentFloor
+            }]);
+          }
+          setIsRoomClosed(true);
+          setAddingRoom(false);
+          setCurrentRoomName("");
+          setCurrentRoom([]);
+        } else {
+          setCurrentRoom(prevPoints => [...prevPoints, newPoint]);
+        }
       }
     }
   };
+  
 
-  const getRoomOfPoint = (x, y, floor = currentFloor) => {
-    const clickedPoint = { x, y };
-    const floorRooms = rooms.filter(room => room.floor === floor);
-    for (let i = 0; i < floorRooms.length; i++) {
-      const room = floorRooms[i];
-      const polygon = [];
-      for (let j = 0; j < room.points.length; j += 2) {
-        polygon.push({ x: room.points[j], y: room.points[j + 1] });
-      }
-      if (isPointInPolygon(clickedPoint, polygon)) {
-        return { id: i, name: room.name };
-      }
-    }
-    return null;
-  };
 
-  const handleStageClick = (e) => {
+
+  const handleDoubleClick = (e) => {
     const pos = e.target.getStage().getPointerPosition();
-    const clickedRoom = getRoomOfPoint(pos.x, pos.y);
-    if (clickedRoom) {
-      alert(`You clicked on room: ${clickedRoom.name}`);
-    } else {
-      console.log("No room clicked.");
+    if(scale!=1){
+      setScale(1)
+      setPosition({
+        x: 0,
+        y: 0,
+      });
     }
-  };
+    else
+    {
+      setScale(zoomScale)
+      setPosition({
+        x: -pos.x,
+        y: -pos.y,
+      });
+    }
 
-  const getFrameX = x => (x * frameWidth) / 100;
-  const getFrameY = y => (y * frameHeight) / 100;
+  };
 
   return (
     <div className="relative flex flex-col gap-5 w-full">
@@ -202,10 +262,17 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
           <div className="">
 
             <Stage
-              width={frameWidth}
+              scaleX={scale}
+              scaleY={scale}
+              x={position.x}
+              y={position.y}
+              draggable = {scale!=1}
+              width={scale>1?window.innerWidth * 0.5 :frameWidth}
               height={frameHeight}
-              onMouseDown={handleMouseDown}
-              onClick={handleStageClick}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              onClick={handleMouseDown}
+              onDblClick={handleDoubleClick}
             >
               <Layer>
                 {image && (
