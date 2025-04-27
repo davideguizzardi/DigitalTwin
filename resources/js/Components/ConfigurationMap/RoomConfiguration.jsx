@@ -169,13 +169,9 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
     };
 
     try {
-      const response = await fetch(`${backend}/room`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+      const response = await apiFetch("/room","PUT",body)
 
-      if (response.ok) {
+      if (response) {
         endSection()
       } else {
         alert(t("Some error occurred"));

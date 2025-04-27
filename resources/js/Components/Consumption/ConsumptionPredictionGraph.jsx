@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Spinner, Button, Select, Label } from "flowbite-react";
 import { BarChart } from '@mui/x-charts/BarChart';
 import { useLaravelReactI18n } from "laravel-react-i18n";
+import { apiFetch } from "../Commons/Constants";
 
 export function ConsumptionPredictionGraph({ url_in, future_steps, graphHeight = 0 }) {
   const [dataset, setDataset] = useState([])
@@ -18,17 +19,9 @@ export function ConsumptionPredictionGraph({ url_in, future_steps, graphHeight =
 
   const fetchConsumption = async () => {
     let url = url_in
-    const response = await fetch(
-      url,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    const response = await apiFetch(url)
     if (response) {
-      const data = await response.json();
-      setDataset(data)
+      setDataset(response)
     }
     setLoading(false)
   }

@@ -2,7 +2,7 @@ import { LightPopup } from "./LightPopup"
 import { MediaPlayerControl } from "./MediaPlayerPopup"
 import { Modal } from "flowbite-react"
 import { useState, useEffect, useContext } from "react"
-import { getIcon, backend } from "../Commons/Constants"
+import { getIcon, backend, apiFetch } from "../Commons/Constants"
 import { callService } from "../Commons/Constants"
 import { UserContext } from "@/Layouts/UserLayout"
 import ToastNotification from "../Commons/ToastNotification"
@@ -58,10 +58,9 @@ export default function ControlPopup({ openDevice }) {
 
   useEffect(() => {
     const fetchAutomationContext = async () => {
-      const response = await fetch(`${backend}/automation?get_suggestions=false`)
-      if (response.ok) {
-        const result = await response.json()
-        const devAutomations = result.filter(a => a.action.some(action => action.device_id == openDevice.device_id))
+      const response = await apiFetch("/automation?get_suggestions=false")
+      if (response) {
+        const devAutomations = response.filter(a => a.action.some(action => action.device_id == openDevice.device_id))
         setDeviceAutomations(devAutomations)
       }
     }

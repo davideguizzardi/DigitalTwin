@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { Table, TextInput, } from "flowbite-react"
-import { getIcon } from "../Commons/Constants";
+import { apiFetch, getIcon } from "../Commons/Constants";
 import { DeviceContext } from "../ContextProviders/DeviceProvider";
 import { TouchKeyboard2 } from "../Commons/TouchKeyboard2";
 import { DevicesTypes } from "../Commons/Constants";
@@ -91,14 +91,8 @@ export function DeviceConfiguration({ backSection, endSection, isInitialConfigur
                 show: show ? 1 : 0,  // Convert boolean to 1 or 0
             }))
         }
-        const response = await fetch(`${backend}/device_configuration`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body),
-        });
-        if (response.ok) {
+        const response = await apiFetch("/device_configuration","PUT",body)
+        if (response) {
             endSection()
         } else {
             alert(t("Some error occurred"))

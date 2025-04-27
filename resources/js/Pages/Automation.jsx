@@ -2,17 +2,16 @@ import { AutomationTable } from "@/Components/Automation/AutomationTable";
 import { ThemeButton } from "@/Components/Commons/ThemeButton";
 import { useState } from "react";
 import { useEffect } from "react";
-import { getIcon } from "@/Components/Commons/Constants";
+import { apiFetch, getIcon } from "@/Components/Commons/Constants";
 
 export default function Automation({id=""}) {
     const [automationContext, setAutomationContext] = useState({})
 
     useEffect(() => {
         const fetchAutomationContext = async () => {
-            const response = await fetch("http://localhost:8000/automation?get_suggestions=true")
-            if (response.ok) {
-                const result = await response.json()
-                setAutomationContext(result)
+            const response = await apiFetch("/automation?get_suggestions=true")
+            if (response) {
+                setAutomationContext(response)
             }
         }
         fetchAutomationContext()

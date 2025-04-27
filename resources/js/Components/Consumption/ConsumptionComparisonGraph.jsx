@@ -5,6 +5,9 @@ import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { StyledButton } from "../Commons/StyledBasedComponents";
+import { DeviceContextRefresh } from "../ContextProviders/DeviceProviderRefresh";
+import { useContext } from "react";
+import { apiFetch } from "../Commons/Constants";
 
 export function ConsumptionComparisonGraph({ device_name, device_id }) {
   const [date1, setDate1] = useState(dayjs())
@@ -14,7 +17,8 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
   const [loading, setLoading] = useState(false)
   const [deviceName, setDeviceName] = useState("")
   const [deviceId, setDeviceId] = useState("")
-  const [devicesList, setDeviceList] = useState([])
+  const [innerDeviceList, setDeviceList] = useState([])
+  const {deviceList}=useContext(DeviceContextRefresh)
 
   const { t } = useLaravelReactI18n()
   const heightGraph = window.innerHeight > 1000 ? 850 : 480
@@ -85,21 +89,10 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
   }
 
   const fetchDevices = async () => {
-    const url = "http://127.0.0.1:8000/device?get_only_names=true"
-    const response = await fetch(
-      url,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-    if (response.ok) {
-      const data = await response.json();
+      const data=deviceList.filter(d=>d.show).map(d=>({device_id:d.device_id,name:d.name}))
       var devices = [{ "device_id": "", "name": t("Entire House") }]
       devices = devices.concat(data)
       setDeviceList(devices)
-    }
   }
 
 
@@ -114,47 +107,31 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
       endDate2 = date2.endOf("month")
     }
     if (deviceName == "Entire House") {
-      url1 = `http://127.0.0.1:8000/consumption/total?` +
+      url1 = `/consumption/total?` +
         `start_timestamp=${encodeURIComponent(date1.format("YYYY-MM-DD"))}` +
         `&end_timestamp=${encodeURIComponent(endDate1.format("YYYY-MM-DD"))}` +
         `&group=${group}`
-      url2 = `http://127.0.0.1:8000/consumption/total?` +
+      url2 = `/consumption/total?` +
         `start_timestamp=${encodeURIComponent(date2.format("YYYY-MM-DD"))}` +
         `&end_timestamp=${encodeURIComponent(endDate2.format("YYYY-MM-DD"))}` +
         `&group=${group}`
     }
     else {
-      url1 = `http://127.0.0.1:8000/consumption/device?device_id=${deviceId}` +
+      url1 = `/consumption/device?device_id=${deviceId}` +
         `&start_timestamp=${encodeURIComponent(date1.format("YYYY-MM-DD"))}` +
         `&end_timestamp=${encodeURIComponent(endDate1.format("YYYY-MM-DD"))}` +
         `&group=${group}`
-      url2 = `http://127.0.0.1:8000/consumption/device?device_id=${deviceId}` +
+      url2 = `/consumption/device?device_id=${deviceId}` +
         `&start_timestamp=${encodeURIComponent(date2.format("YYYY-MM-DD"))}` +
         `&end_timestamp=${encodeURIComponent(endDate2.format("YYYY-MM-DD"))}` +
         `&group=${group}`
     }
 
-    const response1 = await fetch(
-      url1,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    const response1=await apiFetch(url1)
+    const response2=await apiFetch(url2)
 
-    const response2 = await fetch(
-      url2,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-    if (response1.ok && response2.ok) {
-      const data1 = await response1.json();
-      const data2 = await response2.json();
-      const concatDataset=data1.concat(data2)
+    if (response1 && response2 ) {
+      const concatDataset=response1.concat(response2)
       if(group!="hourly")
         concatDataset.map(item=>item.energy_consumption=item.energy_consumption/1000)
       setDataset(concatDataset)
@@ -185,7 +162,7 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
           <Label htmlFor="device" value={t("Energy consumption of")} />
           <Select id="device" defaultValue={t("Entire House")} onChange={(event) => handleNameChange(event)} required>
             {
-              devicesList
+              innerDeviceList
                 .filter(d => !["Sun", "Forecast"].includes(d.name))
                 .map(dev => (
                   <option id={dev.device_id} key={dev.device_id}>{dev.name}</option>

@@ -228,21 +228,14 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
         //before to save delete old calendar
         const deleteCalendar = await apiFetch("/calendar","DELETE")
         if (deleteCalendar) {
-            const responseCalendar = await fetch(backend + "/calendar", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: dataCalendar
-            })
-            const result = await responseCalendar.json()
-            console.log(result)
+            const responseCalendar = await apiFetch("/calendar","PUT",dataCalendar)
         }
         endSection()
     }
 
     useEffect(() => {
         const getConfiguration = async () => {
-            const response = await fetch(backend + "/configuration/")
-            const result = await response.json()
+            const result=await apiFetch("/configuration")
             let updatePrice = []
             result.forEach((conf) => {
                 if (conf.key == "energy_slots_number") {
@@ -262,9 +255,8 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
             setPowerPrice([...updatePrice])
         }
         const getCalendar = async () => {
-            const response = await fetch(backend + "/calendar")
-            const result = await response.json()
-            if (result.data.length > 0) {
+            const result = await apiFetch("/calendar")
+            if (result && result.data.length > 0) {
                 setSlotWeekHour([...result.data])
             }
 

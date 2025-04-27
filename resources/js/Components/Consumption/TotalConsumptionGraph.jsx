@@ -6,6 +6,8 @@ import dayjs from "dayjs";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import { apiFetch } from "../Commons/Constants";
+import { DeviceContextRefresh } from "../ContextProviders/DeviceProviderRefresh";
+import { useContext } from "react";
 
 export function TotalConsumptionGraph({ device_name, device_id }) {
   const [from, setFrom] = useState(dayjs())
@@ -16,7 +18,10 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
   const { t } = useLaravelReactI18n()
   const [deviceName, setDeviceName] = useState(t("Entire House"))
   const [deviceId, setDeviceId] = useState("")
-  const [devicesList, setDeviceList] = useState([])
+  const [innerDeviceList, setDeviceList] = useState([])
+  const {deviceList}=useContext(DeviceContextRefresh)
+
+
   const heightGraph = window.innerHeight > 1000 ? 800 : 500
   const isDark = localStorage.getItem("darkMode") == "true"
   const sxDatePicker = {
@@ -106,14 +111,10 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
   }
 
   const fetchDevices = async () => {
-    const url = "/device?get_only_names=true"
-    const response = await apiFetch(url);
-    if (response) {
-      const data =response
-      var devices = [{ "device_id": "", "name": t("Entire House")}]
-      devices = devices.concat(data)
-      setDeviceList(devices)
-    }
+    const data = deviceList.filter(d => d.show).map(d => ({ device_id: d.device_id, name: d.name }))
+    var devices = [{ "device_id": "", "name": t("Entire House") }]
+    devices = devices.concat(data)
+    setDeviceList(devices)
   }
 
 
@@ -138,8 +139,8 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
     if (response) {
       const data = response
       data.map(item => item.date = item.date.split(" ").length > 1 ? item.date.split(" ")[1] : item.date)
-      if (group!="hourly")
-        data.map(item=>item.energy_consumption=item.energy_consumption/1000)
+      if (group != "hourly")
+        data.map(item => item.energy_consumption = item.energy_consumption / 1000)
       setDataset(data)
     }
     setLoading(false)
@@ -155,7 +156,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
     setDeviceId(device_id)
   }, [device_name, device_id])
 
-  const valueFormatter = (value) => `${value.toFixed(2)} ${group=="hourly"? "Wh":"kWh"}`;
+  const valueFormatter = (value) => `${value.toFixed(2)} ${group == "hourly" ? "Wh" : "kWh"}`;
 
   return (
     <div className="w-full flex flex-col">
@@ -166,7 +167,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
             <Label htmlFor="device" value={t("Energy consumption of")} />
             <Select id="device" onChange={(event) => handleNameChange(event)} required>
               {
-                devicesList
+                innerDeviceList
                   .filter(d => !["Sun", "Forecast"].includes(d.name))
                   .map(dev => (
                     <option id={dev.device_id} key={dev.device_id}>{dev.name}</option>

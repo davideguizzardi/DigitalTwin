@@ -1,15 +1,6 @@
 import { useState, useEffect } from "react";
 import { Slider } from "@mui/material";
-import { backend, getIcon } from "../Commons/Constants";
-import {
-    PowerIcon,
-    BackwardIcon,
-    ForwardIcon,
-    PauseCircleIcon,
-    SpeakerWaveIcon,
-    SpeakerXMarkIcon,
-    PlayCircleIcon,
-} from "@heroicons/react/24/outline";
+import { apiFetch, backend, getIcon } from "../Commons/Constants";
 import { StyledButton } from "../Commons/StyledBasedComponents";
 
 export function MediaPlayerControl({ selectedEntity, user, setErrorFun }) {
@@ -23,26 +14,21 @@ export function MediaPlayerControl({ selectedEntity, user, setErrorFun }) {
         }
     }, [selectedEntity]);
 
-    const callService = async (service, data = {}) => {
-        const response = await fetch(`${backend}/service`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ entity_id: selectedEntity, service, data, user }),
-        });
-
-        if (response.ok) {
-            const updatedEntity = await response.json();
-            setEntityValues(updatedEntity[0]);
-        } else {
-            setErrorFun();
+    const innerCallService = async (service, data) => {
+        const response=await callService(entityId,service,data,user)
+        if (response) {
+            const updated_entity = response[0];
+            setEntityValues(updated_entity)
         }
-    };
+        else {
+            setErrorFun()
+        }
+    }
 
     const initializeEntity = async () => {
-        const response = await fetch(`${backend}/entity/${selectedEntity}`);
-        if (response.ok) {
-            const entityData = await response.json();
-            setEntityValues(entityData);
+        const response = await apiFetch(`/entity/${selectedEntity}`);
+        if (response) {
+            setEntityValues(response);
         } else {
             alert("Error fetching entity");
         }
@@ -75,27 +61,27 @@ export function MediaPlayerControl({ selectedEntity, user, setErrorFun }) {
                         <>
                             <div className="flex flex-row gap-0 items-center">
                                 {"media_previous_track" in services && (
-                                    <div onClick={() => callService("media_previous_track")}>
+                                    <div onClick={() => innerCallService("media_previous_track")}>
                                         {getIcon("backward", "size-9 cursor-pointer")}
                                     </div>
                                 )}
                                 {entity.state === "playing" ? (
-                                    <div onClick={() => callService("media_pause")}>
+                                    <div onClick={() => innerCallService("media_pause")}>
                                         {getIcon("pause", "size-12 cursor-pointer")}
                                     </div>
                                 ) : (
-                                    <div onClick={() => callService("media_play")}>
+                                    <div onClick={() => innerCallService("media_play")}>
                                         {getIcon("play_media", "size-12 cursor-pointer")}
                                     </div>
                                 )}
                                 {"media_next_track" in services && (
-                                    <div onClick={() => callService("media_next_track")}>
+                                    <div onClick={() => innerCallService("media_next_track")}>
                                         {getIcon("forward", "size-9 cursor-pointer")}
                                     </div>
                                 )}
                             </div>
                             <div className="flex flex-row gap-2 items-center justify-center">
-                                <div onClick={() => callService("volume_set", { volume_level: 0 })}>
+                                <div onClick={() => innerCallService("volume_set", { volume_level: 0 })}>
                                     {getIcon("volume_min", "size-9 cursor-pointer")}
                                 </div>
 
@@ -105,7 +91,7 @@ export function MediaPlayerControl({ selectedEntity, user, setErrorFun }) {
                                         min={1}
                                         max={100}
                                         onChange={(e, newValue) => setVolume(newValue)}
-                                        onChangeCommitted={() => callService("volume_set", { volume_level: volume / 100 })}
+                                        onChangeCommitted={() => innerCallService("volume_set", { volume_level: volume / 100 })}
                                         valueLabelDisplay="auto"
                                         sx={{
                                             color: "#a3e635",
@@ -118,12 +104,12 @@ export function MediaPlayerControl({ selectedEntity, user, setErrorFun }) {
                                         }}
                                     />
                                 </div>
-                                <div onClick={() => callService("volume_set", { volume_level: 1 })}>
+                                <div onClick={() => innerCallService("volume_set", { volume_level: 1 })}>
                                     {getIcon("volume_max", "size-9 cursor-pointer")}
                                 </div>
                             </div>
                             {"turn_off" in services && (
-                                <StyledButton className="rounded-full dark:text-black" onClick={() => callService("turn_off")}>
+                                <StyledButton className="rounded-full dark:text-black" onClick={() => innerCallService("turn_off")}>
                                     {getIcon("power_off", "size-10 cursor-pointer")}
                                 </StyledButton>
                             )}
@@ -131,7 +117,7 @@ export function MediaPlayerControl({ selectedEntity, user, setErrorFun }) {
                     )}
 
                     {"turn_on" in services && !(entity?.state === "on" || entity?.state === "playing") && (
-                        <StyledButton className="ml-11 bg-lime-400 rounded-full dark:text-black" onClick={() => callService("turn_on")}>
+                        <StyledButton className="ml-11 bg-lime-400 rounded-full dark:text-black" onClick={() => innerCallService("turn_on")}>
                             {getIcon("power_on", "size-10 cursor-pointer")}
                         </StyledButton>
                     )}

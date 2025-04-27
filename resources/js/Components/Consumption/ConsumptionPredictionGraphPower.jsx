@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Spinner} from "flowbite-react";
-import { getIcon } from "../Commons/Constants";
+import { apiFetch, getIcon } from "../Commons/Constants";
 import { LineChart } from "@mui/x-charts";
 import { useLaravelReactI18n } from "laravel-react-i18n";
 
@@ -20,22 +20,14 @@ export function ConsumptionPredictionGraphPower({ url_in, future_steps, graphHei
 
   const fetchConsumption = async () => {
     let url = url_in
-    const response = await fetch(
-      url,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    const response = await apiFetch(url);
     if (response) {
-      const data = await response.json();
-      if(data.some(item=>item.power>=threshold)){
+      if(response.some(item=>item.power>=threshold)){
         setErrorFun(true)
       }else{
         setOkFun(true)
       }
-      setDataset(data)
+      setDataset(response)
     }
     setLoading(false)
   }

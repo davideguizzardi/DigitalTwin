@@ -187,7 +187,7 @@ export function SwitchToggle({ state, stateId, devId, user, setErrorFun = {} }) 
             }
             {service &&
               <div className="w-full shadow-md rounded-b-md" hidden={!openGraph}>
-                <ConsumptionPredictionGraphPower setOkFun={setActionOk} setErrorFun={setError} graphHeight={300} future_steps={60} url_in={`${backend}/prediction/power/${devId}/${service}`} />
+                <ConsumptionPredictionGraphPower setOkFun={setActionOk} setErrorFun={setError} graphHeight={300} future_steps={60} url_in={`/prediction/power/${devId}/${service}`} />
                 {error &&
 
                   <div className="flex flex-row items-center justify-center p-4 text-center">

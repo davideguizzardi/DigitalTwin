@@ -3,10 +3,10 @@ import { Button} from "flowbite-react";
 import Slider from '@mui/material/Slider';
 import { SliderPicker } from "react-color";
 import { StyledButton } from "../Commons/StyledBasedComponents";
-import { getIcon } from "../Commons/Constants";
+import { apiFetch, getIcon } from "../Commons/Constants";
 
-import { backend } from "../Commons/Constants";
-import { getCircularProgressUtilityClass } from "@mui/material";
+import { backend,callService } from "../Commons/Constants";
+
 
 export function LightPopup({ selectedEntity,user,setErrorFun}) {
     const [entityId, setEntityId] = useState(null)
@@ -26,23 +26,11 @@ export function LightPopup({ selectedEntity,user,setErrorFun}) {
     const [temperatureTab, setTemperatureTab] = useState(false)
 
 
-    const callService = async (service, data) => {
-        let body = {}
-        body["entity_id"] = entityId
-        body["service"] = service
-        body["data"] = data;
-        body["user"]=user
-        const response = await fetch(backend + `${"/service"}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body)
-        });
-        if (response.ok) {
-            const updated_entity = await response.json();
-            console.log(updated_entity)
-            setEntityValues(updated_entity[0])
+    const innerCallService = async (service, data) => {
+        const response=await callService(entityId,service,data,user)
+        if (response) {
+            const updated_entity = response[0];
+            setEntityValues(updated_entity)
         }
         else {
             setErrorFun()
@@ -70,16 +58,9 @@ export function LightPopup({ selectedEntity,user,setErrorFun}) {
     }
 
     const initializeEntity = async () =>{
-        const response = await fetch(backend + "/entity/"+selectedEntity, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: null
-        });
-        if (response.ok) {
-            const entity_in = await response.json();
-            setEntityValues(entity_in)
+        const response = await apiFetch(`/entity/${selectedEntity}`)
+        if (response) {
+            setEntityValues(response)
         }
         else {
             alert("Error")
@@ -143,7 +124,7 @@ export function LightPopup({ selectedEntity,user,setErrorFun}) {
                                 <div className="flex gap-1 dark:bg-neutral-700 rounded p-1">
                                     <StyledButton variant="secondary" className="rounded-full bg-inherit shadow-none text-black dark:text-white
                                         ring-0 focus:ring-0 dark:bg-neutral-700"
-                                        onClick={() => callService("toggle", {})}>
+                                        onClick={() => innerCallService("toggle", {})}>
                                         {getIcon(lightOn?"power_off":"power_on","size-8")}
                                     </StyledButton>
                                     {lightOn &&
@@ -202,7 +183,7 @@ export function LightPopup({ selectedEntity,user,setErrorFun}) {
                                     }
                                 }
                                 }
-                                onChangeCommitted={() => callService("turn_on", { "brightness_pct": brightness })}
+                                onChangeCommitted={() => innerCallService("turn_on", { "brightness_pct": brightness })}
                                 onChange={handleBrightnessChange}
                                 valueLabelDisplay="auto"
                             />
@@ -215,7 +196,7 @@ export function LightPopup({ selectedEntity,user,setErrorFun}) {
                     {colorTab && lightOn && colorSupported &&
                         <div className="mt-10">
                             <SliderPicker
-                                onChangeComplete={() => callService("turn_on", { "rgb_color": [red, green, blue] })}
+                                onChangeComplete={() => innerCallService("turn_on", { "rgb_color": [red, green, blue] })}
                                 onChange={handleChangeComplete}
                                 color={"rgb(" + red + "," + green + "," + blue + ")"}
                             />
@@ -242,7 +223,7 @@ export function LightPopup({ selectedEntity,user,setErrorFun}) {
                                     height: 40,
                                 }
                                 }
-                                onChangeCommitted={() => callService("turn_on", { "kelvin": temperature })}
+                                onChangeCommitted={() => innerCallService("turn_on", { "kelvin": temperature })}
                                 onChange={handleTemperatureChange}
                                 valueLabelDisplay="auto"
                             />

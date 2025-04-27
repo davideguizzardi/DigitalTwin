@@ -63,7 +63,7 @@ export default function Consumption() {
         "Total energy consumption": (
             <TotalConsumptionGraph device_id={""} device_name={""} />
         ),
-        "Predicted consumption": (<ConsumptionPredictionGraph url_in={`${backend}/prediction/recursive`} future_steps={12} />),
+        "Predicted consumption": (<ConsumptionPredictionGraph url_in={`/prediction/recursive`} future_steps={12} />),
         "Consumption comparison": (<ConsumptionComparisonGraph device_id={""} device_name={""} />),
     }
 

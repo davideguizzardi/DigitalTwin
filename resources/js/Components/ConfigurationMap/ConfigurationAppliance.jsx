@@ -10,7 +10,7 @@ import AnimateMap from "../Commons/AnimateMap";
 import AnimateMap2 from "../Commons/AnimateMap2";
 import WhiteCard from "../Commons/WhiteCard";
 import { useSwipeable } from "react-swipeable";
-import { backend } from "../Commons/Constants";
+import { apiFetch, backend } from "../Commons/Constants";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { DeviceContext } from "../ContextProviders/DeviceProvider";
 import { StyledButton } from "../Commons/StyledBasedComponents";
@@ -222,22 +222,6 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
         })
 
     }
-
-    const fetchApplOnFloorOld = async () => {
-        const response = await fetch(backend + "/map", {
-            headers: { 'Authorization': 'Bearer ' + token }
-        });
-
-        const result = await response.json();
-        const onFloor = result.map((e) => {
-            const device = deviceList.find((dev) => e.entity_id === dev.device_id);
-            return device
-                ? { ...device, top: e.y, left: e.x, floor: e.floor }
-                : {};
-        })
-        await setApplOnFloor(onFloor);
-        setFirst(false);
-    };
 
     const fetchApplOnFloor = async () => {
         const onFloor = deviceList
