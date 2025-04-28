@@ -6,10 +6,8 @@ import dayjs from "dayjs";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import { apiFetch } from "../Commons/Constants";
-import { DeviceContextRefresh } from "../ContextProviders/DeviceProviderRefresh";
-import { useContext } from "react";
 
-export function TotalConsumptionGraph({ device_name, device_id }) {
+export function TotalConsumptionGraph({device_list}) {
   const [from, setFrom] = useState(dayjs())
   const [to, setTo] = useState(dayjs())
   const [dataset, setDataset] = useState([])
@@ -18,8 +16,7 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
   const { t } = useLaravelReactI18n()
   const [deviceName, setDeviceName] = useState(t("Entire House"))
   const [deviceId, setDeviceId] = useState("")
-  const [innerDeviceList, setDeviceList] = useState([])
-  const {deviceList}=useContext(DeviceContextRefresh)
+  const [innerDeviceList, setDeviceList] = useState([t("Entire House")])
 
 
   const heightGraph = window.innerHeight > 1000 ? 800 : 500
@@ -77,8 +74,9 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
   }
 
   useEffect(() => {
-    fetchDevices()
-  }, [])
+    const devs=[{device_id:t("Entire House"),name:t("Entire House")}].concat(device_list)
+    setDeviceList(devs)
+  }, [device_list,t])
 
 
   function handleItemClick(params) {
@@ -109,16 +107,6 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
     setDeviceName(event.target.value)
     setDeviceId(optionElementId)
   }
-
-  const fetchDevices = async () => {
-    const data = deviceList.filter(d => d.show).map(d => ({ device_id: d.device_id, name: d.name }))
-    var devices = [{ "device_id": "", "name": t("Entire House") }]
-    devices = devices.concat(data)
-    setDeviceList(devices)
-  }
-
-
-
 
   const fetchConsumption = async () => {
     var url;
@@ -151,10 +139,6 @@ export function TotalConsumptionGraph({ device_name, device_id }) {
     fetchConsumption()
   }, [from, to, group, deviceId, deviceName])
 
-  useEffect(() => {
-    setDeviceName(device_name)
-    setDeviceId(device_id)
-  }, [device_name, device_id])
 
   const valueFormatter = (value) => `${value.toFixed(2)} ${group == "hourly" ? "Wh" : "kWh"}`;
 

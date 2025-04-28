@@ -9,7 +9,7 @@ import { DeviceContextRefresh } from "../ContextProviders/DeviceProviderRefresh"
 import { useContext } from "react";
 import { apiFetch } from "../Commons/Constants";
 
-export function ConsumptionComparisonGraph({ device_name, device_id }) {
+export function ConsumptionComparisonGraph({device_list}) {
   const [date1, setDate1] = useState(dayjs())
   const [date2, setDate2] = useState(dayjs())
   const [dataset, setDataset] = useState([])
@@ -18,7 +18,6 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
   const [deviceName, setDeviceName] = useState("")
   const [deviceId, setDeviceId] = useState("")
   const [innerDeviceList, setDeviceList] = useState([])
-  const {deviceList}=useContext(DeviceContextRefresh)
 
   const { t } = useLaravelReactI18n()
   const heightGraph = window.innerHeight > 1000 ? 850 : 480
@@ -75,8 +74,9 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
 
 
   useEffect(() => {
-    fetchDevices()
-  }, [])
+    const devs=[{device_id:t("Entire House"),name:t("Entire House")}].concat(device_list)
+    setDeviceList(devs)
+  }, [device_list,t])
 
 
   function handleNameChange(event) {
@@ -88,12 +88,6 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
     setDeviceId(optionElementId)
   }
 
-  const fetchDevices = async () => {
-      const data=deviceList.filter(d=>d.show).map(d=>({device_id:d.device_id,name:d.name}))
-      var devices = [{ "device_id": "", "name": t("Entire House") }]
-      devices = devices.concat(data)
-      setDeviceList(devices)
-  }
 
 
 
@@ -146,10 +140,6 @@ export function ConsumptionComparisonGraph({ device_name, device_id }) {
     fetchConsumption()
   }, [date1, date2, group, deviceId, deviceName])
 
-  useEffect(() => {
-    setDeviceName(device_name)
-    setDeviceId(device_id)
-  }, [device_name, device_id])
 
   const valueFormatter = (value) => `${value.toFixed(2)} ${group=="hourly"? "Wh":"kWh"}`;
 

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState ,useContext} from "react"
 import { animate, AnimatePresence, motion, useAnimate } from "framer-motion"
 import { ConsumptionComparisonGraph } from "@/Components/Consumption/ConsumptionComparisonGraph"
 import { LocalizationProvider } from "@mui/x-date-pickers"
@@ -8,7 +8,7 @@ import { TotalConsumptionGraph } from "@/Components/Consumption/TotalConsumption
 import { ConsumptionPredictionGraph } from "@/Components/Consumption/ConsumptionPredictionGraph"
 import WhiteCard from "@/Components/Commons/WhiteCard"
 import TabLayout from "@/Layouts/TabLayout"
-import SubMenuLayout from "@/Layouts/SubMenuLayout"
+import { DeviceContextRefresh } from "@/Components/ContextProviders/DeviceProviderRefresh"
 
 export default function Consumption() {
     const [tab, setTab] = useState(0)
@@ -17,6 +17,7 @@ export default function Consumption() {
     const [scopePredicted, animatePredicted] = useAnimate()
     const [scopeDevice, animateDevice] = useAnimate()
     const [scopeAutomation, animateAutomation] = useAnimate()
+    const {deviceList}=useContext(DeviceContextRefresh)
 
     const scopes = [scopeTotal, scopePredicted, scopeDevice, scopeAutomation]
 
@@ -61,10 +62,10 @@ export default function Consumption() {
 
     const sections = {
         "Total energy consumption": (
-            <TotalConsumptionGraph device_id={""} device_name={""} />
+            <TotalConsumptionGraph device_list={deviceList.filter(d=>d.show)} />
         ),
         "Predicted consumption": (<ConsumptionPredictionGraph url_in={`/prediction/recursive`} future_steps={12} />),
-        "Consumption comparison": (<ConsumptionComparisonGraph device_id={""} device_name={""} />),
+        "Consumption comparison": (<ConsumptionComparisonGraph device_list={deviceList.filter(d=>d.show)} />),
     }
 
     return (
