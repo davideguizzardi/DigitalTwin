@@ -82,7 +82,7 @@ import { MdMeetingRoom } from "react-icons/md";
 
 
 export const backend = import.meta.env.DT_API_URL || "http://localhost:8000"
-export const domain = "http://localhost"
+export const domain = import.meta.env.DT_DOMAIN ||"http://localhost"
 
 export const daysOrder = [
     "mon",
