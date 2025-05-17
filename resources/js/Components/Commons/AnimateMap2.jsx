@@ -52,7 +52,7 @@ export default function AnimateMap2({ maps, appliances ,rooms=[]}) {
         onSwipedUp: () => floorBelow()
     })
 
-    const floorBtn = maps.map((element, index) => {
+    const floorBtn = maps.sort((a,b)=>a.floor - b.floor).map((element, index) => {
         return {
             callback: () => {
                 if (indexImg != index) {
@@ -102,7 +102,7 @@ export default function AnimateMap2({ maps, appliances ,rooms=[]}) {
                         id={"floor" + maps[indexImg].url} key={maps[indexImg].url}
                         variants={variants} initial="initial" animate="animate" exit="exit"
                     >
-                        <RoomMap image_url={domain + "/" + maps[indexImg].url} floor={maps[indexImg].floor}/>
+                        <RoomMap image_url={domain + "/" + maps[indexImg].url} floor={maps[indexImg].floor} height_percent={80}/>
                         {appliances.filter((e) => e.floor == maps[indexImg].floor).map((e) => (<CardAppliance key={e.id} appliancePos={e} setClickedDevice={setOpenDevice} />))}
                     </motion.div>
                 </AnimatePresence>

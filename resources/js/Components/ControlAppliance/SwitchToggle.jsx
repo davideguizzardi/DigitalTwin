@@ -116,7 +116,7 @@ function ActiveAutomationsDropdown({ }) {
   )
 }
 
-export function SwitchToggle({ state, stateId, devId, user, setErrorFun = {} }) {
+export function SwitchToggle({ state, stateId, devId, user, setErrorFun = {} ,refreshDevice={}}) {
   const [isOn, setIsOn] = useState(null);
   const [error, setError] = useState(false)
   const [actionOk, setActionOk] = useState(false)
@@ -139,6 +139,7 @@ export function SwitchToggle({ state, stateId, devId, user, setErrorFun = {} }) 
     const service = isOn ? "turn_off" : "turn_on"
     const ret = await callService(stateId, service, {}, user)
     setIsOn(!isOn)
+    refreshDevice()
   }
 
   const handleClick2 = async () => {
@@ -154,7 +155,7 @@ export function SwitchToggle({ state, stateId, devId, user, setErrorFun = {} }) 
           <div
             className={`relative flex items-center w-[60%] h-28 p-1 bg-gray-400 rounded-2xl cursor-pointer transition-colors ${isOn ? "bg-lime-500" : "bg-gray-400"
               }`}
-            onClick={() => handleClick2()}
+            onClick={() => handleClick()}
           >
             <div
               className={`size-24 bg-zinc-50 rounded-2xl shadow-xl flex items-center justify-center transition-transform duration-300 ${isOn ? "translate-x-[15.7rem]" : "translate-x-0"

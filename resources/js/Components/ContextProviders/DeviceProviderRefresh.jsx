@@ -3,14 +3,13 @@ import { apiFetch, backend } from "../Commons/Constants";
 
 export const DeviceContextRefresh = createContext();
 
-
+const refreshFrequency = import.meta.env.DEVICE_REFRESH_FREQUENCY_MS || 3*1000;
 
 
 export const DeviceProviderRefresh = ({ children }) => {
   const [deviceList, setDeviceList] = useState([]);
   const [connectionOk,setConnectionOk]=useState(true)
   const [isDemo,setIsDemo]=useState(false)
-  const refreshFrequency=10*1000 //in milliseconds
   
   const fetchDevices = async () => {
     try {

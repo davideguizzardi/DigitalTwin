@@ -19,6 +19,7 @@ import SortableItem from './SortableItem';
 import { useContext } from 'react';
 import { UserContext } from '@/Layouts/UserLayout';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { apiFetch, apiLog, logsEvents } from '../Commons/Constants';
 
 export default function Preferences({ }) {
     const user = useContext(UserContext)
@@ -40,22 +41,16 @@ export default function Preferences({ }) {
             const newIndex = items.indexOf(over.id)
             const updateState = arrayMove(items, oldIndex, newIndex)
             setItems(updateState)
+            const response=apiFetch("/user/preferences","PUT",{data:[{user_id:user.username,preferences:updateState}]})
+            apiLog(user.username,logsEvents.USER_PREFERENCES_ADD,user.username,JSON.stringify({user_id:user.username,preferences:updateState}))
         }
     }
 
     const fetchItems = async () => {
         if (!user.username) return null
-        const response = await fetch("http://localhost:8000/user/preferences")
-        if (response.ok) {
-            const result = await response.json()
-            console.log(result)
-            const filterResult = result.filter(e => e.user_id == user.username)
-            if (filterResult.lenght > 0) {
-                const updatePreferences = filterResult[0].preferences
-                setItems(updatePreferences)
-            }
-            else
-                setItems(["Health", "Security", "Entertainment", "Study"])
+        const response = await apiFetch(`/user/preferences/${user.username}`)
+        if (Object.keys(response).length>0) {
+                setItems(response.preferences)     
         } else {
             setItems(["Health", "Security", "Entertainment", "Study"])
         }

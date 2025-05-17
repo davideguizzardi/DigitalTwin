@@ -7,7 +7,8 @@ import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import { DeviceContextRefresh } from "../ContextProviders/DeviceProviderRefresh";
 import { useContext } from "react";
-import { apiFetch } from "../Commons/Constants";
+import { apiFetch,apiLog, logsEvents } from "../Commons/Constants";
+import { UserContext } from "@/Layouts/UserLayout";
 
 export function ConsumptionComparisonGraph({device_list}) {
   const [date1, setDate1] = useState(dayjs())
@@ -15,13 +16,15 @@ export function ConsumptionComparisonGraph({device_list}) {
   const [dataset, setDataset] = useState([])
   const [group, setGroup] = useState("daily")
   const [loading, setLoading] = useState(false)
-  const [deviceName, setDeviceName] = useState("")
+  const { t } = useLaravelReactI18n()
+  const [deviceName, setDeviceName] = useState(t("Entire House"))
   const [deviceId, setDeviceId] = useState("")
   const [innerDeviceList, setDeviceList] = useState([])
 
-  const { t } = useLaravelReactI18n()
-  const heightGraph = window.innerHeight > 1000 ? 850 : 480
+  const heightGraph = window.innerHeight  * 0.7
   const isDark = localStorage.getItem("darkMode") == "true"
+
+  const user=useContext(UserContext)
 
   const sxDatePicker = {
     '.MuiInputBase-root': {
@@ -100,7 +103,7 @@ export function ConsumptionComparisonGraph({device_list}) {
       endDate1 = date1.endOf("month")
       endDate2 = date2.endOf("month")
     }
-    if (deviceName == "Entire House") {
+    if (deviceName == t("Entire House")) {
       url1 = `/consumption/total?` +
         `start_timestamp=${encodeURIComponent(date1.format("YYYY-MM-DD"))}` +
         `&end_timestamp=${encodeURIComponent(endDate1.format("YYYY-MM-DD"))}` +
@@ -129,6 +132,16 @@ export function ConsumptionComparisonGraph({device_list}) {
       if(group!="hourly")
         concatDataset.map(item=>item.energy_consumption=item.energy_consumption/1000)
       setDataset(concatDataset)
+
+
+      const log_payload=JSON.stringify({
+        date1:date1.format("DD-MM-YYYY"),
+        date2:date2.format("DD-MM-YYYY"),
+        group:group,
+        device:deviceName
+      })
+      if(user)
+        apiLog(user.username,logsEvents.CONSUMPTION_COMPARISON,deviceName,log_payload)
     }
     setLoading(false)
   }

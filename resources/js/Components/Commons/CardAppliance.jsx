@@ -50,6 +50,16 @@ export default function CardAppliance({ appliancePos, setClickedDevice }) {
         return 1+(Math.min(Math.floor(power/50),6)/10)
     }
 
+    const isActive=(appliance)=>{
+        if(appliance.device_class=="sensor")
+            return true
+
+        if(appliance.power_entity_id=="")
+            return appliance.state=="on"
+
+        return getPower(appliance)>1
+    }
+
     return (
         <motion.div
             className={`absolute rounded-full bg-gray-200`}
@@ -68,7 +78,7 @@ export default function CardAppliance({ appliancePos, setClickedDevice }) {
                 onClick={() => setClickedDevice(appliancePos)}
             >
 
-                {getDeviceIcon(appliancePos.category, "size-9", getPower(appliancePos) > 1)}
+                {getDeviceIcon(appliancePos.category, "size-9", isActive(appliancePos))}
                 {openName && false &&
                     appliancePos.name
                 }

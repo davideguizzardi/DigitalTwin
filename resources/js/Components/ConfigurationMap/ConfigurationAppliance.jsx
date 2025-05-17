@@ -10,12 +10,13 @@ import AnimateMap from "../Commons/AnimateMap";
 import AnimateMap2 from "../Commons/AnimateMap2";
 import WhiteCard from "../Commons/WhiteCard";
 import { useSwipeable } from "react-swipeable";
-import { apiFetch, backend } from "../Commons/Constants";
+import { apiFetch, apiLog, backend, logsEvents } from "../Commons/Constants";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { DeviceContext } from "../ContextProviders/DeviceProvider";
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import { getIcon } from "../Commons/Constants";
 import RoomMap from "../Commons/RoomMap";
+import { UserContext } from "@/Layouts/UserLayout";
 
 const token = Cookies.get("auth-token")
 
@@ -34,8 +35,10 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
     const [first, setFirst] = useState(true)
     const [openModal, setOpenModal] = useState(false)
     const { t } = useLaravelReactI18n()
-    let dataBtn = []
 
+    const user=useContext(UserContext)
+
+    let dataBtn = []
     const offset = 100
 
     const floorAbove = () => {
@@ -79,7 +82,7 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
     })
 
 
-    maps.map((element, index) => {
+    maps.sort((a,b)=>a.floor-b.floor).map((element, index) => {
         dataBtn = [...dataBtn, {
             callback: () => {
                 if (indexImg != index) {
@@ -163,7 +166,7 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
     }
 
     const deleteAppl = async (appl) => {
-        const response = await fetch("http://localhost:8000/map/entity/" + appl, {
+        const response = await fetch(`${backend}/map/entity/${appl}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -171,6 +174,8 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
             },
         })
         console.log(response)
+        if(user)
+            apiLog(user.username,logsEvents.CONFIGURATION_MAP_DELETE,appl,"{}")
     }
 
     const deleteUnconfAppl = async () => {
@@ -197,6 +202,8 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
             },
             body: JSON.stringify({ data: data })
         })
+        if(user)
+            apiLog(user.username,logsEvents.CONFIGURATION_MAP_ADD,"",JSON.stringify(data))
     }
 
     const saveCallback = () => {
@@ -217,8 +224,9 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
             },
         })
         response.json().then((result) => {
-            setMaps([...result.maps])
-            setFloor(result.maps[0].floor)
+            const fetched_maps=result.maps.sort((a,b)=>a.floor-b.floor)
+            setMaps([...fetched_maps])
+            setFloor(fetched_maps[0].floor)
         })
 
     }
@@ -288,13 +296,7 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
                                             initial="initial" animate="animate" exit="exit"
                                             key={maps[indexImg].url}
                                         >
-                                            <img src={maps[indexImg].url}
-                                                style={{
-                                                    objectFit: "contain",
-                                                    width: "100%",
-                                                    height: "70vh"
-                                                }}
-                                            />
+                                            <RoomMap image_url={maps[indexImg].url} floor={maps[indexImg].floor} height_percent={70}/>
                                             <DroppableLayer isEditMode={editMode} dragConstraints={configRef}
                                                 listAppliancesPos={refApplOnfFloor.current} index={floor}
                                                 addAppl={addApplOnFloor} removeAppl={removeApplOnFloor}

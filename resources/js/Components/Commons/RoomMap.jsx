@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Stage, Layer, Line, Text, Image as KonvaImage, Label, Tag } from "react-konva";
 import useImage from "use-image";
 import { apiFetch } from "./Constants";
+import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 
-export default function RoomMap({ image_url, floor, height_percent = 0.8 }) {
+export default function RoomMap({ image_url, floor, height_percent = 80 }) {
     const [image] = useImage(image_url);
     const [rooms,setRooms]=useState([])
     const [innerRooms, setInnerRooms] = useState([]);
@@ -23,10 +24,15 @@ export default function RoomMap({ image_url, floor, height_percent = 0.8 }) {
 
     useEffect(() => {
         if (!image || !image.width || !image.height) return;
-
-        const targetHeight = window.innerHeight * height_percent;
+        
         const aspectRatio = image.width / image.height;
-        const targetWidth = targetHeight * aspectRatio;
+        let targetHeight = window.innerHeight * (height_percent/100);
+        let targetWidth = targetHeight * aspectRatio;
+
+        if(targetWidth>window.innerWidth*0.5){
+            targetWidth=window.innerWidth*0.5
+            targetHeight=targetWidth / aspectRatio
+        }
 
         setStageSize({ width: targetWidth, height: targetHeight });
 
@@ -49,8 +55,8 @@ export default function RoomMap({ image_url, floor, height_percent = 0.8 }) {
     }, [rooms, image]);
 
     return (
-        <div className="relative w-full" style={{ height: "80vh" }}>
-            <Stage width={stageSize.width} height={stageSize.height}>
+        <div className="w-full relative flex items-center justify-center" style={{ height: `${height_percent}vh` }}>
+            <Stage className="" width={stageSize.width} height={stageSize.height}>
                 <Layer>
                     {image && (
                         <KonvaImage

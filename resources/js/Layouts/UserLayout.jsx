@@ -8,7 +8,6 @@ import { useEffect } from "react";
 import { DeviceProviderRefresh } from "@/Components/ContextProviders/DeviceProviderRefresh";
 import Navbar from "@/Components/Commons/Navbar";
 
-const token = Cookies.get("auth-token")
 
 export const UserContext = createContext({})
 
@@ -17,22 +16,28 @@ export function UserLayout({ children }) {
     const [dark, isDark] = useState(false)
     useEffect(() => {
         const fetchUser = async () => {
+            const token = Cookies.get("auth-token");
+            if (!token) return;
+    
             const response = await fetch(domain + "/api/user", {
                 headers: { "Authorization": "Bearer " + token }
-            })
+            });
             if (response.ok) {
-                const result = await response.json()
-                setUserState({ ...result.user })
+                const result = await response.json();
+                setUserState({ ...result.user });
             }
-        }
-        fetchUser()
-        const darkMode = localStorage.getItem("darkMode")
-        if (darkMode == "true") {
-            document.documentElement.classList.add("dark")
+        };
+    
+        fetchUser();
+    
+        const darkMode = localStorage.getItem("darkMode");
+        if (darkMode === "true") {
+            document.documentElement.classList.add("dark");
         } else {
-            document.documentElement.classList.remove("dark")
+            document.documentElement.classList.remove("dark");
         }
-    }, [])
+    }, []);
+    
 
     return (
         <main>

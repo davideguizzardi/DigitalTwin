@@ -9,8 +9,10 @@ import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 import { DeviceContextRefresh } from "@/Components/ContextProviders/DeviceProviderRefresh";
 import WhiteCard from "@/Components/Commons/WhiteCard";
-import { apiFetch, backend } from "@/Components/Commons/Constants";
+import { apiFetch, apiLog, logsEvents } from "@/Components/Commons/Constants";
 import dayjs from "dayjs";
+import { domain } from "@/Components/Commons/Constants";
+import { UserContext } from "@/Layouts/UserLayout";
 
 function PowerConsumptionGauge({ powerUsage = 0, maxPower = 3000 }) {
     const radius = 90; // The radius of the semicircle
@@ -114,6 +116,16 @@ const Dashboard3 = ({ maps, token }) => {
     useEffect(() => {
         if (token) {
             Cookies.set("auth-token", token);
+            const fetchUser = async () => {
+                const response = await fetch(domain + "/api/user", {
+                    headers: { "Authorization": "Bearer " + token }
+                })
+                if (response.ok) {
+                    const result = await response.json()
+                    apiLog(result.user.username, logsEvents.LOGIN, "", "")
+                }
+            }
+            fetchUser()
         }
     }, [token]);
 
@@ -157,8 +169,8 @@ const Dashboard3 = ({ maps, token }) => {
         "Home": (
             <div className="flex-col gap-2 size-full">
                 {maps.length > 0 ? (
-                        <AnimateMap2 maps={maps} appliances={appliances} rooms={rooms}/>
-                    
+                    <AnimateMap2 maps={maps} appliances={appliances} rooms={rooms} />
+
 
                 ) : (
                     <div className="size-full flex justify-center items-center">

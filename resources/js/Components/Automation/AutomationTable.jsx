@@ -94,7 +94,7 @@ export function AutomationTable({ automation_context, openId = ""}) {
 
                                                 }
                                             </div>
-                                            <div className="flex justify-end">
+                                            <div className="flex justify-end col-span-2">
                                                 <Switch defaultChecked={automation.state == "on"}
                                                     onChange={(event) => handleSwitchChange(event, automation.entity_id)}
                                                     sx={{
@@ -105,9 +105,6 @@ export function AutomationTable({ automation_context, openId = ""}) {
                                                             backgroundColor: "#a3e635",  // Track color when checked
                                                         },
                                                     }} />
-                                            </div>
-                                            <div className="flex justify-end">
-                                                <StyledButton variant={"primary"} onClick={()=>handleTriggerButtonPress(automation.entity_id)}>{getIcon("play")}</StyledButton>
                                             </div>
                                         </div>
                                     </List.Item>

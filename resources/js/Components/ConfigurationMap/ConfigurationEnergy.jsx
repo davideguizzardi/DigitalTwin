@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { apiFetch, backend } from "../Commons/Constants";
+import { apiFetch, apiLog, backend, logsEvents } from "../Commons/Constants";
 import { FaPencil } from "react-icons/fa6"
 import { ThemeButton } from "../Commons/ThemeButton";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import { getIcon } from "../Commons/Constants";
 import { TextInput, Label, Button } from "flowbite-react";
+import { useContext } from "react";
+import { UserContext } from "@/Layouts/UserLayout";
 
 export default function ConfigurationEnergy({ endSection, backSection, isInitialConfiguration = true }) {
     const templateSWH1 = Array.from(Array(7).keys()).map(() => Array(24).fill(0))
@@ -25,6 +27,8 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
         }
     }
     const { t } = useLaravelReactI18n()
+
+    const user = useContext(UserContext)
 
     const [timeSlots, setTimeSlots] = useState(0)
     const [powerCapacity, setPowerCapacity] = useState(3.5)
@@ -208,34 +212,35 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
                 }]
             }
         })
-        fetch(backend + "/configuration/", {
-            method: "PUT",
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ data: dataConf })
-        })
+
+        apiFetch("/configuration", "PUT", { data: dataConf })
+        if (user)
+            apiLog(user.username, logsEvents.CONFIGURATION_ADD, "", JSON.stringify(dataConf))
         if (timeSlots < 3) {
-            const response = await apiFetch("/configuration/cost_slot_3","DELETE")
+            const response = await apiFetch("/configuration/cost_slot_3", "DELETE")
             const result = response
             console.log(result)
             if (timeSlots < 2) {
                 console.log(timeSlots)
-                const response = await apiFetch("/configuration/cost_slot_2","DELETE")
+                const response = await apiFetch("/configuration/cost_slot_2", "DELETE")
                 const result2 = response
                 console.log(result2)
             }
         }
-        const dataCalendar = JSON.stringify({ data: slotWeekHour.map((day) => day.map((hour) => hour)) })
+        const dataCalendar = slotWeekHour.map((day) => day.map((hour) => hour))
         //before to save delete old calendar
-        const deleteCalendar = await apiFetch("/calendar","DELETE")
+        const deleteCalendar = await apiFetch("/calendar", "DELETE")
         if (deleteCalendar) {
-            const responseCalendar = await apiFetch("/calendar","PUT",dataCalendar)
+            const responseCalendar = await apiFetch("/calendar", "PUT", { data: dataCalendar })
+            if (user)
+                apiLog(user.username, logsEvents.CONFIGURATION_ENERGY_ADD, "", JSON.stringify(dataCalendar))
         }
         endSection()
     }
 
     useEffect(() => {
         const getConfiguration = async () => {
-            const result=await apiFetch("/configuration")
+            const result = await apiFetch("/configuration")
             let updatePrice = []
             result.forEach((conf) => {
                 if (conf.key == "energy_slots_number") {
@@ -267,7 +272,7 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
 
 
     return (
-        <div className="w-full flex flex-col gap-2 min-w-fit  px-2">
+        <div className="relative w-full flex flex-col gap-2 min-w-fit px-2">
             <div className="size-full flex gap-3">
                 <div className="flex flex-col p-1 h-full w-1/2 ">
                     <div className="flex py-3 items-center gap-6" onClick={() => setCurrentSlot(-1)}>
@@ -319,10 +324,10 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
                     </div>
                     <div className="size-full" onClick={() => setCurrentSlot(-1)}>
                         {currentSlot !== -1 &&
-                            <div className="p-4 mt-10 mr-5 bg-zinc-100 rounded-lg shadow-md">
+                            <div className="absolute p-4 mt-10 mr-5 bg-zinc-100 rounded-lg shadow-md">
                                 <div className="flex flex-row items-center gap-2 mb-2">
-                                {getIcon("info")}
-                                <h3 className="text-lg font-semibold">{t("How to Use")}</h3>
+                                    {getIcon("info")}
+                                    <h3 className="text-lg font-semibold">{t("How to Use")}</h3>
                                 </div>
                                 <ul className="list-disc pl-5 text-sm space-y-1">
                                     <li><strong>{t("Press")}</strong> {t("single_press_description")}</li>
@@ -365,7 +370,7 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
                         </div>
                     </div>
                     :
-                    <div className="flex w-full h-min py-3 items-end justify-center">
+                    <div className="w-full flex justify-center items-end">
                         <ThemeButton onClick={() => { saveConfiguration() }}>{t("Save")}</ThemeButton>
                     </div>
             }

@@ -3,7 +3,7 @@ import {
     FaLeaf, FaDoorOpen, FaFan, FaCalendar, FaRobot,
     FaWindowMaximize, FaBell, FaCamera, FaIceCream, FaShieldAlt, FaTint, FaLock,
     FaUnlock, FaWindowClose, FaEye, FaEyeSlash, FaCheck,
-    FaInfoCircle
+    FaInfoCircle,FaSave, FaRunning
 } from "react-icons/fa";
 
 
@@ -18,7 +18,7 @@ import {
 
 // Other icon libraries
 import {
-    CiCircleQuestion, CiSpeaker, CiClock1, CiSearch, CiWarning
+    CiCircleQuestion, CiSpeaker, CiClock1, CiSearch, CiWarning,CiZoomIn,CiZoomOut
 } from "react-icons/ci";
 
 import {
@@ -30,7 +30,8 @@ import {
 } from "react-icons/wi";
 
 import {
-    MdOutlineEnergySavingsLeaf, MdThermostat, MdAirlineSeatReclineExtra, MdOutlinePower
+    MdOutlineEnergySavingsLeaf, MdThermostat, MdAirlineSeatReclineExtra, MdOutlinePower,
+    MdRecentActors
 } from "react-icons/md";
 
 import {
@@ -55,7 +56,7 @@ import {
 
 import { PiTelevisionSimple, PiVideoCameraFill, PiDesktopTowerFill, PiForkKnife } from "react-icons/pi";
 import { TbMicrowave } from "react-icons/tb";
-import { BiSolidWasher, BiSolidFridge,BiError } from "react-icons/bi";
+import { BiSolidWasher, BiSolidFridge,BiError, BiTargetLock } from "react-icons/bi";
 import { LuBlinds,LuPower,LuPowerOff} from "react-icons/lu";
 import { TbAirConditioning } from "react-icons/tb";
 import { MdSensorWindow,MdDelete } from "react-icons/md";
@@ -80,8 +81,8 @@ import { MdMeetingRoom } from "react-icons/md";
 
 
 
-export const backend = "http://192.168.1.200:8000"
-export const domain = "http://192.168.1.200"
+export const backend = import.meta.env.DT_API_URL || "http://localhost:8000"
+export const domain = "http://localhost"
 
 export const daysOrder = [
     "mon",
@@ -183,7 +184,12 @@ export const iconMap = {
     upload:(className)=> <MdFileUpload className={className}/>,
     homeassistant:(className)=><SiHomeassistant className={className}/>,
     delete:(className)=><MdDelete className={className}/>,
-    room:(className)=><MdMeetingRoom className={className}/>
+    room:(className)=><MdMeetingRoom className={className}/>,
+    zoomin:(className)=><CiZoomIn className={className}/>,
+    zoomout:(className)=><CiZoomOut className={className}/>,
+    save: (className)=><FaSave className={className}/>,
+    motion: (className)=><FaRunning className={className}/>,
+    problem: (className) => <CiWarning className={className} />
 }
 
 export const DevicesTypes = {
@@ -209,7 +215,8 @@ export const DevicesTypes = {
     oven: { color: "bg-red-400" },
     washing_machine: { color: "bg-indigo-400" },
     induction_stove: { color: "bg-gray-500" },
-    desktop: { color: "bg-blue-300" }
+    desktop: { color: "bg-blue-300" },
+    motion: {color:"bg-blue-300" }
 };
 
 
@@ -277,5 +284,48 @@ export const apiFetch = async (url, method = "GET", body = null) => {
     }
 };
 
+export const apiLog= async(log_actor,log_event,log_target="",log_payload="{}")=>{
+    let body = {}
+    body["actor"] = log_actor
+    body["event"] = log_event
+    body["target"] = log_target;
+    body["payload"] = log_payload
+    const response = await fetch(`${backend}${"/log"}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data: [body] })
+    });
+    if (response.ok) {
+        const ret = await response.json();
+        return ret
+    }
+    else {
+        return {}
+    }
+}
+
 export const kgCO2e_kWh = 0.270; // Italy grid emissions: 0.270 kg CO2e per kWh in 2024
+
+export const logsEvents = {
+    LOGOUT:"Logout",
+    LOGIN:"Login",
+    CONSUMPTION_TOTAL:"Consumption:Total",
+    CONSUMPTION_COMPARISON:"Consumption:Comparison",
+    CONSUMPTION_PREDICTION:"Consumption:Prediction",
+    PAGE:"Page",
+    SERVICE:"Service:",
+    USER_PREFERENCES_ADD:"User:Preferences:Add",
+    USER_PRIVACY_ADD:"User:Privacy:Add",
+    CONFIGURATION_ADD:"Configuration:Add",
+    CONFIGURATION_ENERGY_ADD:"Configuration:Energy:Add",
+    CONFIGURATION_ENERGY_DELETE:"Configuration:Energy:Delete",
+    CONFIGURATION_DEVICE:"Configuration:Device",
+    CONFIGURATION_MAP_ADD:"Configuration:Map:Add",
+    CONFIGURATION_MAP_DELETE:"Configuration:Map:Delete",
+    CONFIGURATION_ROOM_ADD:"Configuration:Room:Add",
+    CONFIGURATION_ROOM_DELETE:"Configuration:Room:Delete",
+    CONFIGURATION_ROOM_RENAME:"Configuration:Room:Rename",
+};
 

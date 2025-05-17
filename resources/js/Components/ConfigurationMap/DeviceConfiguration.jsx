@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { Table, TextInput, } from "flowbite-react"
-import { apiFetch, getIcon } from "../Commons/Constants";
+import { apiFetch, apiLog, getIcon, logsEvents } from "../Commons/Constants";
 import { DeviceContext } from "../ContextProviders/DeviceProvider";
 import { TouchKeyboard2 } from "../Commons/TouchKeyboard2";
 import { DevicesTypes } from "../Commons/Constants";
@@ -9,7 +9,9 @@ import { StyledButton } from "../Commons/StyledBasedComponents";
 
 import { useLaravelReactI18n } from "laravel-react-i18n";
 import { backend } from "../Commons/Constants";
-function IconSelector({ default_icon, onIconChange, open, toggleDropdown, t }) {
+import { UserContext } from "@/Layouts/UserLayout";
+
+export function IconSelector({ default_icon, onIconChange, open, toggleDropdown, t }) {
     const iconOptions = Object.keys(DevicesTypes)
 
 
@@ -57,6 +59,7 @@ export function DeviceConfiguration({ backSection, endSection, isInitialConfigur
     const { deviceList, setDeviceList } = useContext(DeviceContext);
     const [openIndex, setOpenIndex] = useState(-1)
     const { t } = useLaravelReactI18n()
+    const user=useContext(UserContext)
 
 
 
@@ -88,11 +91,13 @@ export function DeviceConfiguration({ backSection, endSection, isInitialConfigur
                 device_id,
                 name,
                 category,
-                show: show ? 1 : 0,  // Convert boolean to 1 or 0
+                show: show ? 1 : 0, 
             }))
         }
         const response = await apiFetch("/device_configuration","PUT",body)
         if (response) {
+            if(user)
+                apiLog(user.username,logsEvents.CONFIGURATION_DEVICE,"",JSON.stringify(body))
             endSection()
         } else {
             alert(t("Some error occurred"))

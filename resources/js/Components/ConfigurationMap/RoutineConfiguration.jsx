@@ -45,6 +45,10 @@ export default function RoutineConfiguration() {
             (
                 <RoomConfiguration isInitialConfiguration={false} endSection={endSection} />
             ),
+        "Configure groups":
+            (
+                <></>
+            ),
         "Configure Energy Plan":
             (<ConfigurationEnergy isInitialConfiguration={false} endSection={endSection} />)
     }

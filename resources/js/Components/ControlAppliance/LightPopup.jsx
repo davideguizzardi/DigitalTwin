@@ -8,7 +8,7 @@ import { apiFetch, getIcon } from "../Commons/Constants";
 import { backend,callService } from "../Commons/Constants";
 
 
-export function LightPopup({ selectedEntity,user,setErrorFun}) {
+export function LightPopup({ selectedEntity,user,setErrorFun,refreshDevice}) {
     const [entityId, setEntityId] = useState(null)
     const [lightOn, setLightOn] = useState(false)
     const [brightness, setBrightness] = useState(0)
@@ -31,6 +31,7 @@ export function LightPopup({ selectedEntity,user,setErrorFun}) {
         if (response) {
             const updated_entity = response[0];
             setEntityValues(updated_entity)
+            refreshDevice()
         }
         else {
             setErrorFun()

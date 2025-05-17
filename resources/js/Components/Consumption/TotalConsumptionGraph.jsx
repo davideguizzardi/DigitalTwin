@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import { Spinner, Button, Select, Label } from "flowbite-react";
 import { BarChart } from '@mui/x-charts/BarChart';
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { StyledButton } from "../Commons/StyledBasedComponents";
-import { apiFetch } from "../Commons/Constants";
+import { apiFetch, apiLog, logsEvents } from "../Commons/Constants";
+import { UserContext } from "@/Layouts/UserLayout";
 
-export function TotalConsumptionGraph({device_list}) {
+export function TotalConsumptionGraph({ device_list }) {
   const [from, setFrom] = useState(dayjs())
   const [to, setTo] = useState(dayjs())
   const [dataset, setDataset] = useState([])
@@ -18,8 +19,10 @@ export function TotalConsumptionGraph({device_list}) {
   const [deviceId, setDeviceId] = useState("")
   const [innerDeviceList, setDeviceList] = useState([t("Entire House")])
 
+  const user = useContext(UserContext);
 
-  const heightGraph = window.innerHeight > 1000 ? 800 : 500
+
+  const heightGraph = window.innerHeight*0.7
   const isDark = localStorage.getItem("darkMode") == "true"
   const sxDatePicker = {
     '.MuiInputBase-root': {
@@ -74,9 +77,9 @@ export function TotalConsumptionGraph({device_list}) {
   }
 
   useEffect(() => {
-    const devs=[{device_id:t("Entire House"),name:t("Entire House")}].concat(device_list)
+    const devs = [{ device_id: t("Entire House"), name: t("Entire House") }].concat(device_list)
     setDeviceList(devs)
-  }, [device_list,t])
+  }, [device_list, t])
 
 
   function handleItemClick(params) {
@@ -110,11 +113,18 @@ export function TotalConsumptionGraph({device_list}) {
 
   const fetchConsumption = async () => {
     var url;
+    const log_payload=JSON.stringify({
+      start_timestamp:from.format("DD-MM-YYYY"),
+      end_timestamp:to.format("DD-MM-YYYY"),
+      group:group,
+      device:deviceName
+    })
     if (deviceName == t("Entire House")) {
       url = `/consumption/total?` +
         `start_timestamp=${encodeURIComponent(from.format("YYYY-MM-DD"))}` +
         `&end_timestamp=${encodeURIComponent(to.format("YYYY-MM-DD"))}` +
         `&group=${group}`
+
     }
     else {
       url = `/consumption/device?device_id=${deviceId}` +
@@ -130,6 +140,8 @@ export function TotalConsumptionGraph({device_list}) {
       if (group != "hourly")
         data.map(item => item.energy_consumption = item.energy_consumption / 1000)
       setDataset(data)
+      if(user)
+        apiLog(user.username,logsEvents.CONSUMPTION_TOTAL,deviceName,log_payload)
     }
     setLoading(false)
   }

@@ -1,125 +1,167 @@
-import { getIcon } from "@/Components/Commons/Constants"
-import { UserContext } from "@/Layouts/UserLayout"
-import { Avatar, Dropdown } from "flowbite-react"
-import { DarkThemeToggle } from "flowbite-react"
-
-import { useState, useContext } from "react"
-import { useLaravelReactI18n } from "laravel-react-i18n"
+import { getIcon } from "@/Components/Commons/Constants";
+import { UserContext } from "@/Layouts/UserLayout";
+import { Avatar, Dropdown, Modal, Tooltip } from "flowbite-react";
+import { useContext } from "react";
+import { useLaravelReactI18n } from "laravel-react-i18n";
 import { FaUser } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
-import { domain } from "@/Components/Commons/Constants"
-import { router } from '@inertiajs/react'
-import { DeviceContextRefresh } from "../ContextProviders/DeviceProviderRefresh"
-import { Tooltip } from "flowbite-react"
+import { domain } from "@/Components/Commons/Constants";
+import { router } from "@inertiajs/react";
+import { DeviceContextRefresh } from "../ContextProviders/DeviceProviderRefresh";
+import { apiLog, logsEvents } from "@/Components/Commons/Constants";
+import { Link } from "@inertiajs/react";
+import Cookies from "js-cookie";
+import { StyledButton } from "./StyledBasedComponents";
 
 
-export default function Navbar({ }) {
+function NavLink({ connectedUser, routeName, isActive, children, className = '' }) {
+    const user = useContext(UserContext);
 
-    const user = useContext(UserContext)
-    const { connectionOk, isDemo } = useContext(DeviceContextRefresh)
-    const { t, setLocale, currentLocale } = useLaravelReactI18n()
+    const handleLog = async () => {
+        try {
+            if (connectedUser) {
+                await apiLog(
+                    connectedUser.username,
+                    logsEvents.PAGE,
+                    routeName,
+                    ""
+                )
+            }
+        } catch (e) {
+            console.error("Failed to log page view", e);
+        }
+    };
 
-    const namePage = (string) => {
-        const [, path,] = string.split("/", 3)
-        if (string == "/userarea")
-            return "User area"
-        return path.charAt(0).toUpperCase() + path.slice(1)
-    }
+    return (
+        <Link
+            href={route(routeName)}
+            onClick={handleLog}
+            preserveScroll
+            preserveState
+            className={`${className} ${isActive ? 'bg-lime-400' : ''}`}
+        >
+            {children}
+        </Link>
+    );
+}
+
+export default function Navbar() {
+    const user = useContext(UserContext);
+    const { connectionOk, isDemo } = useContext(DeviceContextRefresh);
+    const { t, setLocale, currentLocale } = useLaravelReactI18n();
+
+    const currentPage = (() => {
+        const [, path] = window.location.pathname.split("/", 2);
+        if (window.location.pathname === "/userarea") return "userarea";
+        return path || "home";
+    })();
+
+    const linkStyle = "flex flex-row items-center gap-2 p-2 rounded-lg justify-center text-lg";
 
     const submit = (e) => {
         e.preventDefault();
-        router.post('/logout')
-        //post(route("login"))
-    }
-
-
-    const linkStyle = "flex flex-row items-center gap-2 p-2 rounded-lg justify-center text-lg"
-
-
+        if (user && Object.keys(user).length > 0) {
+            apiLog(user.username, logsEvents.LOGOUT);
+        }
+        Cookies.remove("auth-token");
+        router.post("/logout");
+    };
 
 
     return (
         <div className="w-full h-13 grid grid-cols-5 justify-center text-3xl bg-zinc-50 p-1 border-b border-gray-300">
-            <div>
+            <Modal show={!connectionOk}>
+                <Modal.Header>
+                    <div className="flex flex-row gap-3 items-center">
 
-            </div>
-            <div className="col-span-3 grid grid-cols-4 gap-1  items-center">
+                        {getIcon("warning", "size-14 text-red-500")}
+                        {t("connection_error_title")}
+                    </div>
 
-                <a href={route("home")}>
-                    <div className={`${linkStyle} ${namePage(window.location.pathname) == "Home" ? "bg-lime-400" : ""}`} >
-                        {getIcon("home")}
-                        Home
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="flex flex-col gap-3">
+                        <div>
+                        {t("connection_error_desc_1")}
+                        </div>
+                        {t("connection_error_desc_2")}
+                        <div className="flex flex-col items-center gap-2">
+                            <StyledButton variant="delete" className="justify-center">
+                            {t("Restart")}
+                            </StyledButton>
+                        </div>
                     </div>
-                </a>
-                <a href={route("consumption")} >
-                    <div className={`${linkStyle} ${t(namePage(window.location.pathname)) == t("Consumption") ? "bg-lime-400" : ""}`}>
-                        {getIcon("power")}
-                        {t("Consumption")}
-                    </div>
-                </a>
-                <a href={route("automation")}>
-                    <div className={`${linkStyle} ${t(namePage(window.location.pathname)) == t("Automation") ? "bg-lime-400" : ""}`}>
-                        {getIcon("puzzle")}
-                        {t("Automations")}
-                    </div>
-                </a>
-                <a href={route("configuration")}>
-                    <div className={`${linkStyle} ${t(namePage(window.location.pathname)) == t("Configuration") ? "bg-lime-400" : ""}`}>
-                        {getIcon("gear")}
-                        {t("Configuration")}
-                    </div>
-                </a>
+                </Modal.Body>
+            </Modal>
+            <div></div>
+            <div className="col-span-3 grid grid-cols-4 gap-1 items-center">
+                <NavLink connectedUser={user} routeName="home" isActive={currentPage === "home"} className={linkStyle}>
+                    {getIcon("home")} Home
+                </NavLink>
+                <NavLink connectedUser={user} routeName="consumption" isActive={currentPage === "consumption"} className={linkStyle}>
+                    {getIcon("power")} {t("Consumption")}
+                </NavLink>
+                <NavLink connectedUser={user} routeName="automation" isActive={currentPage === "automation"} className={linkStyle}>
+                    {getIcon("puzzle")} {t("Automations")}
+                </NavLink>
+                <NavLink connectedUser={user} routeName="configuration" isActive={currentPage === "configuration"} className={linkStyle}>
+                    {getIcon("gear")} {t("Configuration")}
+                </NavLink>
             </div>
+
             <div className="flex justify-end items-center gap-2">
                 <div className="w-[0.1px] h-3/4 bg-gray-800 text-gray-800" />
-                {isDemo==false ?
-                    <Tooltip
-                        content={connectionOk ? t("Connection ok") : t("Connection fail")}
-                    >
+                {isDemo && <Tooltip content={t("Demo mode")}>
+                    <div className="relative size-fit text-sm justify-center flex flex-col items-center">
+                        {getIcon("media_player")}
+                        Demo
+                    </div>
+                </Tooltip>
+
+                }
+                {/*                 {!isDemo ? (
+                    <Tooltip content={connectionOk ? t("Connection ok") : t("Connection fail")}>
                         <div className="relative size-fit">
                             {getIcon("homeassistant", "size-7 text-sky-500")}
-                            {connectionOk ?
-
-                                <div className="bg-lime-400 rounded-full absolute -bottom-2 -right-2 p-0.5 items-center">
-
-                                    {getIcon("check", "size-2")}
-                                </div>
-                                :
-                                <div className="bg-red-400 rounded-full absolute -bottom-2 -right-2 items-center p-0.5">
-
-                                    {getIcon("close", "size-3")}
-                                </div>
-                            }
+                            <div
+                                className={`${connectionOk ? "bg-lime-400" : "bg-red-400"
+                                    } rounded-full absolute -bottom-2 -right-2 p-0.5 items-center`}
+                            >
+                                {getIcon(connectionOk ? "check" : "close", connectionOk ? "size-2" : "size-3")}
+                            </div>
                         </div>
                     </Tooltip>
-                    :
-                    <Tooltip
-                        content={t("Demo mode")}
-                    >
+                ) : (
+                    <Tooltip content={t("Demo mode")}>
                         <div className="relative size-fit text-sm justify-center flex flex-col items-center">
                             {getIcon("media_player")}
                             Demo
                         </div>
                     </Tooltip>
-                }
+                )} */}
 
                 <Dropdown
-                    label={<Avatar
-                        size={"md"}
-                        placeholderInitials={user.username}
-                        alt="User settings"
-                        img={user.url_photo && domain + "/" + user.url_photo}
-                        rounded />}
-                    arrowIcon={true}
+                    label={
+                        <Avatar
+                            size={"md"}
+                            placeholderInitials={user.username}
+                            alt="User settings"
+                            img={user.url_photo && domain + "/" + user.url_photo}
+                            rounded
+                        />
+                    }
+                    arrowIcon
                     inline
                 >
                     <Dropdown.Header>
                         <span className="block text-sm">{user.username}</span>
                         <span className="block truncate text-sm font-medium">{user.email}</span>
                     </Dropdown.Header>
-                    <Dropdown.Item icon={FaUser} href={route("userarea.get")}>Account</Dropdown.Item>
-                    <Dropdown.Item icon={FiLogOut} >
-                        <a onClick={(e) => { e.preventDefault(); submit(e) }} className="flex flex-col justify-center items-center">
+                    <Dropdown.Item icon={FaUser}>
+                        <Link href={route("userarea.get")}>Account</Link>
+                    </Dropdown.Item>
+                    <Dropdown.Item icon={FiLogOut}>
+                        <a onClick={submit} className="flex flex-col justify-center items-center">
                             <p>{t("Log out")}</p>
                         </a>
                     </Dropdown.Item>
@@ -127,15 +169,15 @@ export default function Navbar({ }) {
                     <Dropdown.Item>
                         <div className="flex flex-row gap-2">
                             <div onClick={() => setLocale("it")}>
-                                <p className={currentLocale() == "it" && "underline"}>Italiano</p>
+                                <p className={currentLocale() === "it" ? "underline" : ""}>Italiano</p>
                             </div>
                             <div onClick={() => setLocale("en")}>
-                                <p className={currentLocale() == "en" && "underline"}>English</p>
+                                <p className={currentLocale() === "en" ? "underline" : ""}>English</p>
                             </div>
                         </div>
                     </Dropdown.Item>
                 </Dropdown>
             </div>
         </div>
-    )
+    );
 }

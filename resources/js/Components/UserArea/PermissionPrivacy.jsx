@@ -2,7 +2,7 @@ import { UserContext } from "@/Layouts/UserLayout";
 import { Checkbox } from "flowbite-react";
 import { useState, useEffect, useContext } from "react";
 import { useLaravelReactI18n } from "laravel-react-i18n";
-import { backend } from "../Commons/Constants";
+import { apiFetch, apiLog, backend, logsEvents } from "../Commons/Constants";
 
 export default function PermissionPrivacy() {
     const { t } = useLaravelReactI18n();
@@ -11,26 +11,38 @@ export default function PermissionPrivacy() {
 
     const fetchPrivacy = async () => {
         if (!user.username) return;
-        const response = await fetch(`${backend}/user/preferences`);
-        if (response.ok) {
-            const result = await response.json();
-            const userData = result.find(e => e.user_id === user.username);
-
-            if (userData) {
-                setPrivacy({
-                    privacy_disclosure: userData.data_disclosure,
-                    privacy_collection: userData.data_collection
-                });
-            }
+        const response = await apiFetch(`/user/privacy/${user.username}`);
+        if (response) {
+            setPrivacy({
+                privacy_disclosure: response.data_disclosure,
+                privacy_collection: response.data_collection
+            });
         }
-    };
+    }
 
     useEffect(() => {
         fetchPrivacy();
     }, [user]);
 
-    const handlePrivacyChange = (key, value) => {
-        setPrivacy(prev => ({ ...prev, [key]: value }));
+    const handlePrivacyChange = async (key, value) => {
+        const updatedPrivacy = { ...privacy, [key]: value };
+        setPrivacy(updatedPrivacy); 
+        await apiFetch("/user/privacy", "PUT", {
+            data: [{
+                user_id: user.username,
+                data_collection: updatedPrivacy.privacy_collection,
+                data_disclosure: updatedPrivacy.privacy_disclosure
+            }]
+        });
+        apiLog(user.username, 
+            logsEvents.USER_PRIVACY_ADD, 
+            user.username,
+            JSON.stringify({
+                data_collection: updatedPrivacy.privacy_collection,
+                data_disclosure: updatedPrivacy.privacy_disclosure
+            }))
+
+
     };
 
     return (
@@ -67,3 +79,4 @@ export default function PermissionPrivacy() {
         </div>
     );
 }
+
