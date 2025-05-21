@@ -292,5 +292,10 @@
     "Overheated":"surriscaldamento",
     "overcurrent":"sovracorrente ",
     "overpowering":"sovrapotenza",
-    "overvoltage":"sovravoltaggio"
+    "overvoltage":"sovravoltaggio",
+    "Groups":"Gruppi",
+    "Add device to a group":"Aggiungi il dispostivo ad un gruppo",
+    "Add new group...":"Crea un nuovo gruppo...",
+    "Update":"Aggiorna",
+    "Add a new group":"Aggiungi gruppo"
 }

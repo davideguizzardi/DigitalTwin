@@ -1,6 +1,6 @@
 import { LightPopup } from "./LightPopup"
 import { MediaPlayerControl } from "./MediaPlayerPopup"
-import { DropdownItem, Modal } from "flowbite-react"
+import { DropdownDivider, DropdownItem, Modal, ModalFooter } from "flowbite-react"
 import { useState, useEffect, useContext } from "react"
 import { getIcon, backend, apiFetch, DevicesTypes, getDeviceIcon } from "../Commons/Constants"
 import { callService } from "../Commons/Constants"
@@ -10,8 +10,62 @@ import { SwitchToggle } from "./SwitchToggle"
 import { useLaravelReactI18n } from "laravel-react-i18n"
 import { StyledButton } from "../Commons/StyledBasedComponents"
 import { TouchKeyboard2 } from "../Commons/TouchKeyboard2"
-import { IconSelector } from "../ConfigurationMap/DeviceConfiguration"
 import { Dropdown } from "flowbite-react"
+
+
+
+function CreateGroupModal({ show, setShow, handleRoomCreation }) {
+  const [groupName, setGroupName] = useState('');
+  const { t } = useLaravelReactI18n()
+
+  const handleCancel = () => {
+    setGroupName('');
+    setShow(false);
+  };
+
+  const createRoom = async () => {
+    const response = await apiFetch("/group", "PUT", { data: [{ name: groupName }] })
+    if (response) {
+      handleRoomCreation()
+    }
+  }
+
+  return (
+    <Modal size={"xl"} show={show} onClose={handleCancel} popup>
+      <Modal.Header>
+        {t("Add a new group")}
+      </Modal.Header>
+      <Modal.Body>
+
+        <div className="block">
+          <label htmlFor="group_name" className="block text-sm font-medium text-gray-700 mb-2">
+            {t("Name")}
+          </label>
+          <TouchKeyboard2
+            forceOpen={true}
+            id="group_name"
+            type="text"
+            inputValue={groupName}
+            onChange={(e) => setGroupName(e.target.value)}
+          />
+          <div className="h-52" />
+        </div>
+      </Modal.Body>
+      <Modal.Footer>
+
+        <div className="flex justify-between gap-2 p-4 w-full">
+          <StyledButton variant="secondary" onClick={() => handleCancel()}>
+            {t("Cancel")}
+          </StyledButton>
+          <StyledButton variant="primary" onClick={() => createRoom()}>
+            {t("Add")}
+          </StyledButton>
+        </div>
+      </Modal.Footer>
+    </Modal>
+  );
+}
+
 
 
 function ControlSelector({ device, user, errorFun, refreshDevice }) {
@@ -68,11 +122,21 @@ export default function ControlPopup({ openDevice }) {
   const [open, setOpen] = useState(false)
   const [isError, setIsError] = useState(false)
   const [deviceAutomations, setDeviceAutomations] = useState([])
+  const [deviceGroups, setDeviceGroups] = useState([])
   const user = useContext(UserContext)
   const { t } = useLaravelReactI18n()
 
   const [editMode, setEditMode] = useState(false)
+  const [groupsList, setGroupsList] = useState([])
 
+  const [showGroupAdd, setShowGroupAdd] = useState(false)
+
+  const fetchGroupContext = async () => {
+    const response = await apiFetch(`/device-group/device/${openDevice.device_id}`)
+    if (response) {
+      setDeviceGroups(response)
+    }
+  }
 
   useEffect(() => {
     const fetchAutomationContext = async () => {
@@ -82,8 +146,10 @@ export default function ControlPopup({ openDevice }) {
         setDeviceAutomations(devAutomations)
       }
     }
+
     if (Object.keys(openDevice).length > 0) {
       fetchAutomationContext()
+      fetchGroupContext()
     }
   }, [openDevice])
 
@@ -101,6 +167,60 @@ export default function ControlPopup({ openDevice }) {
     }
   };
 
+  const fetchGroups = async () => {
+    const response = await apiFetch("/group");
+    if (response) {
+      setGroupsList(response);
+    }
+  };
+
+  const handleRoomCreation = async () => {
+    fetchGroups()
+    setShowGroupAdd(false)
+  }
+
+  const handleDeviceGroupAddition = async (group_id) => {
+    const response = await apiFetch("/device-group", "PUT", { data: [{ device_id: openDevice.device_id, group_id: group_id }] })
+    if (response) {
+      //TODO:ADD log
+      fetchGroupContext()
+    }
+  }
+
+  const deleteDeviceGroup = async (group_id) => {
+    const response = await apiFetch(`/device-group/${openDevice.device_id}/${group_id}`, "DELETE")
+    if (response) {
+      //TODO:ADD log
+      fetchGroupContext()
+    }
+  }
+
+
+  useEffect(() => {
+    if (editMode) {
+      fetchGroups();
+    }
+  }, [editMode]);
+
+  const handleConfigurationSubmit = async () => {
+    const body = {
+      data: [{
+        device_id: device.device_id,
+        name: device.name,
+        category: device.category,
+        show: device.show ? 1 : 0,
+      }]
+    }
+    const response = await apiFetch("/device_configuration", "PUT", body)
+    if (response) {
+      setEditMode(false)
+      if (user)
+        apiLog(user.username, logsEvents.CONFIGURATION_DEVICE, "", JSON.stringify(body))
+    } else {
+      alert(t("Some error occurred"))
+    }
+  }
+
 
 
   const errorFun = () => {
@@ -110,142 +230,201 @@ export default function ControlPopup({ openDevice }) {
   return (
     <>
       <ToastNotification message={"Some error occurred while trying to change device state..."} isVisible={isError} onClose={() => setIsError(false)} type="error" />
-      <Modal show={open} onClose={() => { setOpen(false); setDevice({}) }} popup dismissible>
+      <CreateGroupModal show={showGroupAdd} setShow={setShowGroupAdd} handleRoomCreation={() => handleRoomCreation()} />
+
+      <Modal show={open} onClose={() => { setOpen(false); setDevice({});setEditMode(false)}} popup>
         <Modal.Header className="items-center justify-between ">
-          <div className="flex flex-row items-center justify-between bg-emerald-300 !w-">
+          <div className="flex flex-row items-center justify-between">
             <div className="flex flex-col ml-2">
               <div className="font-thin text-sm">
                 {device.manufacturer} - {device.model}
               </div>
               <div className="text-2xl font-semibold">{device.name}</div>
             </div>
-
-            <StyledButton
-              variant="secondary"
-              className="rounded-full p-0 size-fit ml-auto"
-              onClick={() => setEditMode(!editMode)}
-            >
-              {getIcon("gear", "size-5")}
-            </StyledButton>
+            {!editMode &&
+              <StyledButton
+                variant="secondary"
+                className="rounded-full p-0 size-fit ml-auto"
+                onClick={() => setEditMode(!editMode)}
+              >
+                {getIcon("gear", "size-5")}
+              </StyledButton>
+            }
           </div>
         </Modal.Header>
 
         {editMode ?
           <>
             <Modal.Body>
-              <div className="flex flex-col !w-full gap-6">
+              <div className="flex flex-col !w-full gap-10">
 
                 <div className="block">
-                  Name
+                  {t("Name")}
                   <TouchKeyboard2
                     inputValue={device.name}
-                    onChange={(value) => { }}
+                    onChange={(e) => setDevice({ ...device, name: e.target.value })}
                     id="device_name"
                     type="text"
-
                   />
                 </div>
                 <div className="block">
-                  Category
-                  <Dropdown
-                  placement="bottom"
-                    id="category" inline={true}
-                    label={
-                      <span className="flex items-center gap-2 w-60 ">
-                        {getIcon(device.category, "size-8")}
-                        <span>{t(device.category)}</span>
-                      </span>
-                    }
-                  >
-                    <div className="max-h-40 overflow-y-auto w-60">
+                  {t("Category")}
+                  <div className="shadow-md w-fit rounded-md p-1 bg-gray-50 border">
 
-                    {Object.keys(DevicesTypes).map((icon) => (
-                      <DropdownItem key={icon} className="flex items-center gap-2">
-                        {getIcon(icon, "size-8")}
-                        <span>{t(icon)}</span>
-                      </DropdownItem>
-                    ))}
-                    </div>
-                  </Dropdown>
+                    <Dropdown
+                      placement="bottom"
+                      id="category" inline={true}
+
+                      label={
+                        <span className="flex items-center gap-2 w-64">
+                          {getIcon(device.category, "size-8")}
+                          <span>{t(device.category)}</span>
+                        </span>
+                      }
+                    >
+                      <div className="max-h-40 overflow-y-auto w-64">
+
+                        {Object.keys(DevicesTypes).map((icon) => (
+                          <DropdownItem
+                            onClick={() => setDevice({ ...device, category: icon })}
+                            key={icon}
+                            className="flex items-center gap-2">
+                            {getIcon(icon, "size-8")}
+                            <span>{t(icon)}</span>
+                          </DropdownItem>
+                        ))}
+                      </div>
+                    </Dropdown>
+                  </div>
                 </div>
-                <div className="block">
-                  Groups
+                <div className="flex flex-col gap-4">
+                  {t("Groups")}
                   <div className="grid grid-cols-4 grid-flow-row gap-4">
-                    {["Room1","Room2","Room3","Room4","Group5"].map(group=>(
-                      <div className="bg-zinc-100 rounded-md items-center flex justify-center py-2">
-                        {group}{getIcon("close")}
+                    {deviceGroups.map(group => (
+                      <div className="bg-zinc-100 rounded-md items-center flex justify-between p-2">
+                        {group.name}
+                        <div className="cursor-pointer" onClick={() => deleteDeviceGroup(group.group_id)}>
+                          {getIcon("close")}
                         </div>
+                      </div>
                     ))}
                   </div>
-                  <Dropdown inline={true} label="aaa">
-                    <DropdownItem>Ass</DropdownItem>
-                  </Dropdown>
+
+                  <div className="shadow-md w-fit rounded-md p-1 bg-gray-50 border">
+                    <Dropdown
+                      inline={true}
+                      label={
+                        <span className="flex items-center gap-2 w-64 ">
+                          {t("Add device to a group")}
+                        </span>
+                      }
+                    >
+                      <div className="max-h-40 overflow-y-auto w-64">
+
+                        {groupsList
+                          .filter(g => g && !deviceGroups.some(dg => dg.group_id === g.id))
+                          .map(group => (
+                            <DropdownItem key={group.group_id} onClick={() => handleDeviceGroupAddition(group.id)}>
+                              {group.name}
+                            </DropdownItem>
+                          ))}
+
+
+
+                        <DropdownDivider />
+                        <DropdownItem onClick={() => setShowGroupAdd(true)}>
+                          {getIcon("plus", "size-5 mr-2")}
+                          <span>{t("Add new group...")}</span>
+                        </DropdownItem>
+                      </div>
+                    </Dropdown>
+                  </div>
                 </div>
-                <div className="h-40"/>
               </div>
             </Modal.Body>
             <Modal.Footer>
-              Update
+              <div className="flex flex-row items-center justify-between w-full">
+
+                <StyledButton variant="primary" onClick={() => setEditMode(false)}>
+                  {t("Cancel")}
+                </StyledButton>
+
+
+                <StyledButton variant="secondary" onClick={() => handleConfigurationSubmit()}>
+                  {t("Update")}
+                </StyledButton>
+              </div>
             </Modal.Footer>
           </>
 
           :
           <>
             <Modal.Body>
-              <div className="-ml-2 font-light font-[Inter]">
-                {t("Room")}: <span className="font-semibold">{t(device.map_data ? device.map_data.room ? device.map_data.room : t("No room") : t("No room"))}</span>
-              </div>
-              <div className="-ml-2 flex flex-col gap-4 items-start mb-2">
-                {device.state &&
-
-                  <div className="font-light font-[Inter]">
-                    {t("State")}: <span className="font-semibold">{t(device.state)}</span>
+              <div className="flex flex-col gap-4">
+                <div className="-ml-2 font-light font-[Inter]">
+                  {t("Room")}: <span className="font-semibold">{t(device.map_data ? device.map_data.room ? device.map_data.room : t("No room") : t("No room"))}</span>
+                </div>
+                <div className="-ml-2 font-light font-[Inter]">
+                  {t("Groups")}:
+                  <div className="grid grid-cols-4 grid-flow-row gap-4">
+                    {deviceGroups.map(group => (
+                      <div className="bg-zinc-100 rounded-md items-center flex justify-center p-2">
+                        {group.name}
+                      </div>
+                    ))}
                   </div>
-                }
+                </div>
+                <div className="-ml-2 flex flex-col gap-4 items-start mb-2">
+                  {device.state &&
 
-
-                {device.list_of_entities && device.list_of_entities.length > 0 &&
-                  <div className="flex flex-col w-full font-light font-[Inter]">
-                    {t("Sensors")}:
-                    <div className="grid grid-cols-4 gap-2 w-full">
-                      {device.list_of_entities
-                        .filter(e => !e.entity_id.startsWith(device.device_class) && e.entity_class != "energy")
-                        .sort((a, b) => a.entity_class < b.entity_class ? -1 : 1)
-                        .map((sensor, index) => (
-                          <div className="flex flex-col gap-1 items-start bg-zinc-50 rounded-md shadow-md p-2" key={index}>
-                            <div className="flex flex-row gap-1 items-center">
-                              {getIcon(sensor.entity_class, "size-5")}
-                              <span className="text-sm capitalize">
-                                {t(sensor.name.trim())}
-                              </span>
-                            </div>
-                            <div className="text-base flex justify-end w-full ">
-                              {t(sensor.state)} {sensor.unit_of_measurement != undefined && sensor.unit_of_measurement}
-                            </div>
-                          </div>
-                        ))
-                      }
+                    <div className="font-light font-[Inter]">
+                      {t("State")}: <span className="font-semibold">{t(device.state)}</span>
                     </div>
+                  }
 
-                  </div>
-                }
-                {deviceAutomations.length > 0 &&
 
-                  <div className="flex flex-col w-full">
-                    <span className="font-light font-[Inter]">{t("Automations")}:{" "}
-                      {deviceAutomations.map((automation, index) => (
-                        <span key={automation.id}>
-                          <a className="underline text-blue-500" href={route("automation", { id: automation.id })}>
-                            {automation.name}
-                          </a>
-                          {index < deviceAutomations.length - 1 ? ", " : "."}
-                        </span>
-                      ))}
-                    </span>
-                  </div>
-                }
+                  {device.list_of_entities && device.list_of_entities.length > 0 &&
+                    <div className="flex flex-col w-full font-light font-[Inter]">
+                      {t("Sensors")}:
+                      <div className="grid grid-cols-4 gap-2 w-full">
+                        {device.list_of_entities
+                          .filter(e => !e.entity_id.startsWith(device.device_class) && e.entity_class != "energy")
+                          .sort((a, b) => a.entity_class < b.entity_class ? -1 : 1)
+                          .map((sensor, index) => (
+                            <div className="flex flex-col gap-1 items-start bg-zinc-50 rounded-md shadow-md p-2" key={index}>
+                              <div className="flex flex-row gap-1 items-center">
+                                {getIcon(sensor.entity_class, "size-5")}
+                                <span className="text-sm capitalize">
+                                  {t(sensor.name.trim())}
+                                </span>
+                              </div>
+                              <div className="text-base flex justify-end w-full ">
+                                {t(sensor.state)} {sensor.unit_of_measurement != undefined && sensor.unit_of_measurement}
+                              </div>
+                            </div>
+                          ))
+                        }
+                      </div>
+
+                    </div>
+                  }
+                  {deviceAutomations.length > 0 &&
+
+                    <div className="flex flex-col w-full">
+                      <span className="font-light font-[Inter]">{t("Automations")}:{" "}
+                        {deviceAutomations.map((automation, index) => (
+                          <span key={automation.id}>
+                            <a className="underline text-blue-500" href={route("automation", { id: automation.id })}>
+                              {automation.name}
+                            </a>
+                            {index < deviceAutomations.length - 1 ? ", " : "."}
+                          </span>
+                        ))}
+                      </span>
+                    </div>
+                  }
+                </div>
               </div>
-
             </Modal.Body>
             <Modal.Footer>
 

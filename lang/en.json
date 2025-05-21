@@ -289,5 +289,10 @@
     "overheated":"overheated",
     "overcurrent":"overcurrent",
     "overpowering":"overpowering",
-    "overvoltage":"overvoltage"
+    "overvoltage":"overvoltage",
+    "Groups":"Groups",
+    "Add device to a group":"Add device to a group",
+    "Add new group...":"Add new group...",
+    "Update":"Update",
+    "Add a new group":"Add a new group"
 }
