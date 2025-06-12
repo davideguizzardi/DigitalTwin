@@ -268,12 +268,14 @@
     "Demo mode":"The server is running in demo mode",
     "Room":"Room",
     "No Room":"No Room",
+    "No groups":" No groups",
     "Your password":"Your password",
     "Forgot your password?":"Forgot your password?",
     "Remember me":"Remember me",
     "Enter":"Enter",
     "Rooms list":"Rooms list",
     "Add room":"Add room",
+    "Draw room":"Draw room",
     "Modify room":"Modify room",
     "Room name":"Room name",
     "connection_error_title":"Smart home connection is missing",
@@ -294,5 +296,9 @@
     "Add device to a group":"Add device to a group",
     "Add new group...":"Add new group...",
     "Update":"Update",
-    "Add a new group":"Add a new group"
+    "Add a new group":"Add a new group",
+    "Configure groups":"Configure groups",
+    "Edit group":"Edit group",
+    "Fullscreen":"Fullscreen",
+    "Exit fullscreen":"Exit fullscreen"
 }

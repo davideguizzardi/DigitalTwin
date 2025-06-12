@@ -10,6 +10,7 @@ import { LaravelReactI18nProvider } from 'laravel-react-i18n';
 
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const locale=import.meta.env.VITE_LOCALE
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -26,8 +27,8 @@ createInertiaApp({
 
         root.render(
             <LaravelReactI18nProvider
-                locale={'en'}
-                fallbackLocale={'=it'}
+                locale={locale}
+                fallbackLocale={'it'}
                 files={import.meta.glob('/lang/*.json')}
 
             >

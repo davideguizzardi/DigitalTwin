@@ -9,6 +9,7 @@ import { getIcon } from "../Commons/Constants";
 import { TextInput, Label, Button } from "flowbite-react";
 import { useContext } from "react";
 import { UserContext } from "@/Layouts/UserLayout";
+import { NumericKeyboard } from "../Commons/NumericKeyboard";
 
 export default function ConfigurationEnergy({ endSection, backSection, isInitialConfiguration = true }) {
     const templateSWH1 = Array.from(Array(7).keys()).map(() => Array(24).fill(0))
@@ -55,7 +56,7 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
         if (value < len) {
             setPowerPrice([...powerPrice.slice(0, value)])
         } else if (value > timeSlots) {
-            const updateState = [...powerPrice, ...Array(value - len).fill(0.001)]
+            const updateState = [...powerPrice, ...Array(value - len).fill("0.001")]
             setPowerPrice([...updateState])
         }
         setTimeSlots(value)
@@ -68,7 +69,7 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
     const setInputValue = (e, index) => {
         const tempPower = [...powerPrice.map((el, i) => {
             if (index == i)
-                return e.target.value
+                return "0."+e.target.value
             else
                 return el
         })]
@@ -274,22 +275,28 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
     return (
         <div className="relative w-full flex flex-col gap-2 min-w-fit px-2">
             <div className="size-full flex gap-3">
-                <div className="flex flex-col p-1 h-full w-1/2 ">
+                <div className="flex flex-col p-1 w-1/2 ">
                     <div className="flex py-3 items-center gap-6" onClick={() => setCurrentSlot(-1)}>
-                        <Label htmlFor="maximum_capacity" className=" dark:text-white text-lg">{t("Maximum capacity")}</Label>
+                        <Label htmlFor="maximum_capacity" className=" dark:text-white 2xl:text-lg text-md">{t("Maximum capacity")}</Label>
                         <div className="flex flex-row gap-2 items-center">
-                            <TextInput id="maximum_capacity" className=" dark:text-white dark:bg-neutral-700" type="number"
-                                value={powerCapacity} min="0" max="100000" step="100" onChange={e => setPowerCapacity(e.target.value)} required />
-                            <p className="text-xl dark:text-white">W</p>
+                            <NumericKeyboard id="maximum_capacity" className=" dark:text-white dark:bg-neutral-700" type="number"
+                               inputValue={powerCapacity} value={powerCapacity} min="0" max="100000" step="100" onChange={e => setPowerCapacity(e.target.value)} required />
+                            <p className="text-lg dark:text-white">W</p>
                         </div>
                     </div>
-                    <div className="flex py-3 items-center gap-6" onClick={() => setCurrentSlot(-1)}>
-                        <Label htmlFor="slots_number" className="text-lg dark:text-white">{t("Number of slot")}</Label>
-                        <TextInput id="slots_number" className=" dark:text-white dark:bg-neutral-700" type="number"
-                            value={timeSlots > 0 ? timeSlots : ''}
-                            min="1" max="3" onChange={e => updateTimeSlots(e.target.value)} required />
+                    <div className="flex flex-row gap-2 items-center">
+                        <Label htmlFor="slots_number" className="2xl:text-lg text-md dark:text-white">{t("Number of slot")}</Label>
+                        {["1","2","3"].map(el=>(
+                            <StyledButton 
+                            variant={timeSlots==el?"primary":"secondary"} 
+                            className="rounded-full"
+                            onClick={()=>updateTimeSlots(el)}
+                            >
+                                {el}
+                            </StyledButton>
+                        ))}
                     </div>
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-0">
                         {timeSlots > 0 &&
                             powerPrice.filter((e, i) => { return i < timeSlots }).map((element, index) => {
                                 return (
@@ -298,11 +305,12 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
                                         className={`flex flex-row w-fit py-3 px-2 gap-2 -mx-1 rounded-lg transition-transform duration-200 ${currentSlot == index && `translate-x-3 border-[2px] ${borderColors[3 - timeSlots + index]}`}`}
                                     >
                                         <div className="flex flex-row gap-6 items-center">
-                                            <Label className="text-xl dark:text-white">
+                                            <Label className="2xl:text-lg text-md dark:text-white">
                                                 {t("Slot")} {index + 1}
                                             </Label>
                                             <div className="flex flex-row gap-2 items-center">
-                                                <TextInput className=" dark:text-white dark:bg-neutral-700" type="number" value={element} min="0.001" max="15" step="0.001"
+                                                0.
+                                                <NumericKeyboard inputValue={element.split(".")[1]}  className=" dark:text-white dark:bg-neutral-700" type="number" value={element.split(".")[1]} min="00001" max="99999" step="1"
                                                     onChange={(e) => setInputValue(e, index)}
                                                 />
                                                 <p className="text-xl dark:text-white">€/kWh</p>
@@ -311,7 +319,7 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
                                                 onClick={() => setCurrentSlot(index)}
                                                 className={`flex items-center rounded-lg p-2 hover:cursor-pointer ${backgroundColors[3 - timeSlots + index]}`}
                                             >
-                                                <p className="text-lg px-2 dark:text-white">
+                                                <p className="2xl:text-lg text-md px-2 dark:text-white">
                                                     {t("Insert in calendar")}
                                                 </p>
                                                 <FaPencil size={20} />
@@ -324,12 +332,12 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
                     </div>
                     <div className="size-full" onClick={() => setCurrentSlot(-1)}>
                         {currentSlot !== -1 &&
-                            <div className="absolute p-4 mt-10 mr-5 bg-zinc-100 rounded-lg shadow-md">
+                            <div className=" p-4 mt-2  mr-5 bg-zinc-100 rounded-lg shadow-md">
                                 <div className="flex flex-row items-center gap-2 mb-2">
                                     {getIcon("info")}
                                     <h3 className="text-lg font-semibold">{t("How to Use")}</h3>
                                 </div>
-                                <ul className="list-disc pl-5 text-sm space-y-1">
+                                <ul className="list-disc pl-5 2xl:text-base text-sm space-y-1">
                                     <li><strong>{t("Press")}</strong> {t("single_press_description")}</li>
                                     <li><strong>{t("Drag")}</strong> {t("drag_description")}</li>
                                     <li><strong>{t("Press")}</strong> {t("day_press_description")}</li>

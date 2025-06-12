@@ -271,12 +271,14 @@
     "Demo mode":"il server sta funzionando in modalità demo",
     "Room":"Stanza",
     "No Room":"Nessuna stanza",
+    "No groups":" Nessun gruppo",
     "Your password":"La tua password",
     "Forgot your password?":"Hai dimenticato la password?",
     "Remember me":"Ricordami",
     "Enter":"Accedi",
     "Rooms list":"Lista stanze",
     "Add room":"Aggiungi stanza",
+    "Draw room":"Disegna stanza",
     "Modify room":"Modifica stanza",
     "Room name":"Nome stanza",
     "connection_error_title":"La connessione alla smart home è stata interrotta",
@@ -297,5 +299,9 @@
     "Add device to a group":"Aggiungi il dispostivo ad un gruppo",
     "Add new group...":"Crea un nuovo gruppo...",
     "Update":"Aggiorna",
-    "Add a new group":"Aggiungi gruppo"
+    "Add a new group":"Aggiungi gruppo",
+    "Configure groups":"Configura gruppi",
+    "Edit group":"Modifica gruppo",
+    "Fullscreen":"Schermo intero",
+    "Exit fullscreen":"Schermo ridotto"
 }

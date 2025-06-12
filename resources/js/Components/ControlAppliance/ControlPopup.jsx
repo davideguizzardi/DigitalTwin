@@ -11,60 +11,7 @@ import { useLaravelReactI18n } from "laravel-react-i18n"
 import { StyledButton } from "../Commons/StyledBasedComponents"
 import { TouchKeyboard2 } from "../Commons/TouchKeyboard2"
 import { Dropdown } from "flowbite-react"
-
-
-
-function CreateGroupModal({ show, setShow, handleRoomCreation }) {
-  const [groupName, setGroupName] = useState('');
-  const { t } = useLaravelReactI18n()
-
-  const handleCancel = () => {
-    setGroupName('');
-    setShow(false);
-  };
-
-  const createRoom = async () => {
-    const response = await apiFetch("/group", "PUT", { data: [{ name: groupName }] })
-    if (response) {
-      handleRoomCreation()
-    }
-  }
-
-  return (
-    <Modal size={"xl"} show={show} onClose={handleCancel} popup>
-      <Modal.Header>
-        {t("Add a new group")}
-      </Modal.Header>
-      <Modal.Body>
-
-        <div className="block">
-          <label htmlFor="group_name" className="block text-sm font-medium text-gray-700 mb-2">
-            {t("Name")}
-          </label>
-          <TouchKeyboard2
-            forceOpen={true}
-            id="group_name"
-            type="text"
-            inputValue={groupName}
-            onChange={(e) => setGroupName(e.target.value)}
-          />
-          <div className="h-52" />
-        </div>
-      </Modal.Body>
-      <Modal.Footer>
-
-        <div className="flex justify-between gap-2 p-4 w-full">
-          <StyledButton variant="secondary" onClick={() => handleCancel()}>
-            {t("Cancel")}
-          </StyledButton>
-          <StyledButton variant="primary" onClick={() => createRoom()}>
-            {t("Add")}
-          </StyledButton>
-        </div>
-      </Modal.Footer>
-    </Modal>
-  );
-}
+import { CreateGroupModal } from "../Commons/CreateGroupModal"
 
 
 
@@ -232,7 +179,7 @@ export default function ControlPopup({ openDevice }) {
       <ToastNotification message={"Some error occurred while trying to change device state..."} isVisible={isError} onClose={() => setIsError(false)} type="error" />
       <CreateGroupModal show={showGroupAdd} setShow={setShowGroupAdd} handleRoomCreation={() => handleRoomCreation()} />
 
-      <Modal show={open} onClose={() => { setOpen(false); setDevice({});setEditMode(false)}} popup>
+      <Modal show={open} onClose={() => { setOpen(false); setDevice({}); setEditMode(false) }} popup>
         <Modal.Header className="items-center justify-between ">
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-col ml-2">
@@ -362,17 +309,24 @@ export default function ControlPopup({ openDevice }) {
             <Modal.Body>
               <div className="flex flex-col gap-4">
                 <div className="-ml-2 font-light font-[Inter]">
-                  {t("Room")}: <span className="font-semibold">{t(device.map_data ? device.map_data.room ? device.map_data.room : t("No room") : t("No room"))}</span>
+                  {t("Room")}: <span className="font-semibold">{t(device.map_data ? device.map_data.room ? device.map_data.room : t("No Room") : t("No Room"))}</span>
                 </div>
                 <div className="-ml-2 font-light font-[Inter]">
                   {t("Groups")}:
-                  <div className="grid grid-cols-4 grid-flow-row gap-4">
-                    {deviceGroups.map(group => (
-                      <div className="bg-zinc-100 rounded-md items-center flex justify-center p-2">
-                        {group.name}
-                      </div>
-                    ))}
-                  </div>
+                  {deviceGroups.length > 0 ?
+
+                    <div className="grid grid-cols-4 grid-flow-row gap-4">
+                      {deviceGroups.map(group => (
+                        <div className="bg-zinc-100 rounded-md items-center flex justify-center p-2">
+                          {group.name}
+                        </div>
+                      ))}
+                    </div>
+                    :
+                    <span className="font-semibold">
+                      {t("No groups")}
+                    </span>
+                  }
                 </div>
                 <div className="-ml-2 flex flex-col gap-4 items-start mb-2">
                   {device.state &&
@@ -385,7 +339,6 @@ export default function ControlPopup({ openDevice }) {
 
                   {device.list_of_entities && device.list_of_entities.length > 0 &&
                     <div className="flex flex-col w-full font-light font-[Inter]">
-                      {t("Sensors")}:
                       <div className="grid grid-cols-4 gap-2 w-full">
                         {device.list_of_entities
                           .filter(e => !e.entity_id.startsWith(device.device_class) && e.entity_class != "energy")
@@ -395,7 +348,7 @@ export default function ControlPopup({ openDevice }) {
                               <div className="flex flex-row gap-1 items-center">
                                 {getIcon(sensor.entity_class, "size-5")}
                                 <span className="text-sm capitalize">
-                                  {t(sensor.name.trim())}
+                                  {sensor.name.trim().split(" ").map(el => (t(el))).join(" ")}
                                 </span>
                               </div>
                               <div className="text-base flex justify-end w-full ">

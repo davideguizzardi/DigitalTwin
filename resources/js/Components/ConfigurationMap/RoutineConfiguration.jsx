@@ -17,6 +17,7 @@ import { useLaravelReactI18n } from "laravel-react-i18n";
 import ToastNotification from "../Commons/ToastNotification";
 
 import RoomConfiguration from "./RoomConfiguration";
+import { GroupConfiguration } from "./GroupConfiguration";
 
 
 
@@ -47,7 +48,7 @@ export default function RoutineConfiguration() {
             ),
         "Configure groups":
             (
-                <></>
+                <GroupConfiguration/>
             ),
         "Configure Energy Plan":
             (<ConfigurationEnergy isInitialConfiguration={false} endSection={endSection} />)

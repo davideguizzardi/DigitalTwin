@@ -74,7 +74,7 @@ const Dashboard3 = ({ maps, token }) => {
     const [activeDevices, setActiveDevices] = useState(0)
 
     const w2gCO2 = 0.431
-    const minimumPower = 5
+    const minimumPower = 3
 
     const { deviceList = [], fetchDevices } = useContext(DeviceContextRefresh);
     const { t } = useLaravelReactI18n();

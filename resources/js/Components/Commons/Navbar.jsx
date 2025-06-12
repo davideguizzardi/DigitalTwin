@@ -1,7 +1,7 @@
 import { getIcon } from "@/Components/Commons/Constants";
 import { UserContext } from "@/Layouts/UserLayout";
-import { Avatar, Dropdown, Modal, Tooltip } from "flowbite-react";
-import { useContext } from "react";
+import { Avatar, Dropdown, DropdownDivider, Modal, Tooltip } from "flowbite-react";
+import { useContext,useState } from "react";
 import { useLaravelReactI18n } from "laravel-react-i18n";
 import { FaUser } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
@@ -12,6 +12,7 @@ import { apiLog, logsEvents } from "@/Components/Commons/Constants";
 import { Link } from "@inertiajs/react";
 import Cookies from "js-cookie";
 import { StyledButton } from "./StyledBasedComponents";
+import { BsFullscreen, BsFullscreenExit } from "react-icons/bs";
 
 
 function NavLink({ connectedUser, routeName, isActive, children, className = '' }) {
@@ -50,6 +51,8 @@ export default function Navbar() {
     const { connectionOk, isDemo } = useContext(DeviceContextRefresh);
     const { t, setLocale, currentLocale } = useLaravelReactI18n();
 
+    const [isFullscreen, setIsFullscreen] = useState(document.fullscreenElement);
+
     const currentPage = (() => {
         const [, path] = window.location.pathname.split("/", 2);
         if (window.location.pathname === "/userarea") return "userarea";
@@ -67,6 +70,20 @@ export default function Navbar() {
         router.post("/logout");
     };
 
+    const toggleFullscreen = () => {
+        if (!document.fullscreenElement) {
+            // Enter fullscreen
+            document.documentElement.requestFullscreen()
+                .then(() => setIsFullscreen(true))
+                .catch((err) => console.error("Failed to enter fullscreen:", err));
+        } else {
+            // Exit fullscreen
+            document.exitFullscreen()
+                .then(() => setIsFullscreen(false))
+                .catch((err) => console.error("Failed to exit fullscreen:", err));
+        }
+    };
+
 
     return (
         <div className="w-full h-13 grid grid-cols-5 justify-center text-3xl bg-zinc-50 p-1 border-b border-gray-300">
@@ -82,12 +99,12 @@ export default function Navbar() {
                 <Modal.Body>
                     <div className="flex flex-col gap-3">
                         <div>
-                        {t("connection_error_desc_1")}
+                            {t("connection_error_desc_1")}
                         </div>
                         {t("connection_error_desc_2")}
                         <div className="flex flex-col items-center gap-2">
-                            <StyledButton variant="delete" className="justify-center">
-                            {t("Restart")}
+                            <StyledButton variant="delete" className="justify-center" onClick={() => Window.close()}>
+                                {t("Restart")}
                             </StyledButton>
                         </div>
                     </div>
@@ -164,6 +181,10 @@ export default function Navbar() {
                         <a onClick={submit} className="flex flex-col justify-center items-center">
                             <p>{t("Log out")}</p>
                         </a>
+                    </Dropdown.Item>
+                    <Dropdown.Divider />
+                    <Dropdown.Item icon={isFullscreen?BsFullscreenExit:BsFullscreen} className="!hover:bg-yellow-200" onClick={()=>toggleFullscreen()}>
+                        {isFullscreen?t("Exit fullscreen"):t("Fullscreen")}        
                     </Dropdown.Item>
                     <Dropdown.Divider />
                     <Dropdown.Item>

@@ -497,7 +497,7 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
                   </>
                   :
                   <>
-                    <strong>{t("Double press")}</strong> {t("double_press_room_description")}
+                    <strong>{t("Double Press")}</strong> {t("double_press_room_description")}
                   </>
 
                 }

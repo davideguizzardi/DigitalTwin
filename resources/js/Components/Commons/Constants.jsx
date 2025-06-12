@@ -13,7 +13,7 @@ import {
     FaCirclePlay, FaLightbulb, FaHouse,
     FaArrowRight,
     FaArrowLeft,
-    FaPlus
+    FaPlus,FaPencil
 } from "react-icons/fa6";
 
 // Other icon libraries
@@ -31,7 +31,7 @@ import {
 
 import {
     MdOutlineEnergySavingsLeaf, MdThermostat, MdAirlineSeatReclineExtra, MdOutlinePower,
-    MdRecentActors
+    MdFullscreen
 } from "react-icons/md";
 
 import {
@@ -53,6 +53,8 @@ import {
 import {
     RxSwitch
 } from "react-icons/rx";
+
+import { BsFullscreen, BsFullscreenExit } from "react-icons/bs";
 
 import { PiTelevisionSimple, PiVideoCameraFill, PiDesktopTowerFill, PiForkKnife } from "react-icons/pi";
 import { TbMicrowave } from "react-icons/tb";
@@ -189,7 +191,10 @@ export const iconMap = {
     zoomout:(className)=><CiZoomOut className={className}/>,
     save: (className)=><FaSave className={className}/>,
     motion: (className)=><FaRunning className={className}/>,
-    problem: (className) => <CiWarning className={className} />
+    problem: (className) => <CiWarning className={className} />,
+    edit:(className)=><FaPencil className={className}/>,
+    fullscreen:(className)=><BsFullscreen className={className}/>,
+    fullscreen_exit:(className)=><BsFullscreenExit className={className}/>
 }
 
 export const DevicesTypes = {
