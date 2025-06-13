@@ -16,7 +16,7 @@ import { UserContext } from "@/Layouts/UserLayout";
 import { Slider } from "@mui/material";
 
 window.Konva.hitOnDragEnabled = true;
-const token = Cookies.get("auth-token");
+
 
 const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = true }) => {
   const [maps, setMaps] = useState([]);
@@ -111,6 +111,7 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
 
 
   const fetchMap = async () => {
+    const token = Cookies.get("auth-token");
     const apiRoute = route('map.index');
     const response = await fetch(apiRoute, {
       headers: { 'Authorization': 'Bearer ' + token }

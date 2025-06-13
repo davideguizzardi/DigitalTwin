@@ -235,7 +235,7 @@ export function TotalConsumptionGraph({ device_list }) {
           </div>
 
         </div>
-      </div>
+      </div>1
       <div className="pl-3 flex h-full items-center justify-center dark:text-white">
         {
           dataset.length > 0 ?
@@ -248,7 +248,7 @@ export function TotalConsumptionGraph({ device_list }) {
               borderRadius={4}
               margin={{ left: 70 }}
               height={heightGraph}
-              onItemClick={(event, params) => handleItemClick(params)}
+            //onItemClick={(event, params) => handleItemClick(params)}
               sx={sxGraph}
             />
             :

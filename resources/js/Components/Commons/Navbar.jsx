@@ -1,7 +1,7 @@
 import { getIcon } from "@/Components/Commons/Constants";
 import { UserContext } from "@/Layouts/UserLayout";
 import { Avatar, Dropdown, DropdownDivider, Modal, Tooltip } from "flowbite-react";
-import { useContext,useState } from "react";
+import { useContext, useState } from "react";
 import { useLaravelReactI18n } from "laravel-react-i18n";
 import { FaUser } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
@@ -171,20 +171,22 @@ export default function Navbar() {
                     inline
                 >
                     <Dropdown.Header>
-                        <span className="block text-sm">{user.username}</span>
-                        <span className="block truncate text-sm font-medium">{user.email}</span>
+                        <span className="block text-lg">{user.username}</span>
+                        <span className="block truncate text-lg font-medium">{user.email}</span>
                     </Dropdown.Header>
                     <Dropdown.Item icon={FaUser}>
-                        <Link href={route("userarea.get")}>Account</Link>
+                        <Link className="text-lg" href={route("userarea.get")}>{t("Account")}</Link>
                     </Dropdown.Item>
                     <Dropdown.Item icon={FiLogOut}>
-                        <a onClick={submit} className="flex flex-col justify-center items-center">
+                        <a onClick={submit} className="flex flex-col justify-center items-center text-lg">
                             <p>{t("Log out")}</p>
                         </a>
                     </Dropdown.Item>
                     <Dropdown.Divider />
-                    <Dropdown.Item icon={isFullscreen?BsFullscreenExit:BsFullscreen} className="!hover:bg-yellow-200" onClick={()=>toggleFullscreen()}>
-                        {isFullscreen?t("Exit fullscreen"):t("Fullscreen")}        
+                    <Dropdown.Item icon={isFullscreen ? BsFullscreenExit : BsFullscreen} onClick={() => toggleFullscreen()}>
+                        <span className="text-lg">
+                            {isFullscreen ? t("Exit fullscreen") : t("Fullscreen")}
+                        </span>
                     </Dropdown.Item>
                     <Dropdown.Divider />
                     <Dropdown.Item>

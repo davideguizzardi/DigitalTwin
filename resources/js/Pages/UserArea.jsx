@@ -14,7 +14,7 @@ import SubMenuLayout from "@/Layouts/SubMenuLayout"
 import TabLayout from "@/Layouts/TabLayout"
 import Profile2 from "@/Components/UserArea/Profile2"
 
-const token = Cookies.get("auth-token")
+
 
 export default function UserArea({ }) {
     const user = useContext(UserContext)
@@ -27,6 +27,7 @@ export default function UserArea({ }) {
 
 
     const handleLogout = async () => {
+        const token = Cookies.get("auth-token")
         const response = await fetch(route("user.logout"), {
             headers: {
                 "Authorization": "Bearer " + token

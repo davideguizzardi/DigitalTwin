@@ -18,8 +18,6 @@ import { getIcon } from "../Commons/Constants";
 import RoomMap from "../Commons/RoomMap";
 import { UserContext } from "@/Layouts/UserLayout";
 
-const token = Cookies.get("auth-token")
-
 export default function ConfigurationAppliance({ editMode, endSection, backSection,isInitialConfiguration }) {
     const { deviceList, setDeviceList } = useContext(DeviceContext);
     const configRef = useRef()
@@ -217,6 +215,7 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
     }
 
     const fetchMap = async () => {
+        const token = Cookies.get("auth-token");
         const apiRoute = route('map.index')
         const response = await fetch(apiRoute, {
             headers: {
