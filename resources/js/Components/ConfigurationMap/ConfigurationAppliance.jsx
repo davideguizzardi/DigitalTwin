@@ -164,6 +164,7 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
     }
 
     const deleteAppl = async (appl) => {
+        const token = Cookies.get("auth-token");
         const response = await fetch(`${backend}/map/entity/${appl}`, {
             method: 'DELETE',
             headers: {
@@ -184,6 +185,7 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
     }
 
     const putApplOnFloor = async () => {
+        const token = Cookies.get("auth-token");
         const data = applOnFloor.map((e) => {
             return {
                 entity_id: e.device_id,
