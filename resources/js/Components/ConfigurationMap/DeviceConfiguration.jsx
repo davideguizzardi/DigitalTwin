@@ -63,6 +63,7 @@ export function DeviceConfiguration({ backSection, endSection, isInitialConfigur
 
 
 
+
     const handleIconChange = (index, newIcon) => {
         const updatedList = [...deviceList];
         updatedList[index].category = newIcon;
@@ -107,13 +108,13 @@ export function DeviceConfiguration({ backSection, endSection, isInitialConfigur
 
 
     useEffect(() => {
-        const ignoreType = ["device_tracker", "update", "sun", "weather", "forecast"]
-        const device_config = deviceList.map((device) => ({
+        /*const ignoreType = ["device_tracker", "update", "sun", "weather", "forecast"]
+        const device_config = deviceList.filter(dev=>!dev.device_class in ignoreType).map((device) => ({
             ...device,
             category: device.category,
             show: device.show
         }));
-        setDeviceList(device_config)
+        setDeviceList(device_config)*/
     }, [])
 
     return (

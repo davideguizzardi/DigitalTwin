@@ -54,7 +54,7 @@ export default function CardAppliance({ appliancePos, setClickedDevice }) {
         if(appliance.device_class=="sensor")
             return true
 
-        if(appliance.power_entity_id=="")
+        if(appliance.power_entity_id=="" || appliance.category=="air_conditioner")
             return appliance.state=="on"
 
         return getPower(appliance)>1

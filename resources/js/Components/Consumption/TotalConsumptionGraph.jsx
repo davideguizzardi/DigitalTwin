@@ -235,7 +235,7 @@ export function TotalConsumptionGraph({ device_list }) {
           </div>
 
         </div>
-      </div>1
+      </div>
       <div className="pl-3 flex h-full items-center justify-center dark:text-white">
         {
           dataset.length > 0 ?

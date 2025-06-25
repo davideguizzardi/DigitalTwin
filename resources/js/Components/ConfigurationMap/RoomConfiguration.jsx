@@ -302,7 +302,7 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
 
     <Modal show={openNewRoomModal} size="xl" onClose={() => { setOpenNewRoomModal(false) }} popup dismissible>
       <Modal.Header>
-        {t("Add Room")}
+        {t("Add room")}
       </Modal.Header>
       <Modal.Body>
         <div className="flex flex-col">
@@ -337,7 +337,7 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
 
     <Modal show={selectedRoom} size="xl" onClose={() => resetEditRoom()} popup dismissible>
       <Modal.Header>
-        {t("Modify Room")}
+        {t("Modify room")}
       </Modal.Header>
       <Modal.Body>
         <div className="flex flex-col">

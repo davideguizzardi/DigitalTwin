@@ -161,7 +161,7 @@ export default function Navbar() {
                     label={
                         <Avatar
                             size={"md"}
-                            placeholderInitials={user.username}
+                            placeholderInitials={user.username.substring(0, 2)}
                             alt="User settings"
                             img={user.url_photo && domain + "/" + user.url_photo}
                             rounded

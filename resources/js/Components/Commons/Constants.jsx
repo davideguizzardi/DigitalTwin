@@ -334,3 +334,4 @@ export const logsEvents = {
     CONFIGURATION_ROOM_RENAME:"Configuration:Room:Rename",
 };
 
+export const removeType = ["device_tracker", "update", "sun", "weather", "forecast"]
