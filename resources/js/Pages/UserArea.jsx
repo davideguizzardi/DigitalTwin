@@ -21,31 +21,45 @@ export default function UserArea({ }) {
     const { data, setData, post } = useForm({ user })
     const [tab, setTab] = useState(0)
     const mapTab = {
-        "Profile":<Profile />,
-        "Privacy":<PermissionPrivacy />
+        "Profile": <Profile />,
+        "Privacy": <PermissionPrivacy />
     }
 
 
     const handleLogout = async () => {
-        const token = Cookies.get("auth-token")
-        const response = await fetch(route("user.logout"), {
-            headers: {
-                "Authorization": "Bearer " + token
+        try {
+            const response = await fetch(route("user.logout"), {
+                method: "GET",
+                credentials: "include", 
+                headers: {
+                    "Accept": "application/json",
+                },
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log(result);
+
+                
+                Cookies.remove('digitaltwin_session', { path: '/' });
+                Cookies.remove('XSRF-TOKEN', { path: '/' });
+
+                
+                post(route('logout')); 
+
+            } else {
+                console.error("Logout failed with status:", response.status);
             }
-        })
-        if (response.ok) {
-            const result = await response.json()
-            console.log(result)
-        } else {
-            console.log(response.status)
+        } catch (error) {
+            console.error("Logout error:", error);
         }
-        post(route('logout'));
-    }
+    };
+
 
 
     return (
         <div className="flex flex-col min-h-fit size-full p-5 gap-2">
-            <Profile2/>
+            <Profile2 />
             {/*<TabLayout sections={mapTab}/>*/}
         </div>
     )

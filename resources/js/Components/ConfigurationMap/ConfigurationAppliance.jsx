@@ -10,7 +10,7 @@ import AnimateMap from "../Commons/AnimateMap";
 import AnimateMap2 from "../Commons/AnimateMap2";
 import WhiteCard from "../Commons/WhiteCard";
 import { useSwipeable } from "react-swipeable";
-import { apiFetch, apiLog, backend, logsEvents } from "../Commons/Constants";
+import { apiFetch, apiLog, backend, logsEvents ,domain} from "../Commons/Constants";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { DeviceContext } from "../ContextProviders/DeviceProvider";
 import { StyledButton } from "../Commons/StyledBasedComponents";
@@ -18,7 +18,7 @@ import { getIcon } from "../Commons/Constants";
 import RoomMap from "../Commons/RoomMap";
 import { UserContext } from "@/Layouts/UserLayout";
 
-export default function ConfigurationAppliance({ editMode, endSection, backSection,isInitialConfiguration }) {
+export default function ConfigurationAppliance({ editMode, endSection, backSection, isInitialConfiguration }) {
     const { deviceList, setDeviceList } = useContext(DeviceContext);
     const configRef = useRef()
     const refApplOnfFloor = useRef()
@@ -34,7 +34,7 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
     const [openModal, setOpenModal] = useState(false)
     const { t } = useLaravelReactI18n()
 
-    const user=useContext(UserContext)
+    const user = useContext(UserContext)
 
     let dataBtn = []
     const offset = 100
@@ -80,7 +80,7 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
     })
 
 
-    maps.sort((a,b)=>a.floor-b.floor).map((element, index) => {
+    maps.sort((a, b) => a.floor - b.floor).map((element, index) => {
         dataBtn = [...dataBtn, {
             callback: () => {
                 if (indexImg != index) {
@@ -164,17 +164,15 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
     }
 
     const deleteAppl = async (appl) => {
-        const token = Cookies.get("auth-token");
         const response = await fetch(`${backend}/map/entity/${appl}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
             },
         })
         console.log(response)
-        if(user)
-            apiLog(user.username,logsEvents.CONFIGURATION_MAP_DELETE,appl,"{}")
+        if (user)
+            apiLog(user.username, logsEvents.CONFIGURATION_MAP_DELETE, appl, "{}")
     }
 
     const deleteUnconfAppl = async () => {
@@ -185,7 +183,6 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
     }
 
     const putApplOnFloor = async () => {
-        const token = Cookies.get("auth-token");
         const data = applOnFloor.map((e) => {
             return {
                 entity_id: e.device_id,
@@ -198,12 +195,11 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify({ data: data })
         })
-        if(user)
-            apiLog(user.username,logsEvents.CONFIGURATION_MAP_ADD,"",JSON.stringify(data))
+        if (user)
+            apiLog(user.username, logsEvents.CONFIGURATION_MAP_ADD, "", JSON.stringify(data))
     }
 
     const saveCallback = () => {
@@ -217,15 +213,20 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
     }
 
     const fetchMap = async () => {
-        const token = Cookies.get("auth-token");
+        await fetch(domain + "/sanctum/csrf-cookie", {
+            method: "GET",
+            credentials: "include"
+        });
         const apiRoute = route('map.index')
         const response = await fetch(apiRoute, {
+            method: "GET",
+            credentials: "include",
             headers: {
-                'Authorization': 'Bearer ' + token
-            },
-        })
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        });
         response.json().then((result) => {
-            const fetched_maps=result.maps.sort((a,b)=>a.floor-b.floor)
+            const fetched_maps = result.maps.sort((a, b) => a.floor - b.floor)
             setMaps([...fetched_maps])
             setFloor(fetched_maps[0].floor)
         })
@@ -234,8 +235,8 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
 
     const fetchApplOnFloor = async () => {
         const onFloor = deviceList
-        .filter(dev=>dev.map_data)
-        .map(dev=>({ ...dev, top: dev.map_data.y, left: dev.map_data.x, floor: dev.map_data.floor }))
+            .filter(dev => dev.map_data)
+            .map(dev => ({ ...dev, top: dev.map_data.y, left: dev.map_data.x, floor: dev.map_data.floor }))
         await setApplOnFloor(onFloor);
         setFirst(false);
     };
@@ -297,7 +298,7 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
                                             initial="initial" animate="animate" exit="exit"
                                             key={maps[indexImg].url}
                                         >
-                                            <RoomMap image_url={maps[indexImg].url} floor={maps[indexImg].floor} height_percent={70}/>
+                                            <RoomMap image_url={maps[indexImg].url} floor={maps[indexImg].floor} height_percent={70} />
                                             <DroppableLayer isEditMode={editMode} dragConstraints={configRef}
                                                 listAppliancesPos={refApplOnfFloor.current} index={floor}
                                                 addAppl={addApplOnFloor} removeAppl={removeApplOnFloor}

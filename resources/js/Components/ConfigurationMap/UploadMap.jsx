@@ -3,22 +3,18 @@ import { StyledButton } from '../Commons/StyledBasedComponents';
 import { FaTrashCan } from "react-icons/fa6";
 import { Button } from 'flowbite-react';
 import ModalUploadMap from './ModalUploadMap';
-import Cookies from 'js-cookie';
 import AnimateMap from '../Commons/AnimateMap';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { getIcon } from '../Commons/Constants';
 import { domain } from '../Commons/Constants';
+import Cookies from 'js-cookie';
 
-let counter = -1;
-const token = Cookies.get("auth-token")
 
 export default function UploadMap({ maps, endSection }) {
     const [listMap, setListMap] = useState([]);
     const [indexThumbs, setIndexThumbs] = useState(-1);
     const [openModal, setOpenModal] = useState(false)
     const { t } = useLaravelReactI18n()
-
-
 
     const saveCallback = useCallback((newFile) => {
         let tempList = [...listMap, newFile]
@@ -34,15 +30,22 @@ export default function UploadMap({ maps, endSection }) {
     const cancelCallback = () => { setOpenModal(false) }
 
     const submit = async () => {
-        const apiRoute = route('map.store')
+        await fetch(domain + "/sanctum/csrf-cookie", {
+            method: "GET",
+            credentials: "include"
+        });
+        const csrfToken = decodeURIComponent(Cookies.get("XSRF-TOKEN"));
         let formData = new FormData();
         listMap.forEach((el, i) => {
             formData.append(el.floor, el.file)
         })
+        const apiRoute = route('map.store')
         const response = await fetch(apiRoute, {
             method: 'POST',
+            credentials: "include",
             headers: {
-                'Authorization': 'Bearer ' + token
+                "X-Requested-With": "XMLHttpRequest",
+                "X-XSRF-TOKEN": csrfToken,
             },
             body: formData
         })
@@ -66,7 +69,7 @@ export default function UploadMap({ maps, endSection }) {
                 floor: m.floor,
                 file: {
                     preview: domain + "/" + m.url,
-                    name: m.url.split("/")[2]  
+                    name: m.url.split("/")[2]
                 }
             }
             ))
@@ -129,8 +132,8 @@ export default function UploadMap({ maps, endSection }) {
                         :
                         <StyledButton className='absolute text-2xl' size="xl" onClick={() => { setOpenModal(true) }}>
                             <div className='flex flex-row items-center'>
-                            {getIcon("upload","size-7")}
-                            {t("Load house map")}
+                                {getIcon("upload", "size-7")}
+                                {t("Load house map")}
                             </div>
                         </StyledButton>
                     }

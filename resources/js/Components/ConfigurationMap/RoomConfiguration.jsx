@@ -6,11 +6,8 @@ import { useLaravelReactI18n } from "laravel-react-i18n";
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import { apiLog, getIcon, logsEvents } from "../Commons/Constants";
 import { TouchKeyboard2 } from "../Commons/TouchKeyboard2";
-import { apiFetch } from "../Commons/Constants";
-import { backend } from "../Commons/Constants";
-import Cookies from 'js-cookie';
+import { apiFetch,domain } from "../Commons/Constants";
 import ListButtons from "../Commons/ListButtons";
-import { domain } from "../Commons/Constants";
 import { useContext } from "react";
 import { UserContext } from "@/Layouts/UserLayout";
 import { Slider } from "@mui/material";
@@ -111,10 +108,17 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
 
 
   const fetchMap = async () => {
-    const token = Cookies.get("auth-token");
-    const apiRoute = route('map.index');
+    await fetch(domain + "/sanctum/csrf-cookie", {
+      method: "GET",
+      credentials: "include"
+    });
+    const apiRoute = route('map.index')
     const response = await fetch(apiRoute, {
-      headers: { 'Authorization': 'Bearer ' + token }
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "X-Requested-With": "XMLHttpRequest"
+      }
     });
     const result = await response.json();
     setMaps(result.maps);
@@ -321,16 +325,16 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
       <Modal.Footer>
         <div className="flex flex-col items-center w-full">
 
-        <StyledButton
-          variant="primary"
-          onClick={() => {
-            setAddingRoom(true);
-            setOpenNewRoomModal(false)
-          }}
+          <StyledButton
+            variant="primary"
+            onClick={() => {
+              setAddingRoom(true);
+              setOpenNewRoomModal(false)
+            }}
           >
-          {t("Draw room")}
-        </StyledButton>
-          </div>
+            {t("Draw room")}
+          </StyledButton>
+        </div>
       </Modal.Footer>
     </Modal>
 

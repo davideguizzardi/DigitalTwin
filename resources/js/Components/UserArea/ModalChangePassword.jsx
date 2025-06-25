@@ -4,7 +4,6 @@ import { HiEye, HiEyeOff } from "react-icons/hi";
 import InputError from "@/Components/Commons/InputError";
 import { TouchKeyboard2 } from "../Commons/TouchKeyboard2";
 import { StyledButton } from "../Commons/StyledBasedComponents";
-import Cookies from "js-cookie";
 import { domain } from "../Commons/Constants";
 import { useLaravelReactI18n } from "laravel-react-i18n";
 import { PasswordInput } from "../Commons/PasswordInput";
@@ -30,14 +29,24 @@ export default function ModalChangePassword({ open = true, closeCallback }) {
                 confirm: t("password_mismatch"), // Only show error here
             });
         } else {
-            const token = Cookies.get("auth-token");
+
+            await fetch(domain + "/sanctum/csrf-cookie", {
+                method: "GET",
+                credentials: "include"
+            });
+            const csrfToken = decodeURIComponent(Cookies.get("XSRF-TOKEN"));
+
             const formData = new FormData();
             formData.append("old_password", passwords.old);
             formData.append("new_password", passwords.new);
 
             const response = await fetch(domain + "/api/user", {
                 method: "POST",
-                headers: { Authorization: "Bearer " + token },
+                credentials: "include",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-XSRF-TOKEN": csrfToken,
+                },
                 body: formData,
             });
 
@@ -68,21 +77,21 @@ export default function ModalChangePassword({ open = true, closeCallback }) {
                     />
                     <div className="flex flex-col gap-4">
 
-                    <PasswordInput
-                        id="newPassword"
-                        label={t("new_password")}
-                        value={passwords.new}
-                        onChange={(e) => handleChange("new", e.target.value)}
-                        error={errors.new}
+                        <PasswordInput
+                            id="newPassword"
+                            label={t("new_password")}
+                            value={passwords.new}
+                            onChange={(e) => handleChange("new", e.target.value)}
+                            error={errors.new}
                         />
-                    <PasswordInput
-                        id="confirmPassword"
-                        label={t("confirm_new_password")}
-                        value={passwords.confirm}
-                        onChange={(e) => handleChange("confirm", e.target.value)}
-                        error={errors.confirm} // Show mismatch error here only
+                        <PasswordInput
+                            id="confirmPassword"
+                            label={t("confirm_new_password")}
+                            value={passwords.confirm}
+                            onChange={(e) => handleChange("confirm", e.target.value)}
+                            error={errors.confirm} // Show mismatch error here only
                         />
-                        </div>
+                    </div>
                     <div className="flex items-center justify-around p-2 mt-2">
                         <StyledButton onClick={cancelCall}>{t("cancel")}</StyledButton>
                         <StyledButton variant="secondary" onClick={saveCall}>{t("confirm")}</StyledButton>

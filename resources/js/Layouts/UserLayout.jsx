@@ -16,20 +16,35 @@ export function UserLayout({ children }) {
     const [dark, isDark] = useState(false)
     useEffect(() => {
         const fetchUser = async () => {
-            const token = Cookies.get("auth-token");
-            if (!token) return;
-    
-            const response = await fetch(domain + "/api/user", {
-                headers: { "Authorization": "Bearer " + token }
-            });
-            if (response.ok) {
-                const result = await response.json();
-                setUserState({ ...result.user });
+            try {
+                await fetch(domain + "/sanctum/csrf-cookie", {
+                    method: "GET",
+                    credentials: "include"
+                });
+
+                
+                const response = await fetch(domain + "/api/user", {
+                    method: "GET",
+                    credentials: "include", 
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest"
+                    }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    setUserState({ ...result.user });
+                } else {
+                    console.error("User fetch failed with status", response.status);
+                }
+            } catch (error) {
+                console.error("User fetch error:", error);
             }
         };
-    
+
+
         fetchUser();
-    
+
         const darkMode = localStorage.getItem("darkMode");
         if (darkMode === "true") {
             document.documentElement.classList.add("dark");
@@ -37,7 +52,7 @@ export function UserLayout({ children }) {
             document.documentElement.classList.remove("dark");
         }
     }, []);
-    
+
 
     return (
         <main>

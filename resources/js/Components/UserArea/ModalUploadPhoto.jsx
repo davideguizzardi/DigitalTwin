@@ -5,12 +5,13 @@ import { useDropzone } from 'react-dropzone';
 import DragDropFile from '@/Components/ConfigurationMap/DragDropFile';
 import { MdOutlineFileUpload } from "react-icons/md";
 import { StyledButton } from "../Commons/StyledBasedComponents";
-import Cookies from "js-cookie";
+import { domain } from "../Commons/Constants";
 import { useLaravelReactI18n } from "laravel-react-i18n";
+import Cookies from "js-cookie";
 
-export default function ModalUploadPhoto({ open=true, closeCallback}) {
+export default function ModalUploadPhoto({ open = true, closeCallback }) {
     const [file, setFile] = useState(null)
-    const {t}=useLaravelReactI18n()
+    const { t } = useLaravelReactI18n()
 
     const onDrop = useCallback(acceptedFiles => {
         const firstFile = acceptedFiles.at(0);
@@ -29,22 +30,31 @@ export default function ModalUploadPhoto({ open=true, closeCallback}) {
         accept: 'image/*'
     })
 
-    const cancelCall = () =>{
+    const cancelCall = () => {
         setFile(null)
         closeCallback(false)
     }
 
     const saveCall = async () => {
-        if(file===null ){
+        if (file === null) {
             alert("Insert photo")
-        }else{
+        } else {
             let formData = new FormData();
             formData.append("profile", file)
-            const token = Cookies.get("auth-token")
-            const response = await fetch("http://localhost/api/user", {
+            await fetch(domain + "/sanctum/csrf-cookie", {
+                method: "GET",
+                credentials: "include"
+            });
+
+            const csrfToken = decodeURIComponent(Cookies.get("XSRF-TOKEN"));
+            const response = await fetch(`${domain}/api/user`, {
                 method: 'POST',
                 body: formData,
-                headers: {'Authorization': "Bearer " + token }
+                credentials: "include",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-XSRF-TOKEN": csrfToken,
+                }
 
             })
             const result = await response.json()
@@ -68,14 +78,14 @@ export default function ModalUploadPhoto({ open=true, closeCallback}) {
                                 isDragAccept={isDragAccept} isDragActive={isDragActive} isDragReject={isDragReject} />
                         }
                     </div>
-                    {file && 
-                    <div className="flex items-center justify-around p-2 mt-2">
-                        <StyledButton onClick={cancelCall}>Cancel</StyledButton>
-                        <StyledButton className="flex flex-row items-center" variant="secondary" onClick={saveCall}>
-                            <MdOutlineFileUpload className="size-5"/>
-                            {t("Upload photo")}
+                    {file &&
+                        <div className="flex items-center justify-around p-2 mt-2">
+                            <StyledButton onClick={cancelCall}>Cancel</StyledButton>
+                            <StyledButton className="flex flex-row items-center" variant="secondary" onClick={saveCall}>
+                                <MdOutlineFileUpload className="size-5" />
+                                {t("Upload photo")}
                             </StyledButton>
-                    </div>
+                        </div>
                     }
                 </div>
 

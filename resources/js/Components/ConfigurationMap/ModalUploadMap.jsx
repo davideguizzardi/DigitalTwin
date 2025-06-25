@@ -6,6 +6,7 @@ import DragDropFile from '@/Components/ConfigurationMap/DragDropFile';
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 
+
 export default function ModalUploadMap({ open, saveCallback, cancelCallback, indexUsed }) {
     const [floor, setFloor] = useState(0)
     const [file, setFile] = useState(null)

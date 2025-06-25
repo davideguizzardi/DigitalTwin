@@ -341,7 +341,7 @@ export default function ControlPopup({ openDevice }) {
                     <div className="flex flex-col w-full font-light font-[Inter]">
                       <div className="grid grid-cols-4 gap-2 w-full">
                         {device.list_of_entities
-                          .filter(e => !e.entity_id.startsWith(device.device_class) && e.entity_class != "energy")
+                          .filter(e => (!e.entity_id.startsWith(device.device_class) && e.entity_class != "energy") || e.entity_id.startsWith("sensor"))
                           .sort((a, b) => a.entity_class < b.entity_class ? -1 : 1)
                           .map((sensor, index) => (
                             <div className="flex flex-col gap-1 items-start bg-zinc-50 rounded-md shadow-md p-2" key={index}>

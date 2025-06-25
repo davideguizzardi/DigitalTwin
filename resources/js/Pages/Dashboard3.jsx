@@ -114,20 +114,24 @@ const Dashboard3 = ({ maps, token }) => {
     }, []);
 
     useEffect(() => {
-        if (token) {
-            Cookies.set("auth-token", token);
-            const fetchUser = async () => {
-                const response = await fetch(domain + "/api/user", {
-                    headers: { "Authorization": "Bearer " + token }
-                })
-                if (response.ok) {
-                    const result = await response.json()
-                    apiLog(result.user.username, logsEvents.LOGIN, "", "")
+        const fetchUser = async () => {
+            await fetch(`${domain}/sanctum/csrf-cookie`, {
+                credentials: 'include'
+            });
+            const response = await fetch(domain + "/api/user", {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
                 }
+            })
+            if (response.ok) {
+                const result = await response.json()
+                apiLog(result.user.username, logsEvents.LOGIN, "", "")
             }
-            fetchUser()
         }
-    }, [token]);
+        fetchUser()
+    }, []);
 
     useEffect(() => {
         const updateState = deviceList
