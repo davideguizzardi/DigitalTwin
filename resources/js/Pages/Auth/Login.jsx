@@ -35,6 +35,35 @@ export default function Login({ users, status, canResetPassword }) {
     post(route("login"));
   };
 
+
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const res = await fetch('/keep-alive', {
+          credentials: 'include',
+        });
+
+        if (!res.ok && res.status === 419) {
+          if (!window.__sessionReloaded) {
+            window.__sessionReloaded = true;
+            window.location.reload();
+          }
+        }
+      } catch (e) {
+        console.error("Session check failed", e);
+        if (!window.__sessionReloaded) {
+          window.__sessionReloaded = true;
+          window.location.reload();
+        }
+      }
+    };
+
+    checkSession();
+
+    const interval = setInterval(checkSession, 3 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="size-full px-3 flex flex-col justify-center items-center">
       <AnimatePresence mode="wait">

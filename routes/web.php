@@ -19,6 +19,11 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+Route::get('/keep-alive', function () {
+    return response()->json(['alive' => true]);
+});
+
+
 Route::middleware('auth')->group(function () {
     Route::get('/home/{firstAccess?}', [DashboardController::class, 'show'])->name('home');
     Route::get('/configuration', [ConfigurationController::class, "show"])->name('configuration');
