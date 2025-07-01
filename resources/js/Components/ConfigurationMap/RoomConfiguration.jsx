@@ -439,6 +439,7 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
                 onClick={handleMouseDown}
+                onTap={handleMouseDown}
 
               >
                 <Layer>
@@ -470,7 +471,7 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
                   {rooms.filter(room => room.floor === currentFloor).map((room, idx) => (
                     <React.Fragment key={idx}>
                       <Line points={room.points} stroke="red" strokeWidth={3} closed />
-                      <Label x={room.points[0]} y={room.points[1]} onDblClick={() => handleRoomDoubleClick(room)}>
+                      <Label x={room.points[0]} y={room.points[1]} onDblClick={() => handleRoomDoubleClick(room)} onDblTap={() => handleRoomDoubleClick(room)}>
                         <Tag fill="red" cornerRadius={4} />
                         <Text text={room.name} fontSize={16} fill="white" padding={5} />
                       </Label>

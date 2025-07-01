@@ -1,8 +1,11 @@
-import React, { useEffect, useState,useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Spinner, Button, Select, Label } from "flowbite-react";
 import { BarChart } from '@mui/x-charts/BarChart';
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(customParseFormat);
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import { apiFetch, apiLog, logsEvents } from "../Commons/Constants";
@@ -22,7 +25,7 @@ export function TotalConsumptionGraph({ device_list }) {
   const user = useContext(UserContext);
 
 
-  const heightGraph = window.innerHeight*0.7
+  const heightGraph = window.innerHeight * 0.7
   const isDark = localStorage.getItem("darkMode") == "true"
   const sxDatePicker = {
     '.MuiInputBase-root': {
@@ -111,13 +114,18 @@ export function TotalConsumptionGraph({ device_list }) {
     setDeviceId(optionElementId)
   }
 
+  const parseDate = (dateStr) => {
+    const normalizedDate = group === 'monthly' ? `01-${dateStr}` : dateStr;
+    return dayjs(normalizedDate, 'DD-MM-YYYY').toDate();
+  };
+
   const fetchConsumption = async () => {
     var url;
-    const log_payload=JSON.stringify({
-      start_timestamp:from.format("DD-MM-YYYY"),
-      end_timestamp:to.format("DD-MM-YYYY"),
-      group:group,
-      device:deviceName
+    const log_payload = JSON.stringify({
+      start_timestamp: from.format("DD-MM-YYYY"),
+      end_timestamp: to.format("DD-MM-YYYY"),
+      group: group,
+      device: deviceName
     })
     if (deviceName == t("Entire House")) {
       url = `/consumption/total?` +
@@ -136,12 +144,15 @@ export function TotalConsumptionGraph({ device_list }) {
     const response = await apiFetch(url);
     if (response) {
       const data = response
+      data.sort((a, b) => dayjs(a.date, 'DD-MM-YYYY').toDate() - dayjs(b.date, 'DD-MM-YYYY').toDate());
       data.map(item => item.date = item.date.split(" ").length > 1 ? item.date.split(" ")[1] : item.date)
-      if (group != "hourly")
+      if (group != "hourly"){
+        data.sort((a, b) => parseDate(a.date) - parseDate(b.date));
         data.map(item => item.energy_consumption = item.energy_consumption / 1000)
+      }
       setDataset(data)
-      if(user)
-        apiLog(user.username,logsEvents.CONSUMPTION_TOTAL,deviceName,log_payload)
+      if (user)
+        apiLog(user.username, logsEvents.CONSUMPTION_TOTAL, deviceName, log_payload)
     }
     setLoading(false)
   }
@@ -152,7 +163,7 @@ export function TotalConsumptionGraph({ device_list }) {
   }, [from, to, group, deviceId, deviceName])
 
 
-  const valueFormatter = (value) => `${value.toFixed(2)} ${group == "hourly" ? "Wh" : "kWh"}`;
+  const valueFormatter = (value) => `${value ? value.toFixed(2) : 0} ${group == "hourly" ? "Wh" : "kWh"}`;
 
   return (
     <div className="w-full flex flex-col">
@@ -217,7 +228,7 @@ export function TotalConsumptionGraph({ device_list }) {
                 <StyledButton color="secondary" className={(group == "daily" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
                   onClick={() => {
                     setGroup("daily");
-                    setFrom(dayjs().subtract(7, "day"));
+                    setFrom(dayjs().subtract(7, "day").startOf("day"));
                     setTo(dayjs())
                   }}>
                   {t("Daily")}
@@ -225,7 +236,7 @@ export function TotalConsumptionGraph({ device_list }) {
                 <StyledButton color="secondary" className={(group == "monthly" ? "bg-lime-400" : "bg-neutral-50 dark:bg-neutral-700 dark:text-white")}
                   onClick={() => {
                     setGroup("monthly");
-                    setFrom(dayjs().subtract(1, "month"));
+                    setFrom(dayjs().subtract(1, "month").startOf("month"));
                     setTo(dayjs())
                   }}>
                   {t("Monthly")}
@@ -248,7 +259,7 @@ export function TotalConsumptionGraph({ device_list }) {
               borderRadius={4}
               margin={{ left: 70 }}
               height={heightGraph}
-            //onItemClick={(event, params) => handleItemClick(params)}
+              //onItemClick={(event, params) => handleItemClick(params)}
               sx={sxGraph}
             />
             :

@@ -313,10 +313,10 @@ export default function ControlPopup({ openDevice }) {
                 </div>
                 <div className="-ml-2 font-light font-[Inter]">
                   {t("Groups")}:
-                  {deviceGroups.length > 0 ?
+                  {device.groups && device.groups.length > 0 ?
 
                     <div className="grid grid-cols-4 grid-flow-row gap-4">
-                      {deviceGroups.map(group => (
+                      {device.groups.map(group => (
                         <div className="bg-zinc-100 rounded-md items-center flex justify-center p-2">
                           {group.name}
                         </div>
