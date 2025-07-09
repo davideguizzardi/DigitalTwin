@@ -54,7 +54,7 @@ export default function ToastNotification({
 
     return (
         <div
-            className={`fixed left-1/2 top-5 transform -translate-x-1/2 transition-opacity duration-500 
+            className={`fixed left-1/2 top-5 z-[100] transform -translate-x-1/2 transition-opacity duration-500 
                 ${isVisible ? "opacity-100" : "opacity-0"}`}
         >
             {isVisible && (

@@ -56,7 +56,7 @@ export function UserLayout({ children }) {
 
     return (
         <main>
-            <div className="overflow-hidden bg-gray-300 dark:bg-neutral-800 h-screen w-screen">
+            <div className="overflow-auto bg-gray-300 dark:bg-neutral-800 h-screen w-screen">
                 <UserContext.Provider value={userState}>
                     {children.props.isFirstConfiguration ?
                         <div className="flex w-full justify-center">

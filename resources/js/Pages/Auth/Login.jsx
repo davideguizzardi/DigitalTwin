@@ -5,10 +5,11 @@ import { useEffect, useState } from "react";
 import InputError from "@/Components/Commons/InputError";
 import { TouchKeyboard2 } from "@/Components/Commons/TouchKeyboard2";
 import { Avatar } from "flowbite-react";
-import { domain, getIcon } from "@/Components/Commons/Constants";
+import { domain, getIcon,rulebot } from "@/Components/Commons/Constants";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLaravelReactI18n } from "laravel-react-i18n";
 import { PasswordInput } from "@/Components/Commons/PasswordInput";
+import Cookies from "js-cookie";
 
 export default function Login({ users, status, canResetPassword }) {
   const [selectedUser, setSelectedUser] = useState(null);
@@ -30,8 +31,33 @@ export default function Login({ users, status, canResetPassword }) {
     };
   }, []);
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
+
+    try{
+
+      
+      const body = JSON.stringify({
+        email: data.email,
+        password: data.password
+      })
+      
+      const result = await fetch(`${rulebot}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: body
+      }).then((res) => { return res.json()})
+      if (result.status === 'ok') {
+        Cookies.set(result.cookie.name,result.cookie.token,{secure:false})
+        Cookies.set("rulebot_user_id",result.user_id,{secure:false})
+      } else {
+        
+      }
+    }catch(error){
+      console.error(error)
+    }
     post(route("login"));
   };
 

@@ -86,7 +86,7 @@ export default function Navbar() {
 
 
     return (
-        <div className="w-full h-13 grid grid-cols-5 justify-center text-3xl bg-zinc-50 p-1 border-b border-gray-300">
+        <div className="w-full h-13 grid grid-cols-5 justify-center text-3xl bg-zinc-50 p-1 border-b border-gray-300 sticky top-0 z-50">
             <Modal show={!connectionOk}>
                 <Modal.Header>
                     <div className="flex flex-row gap-3 items-center">

@@ -22,7 +22,7 @@ import {
 } from "react-icons/ci";
 
 import {
-    IoMdBatteryFull, IoMdLeaf
+    IoMdBatteryFull, IoMdLeaf,
 } from "react-icons/io";
 
 import {
@@ -72,6 +72,8 @@ import {
     SpeakerXMarkIcon,
     PlayCircleIcon,
   } from "@heroicons/react/24/outline";
+
+import { IoRefresh } from "react-icons/io5";
 
 import { RiHomeLine } from "react-icons/ri";
 import { MdBrightness6 } from "react-icons/md";
@@ -195,7 +197,8 @@ export const iconMap = {
     problem: (className) => <CiWarning className={className} />,
     edit:(className)=><FaPencil className={className}/>,
     fullscreen:(className)=><BsFullscreen className={className}/>,
-    fullscreen_exit:(className)=><BsFullscreenExit className={className}/>
+    fullscreen_exit:(className)=><BsFullscreenExit className={className}/>,
+    refresh:(className)=><IoRefresh className={className}/>
 }
 
 export const DevicesTypes = {

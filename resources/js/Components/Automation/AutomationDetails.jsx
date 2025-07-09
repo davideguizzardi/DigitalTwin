@@ -10,7 +10,7 @@ import { getTriggerDescription, getConditionDescription } from "@/Components/Com
 
 export function AutomationDetails({ automation_in }) {
     const [automation, setAutomation] = useState({})
-    const {t} = useLaravelReactI18n()
+    const { t } = useLaravelReactI18n()
 
     const block_class = "flex flex-row items-center gap-10 bg-gray-200 rounded-md p-2"
 
@@ -31,23 +31,23 @@ export function AutomationDetails({ automation_in }) {
         return words.join(" ");
     }
 
-    
+
     return (
         <>
             {
                 Object.keys(automation).length > 0 &&
                 <StyledDiv variant="primary" className="flex flex-col gap-10">
                     <div className="flex flex-col gap-3">
-                    <div>
-                        <h1 className="font-semibold text-2xl">{automation.name.charAt(0).toUpperCase() + automation.name.slice(1)}</h1>
-                    </div>
+                        <div>
+                            <h1 className="font-semibold text-2xl">{automation.name.charAt(0).toUpperCase() + automation.name.slice(1)}</h1>
+                        </div>
 
 
                         <div>
                             <h2 className="text-xl font-normal">{t("When")}</h2>
                             {automation.trigger.map(trigger => (
                                 <div className={block_class}>
-                                    {getIcon(trigger.platform || trigger.trigger)}{getTriggerDescription(trigger,t)}
+                                    {getIcon(trigger.platform || trigger.trigger)}{getTriggerDescription(trigger, t)}
                                 </div>
                             ))}
                         </div>
@@ -57,7 +57,7 @@ export function AutomationDetails({ automation_in }) {
                                 <h2 className="text-xl font-normal">{t("And if")}</h2>
                                 {automation.condition.map(cond => (
                                     <div className={block_class}>
-                                        {getIcon(cond.weekday ? "weekday" : cond.condition)}{getConditionDescription(cond,t)}
+                                        {getIcon(cond.weekday ? "weekday" : cond.condition)}{getConditionDescription(cond, t)}
                                     </div>
                                 ))
                                 }
@@ -70,7 +70,7 @@ export function AutomationDetails({ automation_in }) {
                                 {
                                     automation.action.map(action => (
                                         <div className={block_class}>
-                                             {getIcon(action.domain)}{t(formatServiceName(action.service))} "{action.device_name}"
+                                            {getIcon(action.domain)}{t(formatServiceName(action.service))} "{action.device_name}"
                                         </div>
                                     ))
                                 }
@@ -92,8 +92,6 @@ export function AutomationDetails({ automation_in }) {
 
                         </>
                     }
-
-
                 </StyledDiv>
             }
         </>
