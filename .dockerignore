@@ -1,0 +1,11 @@
+.git
+node_modules
+vendor
+.dockerignore
+docker-compose.yml
+docker-compose.dev.yml
+.env
+.env.*
+tests
+storage/*.log
+vendor/laravel/sail
