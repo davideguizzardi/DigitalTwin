@@ -19,6 +19,7 @@ services:
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
         volumes:
             - '.:/var/www/html'
+        restart: unless-stopped
         networks:
             - sail
         depends_on:
@@ -38,6 +39,7 @@ services:
         volumes:
             - 'sail-vol:/var/lib/mysql'
             - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
+        restart: unless-stopped
         networks:
             - sail
         healthcheck:
@@ -50,6 +52,7 @@ services:
             timeout: 5s
     mailpit:
         image: 'axllent/mailpit:latest'
+        restart: unless-stopped
         ports:
             - '${FORWARD_MAILPIT_PORT:-1025}:1025'
             - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
