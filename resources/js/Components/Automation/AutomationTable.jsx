@@ -17,21 +17,25 @@ export function AutomationTable({ automation_context, openId = "", automationRef
     const [currentPage, setCurrentPage] = useState(1);
     const [showToast,setShowToast]=useState(false)
     const [toastType,setToastType]=useState("success")
+    const [is2xlOrLarger, setIs2xlOrLarger] = useState(false)
     const itemsPerPage = 5;
 
     const { t } = useLaravelReactI18n();
 
+
+    useEffect(() => {
+        const checkScreenSize = () => {
+            // 1536 is Tailwinds 2xl breakpoint
+            setIs2xlOrLarger(window.innerWidth >= 1536)
+        }
+
+        checkScreenSize()
+
+        window.addEventListener("resize", checkScreenSize)
+        return () => window.removeEventListener("resize", checkScreenSize)
+    }, [])
+
     const handleAutomationDelete = async (automation_id) => {
-        /*const rulebot_user_id = Cookies.get("rulebot_user_id");
-        const response = await fetch(`${rulebot}/delete_rule`, {
-            method: 'POST',
-            credentials: "include",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ rule_id: automation_id, id: rulebot_user_id })
-        });*/
 
         const data = await apiFetch(`/automation/${automation_id}`, "DELETE");
         if (data) {
@@ -74,8 +78,6 @@ export function AutomationTable({ automation_context, openId = "", automationRef
             if (openId) {
                 const auto = automation_context.find(automation => automation.id == openId);
                 if (auto) setOpenAutomation(auto);
-            } else {
-                setOpenAutomation(automation_context[0]);
             }
         }
     }, [automation_context]);
@@ -100,6 +102,11 @@ export function AutomationTable({ automation_context, openId = "", automationRef
                 type={toastType}
             />
             <div className="flex flex-col gap-2 h-fit">
+                <div className="bg-zinc-50 text-gray-800 rounded-md p-2 text-center">
+                    <span className="text-lg font-semibold uppercase">
+                    {t("Automations")}
+                    </span>
+                </div>
                 <div>
                     <TextInput
                         id="device_search"
@@ -127,7 +134,7 @@ export function AutomationTable({ automation_context, openId = "", automationRef
                                     </div>
                                     <div className="">
                                         {automation.time && (automation.days.includes(currentDay) || automation.days.length === 0) && (
-                                            <div className="flex flex-row justify-end items-center ">
+                                            <div className="flex flex-row justify-end items-center gap-1">
                                                 {getIcon("time")}{automation.time}
                                             </div>
                                         )}
@@ -169,12 +176,16 @@ export function AutomationTable({ automation_context, openId = "", automationRef
                 <AutomationDetails automation_in={openAutomation} />
             </div>
 
-            <Drawer open={Object.keys(openAutomation).lenght > 0} onClose={() => setOpenAutomation({})} position="top">
-                <DrawerHeader />
+            {is2xlOrLarger &&
+            
+
+            <Drawer className="w-[50vw] z-[200]" open={Object.keys(openAutomation).length > 0} onClose={() => setOpenAutomation({})} position="left">
+                 <DrawerHeader title="" titleIcon={() => <></>} />
                 <DrawerItems>
                     <AutomationDetails automation_in={openAutomation} />
                 </DrawerItems>
             </Drawer>
+            }
         </div>
     );
 }
