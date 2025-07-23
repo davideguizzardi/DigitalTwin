@@ -18,6 +18,7 @@ import { CreateGroupModal } from "../Commons/CreateGroupModal"
 function ControlSelector({ device, user, errorFun, refreshDevice }) {
   switch (device.device_class) {
     case "switch":
+    case "remote":
       return <SwitchToggle
         state={device.state == "on"}
         stateId={device.state_entity_id}

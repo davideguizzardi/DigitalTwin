@@ -88,6 +88,7 @@ import { MdMeetingRoom } from "react-icons/md";
 export const backend = import.meta.env.VITE_DT_API_URL || "http://localhost:8000"
 export const domain = import.meta.env.VITE_DT_DOMAIN ||"http://localhost"
 export const rulebot=import.meta.env.VITE_RULEBOT_FRONTEND_URL || "http://localhost:8888"
+export const diary_link=import.meta.env.VITE_DIARY_LINK || ""
 
 export const daysOrder = [
     "mon",

@@ -13,8 +13,8 @@ import { Link } from "@inertiajs/react";
 import Cookies from "js-cookie";
 import { StyledButton } from "./StyledBasedComponents";
 import { BsFullscreen, BsFullscreenExit } from "react-icons/bs";
-
-
+import { ImQuill } from "react-icons/im";
+import { diary_link } from "@/Components/Commons/Constants";
 function NavLink({ connectedUser, routeName, isActive, children, className = '' }) {
     const user = useContext(UserContext);
 
@@ -160,8 +160,8 @@ export default function Navbar() {
                 <Dropdown
                     label={
                         <Avatar
-                            size={"md"}
-                            placeholderInitials={user.email? user.email.charAt(0).toUpperCase()+user.email.charAt(1):""}
+                            size="md"
+                            placeholderInitials={user.email ? user.email.charAt(0).toUpperCase() + user.email.charAt(1) : ""}
                             alt="User settings"
                             img={user.url_photo && domain + "/" + user.url_photo}
                             rounded
@@ -174,21 +174,37 @@ export default function Navbar() {
                         <span className="block text-lg">{user.username}</span>
                         <span className="block truncate text-lg font-medium">{user.email}</span>
                     </Dropdown.Header>
-                    <Dropdown.Item icon={FaUser}>
-                        <Link className="text-lg" href={route("userarea.get")}>{t("Account")}</Link>
+
+                    <Dropdown.Item as={Link} href={route("userarea.get")} icon={FaUser}>
+                        <span className="text-lg">{t("Account")}</span>
                     </Dropdown.Item>
-                    <Dropdown.Item icon={FiLogOut}>
-                        <a onClick={submit} className="flex flex-col justify-center items-center text-lg">
-                            <p>{t("Log out")}</p>
-                        </a>
+
+                    <Dropdown.Item icon={FiLogOut} onClick={submit}>
+                        <span className="text-lg">{t("Log out")}</span>
                     </Dropdown.Item>
+
                     <Dropdown.Divider />
-                    <Dropdown.Item icon={isFullscreen ? BsFullscreenExit : BsFullscreen} onClick={() => toggleFullscreen()}>
+
+                    <Dropdown.Item
+                        as="a"
+                        href={diary_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        icon={ImQuill}
+                    >
+                        <span className="text-lg">{t("Diary")}</span>
+                    </Dropdown.Item>
+
+                    <Dropdown.Divider />
+
+                    <Dropdown.Item icon={isFullscreen ? BsFullscreenExit : BsFullscreen} onClick={toggleFullscreen}>
                         <span className="text-lg">
                             {isFullscreen ? t("Exit fullscreen") : t("Fullscreen")}
                         </span>
                     </Dropdown.Item>
+
                     <Dropdown.Divider />
+
                     <Dropdown.Item>
                         <div className="flex flex-row gap-2">
                             <div onClick={() => setLocale("it")}>
@@ -200,6 +216,7 @@ export default function Navbar() {
                         </div>
                     </Dropdown.Item>
                 </Dropdown>
+
             </div>
         </div>
     );
