@@ -180,7 +180,9 @@ export default function Navbar() {
                     </Dropdown.Item>
 
                     <Dropdown.Item icon={FiLogOut} onClick={submit}>
-                        <span className="text-lg">{t("Log out")}</span>
+                        <a onClick={submit} className="flex flex-col justify-center items-center text-lg">
+                            <p>{t("Log out")}</p>
+                        </a>
                     </Dropdown.Item>
 
                     <Dropdown.Divider />
