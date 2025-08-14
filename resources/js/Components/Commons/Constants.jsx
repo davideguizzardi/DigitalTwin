@@ -35,7 +35,7 @@ import {
 } from "react-icons/md";
 
 import {
-    TbCircuitSwitchOpen
+    TbCircuitSwitchOpen,TbRulerMeasure
 } from "react-icons/tb";
 
 import {
@@ -81,7 +81,7 @@ import { IoIosColorPalette } from "react-icons/io";
 import { MdFileUpload } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import { SiHomeassistant } from "react-icons/si";
-import { MdMeetingRoom } from "react-icons/md";
+import { MdMeetingRoom,MdDevices  } from "react-icons/md";
 
 
 
@@ -199,7 +199,9 @@ export const iconMap = {
     edit:(className)=><FaPencil className={className}/>,
     fullscreen:(className)=><BsFullscreen className={className}/>,
     fullscreen_exit:(className)=><BsFullscreenExit className={className}/>,
-    refresh:(className)=><IoRefresh className={className}/>
+    refresh:(className)=><IoRefresh className={className}/>,
+    numeric_state:(className)=><TbRulerMeasure className={className}/>,
+    device:(className)=><MdDevices  className={className}/>
 }
 
 export const DevicesTypes = {

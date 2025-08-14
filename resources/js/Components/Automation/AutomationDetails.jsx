@@ -47,7 +47,7 @@ export function AutomationDetails({ automation_in }) {
                             <h2 className="text-xl font-normal">{t("When")}</h2>
                             {automation.trigger.map(trigger => (
                                 <div className={block_class}>
-                                    {getIcon(trigger.platform || trigger.trigger)}{getTriggerDescription(trigger, t)}
+                                    {getIcon(trigger.platform || trigger.trigger ||trigger.triggers)}{getTriggerDescription(trigger, t)}
                                 </div>
                             ))}
                         </div>

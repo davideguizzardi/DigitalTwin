@@ -10,32 +10,32 @@ export const DAYS = {
     "sun": "Sunday",
 };
 
-function formatDuration(duration,t) {
+function formatDuration(duration, t) {
     const hours = duration.hours || 0;
     const minutes = duration.minutes || 0;
     const seconds = duration.seconds || 0;
 
     const parts = [];
     if (hours > 0) {
-        parts.push(`${hours} ${t("hour"+(hours > 1 ? "s" : ""))}`);
+        parts.push(`${hours} ${t("hour" + (hours > 1 ? "s" : ""))}`);
     }
     if (minutes > 0) {
-        parts.push(`${minutes} ${t("minute"+(minutes > 1 ? "s" : ""))}`);
+        parts.push(`${minutes} ${t("minute" + (minutes > 1 ? "s" : ""))}`);
     }
     if (seconds > 0) {
-        parts.push(`${seconds} ${t("second"+(seconds > 1 ? "s" : ""))}`);
+        parts.push(`${seconds} ${t("second" + (seconds > 1 ? "s" : ""))}`);
     }
 
     return parts.join(", ");
 }
 
 export function getTriggerDescription(trigger, t) {
-    const platform = trigger.platform || trigger.trigger|| t("unknown platform");
+    const platform = trigger.platform || trigger.trigger || t("unknown platform");
     let description = "";
+    let deviceName = trigger.device_name || t("Unknown device");
 
     switch (platform) {
         case "device":
-            let deviceName = trigger.device_name || t("Unknown device");
             const domain = trigger.domain || t("unknown domain");
 
             if (domain === "sensor") {
@@ -44,7 +44,7 @@ export function getTriggerDescription(trigger, t) {
                     device_name: deviceName,
                     type: t(trigger.type || t("unknown type")),
                 });
-                description=description.charAt(1).toUpperCase()+description.slice(2)
+                description = description.charAt(1).toUpperCase() + description.slice(2)
                 if ("above" in trigger && "below" in trigger) {
                     description += ` ${t("is between")} ${trigger.above} ${t("and")} ${trigger.below}`;
                 } else if ("above" in trigger) {
@@ -65,6 +65,23 @@ export function getTriggerDescription(trigger, t) {
                 if (durationDescription) {
                     description += ` ${t("for")} ${durationDescription}`;
                 }
+            }
+            break;
+
+        case "numeric_state":
+            description = t(":device_name's :type", {
+                device_name: deviceName,
+                type: t(trigger.type || t("unknown type")),
+            });
+            description = description.charAt(1).toUpperCase() + description.slice(2)
+            if ("above" in trigger && "below" in trigger) {
+                description += ` ${t("is between")} ${trigger.above} ${trigger.unit_of_measurement || ""} ${t("and")} ${trigger.below} ${trigger.unit_of_measurement || ""} `;
+            } else if ("above" in trigger) {
+                description += ` ${t("is above")} ${trigger.above} ${trigger.unit_of_measurement || ""}`;
+            } else if ("below" in trigger) {
+                description += ` ${t("is below")} ${trigger.below} ${trigger.unit_of_measurement || ""}`;
+            } else {
+                description += ` ${t("changes")}`;
             }
             break;
 
@@ -101,7 +118,7 @@ export function getTriggerDescription(trigger, t) {
 }
 
 
-function formatTimeOffset(seconds,t) {
+function formatTimeOffset(seconds, t) {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
 
@@ -126,15 +143,17 @@ export function getConditionDescription(condition, t) {
             const domain = condition.domain || t("unknown domain");
 
             if (domain === "sensor") {
-                const measuredValue = condition.type.replace("is_", "") || t("unknown measure");
-                description = `"${deviceName}" ${t(measuredValue)}`;
-
+                description = t(":device_name's :type", {
+                    device_name: deviceName,
+                    type: t(condition.type.replace("is_", "")) || t("unknown type"),
+                });
+                description = description.charAt(1).toUpperCase() + description.slice(2)
                 if ("above" in condition && "below" in condition) {
-                    description += ` ${t("is between")} ${condition.above} ${t("and")} ${condition.below}`;
+                    description += ` ${t("is between")} ${condition.above} ${condition.unit_of_measurement || ""} ${t("and")} ${condition.below} ${condition.unit_of_measurement || ""}`;
                 } else if ("above" in condition) {
-                    description += ` ${t("is above")} ${condition.above}`;
+                    description += ` ${t("is above")} ${condition.above} ${condition.unit_of_measurement || ""}`;
                 } else if ("below" in condition) {
-                    description += ` ${t("is below")} ${condition.below}`;
+                    description += ` ${t("is below")} ${condition.below} ${condition.unit_of_measurement || ""}`;
                 } else {
                     description += ` ${t("changes")}`;
                 }
