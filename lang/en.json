@@ -104,7 +104,7 @@
     "Day is": "Days is",
     "minutes": "minutes",
     "for": "for",
-    "It is the": "It is the",
+    "It is": "It is",
     "after": "after",
     "before": "before",
     "below": "below",
@@ -112,7 +112,7 @@
     "Click to activate": "Click to activate",
     "It will start in": "It will start in",
     "Activate": "Activate",
-    "sunset": "sunset",
+    "sunset": "The Sunset",
     "Green suggestions are available": "Green suggestions are available",
     "hour": "hour",
     "hours": "hours",
@@ -161,7 +161,7 @@
     "descriptionPlaceholder": "Input the automation description here...",
     "triggerLabel": "Trigger",
     "time": "Time",
-    "sunrise": "Sunrise",
+    "sunrise": "The Sunrise",
     "atLabel": "At",
     "offsetLabel": "Offset [s]",
     "daysLabel": "Days",
@@ -296,6 +296,7 @@
     "overcurrent":"overcurrent",
     "overpowering":"overpowering",
     "overvoltage":"overvoltage",
+    "energy":"Energia",
     "Groups":"Groups",
     "Add device to a group":"Add device to a group",
     "Add new group...":"Add new group...",
@@ -306,5 +307,7 @@
     "Fullscreen":"Fullscreen",
     "Exit fullscreen":"Exit fullscreen",
     "Account":"Account",
-    "Diary":"Diary"
+    "Diary":"Diary",
+    "and":"and",
+    "Sun is":"Sun is"
 }
