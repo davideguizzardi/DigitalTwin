@@ -76,11 +76,11 @@ export default function Automation({ id = "" }) {
             <ThemeButton className="absolute bottom-0 right-0 m-5 rounded-full" onClick={() => setShowAutomationModal(true)}>
                 {getIcon("plus", "size-8")}
             </ThemeButton>
-            {/*<a href={route("automation.add")}>
+            {<a href={route("automation.add")}>
                 <ThemeButton className="absolute bottom-0 right-0 m-5 rounded-full bg">
                     {getIcon("plus", "size-8")}
                 </ThemeButton>
-            </a>*/}
+            </a>}
         </div>
     )
 }

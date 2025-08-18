@@ -22,6 +22,9 @@ import { MdDelete } from "react-icons/md";
 import { FiSunrise, FiSunset, FiClock } from "react-icons/fi";
 
 export default function AddAutomation({ }) {
+
+    // Iniziare la modifica da questo punto
+
     const {t} = useLaravelReactI18n()
     const DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 
