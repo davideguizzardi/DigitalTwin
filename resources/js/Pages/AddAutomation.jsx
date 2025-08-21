@@ -1,291 +1,308 @@
+// AddAutomation.jsx — layout aggiornato:
+// - Delete a destra (allineati al bordo destro della card)
+// - "+ Add condition" e "+ Add action" a destra e verdi
 
-import { useState, useEffect} from "react";
-import { getIcon ,backend,apiFetch} from "@/Components/Commons/Constants";
+import { getIcon } from "@/Components/Commons/Constants";
 
-import { TimePicker } from "@mui/x-date-pickers";
-import { Label, TextInput, List, Select, Textarea } from "flowbite-react";
-import { ServicePopup } from "@/Components/Automation/ServicePopup";
+export default function AddAutomation() {
+  const cardCls =
+    "bg-white rounded-lg shadow-[1px_1px_4px_rgba(0,0,0,0.25)] border border-black/20";
 
-import { AutomationSimulation } from "@/Components/Automation/AutomationSimulation";
-import { formatServiceName } from "@/Components/Commons/DataFormatter";
+  return (
+    <div className="w-full min-h-screen bg-surface-surface-secondary flex items-start justify-center">
+      <div className="w-full max-w-[1600px] mx-auto px-6 py-8 grid grid-cols-12 gap-6">
 
-import { StyledDiv,StyledButton } from "@/Components/Commons/StyledBasedComponents";
+        {/* ======= COLONNA SINISTRA (Builder) ======= */}
+        <section className="col-span-12 lg:col-span-8">
+          <div className={`${cardCls} relative`}>
+            {/* Titolo centrato */}
+            <header className="flex items-center justify-center gap-4 px-12 pt-10 pb-4 text-center">
+              <div className="rounded-full">{getIcon("puzzle", "size-14 text-gray-700")}</div>
+              <div>
+                <h1 className="text-gray-800 text-4xl font-semibold leading-tight">
+                  Create a new automation
+                </h1>
+                <p className="text-neutral-700 text-base">
+                  Define when and how your automation needs to start
+                </p>
+              </div>
+            </header>
 
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
-import { useLaravelReactI18n } from "laravel-react-i18n";
+            <div className="px-12 pb-12 grid gap-8">
+              {/* === Card WHEN === */}
+              <div className={`${cardCls} p-8`}>
+                {/* Testo introduttivo mantenuto a max 680 per tipografia */}
+                <div className="max-w-[680px]">
+                  <h2 className="text-4xl font-semibold text-black leading-[60px]">When</h2>
+                  <p className="text-neutral-700 text-sm">
+                    Specify the conditions under which your automation should start
+                  </p>
+                </div>
 
-
-//icons
-import { FaPlus } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
-import { FiSunrise, FiSunset, FiClock } from "react-icons/fi";
-
-export default function AddAutomation({ }) {
-
-    // Iniziare la modifica da questo punto
-
-    const {t} = useLaravelReactI18n()
-    const DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
-
-    //Automations variable
-    const [automationName, setAutomationName] = useState("")
-    const [automationDescription, setAutomationDescription] = useState("")
-    const [automationTrigger, setAutomationTrigger] = useState([])
-    const [automationCondition, setAutomationCondition] = useState([])
-    const [automationAction, setAutomationAction] = useState([])
-
-    const [selectedTrigger, setSelectedTrigger] = useState("time")
-    const [sunOffset, setSunoffset] = useState(0)
-    const [daysList, setDaysList] = useState(DAYS)
-    const [entityList, setEntityList] = useState([])
-    const [deviceList, setDeviceList] = useState([])
-    const [openModal, setOpenModal] = useState(false)
-    const [selectedEntity, setSelectedEntity] = useState(null)
-
-    const [servicesToAdd, setServiceToAdd] = useState({})
-    const [deviceIdToAdd, setDeviceIdToAdd] = useState({})
-
-    const [automation, setAutomation] = useState({})
-    const [simulateAutomationAddition, setSimulateAutomationAddition] = useState(false)
-
-    function servicesClick(selectedId) {
-        setOpenModal(true)
-        let entity = entityList.filter(en => en.entity_id == selectedId)[0]
-        setSelectedEntity(entity)
-    }
-
-
-    function getDeviceName(device_id) {
-        const device = deviceList.filter(dev => dev.device_id == device_id)[0]
-        return device.name_by_user ? device.name_by_user : device.name
-    }
-
-    function buildAutomation(e) {
-        if (e)
-            e.preventDefault()
-
-        // Validation: Check if trigger and action are provided
-        if (!automationTrigger || automationTrigger.length === 0) {
-            alert(t("triggerRequired"));
-            return;
-        }
-
-        if (!automationAction || automationAction.length === 0) {
-            alert(t("actionRequired"));
-            return; 
-        }
-        let automation = {}
-        automation["id"] = Math.floor(1000000000000 + Math.random() * 9000000000000) //produce a random 13 digit int
-        automation["alias"] = automationName
-        automation["description"] = automationDescription
-        automation["trigger"] = automationTrigger
-        automation["condition"] = automationCondition
-        automation["action"] = automationAction
-        automation["mode"] = "single"
-
-        setAutomation(automation)
-        setSimulateAutomationAddition(true)
-        return automation
-    }
-
-    function handleTimeChange(value) {
-        setAutomationTrigger([{
-            "platform": "time",
-            "at": value.format("HH:mm")
-        }])
-    }
-
-    function handleSunChange(event_type, offset = undefined) {
-        setSelectedTrigger(event_type)
-        setAutomationTrigger([
-            {
-                "platform": "sun",
-                "event": event_type,
-                "offset": offset ? offset : sunOffset
-            }
-        ])
-    }
-
-    function handleDaysChange(day) {
-        let newList = daysList.slice()
-        const index = newList.indexOf(day);
-
-        if (index === -1) {
-            // Element is not present, so add it
-            newList.push(day);
-        } else {
-            // Element is present, so remove it
-            newList.splice(index, 1);
-        }
-        setDaysList(newList)
-        setAutomationCondition([{
-            "condition": "time",
-            "weekday": newList
-        }])
-    }
-
-    useEffect(() => {
-        if (Object.keys(servicesToAdd).length > 0) {
-            let newActions = automationAction.slice()
-            let action = {
-                "metadata": {},
-                "target": {
-                    "device_id": deviceIdToAdd
-                },
-                ...servicesToAdd
-            }
-            newActions.push(action)
-            setAutomationAction(newActions)
-        }
-    }, [servicesToAdd])
-
-    useEffect( async () => {
-        var data = await apiFetch("/entity")
-        setEntityList(data)
-        data = await apiFetch("/device?skip_services=true")
-        setDeviceList(data)
-    }, [])
-
-    useEffect(() => {
-        buildAutomation(null)
-    }, [automationAction])
-
-
-    return (
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <div className="grid grid-cols-2 gap-3 p-5">
-            <ServicePopup open={openModal} selectedEntity={selectedEntity} entityList={entityList} closeFun={() => setOpenModal(false)} submitFun={setServiceToAdd} />
-            <StyledDiv variant="primary" className="">
-                <form className="flex flex-col gap-3" onSubmit={buildAutomation}>
-                    <h1 className="font-[Inter] font-light text-xl">{t("creationTitle")}</h1>
-                    <div className="block">
-                        <Label htmlFor="name" value={t("nameLabel")} />
-                        <TextInput id="name" type="text" placeholder={t("namePlaceholder")}
-                            onKeyUp={(value) => setAutomationName(value.target.value)} required />
-                    </div>
-                    <div className="block">
-                        <Label htmlFor="description" value={t("descriptionLabel")}/>
-                        <Textarea id="description" type="text" placeholder={t("descriptionPlaceholder")}
-                            onKeyUp={(value) => setAutomationDescription(value.target.value)} rows={4} />
-                    </div>
-                    <div className="flex flex-row gap-3 items-center">
-                        <div className="block">
-                            <Label htmlFor="trigger" value={t("triggerLabel")}/>
-                            <div className="flex flex-row gap-3">
-                                <StyledButton variant="primary" className={(selectedTrigger == "time" ? "bg-lime-400" : "bg-neutral-50")}
-                                    onClick={() => setSelectedTrigger("time")}>
-                                    {t("time")} <FiClock className="ml-2 size-5" />
-                                </StyledButton>
-                                <StyledButton variant="secondary" className={(selectedTrigger == "sunset" ? "bg-lime-400" : "bg-neutral-50")}
-                                    onClick={() => handleSunChange("sunset", 0)}>
-                                    {t("sunset")} <FiSunset className="ml-2 size-5" />
-                                </StyledButton>
-                                <StyledButton variant="secondary" className={(selectedTrigger == "sunrise" ? "bg-lime-400" : "bg-neutral-50")}
-                                    onClick={() => handleSunChange("sunrise", 0)}>
-                                    {t("sunrise")} <FiSunrise className="ml-2 size-5" />
-                                </StyledButton>
-                            </div>
+                <div className="mt-6 space-y-6">
+                  {/* Riga: Date  */}
+                  <div className="relative w-full">
+                    {/* contenuto limitato a 680px, con padding destro per non finire sotto il cestino */}
+                    <div className="max-w-[680px] pr-16 flex items-center gap-3">
+                      <div className="w-40 h-14 px-6 py-2 bg-white rounded border border-neutral-400 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          {getIcon("weekday", "size-4 text-gray-700")}
+                          <span className="text-stone-900 text-base">Date</span>
                         </div>
-                        <div className="block">
-                            <Label htmlFor="trigger" value={selectedTrigger == "time" ? t("atLabel"): t("offsetLabel")} />
-                            <div>
+                      </div>
 
-                                {selectedTrigger == "time" &&
-                                    <TimePicker ampm={false} size="small" onChange={(value) => handleTimeChange(value)}
-                                        sx={{ ".css-nxo287-MuiInputBase-input-MuiOutlinedInput-input": { height: "0.9rem" } }}
-                                    />
-                                }
-                                {(selectedTrigger == "sunset" || selectedTrigger == "sunrise") &&
-                                    <TextInput id="offset" type="number" min={-5 * 3600} max={5 * 3600} placeholder="0"
-                                        onChange={(value) => {
-                                            setSunoffset(value.target.value);
-                                            handleSunChange(selectedTrigger, value.target.value)
-                                        }} />
-                                }
-                            </div>
-                        </div>
-
+                      <div className="w-72 h-14 px-6 py-2 bg-white rounded border border-neutral-400 flex items-center justify-between">
+                        <span className="text-stone-900 text-xs">Mon,  23 Jun 2025</span>
+                        {getIcon("weekday", "size-4 text-gray-700")}
+                      </div>
                     </div>
-                    <div className="block">
-                        <Label htmlFor="days" value={t("daysLabel")}/>
-                        <div className="flex flex-row gap-2">
-                            {
-                                DAYS.map(day => (
-                                    <StyledButton variant="secondary" className={daysList.includes(day) ? "bg-lime-400" : "bg-neutral-50"}
-                                        onClick={() => handleDaysChange(day)}>
-                                        {day}
-                                    </StyledButton>
-                                ))
-                            }
-                        </div>
-                    </div>
-                    <div className="flex flex-col gap-5 mt-10">
-                        <div className="block">
 
-                            <Label htmlFor="newaction" value={t("addActionLabel")} />
-                            <div className="flex flex-row gap-2">
-
-                                <Select onChange={(sel) => setDeviceIdToAdd(sel.target.value)}>
-                                    {
-                                        deviceList.map(dev => (
-                                            <option value={dev.device_id} key={dev.device_id}>{dev.name_by_user ? dev.name_by_user : dev.name}</option>
-                                        ))
-                                    }
-                                </Select>
-                                <StyledButton variant="secondary" className="bg-green-200 hover:bg-green-300 "
-                                    onClick={() => servicesClick(deviceList.filter(el => el.device_id == deviceIdToAdd)[0].state_entity_id)}
-                                >
-                                    <FaPlus className="size-5" />
-                                </StyledButton>
-                            </div>
-                        </div>
-                        <div className="block">
-                            <Label htmlFor="actions" value={t("actionsLabel")} />
-                            <List unstyled className="divide-y divide-gray-300 text-gray-800">
-                                {
-                                    automationAction.map((action_el, index) => (
-                                        <List.Item key={action_el.target.device_id} >
-                                            <div className="grid grid-cols-2 rounded-md p-2">
-
-                                                <div className="flex flex-row items-center gap-10 col-span-1">
-
-                                                    {getIcon(action_el.service.split(".")[0])}{formatServiceName(action_el.service.split(".")[1])}{` "${getDeviceName(action_el.target.device_id)}"`}
-                                                </div>
-                                                <div className="flex flex-row justify-end items-end col-span-1 ">
-                                                    <StyledButton variant="delete" onClick={() => setAutomationAction(automationAction.filter((el, ind) => ind != index))}>
-                                                        <MdDelete className="size-5" />{t("delete")}
-                                                    </StyledButton>
-                                                </div>
-
-
-                                            </div>
-                                        </List.Item>
-                                    ))
-                                }
-                            </List>
-                        </div>
-                    </div>
-                    <StyledButton type="submit" variant={"primary"}
-                        onClick={(ev) => buildAutomation(ev)}
+                    {/* Cestino perfettamente a destra della card */}
+                    <button
+                      type="button"
+                      className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-red-400 rounded-lg shadow flex items-center justify-center"
+                      aria-label="Delete condition"
                     >
-                        {t("buildAutomationButton")}
-                    </StyledButton>
-                </form>
-            </StyledDiv>
-            <div className="flex flex-col gap-3">
-                {simulateAutomationAddition &&
-                    <div className="col-span-2">
-                        <AutomationSimulation automation_to_simulate={JSON.stringify(automation)} />
+                      {getIcon("delete", "size-4 text-zinc-700")}
+                    </button>
+                  </div>
+
+                  {/* and */}
+                  <div className="max-w-[680px] text-4xl font-semibold text-black leading-[60px]">and</div>
+
+                  {/* Riga: Hour */}
+                  <div className="relative w-full">
+                    <div className="max-w-[680px] pr-16 flex items-center gap-3">
+                      <div className="w-40 h-14 px-6 py-2 bg-white rounded border border-neutral-400 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          {getIcon("time", "size-4 text-gray-700")}
+                          <span className="text-stone-900 text-base">Hour</span>
+                        </div>
+                      </div>
+
+                      <div className="w-72 h-14 px-6 py-2 bg-white rounded border border-neutral-400 flex items-center justify-between">
+                        <span className="text-stone-900 text-xs">08 : 30 AM</span>
+                        {getIcon("time", "size-4 text-gray-700")}
+                      </div>
                     </div>
-                }
-                {Object.keys(automation).length > 0 &&
 
-                    <Textarea id="automation" placeholder="automation" rows={30} value={JSON.stringify(automation, null, 4)} readOnly />
+                    <button
+                      type="button"
+                      className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-red-400 rounded-lg shadow flex items-center justify-center"
+                      aria-label="Delete condition"
+                    >
+                      {getIcon("delete", "size-4 text-zinc-700")}
+                    </button>
+                  </div>
 
-                }
+                  {/* and */}
+                  <div className="max-w-[680px] text-4xl font-semibold text-black leading-[60px]">and</div>
+
+                  {/* Riga: Device (Light Bulb OFF) */}
+                  <div className="relative w-full">
+                    <div className="max-w-[680px] pr-16 flex items-center gap-3">
+                      <div className="w-40 h-14 px-6 py-2 bg-white rounded border border-neutral-400 flex items-center justify-between">
+                        <span className="text-stone-900 text-base">Device</span>
+                      </div>
+
+                      <div className="w-72 h-14 px-6 py-2 bg-white rounded border border-neutral-400 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          {getIcon("light", "size-4 text-gray-700")}
+                          <span className="text-stone-900 text-xs">Light Bulb</span>
+                        </div>
+                        {getIcon("dot", "size-4 text-gray-700")}
+                      </div>
+
+                      <div className="w-40 h-14 px-6 py-2 bg-white rounded border border-neutral-400 flex items-center justify-between">
+                        <span className="text-stone-900 text-base">Off</span>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-red-400 rounded-lg shadow flex items-center justify-center"
+                      aria-label="Delete condition"
+                    >
+                      {getIcon("delete", "size-4 text-zinc-700")}
+                    </button>
+                  </div>
+                </div>
+
+                {/* "+ Add condition" A DESTRA della card */}
+                <div className="pt-6 flex justify-end">
+                  <button
+                    type="button"
+                    className="w-44 h-14 bg-green-500 rounded-lg shadow text-white font-medium"
+                  >
+                    + Add condition
+                  </button>
+                </div>
+              </div>
+
+              {/* === Card THEN === */}
+              <div className={`${cardCls} p-8`}>
+                <div className="max-w-[680px]">
+                  <h2 className="text-4xl font-semibold text-black leading-[60px]">Then</h2>
+                  <p className="text-neutral-700 text-sm">
+                    Specify which actions your automation will perform once all trigger conditions are met
+                  </p>
+                </div>
+
+                <div className="mt-6 space-y-6">
+                  {/* Riga: Light Bulb -> On */}
+                  <div className="relative w-full">
+                    <div className="max-w-[680px] pr-16 flex items-center gap-3">
+                      <div className="w-40 h-14 px-6 py-2 bg-white rounded border border-neutral-400 flex items-center justify-between">
+                        <span className="text-stone-900 text-base">Device</span>
+                      </div>
+
+                      <div className="w-72 h-14 px-6 py-2 bg-white rounded border border-neutral-400 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          {getIcon("light", "size-4 text-gray-700")}
+                          <span className="text-stone-900 text-xs">Light Bulb</span>
+                        </div>
+                        {getIcon("dot", "size-4 text-gray-700")}
+                      </div>
+
+                      <div className="w-40 h-14 px-6 py-2 bg-white rounded border border-neutral-400 flex items-center justify-between">
+                        <span className="text-stone-900 text-base">On</span>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-red-400 rounded-lg shadow flex items-center justify-center"
+                      aria-label="Delete action"
+                    >
+                      {getIcon("delete", "size-4 text-zinc-700")}
+                    </button>
+                  </div>
+
+                  {/* and */}
+                  <div className="max-w-[680px] text-4xl font-semibold text-black leading-[60px]">and</div>
+
+                  {/* Riga: Speaker -> Ringtone/Play */}
+                  <div className="relative w-full">
+                    <div className="max-w-[680px] pr-16 flex items-center gap-3">
+                      <div className="w-40 h-14 px-6 py-2 bg-white rounded border border-neutral-400 flex items-center justify-between">
+                        <span className="text-stone-900 text-base">Device</span>
+                      </div>
+
+                      <div className="w-72 h-14 px-6 py-2 bg-white rounded border border-neutral-400 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          {getIcon("speaker", "size-4 text-gray-700")}
+                          <span className="text-stone-900 text-xs">Speaker</span>
+                        </div>
+                        {getIcon("dot", "size-4 text-gray-700")}
+                      </div>
+
+                      <div className="w-40 h-14 px-6 py-2 bg-white rounded border border-neutral-400 flex items-center justify-between">
+                        <span className="text-stone-900 text-base">Ringtone</span>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-red-400 rounded-lg shadow flex items-center justify-center"
+                      aria-label="Delete action"
+                    >
+                      {getIcon("delete", "size-4 text-zinc-700")}
+                    </button>
+                  </div>
+                </div>
+
+                {/* "+ Add action" A DESTRA della card */}
+                <div className="pt-6 flex justify-end">
+                  <button
+                    type="button"
+                    className="w-44 h-14 bg-green-500 rounded-lg shadow text-white font-medium"
+                  >
+                    + Add action
+                  </button>
+                </div>
+              </div>
             </div>
-        </div >
-        </LocalizationProvider>
-    )
+          </div>
+        </section>
+
+        {/* ======= COLONNA DESTRA (Preview) ======= */}
+        <aside className="col-span-12 lg:col-span-4">
+          <div className={`${cardCls} p-8 flex flex-col gap-8`}>
+
+            {/* NEW AUTOMATION centrato, "AUTOMATION" verde */}
+            <h2 className="text-4xl font-bold uppercase text-center">
+              <span className="text-Text">NEW</span>{" "}
+              <span className="text-green-500 underline">AUTOMATION</span>
+            </h2>
+
+            {/* WHEN/THEN a sinistra, come chiesto in precedenza */}
+            <div className="flex items-center gap-2">
+              <div className="w-14 h-14 rounded-full bg-green-500 shadow flex items-center justify-center">
+                <span className="text-white text-3xl leading-none">?</span>
+              </div>
+              <div className="text-Text text-3xl font-bold uppercase">WHEN</div>
+            </div>
+
+            <div className="rounded-3xl border border-gray-300 px-6 py-9 grid gap-3 w-60 mx-auto">
+              <div className="flex items-center gap-3">
+                {getIcon("weekday", "size-6 text-zinc-700")}
+                <div className="text-Text text-xl uppercase">23 JUNE 2025,</div>
+              </div>
+              <div className="flex items-center justify-between">
+                {getIcon("time", "size-5 text-zinc-700")}
+                <div className="text-xl">
+                  <span>08:30 A.M. </span>
+                  <span className="font-bold">and</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {getIcon("light", "size-5 text-zinc-700")}
+                <div className="text-xl">
+                  <span>Light bulb is </span>
+                  <span className="font-bold">OFF</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <div className="w-14 h-14 rounded-full bg-green-500 shadow flex items-center justify-center">
+                <span className="text-white text-3xl leading-none">!</span>
+              </div>
+              <div className="text-Text text-3xl font-bold uppercase">then</div>
+            </div>
+
+            <div className="rounded-3xl border border-gray-300 px-6 py-9 grid gap-4 w-60 mx-auto">
+              <div className="flex items-center gap-2">
+                {getIcon("light", "size-5 text-zinc-700")}
+                <div className="text-xl">
+                  <span>Light bulb is </span>
+                  <span className="font-bold">ON</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {getIcon("speaker", "size-6 text-zinc-700")}
+                <div className="text-xl">
+                  <span>Speaker </span>
+                  <span className="font-bold">PLAY</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottoni centrati */}
+            <div className="mt-auto flex items-center justify-center gap-6">
+              <button type="button" className="w-32 h-12 bg-red-400 rounded-lg shadow text-white font-medium">
+                Reset
+              </button>
+              <button type="button" className="w-32 h-12 bg-amber-400 rounded-lg shadow text-white font-medium">
+                Simulate
+              </button>
+              <button type="button" className="w-32 h-12 bg-green-500 rounded-lg shadow text-white font-medium">
+                Save
+              </button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  );
 }
