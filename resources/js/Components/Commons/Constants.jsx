@@ -58,7 +58,7 @@ import { BsFullscreen, BsFullscreenExit } from "react-icons/bs";
 
 import { PiTelevisionSimple, PiVideoCameraFill, PiDesktopTowerFill, PiForkKnife } from "react-icons/pi";
 import { TbMicrowave } from "react-icons/tb";
-import { BiSolidWasher, BiSolidFridge,BiError, BiTargetLock } from "react-icons/bi";
+import { BiSolidWasher, BiSolidFridge,BiError, BiCodeCurly } from "react-icons/bi";
 import { LuBlinds,LuPower,LuPowerOff} from "react-icons/lu";
 import { TbAirConditioning } from "react-icons/tb";
 import { MdSensorWindow,MdDelete } from "react-icons/md";
@@ -201,7 +201,9 @@ export const iconMap = {
     fullscreen_exit:(className)=><BsFullscreenExit className={className}/>,
     refresh:(className)=><IoRefresh className={className}/>,
     numeric_state:(className)=><TbRulerMeasure className={className}/>,
-    device:(className)=><MdDevices  className={className}/>
+    device:(className)=><MdDevices  className={className}/>,
+    state:(className)=><MdDevices  className={className}/>,
+    template:(className)=><BiCodeCurly  className={className}/>
 }
 
 export const DevicesTypes = {

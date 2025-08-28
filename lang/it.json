@@ -156,7 +156,7 @@
     "Time is between":"L'ora è tra le ",
     "Time is before":"L'ora è prima delle ",
     "Time is after":"L'ora è dopo le",
-    ":device_name's :type":":type di :device_name",
+    ":device_name's :type":":type di \":device_name\"",
     "creationTitle": "Aggiungi una nuova automazione",
     "nameLabel": "Nome dell'automazione*",
     "namePlaceholder": "Inserisci qui il nome dell'automazione...",
@@ -312,5 +312,10 @@
      "Account":"Profilo",
      "Diary":"Diario",
      "and":"e",
-     "Sun is":"Il sole si trova"
+     "Sun is":"Il sole si trova",
+         "shifts":"passa",
+    "from":"da",
+    "to":"a",
+        "The template":"Il template",
+    "True":"Vero"
 }

@@ -30,6 +30,24 @@ function formatDuration(duration, t) {
 }
 
 
+function formatStateDescr(obj, t) {
+    let deviceName = obj.device_name || t("Unknown device");
+
+    //Two cases:
+    //trigger deviceName shifts [from] [to]
+    //condition deviceName is [state]
+
+    if ("state" in obj) {
+        return `"${deviceName}" ${t("is")} ${t(obj.state)}`
+    }
+    return `"${deviceName}" ${t("shifts")} ${"from" in obj ? `${t("from")} ${t(obj.from)}` : ""} ${"to" in obj ? `${t("to")} ${t(obj.to)}` : ""}`
+}
+
+function formatTemplateDesc(obj, t) {
+    return `${t("The template")} "${obj.value_template}" ${t("is")} ${t("True")}`
+}
+
+
 function formatNumericOrSensorDesc(obj, t) {
     let deviceName = obj.device_name || t("Unknown device");
     const typeKey = obj.type?.replace(/^is_/, "") || t("unknown type");
@@ -66,7 +84,7 @@ export function getTriggerDescription(trigger, t) {
             if (domain === "sensor") {
                 description = formatNumericOrSensorDesc(trigger, t);
             } else if (domain === "bthome") {
-                description = `${t("When you")} ${trigger.subtype.replace("_", " ") || t("unknown action")} "${deviceName}"`;
+                description = `${t("You")} ${trigger.subtype.replace("_", " ") || t("unknown action")} "${deviceName}"`;
             } else {
                 description = `"${deviceName}" ${t("is")} ${trigger.type || t("unknown action")}`;
             }
@@ -99,6 +117,14 @@ export function getTriggerDescription(trigger, t) {
 
         case "time_pattern":
             description = t("Time pattern-based trigger description");
+            break;
+
+        case "state":
+            description = formatStateDescr(trigger, t)
+            break;
+
+        case "template":
+            description = formatTemplateDesc(trigger, t)
             break;
 
         default:
@@ -203,6 +229,14 @@ export function getConditionDescription(condition, t) {
 
             break;
         }
+
+        case "state":
+            description = formatStateDescr(condition, t)
+            break;
+
+                case "template":
+            description = formatTemplateDesc(condition, t)
+            break;
 
         default:
             description = t("Unknown condition");
