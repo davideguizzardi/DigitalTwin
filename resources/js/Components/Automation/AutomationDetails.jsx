@@ -42,6 +42,9 @@ export function AutomationDetails({ automation_in }) {
                         <div>
                             <h1 className="font-semibold text-2xl">{automation.name.charAt(0).toUpperCase() + automation.name.slice(1)}</h1>
                         </div>
+                        <div>
+                            {automation.description? automation.description:""}
+                        </div>
 
 
                         <div>
