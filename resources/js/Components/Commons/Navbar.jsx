@@ -113,16 +113,16 @@ export default function Navbar() {
             <div></div>
             <div className="col-span-3 grid grid-cols-4 gap-1 items-center">
                 <NavLink connectedUser={user} routeName="home" isActive={currentPage === "home"} className={linkStyle}>
-                    {getIcon("home")} Home
+                    {getIcon("home","size-8 md:size-5")} <span className="hidden md:flex">Home</span>
                 </NavLink>
                 <NavLink connectedUser={user} routeName="consumption" isActive={currentPage === "consumption"} className={linkStyle}>
-                    {getIcon("power")} {t("Consumption")}
+                    {getIcon("power","size-8 md:size-5")} <span className="hidden md:flex">{t("Consumption")}</span>
                 </NavLink>
                 <NavLink connectedUser={user} routeName="automation" isActive={currentPage === "automation"} className={linkStyle}>
-                    {getIcon("puzzle")} {t("Automations")}
+                    {getIcon("puzzle","size-8 md:size-5")} <span className="hidden md:flex">{t("Automations")}</span>
                 </NavLink>
-                <NavLink connectedUser={user} routeName="configuration" isActive={currentPage === "configuration"} className={linkStyle}>
-                    {getIcon("gear")} {t("Configuration")}
+                <NavLink connectedUser={user} routeName="configuration" isActive={currentPage === "configuration"} className={`${linkStyle} hidden md:flex`}>
+                    {getIcon("gear","size-5")} <span className="hidden md:flex">{t("Configuration")}</span>
                 </NavLink>
             </div>
 

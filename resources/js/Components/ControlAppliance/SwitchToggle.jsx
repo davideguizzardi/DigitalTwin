@@ -116,7 +116,7 @@ function ActiveAutomationsDropdown({ }) {
   )
 }
 
-export function SwitchToggle({ state, stateId, devId, user, setErrorFun = {} ,refreshDevice={}}) {
+export function SwitchToggle({ state, stateId, devId, user, setErrorFun = {}, refreshDevice = {} }) {
   const [isOn, setIsOn] = useState(null);
   const [error, setError] = useState(false)
   const [actionOk, setActionOk] = useState(false)
@@ -130,10 +130,10 @@ export function SwitchToggle({ state, stateId, devId, user, setErrorFun = {} ,re
       setOpenGraph(false)
       setIsOn(!isOn)
     }
-    if (actionOk){
+    if (actionOk) {
       setOpenGraph(false)
     }
-  }, [error,actionOk])
+  }, [error, actionOk])
 
   const handleClick = async () => {
     const service = isOn ? "turn_off" : "turn_on"
@@ -153,17 +153,22 @@ export function SwitchToggle({ state, stateId, devId, user, setErrorFun = {} ,re
         <div className="flex flex-col w-full items-center gap-6">
 
           <div
-            className={`relative flex items-center w-[60%] h-28 p-1 bg-gray-400 rounded-2xl cursor-pointer transition-colors ${isOn ? "bg-lime-500" : "bg-gray-400"
+            className={`relative flex items-center w-[100%] md:w-[60%] h-28 p-1 rounded-2xl cursor-pointer transition-colors ${isOn ? "bg-lime-500" : "bg-gray-400"
               }`}
-            onClick={() => handleClick()}
+            onClick={handleClick}
           >
             <div
-              className={`size-24 bg-zinc-50 rounded-2xl shadow-xl flex items-center justify-center transition-transform duration-300 ${isOn ? "translate-x-[15.7rem]" : "translate-x-0"
-                }`}
+              className={`absolute top-1/2 -translate-y-1/2 size-24 bg-zinc-50 rounded-2xl shadow-xl
+                flex items-center justify-center duration-300 ease-in-out transition-[left]
+                ${isOn ? "left-[calc(100%-6.3rem)]" : "left-1"}`}
             >
-              {getIcon(isOn ? "power_off" : "power_on", `size-12 text-sm ${isOn ? "text-lime-600" : "text-gray-600"}`)}
+              {getIcon(
+                isOn ? "power_off" : "power_on",
+                `size-12 text-sm ${isOn ? "text-lime-600" : "text-gray-600"}`
+              )}
             </div>
           </div>
+
           <div className="w-full flex flex-col gap-0">
 
             {error &&

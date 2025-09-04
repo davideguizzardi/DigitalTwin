@@ -1,6 +1,5 @@
 import { useEffect, useState, useContext, useMemo } from "react";
 import { FaBolt, FaLaptop, FaCloud } from "react-icons/fa6";
-import Cookies from "js-cookie";
 import { EcologicalFootprint } from "@/Components/Commons/EcologicalFootprint";
 import { DeviceTable } from "@/Components/Commons/DeviceTable";
 import AnimateMap2 from "@/Components/Commons/AnimateMap2";
@@ -9,10 +8,9 @@ import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 import { DeviceContextRefresh } from "@/Components/ContextProviders/DeviceProviderRefresh";
 import WhiteCard from "@/Components/Commons/WhiteCard";
-import { apiFetch, apiLog, logsEvents } from "@/Components/Commons/Constants";
+import { apiFetch, apiLog, logsEvents, useIsMobile } from "@/Components/Commons/Constants";
 import dayjs from "dayjs";
 import { domain } from "@/Components/Commons/Constants";
-import { UserContext } from "@/Layouts/UserLayout";
 
 function PowerConsumptionGauge({ powerUsage = 0, maxPower = 3000 }) {
     const radius = 90; // The radius of the semicircle
@@ -169,29 +167,40 @@ const Dashboard3 = ({ maps, token }) => {
         return pastConsumption;
     }, [pastConsumption]);
 
-    const sections = useMemo(() => ({
-        "Home": (
-            <div className="flex-col gap-2 size-full">
-                {maps.length > 0 ? (
-                    <AnimateMap2 maps={maps} appliances={appliances} rooms={rooms} />
+    const isMobile = useIsMobile();
+
+    const sections = useMemo(() => {
+        const orderedSections = {};
+
+        if (!isMobile) {
+            orderedSections["Home"] = (
+                <div className="flex-col gap-2 size-full">
+                    {maps.length > 0 ? (
+                        <AnimateMap2 maps={maps} appliances={appliances} rooms={rooms} />
+                    ) : (
+                        <div className="size-full flex justify-center items-center">
+                            <p className="text-center dark:text-white">
+                                {t("No map has been uploaded yet")}, <br />
+                                {t("you can add your house's map clicking")}
+                                <a style={{ color: "blue" }} href={route("configuration")}>
+                                    {t("here")}
+                                </a>
+                            </p>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        orderedSections["Devices"] = <DeviceTable deviceContext={deviceList} />;
+
+        return orderedSections;
+    }, [isMobile, maps, appliances, rooms, deviceList]);
 
 
-                ) : (
-                    <div className="size-full flex justify-center items-center">
-                        <p className='text-center dark:text-white'>
-                            {t("No map has been uploaded yet")}, <br />
-                            {t("you can add your house's map clicking")}
-                            <a style={{ color: "blue" }} href={route("configuration")}> {t("here")}</a>
-                        </p>
-                    </div>
-                )}
-            </div>
-        ),
-        "Devices": (<DeviceTable deviceContext={deviceList} />)
-    }), [deviceList]);
 
     return (
-        <div className="h-fit w-full xl:grid xl:grid-cols-3 gap-4 p-3 overflow-auto md:flex md:flex-col">
+        <div className="h-fit w-full flex flex-col lg:grid lg:grid-cols-3 gap-4 p-3 overflow-auto">
             <div className="col-span-2">
                 <TabLayout sections={sections} />
             </div>

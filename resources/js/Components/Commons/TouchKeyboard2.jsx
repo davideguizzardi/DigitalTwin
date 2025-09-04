@@ -10,6 +10,12 @@ export const TouchKeyboard2 = ({ inputValue,forceOpen=false, ...textInputProps }
 
   const buttonBaseStyle = 'rounded-md text-2xl p-1';
 
+  const isTouchDevice=() =>{
+  return (('ontouchstart' in window) ||
+     (navigator.maxTouchPoints > 0) ||
+     (navigator.msMaxTouchPoints > 0));
+}
+
   useEffect(() => {
     if (inputValue) setValue(inputValue);
   }, [inputValue]);
@@ -81,7 +87,7 @@ export const TouchKeyboard2 = ({ inputValue,forceOpen=false, ...textInputProps }
         {...textInputProps}
       />
 
-      {showKeyboard && (
+      {showKeyboard && !isTouchDevice() && (
         <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 z-50 bg-zinc-50 shadow-lg p-2 rounded-md flex flex-col gap-2">
           {layouts[keyboardMode].map((row, index) => (
             <div key={index} className="flex flex-row gap-2 justify-center">

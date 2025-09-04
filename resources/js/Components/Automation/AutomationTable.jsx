@@ -94,7 +94,7 @@ export function AutomationTable({ automation_context, openId = "", automationRef
     );
 
     return (
-        <div className="grid grid-cols-2 2xl:grid-cols-1 2xl:grid-rows-2 gap-5">
+        <div className="flex flex-col md:grid md:grid-cols-2 md:grid-rows-2 2xl:grid-cols-1 gap-5">
             <ToastNotification
                 message={t("Configuration saved successfully")}
                 isVisible={showToast}
@@ -123,8 +123,8 @@ export function AutomationTable({ automation_context, openId = "", automationRef
                     <List unstyled className="divide-y divide-gray-300">
                         {paginatedAutomations.map(automation => (
                             <List.Item key={automation.id}>
-                                <div className="grid grid-cols-6 gap-3 items-center m-3 text-sm">
-                                    <div className="col-span-3 flex flex-row gap-3 hover:cursor-pointer" onClick={() => setOpenAutomation(automation)}>
+                                <div className="grid grid-cols-6 gap-8 items-center m-3 text-sm">
+                                    <div className="col-span-4 md:col-span-3 flex flex-row gap-3 hover:cursor-pointer items-center" onClick={() => setOpenAutomation(automation)}>
                                         <p className={openAutomation === automation ? "font-bold" : "font-semibold"}>{automation.name}</p>
                                         {automation.suggestions?.length > 0 && (
                                             <Tooltip content={t("Green suggestions are available")}>
@@ -132,7 +132,7 @@ export function AutomationTable({ automation_context, openId = "", automationRef
                                             </Tooltip>
                                         )}
                                     </div>
-                                    <div className="">
+                                    <div className="hidden md:flex">
                                         {automation.time && (automation.days.includes(currentDay) || automation.days.length === 0) && (
                                             <div className="flex flex-row justify-end items-center gap-1">
                                                 {getIcon("time")}{automation.time}

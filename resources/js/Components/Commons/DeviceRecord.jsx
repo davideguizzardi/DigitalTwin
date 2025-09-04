@@ -7,7 +7,7 @@ export default function DeviceRecord({ device,onClickFun }) {
     const {t}=useLaravelReactI18n()
     return (
         <List.Item key={device.device_id} className="">
-            <div className="grid grid-cols-3 gap-3 items-center p-3  text-sm"
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 items-center p-3  text-sm"
                 onClick={() => {onClickFun(true)}}
                 style={{cursor: "pointer", zIndex: "20"}}
             >
@@ -20,7 +20,7 @@ export default function DeviceRecord({ device,onClickFun }) {
                         <p>{t(device.state)}</p>
                     </div>
                 }
-                <div className={"flex flex-row gap-4 items-center justify-end " + (device.state != "" ? "" : "col-span-2")}>
+                <div className={"hidden md:flex flex-row gap-4 items-center justify-end " + (device.state != "" ? "" : "col-span-2")}>
                     {device.list_of_entities
                         .filter(e => e.entity_id.startsWith('sensor') && e.entity_class != "energy")
                         .sort((a, b) => a.entity_class > b.entity_class ? -1 : 1)

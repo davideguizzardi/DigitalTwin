@@ -49,14 +49,14 @@ export function UserLayout({ children }) {
         if (darkMode === "true") {
             document.documentElement.classList.add("dark");
         } else {
-            document.documentElement.classList.remove("dark");
+            //document.documentElement.classList.remove("dark");
         }
     }, []);
 
 
     return (
-        <main>
-            <div className="overflow-auto bg-gray-300 dark:bg-neutral-800 h-screen w-screen">
+        <main className="">
+            <div className="overflow-auto bg-gray-300 dark:bg-gray-700 h-screen w-screen text-gray-800">
                 <UserContext.Provider value={userState}>
                     {children.props.isFirstConfiguration ?
                         <div className="flex w-full justify-center">
@@ -68,7 +68,7 @@ export function UserLayout({ children }) {
                         :
                         <DeviceProviderRefresh>
                             <Navbar />
-                            <div className="flex w-full justify-center">
+                            <div className="flex w-full justify-center overflow-auto">
 
                                 <motion.div className={`h-[calc(100vh-3.25rem)] justify-center w-full`}>
                                     {children}

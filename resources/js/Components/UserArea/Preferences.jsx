@@ -62,10 +62,10 @@ export default function Preferences({ }) {
     }, [user])
 
     return (
-        <div className="flex flex-col h-full p-5 gap-1">
-            <h1 className="text-2xl dark:text-white">{t("Preferences")}</h1>
-            <p className='dark:text-white'>{t("preferences_description")}</p>
-            <div className="flex flex-col h-full justify-center items-center gap-1">
+        <div className="flex flex-col w-full p-5 gap-1 ">
+            <h1 className="text-lg md:text-2xl">{t("Preferences")}</h1>
+            <p className='dark:text-white text-sm md:text-base'>{t("preferences_description")}</p>
+            <div className="flex flex-col h-full justify-center items-center gap-3">
                 <h1 className='dark:text-white text-xl'>{t("Most important")}</h1>
                 <div className="flex w-full h-3/4 justify-center gap-2 p-1">
                     <div className="flex flex-col px-2 bg-gradient-to-b from-lime-100 to-lime-900 rounded"></div>

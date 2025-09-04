@@ -21,7 +21,7 @@ export default function GuestLayout({ children }) {
 
     return (
         <div className="min-h-screen relative flex flex-row bg-gray-300 dark:bg-neutral-800 sm:justify-center items-center pt-6 px-2 sm:pt-0 ">
-            <WhiteCard className='flex flex-col w-1/2 items-center gap-5'>
+            <WhiteCard className='flex flex-col w-full md:w-1/2 items-center gap-5'>
                 <div className='flex flex-row gap-1 items-center w-full'>
 
                     <Link className='flex flex-row px-3 py-1 items-center justify-start w-11/12' href="/">

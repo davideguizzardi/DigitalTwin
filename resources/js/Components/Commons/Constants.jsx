@@ -344,3 +344,31 @@ export const logsEvents = {
 };
 
 export const removeType = ["device_tracker", "update", "sun", "weather", "forecast"]
+
+import { useState, useEffect } from "react";
+
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768); // Tailwind "md"
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  return isMobile;
+}
+
+
+export const THEME={
+    background_primary:"bg-zinc-50 dark:bg-gray-800",
+    bg_accent:"bg-lime-400 dark:bg-lime-600",
+    bg_accent_darker:"bg-green-800",
+    bg_danger:"bg-red-400",
+    bg_danger_darker:"bg-red-500",
+    text:"text-gray-900 dark:slate-50",
+    text_accent:"text-lime-400",
+    text_danger:"text-red-400",
+    text_warning:"text-yellow-400"
+}

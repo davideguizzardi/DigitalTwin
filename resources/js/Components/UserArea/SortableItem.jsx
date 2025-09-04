@@ -27,7 +27,7 @@ export default function SortableItem(props) {
   }
 
   return (
-    <div className='flex rounded h-full shadow hover:z-11 px-16 py-4 text-xl justify-start items-center gap-2'
+    <div className='flex rounded h-full shadow hover:z-11 px-10 md:px-20 py-4 text-xl justify-start items-center gap-2'
       ref={setNodeRef} style={{...style, backgroundColor: props.color}} {...attributes} {...listeners} >
       {icons[props.id]}
       <h1>{t(props.id)}</h1>

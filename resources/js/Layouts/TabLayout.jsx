@@ -88,7 +88,7 @@ export default function TabLayout({ sections }) {
                             onClick={() => changeTab(index)}
                             key={index}
                         >
-                            <h1 className="text-2xl py-2 dark:text-white text-center h-full">
+                            <h1 className="text-sm md:text-2xl py-2 dark:text-white text-center h-full">
                                 {t(title)}
                             </h1>
                             <motion.div className="flex bg-lime-400 rounded"

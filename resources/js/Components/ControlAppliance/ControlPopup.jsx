@@ -247,7 +247,7 @@ export default function ControlPopup({ openDevice }) {
                 </div>
                 <div className="flex flex-col gap-4">
                   {t("Groups")}
-                  <div className="grid grid-cols-4 grid-flow-row gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-4 grid-flow-row gap-4">
                     {deviceGroups.map(group => (
                       <div className="bg-zinc-100 rounded-md items-center flex justify-between p-2">
                         {group.name}
@@ -309,26 +309,24 @@ export default function ControlPopup({ openDevice }) {
           <>
             <Modal.Body>
               <div className="flex flex-col gap-4">
-                <div className="-ml-2 font-light font-[Inter]">
-                  {t("Room")}: <span className="font-semibold">{t(device.map_data ? device.map_data.room ? device.map_data.room : t("No Room") : t("No Room"))}</span>
-                </div>
-                <div className="-ml-2 font-light font-[Inter]">
-                  {t("Groups")}:
-                  {device.groups && device.groups.length > 0 ?
+                {device.map_data && device.map_data.room &&
+                  <div className="-ml-2 font-light font-[Inter]">
+                    {t("Room")}: <span className="font-semibold">{t(device.map_data.room)}</span>
+                  </div>
+                }
+                {device.groups && device.groups.length > 0 &&
 
-                    <div className="grid grid-cols-4 grid-flow-row gap-4">
+                  <div className="-ml-2 font-light font-[Inter]">
+                    {t("Groups")}:
+                    <div className="grid grid-cols-2 md:grid-cols-4 grid-flow-row gap-2">
                       {device.groups.map(group => (
-                        <div className="bg-zinc-100 rounded-md items-center flex justify-center p-2">
+                        <div className="bg-zinc-100 rounded-md items-center flex justify-center p-2 shadow-md">
                           {group.name}
                         </div>
                       ))}
                     </div>
-                    :
-                    <span className="font-semibold">
-                      {t("No groups")}
-                    </span>
-                  }
-                </div>
+                  </div>
+                }
                 <div className="-ml-2 flex flex-col gap-4 items-start mb-2">
                   {device.state &&
 
@@ -340,7 +338,7 @@ export default function ControlPopup({ openDevice }) {
 
                   {device.list_of_entities && device.list_of_entities.length > 0 &&
                     <div className="flex flex-col w-full font-light font-[Inter]">
-                      <div className="grid grid-cols-4 gap-2 w-full">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 w-full">
                         {device.list_of_entities
                           .filter(e => (!e.entity_id.startsWith(device.device_class) && e.entity_class != "energy") || e.entity_id.startsWith("sensor"))
                           .sort((a, b) => a.entity_class < b.entity_class ? -1 : 1)

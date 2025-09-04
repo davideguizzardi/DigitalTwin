@@ -10,7 +10,7 @@ const AutomationStats = ({
 }) => {
 const {t} = useLaravelReactI18n()
   return (
-    <div className="grid xl:grid-cols-3 xl:gap-5 md:grid-cols-1 md:gap-2">
+    <div className="grid xl:grid-cols-3 xl:gap-5 grid-cols-1 gap-2">
       {monthlyCost !== -1 ? (
         <StatCard
           icon={getIcon("money")}
@@ -42,7 +42,7 @@ const {t} = useLaravelReactI18n()
 
 const StatCard = ({ icon, title, value, subtitle }) => {
   return (
-    <div className="rounded-lg bg-gray-300 flex flex-col p-1">
+    <div className="rounded-lg bg-gray-300 flex flex-col">
       <div className="flex flex-row gap-1 items-center">
         {icon}
         <span className="text-sm font-semibold font-[Inter]">{title}</span>

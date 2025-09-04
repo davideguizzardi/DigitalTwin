@@ -7,7 +7,7 @@ import { kgCO2e_kWh } from "./Constants";
 
 const kWhComparisons = (kWh,t) => {
   const kgCO2e = kWh * kgCO2e_kWh; // Italy grid emissions: 0.270 kg CO2e per kWh
-  const iconStyle="2xl:text-5xl md:text-4xl"
+  const iconStyle="2xl:text-5xl md:text-4xl size-9"
   return [
     { 
       icon: <FaCar className={`${iconStyle} text-slate-600`} />, 
@@ -56,7 +56,7 @@ export const EcologicalFootprintCarousel = ({ kWh }) => {
   const comparisonGroups = groupComparisons(comparisons);
 
   return (
-    <div className="w-full md:h-32 2xl:hidden">
+    <div className="w-full h-40 md:h-32 2xl:hidden">
       <Carousel slide={true} className="" indicators={false} leftControl="<" rightControl=">" slideInterval={4000}>
         {comparisonGroups.map((group, index) => (
           <div key={index} className="grid grid-cols-3 gap-2 p-2 rounded-lg">
@@ -78,7 +78,7 @@ export const EcologicalFootprintGrid = ({ kWh }) => {
   const {t}=useLaravelReactI18n()
 
   return (
-    <div className="w-full xl:hidden 2xl:block">
+    <div className="w-full hidden 2xl:block">
       <div className="grid grid-cols-3 gap-4 ">
         {kWhComparisons(kWh,t).map((item, index) => (
           <div key={index} className="flex flex-col items-center text-center p-4">
