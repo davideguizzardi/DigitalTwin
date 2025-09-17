@@ -1,7 +1,8 @@
 import { TextInput } from "flowbite-react";
-import {ThemeButton as Button} from "@/Components/Commons/ThemeButton";
+
 import { Head, useForm } from "@inertiajs/react";
 import InputError from "@/Components/Commons/InputError";
+import { StyledButton } from "@/Components/Commons/StyledBasedComponents";
 
 
 export default function ForgotPassword({ status }) {
@@ -34,11 +35,11 @@ export default function ForgotPassword({ status }) {
                         required
                     />
                     <InputError message={errors.email} className="mt-2" />
-                    <Button
+                    <StyledButton
                         className="bg-lime-400 text-black"
                         type="submit">
                         Email Password Reset Link
-                    </Button>
+                    </StyledButton>
                 </form>
             </div>
         </>

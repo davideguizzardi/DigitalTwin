@@ -1,5 +1,5 @@
 import { useCallback } from "react"
-import { ThemeButton } from "@/Components/Commons/ThemeButton"
+import { StyledButton } from "@/Components/Commons/StyledBasedComponents"
 import { motion } from "framer-motion"
 
 export default function listButtons({ dataButtons, index = null, vertical = true }) {
@@ -10,12 +10,12 @@ export default function listButtons({ dataButtons, index = null, vertical = true
                 whileHover={{ scale: "1.2", zIndex: "50" }}
                 key={"div_" + i}
             >
-                <ThemeButton className={index == i ? " bg-blue-500" : ""}
+                <StyledButton className={index == i ? " bg-blue-500" : ""}
                     key={dataBtn.text} pill onClick={dataBtn.callback}>
                     <div className="flex justify-center items-center gap-1">
                         {dataBtn.icon} <h1 className="text-center">{dataBtn.text}</h1>
                     </div>
-                </ThemeButton>
+                </StyledButton>
             </motion.div>
         ))
 
@@ -28,12 +28,12 @@ export default function listButtons({ dataButtons, index = null, vertical = true
                         whileHover={{ scale: "1.2", zIndex: "50" }}
                         key={"div_" + i}
                     >
-                        <ThemeButton className={index == i ? " bg-lime-600 dark:bg-lime-600 scale-125" : ""}
+                        <StyledButton className={index == i ? " bg-lime-600 dark:bg-lime-600 scale-125" : ""}
                             key={dataBtn.text} pill onClick={dataBtn.callback}>
                             <div className="flex justify-center items-center gap-1">
                                 {dataBtn.icon} <h1 className="text-center">{dataBtn.text}</h1>
                             </div>
-                        </ThemeButton>
+                        </StyledButton>
                     </motion.div>
                 ))
             }

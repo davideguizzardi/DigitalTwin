@@ -1,11 +1,10 @@
 import { AutomationTable } from "@/Components/Automation/AutomationTable";
-import { ThemeButton } from "@/Components/Commons/ThemeButton";
+import { StyledButton } from "@/Components/Commons/StyledBasedComponents";
 import { useState } from "react";
 import { useEffect } from "react";
 import { apiFetch, getIcon } from "@/Components/Commons/Constants";
 import { Modal } from "flowbite-react";
 import { rulebot } from "@/Components/Commons/Constants";
-import { StyledButton } from "@/Components/Commons/StyledBasedComponents";
 
 export default function Automation({ id = "" }) {
     const [automationContext, setAutomationContext] = useState({})
@@ -73,13 +72,13 @@ export default function Automation({ id = "" }) {
                     </div>
                 }
             </div>
-            <ThemeButton className="absolute bottom-0 right-0 m-5 rounded-full" onClick={() => setShowAutomationModal(true)}>
+            <StyledButton className="absolute bottom-0 right-0 m-5 rounded-full" onClick={() => setShowAutomationModal(true)}>
                 {getIcon("plus", "size-8")}
-            </ThemeButton>
+            </StyledButton>
             {/*<a href={route("automation.add")}>
-                <ThemeButton className="absolute bottom-0 right-0 m-5 rounded-full bg">
+                <StyledButton className="absolute bottom-0 right-0 m-5 rounded-full bg">
                     {getIcon("plus", "size-8")}
-                </ThemeButton>
+                </StyledButton>
             </a>*/}
         </div>
     )

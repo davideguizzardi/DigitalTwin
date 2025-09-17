@@ -1,12 +1,11 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { apiFetch, apiLog, backend, logsEvents } from "../Commons/Constants";
+import { apiFetch, apiLog, logsEvents } from "../Commons/Constants";
 import { FaPencil } from "react-icons/fa6"
-import { ThemeButton } from "../Commons/ThemeButton";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import { getIcon } from "../Commons/Constants";
-import { TextInput, Label, Button } from "flowbite-react";
+import { Label } from "flowbite-react";
 import { useContext } from "react";
 import { UserContext } from "@/Layouts/UserLayout";
 import { NumericKeyboard } from "../Commons/NumericKeyboard";
@@ -379,7 +378,7 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
                     </div>
                     :
                     <div className="w-full flex justify-center items-end">
-                        <ThemeButton onClick={() => { saveConfiguration() }}>{t("Save")}</ThemeButton>
+                        <StyledButton onClick={() => { saveConfiguration() }}>{t("Save")}</StyledButton>
                     </div>
             }
         </div >

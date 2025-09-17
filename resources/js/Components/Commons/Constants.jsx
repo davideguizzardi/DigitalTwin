@@ -13,7 +13,8 @@ import {
     FaCirclePlay, FaLightbulb, FaHouse,
     FaArrowRight,
     FaArrowLeft,
-    FaPlus,FaPencil
+    FaPlus,FaPencil,
+    FaRegMessage 
 } from "react-icons/fa6";
 
 // Other icon libraries
@@ -85,8 +86,8 @@ import { MdMeetingRoom,MdDevices  } from "react-icons/md";
 
 
 
-export const backend = import.meta.env.VITE_DT_API_URL || "http://localhost:8000"
-export const domain = import.meta.env.VITE_DT_DOMAIN ||"http://localhost"
+export const backend = import.meta.env.VITE_DT_API_URL || "/fastapi"
+export const domain = import.meta.env.VITE_DT_DOMAIN ||""
 export const rulebot=import.meta.env.VITE_RULEBOT_FRONTEND_URL || "http://localhost:8888"
 export const diary_link=import.meta.env.VITE_DIARY_LINK || ""
 
@@ -203,7 +204,8 @@ export const iconMap = {
     numeric_state:(className)=><TbRulerMeasure className={className}/>,
     device:(className)=><MdDevices  className={className}/>,
     state:(className)=><MdDevices  className={className}/>,
-    template:(className)=><BiCodeCurly  className={className}/>
+    template:(className)=><BiCodeCurly  className={className}/>,
+    notify:(className)=><FaRegMessage className={className}/>
 }
 
 export const DevicesTypes = {

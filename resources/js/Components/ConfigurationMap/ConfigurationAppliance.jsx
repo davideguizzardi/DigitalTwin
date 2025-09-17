@@ -1,14 +1,9 @@
 import { useCallback, useEffect, useRef, useState, useContext } from "react";
-import { ThemeButton } from "@/Components/Commons/ThemeButton"
 import { animate, AnimatePresence, motion } from "framer-motion";
 import ListButtons from "@/Components/Commons/ListButtons"
 import ListAppliances from "@/Components/ConfigurationMap/ListAppliances"
 import DroppableLayer from "@/Components/ConfigurationMap/DroppableLayer";
 import { Modal } from "flowbite-react";
-import Cookies from 'js-cookie';
-import AnimateMap from "../Commons/AnimateMap";
-import AnimateMap2 from "../Commons/AnimateMap2";
-import WhiteCard from "../Commons/WhiteCard";
 import { useSwipeable } from "react-swipeable";
 import { apiFetch, apiLog, backend, logsEvents ,domain} from "../Commons/Constants";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
@@ -277,13 +272,13 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
                                 />
                             </div>
                             <div className="flex items-center justify-around p-2 mt-2">
-                                <ThemeButton className="text-lg" onClick={() => { setOpenModal(false) }}>{t("Cancel")}</ThemeButton>
-                                <ThemeButton className="text-lg" onClick={() => {
+                                <StyledButton className="text-lg" onClick={() => { setOpenModal(false) }}>{t("Cancel")}</StyledButton>
+                                <StyledButton className="text-lg" onClick={() => {
                                     deleteUnconfAppl()
                                     putApplOnFloor()
                                     setOpenModal(false)
                                     endSection()
-                                }}>{t("Save")}</ThemeButton>
+                                }}>{t("Save")}</StyledButton>
                             </div>
                         </div>
                     </Modal.Body>

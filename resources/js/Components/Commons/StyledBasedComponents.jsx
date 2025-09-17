@@ -3,7 +3,7 @@ import { Button } from "flowbite-react";
 
 export const StyledDiv = ({ variant = "primary",className="", children }) => {
   const theme = {
-    primary: "bg-zinc-50 text-gray-800  dark:bg-neutral-800 dark:text-gray-300 rounded-lg px-5 py-5",
+    primary: "bg-zinc-50 text-gray-800  dark:bg-neutral-800 dark:text-gray-300 rounded-lg p-3 md:p-5",
     secondary: "bg-gray-300 py-10 px-10",
   };
 

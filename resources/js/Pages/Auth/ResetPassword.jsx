@@ -1,8 +1,8 @@
 import { Label, TextInput } from "flowbite-react";
-import { ThemeButton as Button } from "@/Components/Commons/ThemeButton";
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import InputError from "@/Components/Commons/InputError";
+import { StyledButton } from "@/Components/Commons/StyledBasedComponents";
 
 export default function ResetPassword({ token, email }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -83,9 +83,9 @@ export default function ResetPassword({ token, email }) {
                 </div>
 
                 <div className="flex items-center justify-end mt-4">
-                    <Button className="ms-4 bg-lime-200 text-black" disabled={processing} type="submit">
+                    <StyledButton className="ms-4 bg-lime-200 text-black" disabled={processing} type="submit">
                         Reset Password
-                    </Button>
+                    </StyledButton>
                 </div>
             </form>
         </>

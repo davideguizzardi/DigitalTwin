@@ -205,7 +205,7 @@ export default function Login({ users, status, canResetPassword }) {
                   <div className="flex flex-row items-center gap-4">{getIcon("arrow_left")}{t("Back")}</div>
                 </Button>
 
-                <button className="w-full bg-lime-400 hover:bg-lime-500 text-gray-800 shadow-md" type="submit">
+                <button className="w-full bg-lime-400 hover:bg-lime-500 text-gray-800 shadow-md rounded-md" type="submit">
                   {t("Enter")}
                 </button>
               </div>

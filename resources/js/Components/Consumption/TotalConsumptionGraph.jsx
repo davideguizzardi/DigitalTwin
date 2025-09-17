@@ -150,7 +150,7 @@ export function TotalConsumptionGraph({ device_list }) {
   }, [from, to, group, deviceId, deviceName])
 
 
-  const valueFormatter = (value) => `${value ? value.toFixed(0) : 0} ${group == "hourly" ? "Wh" : "kWh"}`;
+  const valueFormatter = (value) => `${value ? value.toFixed(1) : 0} ${group == "hourly" ? "Wh" : "kWh"}`;
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -239,7 +239,7 @@ export function TotalConsumptionGraph({ device_list }) {
               yAxis={[{ valueFormatter: valueFormatter, tickLabelStyle: { fontSize: isMobile ? 10 : 13 } }]}
               series={[{ dataKey: "energy_consumption", color: '#a3e635', valueFormatter }]}
               borderRadius={4}
-              margin={{ right: 20 }}
+              margin={{ right: 20,left: isMobile?60:90}}
               height={heightGraph}
               sx={sxGraph}
             />

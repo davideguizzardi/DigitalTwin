@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { StyledDiv } from "@/Components/Commons/StyledBasedComponents";
+import { StyledButton, StyledDiv } from "@/Components/Commons/StyledBasedComponents";
 import AutomationStats from "./AutomationStats";
 import { getIcon } from "@/Components/Commons/Constants";
 import { SuggestionsDisplay } from "./SuggestionDisplay";
@@ -11,8 +11,9 @@ import { getTriggerDescription, getConditionDescription } from "@/Components/Com
 export function AutomationDetails({ automation_in }) {
     const [automation, setAutomation] = useState({})
     const { t } = useLaravelReactI18n()
+    const [detailsOpen, setDetailOpen] = useState(false)
 
-    const block_class = "flex flex-row items-center gap-10 bg-gray-200 rounded-md p-2 my-2"
+    const block_class = "flex flex-row items-center gap-3 md:gap-5 bg-gray-200 rounded-md p-2 my-2 text-sm md:text-base"
     const block_or_class = "flex flex-col items-center gap-1 bg-gray-200 rounded-md p-2 my-2"
 
     useEffect(() => {
@@ -32,6 +33,23 @@ export function AutomationDetails({ automation_in }) {
         return words.join(" ");
     }
 
+    function formatActionData(data) {
+        return (<ul className="list-disc ml-5 w-full">
+            {data&&
+                Object.keys(data).map((key) => (
+                    <li>
+                        <span className="font-semibold">
+                            {t(key)}
+                        </span>
+                        {": "}
+                        {JSON.stringify(data[key])}
+                    </li>
+                ))
+            }
+        </ul>
+        )
+    }
+
 
     return (
         <>
@@ -43,93 +61,112 @@ export function AutomationDetails({ automation_in }) {
                             <h1 className="font-semibold text-2xl">{automation.name.charAt(0).toUpperCase() + automation.name.slice(1)}</h1>
                         </div>
                         <div>
-                            {automation.description? automation.description:""}
+                            {automation.description ? automation.description : ""}
                         </div>
 
+                        <div className="shadow-md rounded-md p-2">
+                            <div className="flex flex-row justify-between items-center">
+                                <span className="text-lg font-semibold">
+                                {t("Details")}
+                                </span>
+                                <StyledButton onClick={() => setDetailOpen(!detailsOpen)} variant="secondary">
+                                    {detailsOpen ? "−" : "+"}
+                                </StyledButton>
+                            </div>
+                            {detailsOpen &&
 
-                        <div>
-                            <h2 className="text-xl font-normal">{t("When")}</h2>
-                            {automation.trigger.map((trigger, idx) => (
-                                <>
-                                    {idx !== 0 && (
-                                        <div className="text-center my-1 font-medium">{t("or")}</div>
-                                    )}
-                                    <div key={idx} className={block_class}>
-                                        {getIcon(trigger.platform || trigger.trigger || trigger.triggers)}{getTriggerDescription(trigger, t)}
-                                    </div>
-                                </>
-                            ))}
-                        </div>
-
-                        {automation.condition.length > 0 && (
-                            <div>
-                                <h2 className="text-xl font-normal">{t("And if")}</h2>
-
-                                {automation.condition.map((cond, idx) => {
-                                    if (cond.condition === "and") {
-                                        return cond.conditions.map((sub, subIdx) => (
-                                            <div key={`${idx}-${subIdx}`}>
-                                                {(idx !== 0 || subIdx !== 0) && (
-                                                    <div className="text-center my-1 font-medium">{t("and")}</div>
-                                                )}
-                                                <div className={block_class}>
-                                                    {getIcon(sub.weekday ? "weekday" : sub.condition)}
-                                                    {getConditionDescription(sub, t)}
-                                                </div>
-                                            </div>
-                                        ));
-                                    }
-
-                                    if (cond.condition === "or") {
-                                        return (
-                                            <div key={idx}>
+                                <div className={`flex flex-col gap-4 transform transition-all duration-300 ease-in-out origin-top ${detailsOpen ? "scale-y-100 opacity-100" : "scale-y-0 opacity-0"
+                                    }`}>
+                                    <div>
+                                        <h2 className="text-xl font-normal">{t("When")}</h2>
+                                        {automation.trigger.map((trigger, idx) => (
+                                            <>
                                                 {idx !== 0 && (
-                                                    <div className="text-center my-2 font-medium">{t("and")}</div>
+                                                    <div className="text-center my-1 font-medium">{t("or")}</div>
                                                 )}
-                                                <div className={block_or_class}>
-                                                    {cond.conditions.map((sub, subIdx) => (
-                                                        <div key={`${idx}-${subIdx}`} className="w-full">
-                                                            {subIdx !== 0 && (
-                                                                <div className="text-center my-2 font-medium">{t("or")}</div>
+                                                <div key={idx} className={block_class}>
+                                                    {getIcon(trigger.platform || trigger.trigger || trigger.triggers)}{getTriggerDescription(trigger, t)}
+                                                </div>
+                                            </>
+                                        ))}
+                                    </div>
+
+                                    {automation.condition.length > 0 && (
+                                        <div>
+                                            <h2 className="text-xl font-normal">{t("And if")}</h2>
+
+                                            {automation.condition.map((cond, idx) => {
+                                                if (cond.condition === "and") {
+                                                    return cond.conditions.map((sub, subIdx) => (
+                                                        <div key={`${idx}-${subIdx}`}>
+                                                            {(idx !== 0 || subIdx !== 0) && (
+                                                                <div className="text-center my-1 font-medium">{t("and")}</div>
                                                             )}
-                                                            <div className="flex flex-row items-center gap-10 rounded-md bg-gray-300 p-2 mx-2">
+                                                            <div className={block_class}>
                                                                 {getIcon(sub.weekday ? "weekday" : sub.condition)}
                                                                 {getConditionDescription(sub, t)}
                                                             </div>
                                                         </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        );
-                                    }
+                                                    ));
+                                                }
 
-                                    return (
-                                        <div key={idx}>
-                                            {idx !== 0 && (
-                                                <div className="text-center my-1 font-medium">{t("and")}</div>
-                                            )}
-                                            <div className={block_class}>
-                                                {getIcon(cond.weekday ? "weekday" : cond.condition)}
-                                                {getConditionDescription(cond, t)}
-                                            </div>
+                                                if (cond.condition === "or") {
+                                                    return (
+                                                        <div key={idx}>
+                                                            {idx !== 0 && (
+                                                                <div className="text-center my-2 font-medium">{t("and")}</div>
+                                                            )}
+                                                            <div className={block_or_class}>
+                                                                {cond.conditions.map((sub, subIdx) => (
+                                                                    <div key={`${idx}-${subIdx}`} className="w-full">
+                                                                        {subIdx !== 0 && (
+                                                                            <div className="text-center my-2 font-medium">{t("or")}</div>
+                                                                        )}
+                                                                        <div className="flex flex-row items-center gap-10 rounded-md bg-gray-300 p-2 mx-2">
+                                                                            {getIcon(sub.weekday ? "weekday" : sub.condition)}
+                                                                            {getConditionDescription(sub, t)}
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                }
+
+                                                return (
+                                                    <div key={idx}>
+                                                        {idx !== 0 && (
+                                                            <div className="text-center my-1 font-medium">{t("and")}</div>
+                                                        )}
+                                                        <div className={block_class}>
+                                                            {getIcon(cond.weekday ? "weekday" : cond.condition)}
+                                                            {getConditionDescription(cond, t)}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
-                                    );
-                                })}
-                            </div>
-                        )}
+                                    )}
 
 
-                        <div>
-                            <h2 className="text-xl font-normal">{t("Do")}</h2>
-                            <div className="flex flex-col gap-1">
-                                {
-                                    automation.action.map(action => (
-                                        <div className={block_class}>
-                                            {getIcon(action.domain)}{t(formatServiceName(action.service))} "{action.device_name}"
+                                    <div>
+                                        <h2 className="text-xl font-normal">{t("Do")}</h2>
+                                        <div className="flex flex-col gap-1">
+                                            {
+                                                automation.action.map(action => (
+                                                    <div className={block_class}>
+                                                        {getIcon(action.domain)}
+                                                        <div className="flex flex-col items-start">
+                                                            {t(formatServiceName(action.service))} "{action.device_name}"
+                                                            {formatActionData(action.data)}
+                                                        </div>
+                                                    </div>
+                                                ))
+                                            }
                                         </div>
-                                    ))
-                                }
-                            </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
 
                     </div>

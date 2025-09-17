@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ThemeButton } from "@/Components/Commons/ThemeButton";
+import { StyledButton } from "@/Components/Commons/StyledBasedComponents";
 
 export default function CarouselMap({ maps, index = 0,
     setIndex = (i) => { index = i }, otherButtons = (<></>) }) {
@@ -7,12 +7,12 @@ export default function CarouselMap({ maps, index = 0,
     console.log(maps)
 
     const listButtons = maps.map((element, i) => (
-        <ThemeButton className="size-min mx-px my-2" key={i} pill onClick={() => {
+        <StyledButton className="size-min mx-px my-2" key={i} pill onClick={() => {
             setUrlImage(element.url);
             setIndex(i);
         }}>
             {element.floor}
-        </ThemeButton>
+        </StyledButton>
     ));
     return (
         <div className="size-full flex justify-center items-center">
