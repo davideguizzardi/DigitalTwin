@@ -56,7 +56,7 @@ export default function Automation({ id = "" }) {
             <Modal size={"7xl"} show={showAutomationModal} popup dismissable onClose={() => setShowAutomationModal(false)}>
                 <Modal.Header />
                 <Modal.Body>
-                    <iframe className="w-full h-[70vh]" src={rulebot}></iframe>
+                    <iframe className="w-full h-[70vh]" src={rulebot} allow="microphone"></iframe>
                 </Modal.Body>
             </Modal>
             <div className="flex flex-col 2xl:grid 2xl:grid-cols-2 gap-4 pb-2">
@@ -68,13 +68,16 @@ export default function Automation({ id = "" }) {
                             {getIcon("refresh", "size-7")}
                         </StyledButton>
 
-                        <iframe id="rulebot-iframe" className="h-[70vh] w-full rounded-md" src={rulebot}></iframe>
+                        <iframe id="rulebot-iframe" className="h-[70vh] w-full rounded-md" src={rulebot} allow="microphone"></iframe>
                     </div>
                 }
             </div>
+            {!is2xlOrLarger &&
+
             <StyledButton className="absolute bottom-0 right-0 m-5 rounded-full" onClick={() => setShowAutomationModal(true)}>
                 {getIcon("plus", "size-8")}
             </StyledButton>
+            }
             {/*<a href={route("automation.add")}>
                 <StyledButton className="absolute bottom-0 right-0 m-5 rounded-full bg">
                     {getIcon("plus", "size-8")}
