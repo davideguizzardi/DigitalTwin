@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -7,7 +7,7 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { Select } from "flowbite-react";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { getIcon } from "@/Components/Commons/Constants";
+import { getIcon, apiFetch } from "@/Components/Commons/Constants";
 import { StyledButton } from "@/Components/Commons/StyledBasedComponents";
 import { DeviceContextRefresh } from "@/Components/ContextProviders/DeviceProviderRefresh";
 
@@ -51,12 +51,17 @@ const buildDefaultActions = (devices) => [createAction(devices)];
 export default function AddAutomation() {
   const { deviceList = [] } = useContext(DeviceContextRefresh);
 
+  // Build a connected devices list with extra metadata useful for state/commands
   const devices = useMemo(
     () =>
       deviceList
+        .filter((d) => d?.show) // only visible/configured devices
+        .filter((d) => (d?.state || "")?.toLowerCase() !== "unavailable") // only connected/available devices
         .map((device) => ({
           id: device.device_id,
           name: device.name || device.device_id,
+          deviceClass: device.device_class,
+          stateEntityId: device.state_entity_id,
         }))
         .sort((a, b) => a.name.localeCompare(b.name)),
     [deviceList]
@@ -64,6 +69,143 @@ export default function AddAutomation() {
 
   const [triggers, setTriggers] = useState(() => buildDefaultTriggers(devices));
   const [actions, setActions] = useState(() => buildDefaultActions(devices));
+
+  // Map of deviceId -> array of service options [{value,label}]
+  const [servicesByDevice, setServicesByDevice] = useState({});
+  // Map of deviceId -> array of state options for triggers (fetched via API)
+  const [statesByDevice, setStatesByDevice] = useState({});
+
+  // Helper: possible states by device class
+  const getStatesForClass = (deviceClass) => {
+    switch (deviceClass) {
+      case "light":
+      case "switch":
+      case "siren":
+        return [
+          { value: "on", label: "is on" },
+          { value: "off", label: "is off" },
+        ];
+      case "media_player":
+        return [
+          { value: "playing", label: "is playing" },
+          { value: "paused", label: "is paused" },
+          { value: "idle", label: "is idle" },
+          { value: "on", label: "is on" },
+          { value: "off", label: "is off" },
+        ];
+      default:
+        return [
+          { value: "on", label: "is on" },
+          { value: "off", label: "is off" },
+        ];
+    }
+  };
+
+  // Keep selections valid if device list changes (e.g., availability updates)
+  useEffect(() => {
+    if (!devices.length) return;
+    setTriggers((prev) =>
+      prev.map((t) => {
+        if (t.type !== "device") return t;
+        const exists = devices.some((d) => d.id === t.value.deviceId);
+        if (exists) return t;
+        const newId = devices[0]?.id ?? "";
+        return {
+          ...t,
+          value: { deviceId: newId, state: "on" },
+        };
+      })
+    );
+    setActions((prev) =>
+      prev.map((a) => {
+        const exists = devices.some((d) => d.id === a.deviceId);
+        if (exists) return a;
+        const newId = devices[0]?.id ?? "";
+        return { ...a, deviceId: newId, service: "turn_on" };
+      })
+    );
+  }, [devices]);
+
+  // Preload states for any currently selected device triggers
+  useEffect(() => {
+    const deviceIds = Array.from(new Set(triggers.filter(t => t.type === "device").map(t => t.value?.deviceId).filter(Boolean)));
+    deviceIds.forEach((id) => { void ensureStatesForDevice(id); });
+  }, [triggers, devices]);
+
+  const getDefaultStateForDevice = (deviceId) => {
+    const device = devices.find((d) => d.id === deviceId);
+    const options = getStatesForClass(device?.deviceClass);
+    return options[0]?.value || "on";
+  };
+
+  // Fetch available services/commands for a device's state entity
+  const ensureServicesForDevice = async (deviceId) => {
+    if (!deviceId) return null;
+    if (servicesByDevice[deviceId]) return servicesByDevice[deviceId]; // already loaded
+    const dev = devices.find((d) => d.id === deviceId);
+    if (!dev?.stateEntityId) return;
+    const entity = await apiFetch(`/entity/${dev.stateEntityId}`);
+    let options = [
+      { value: "turn_on", label: "Turn on" },
+      { value: "turn_off", label: "Turn off" },
+    ];
+    if (entity && entity.services && typeof entity.services === "object") {
+      const keys = Object.keys(entity.services);
+      if (keys.length) {
+        options = keys
+          .sort()
+          .map((key) => ({ value: key, label: entity.services[key]?.name || key.replaceAll("_", " ") }));
+      }
+    }
+    setServicesByDevice((prev) => ({ ...prev, [deviceId]: options }));
+    return options;
+  };
+
+  // Build trigger state options from an entity's services/attributes
+  const deriveStatesFromEntity = (entity) => {
+    const options = [];
+    const add = (value, label) => {
+      if (!options.some((o) => o.value === value)) options.push({ value, label });
+    };
+    if (!entity) return [
+      { value: "on", label: "is on" },
+      { value: "off", label: "is off" },
+    ];
+    const services = entity.services || {};
+    const entityId = entity.entity_id || "";
+    const domain = entityId.split(".")[0];
+    if ("turn_on" in services) add("on", "is on");
+    if ("turn_off" in services) add("off", "is off");
+    if (domain === "media_player") {
+      if ("media_play" in services) add("playing", "is playing");
+      if ("media_pause" in services) add("paused", "is paused");
+      if ("media_stop" in services) add("idle", "is idle");
+    }
+    if (!options.length) {
+      add("on", "is on");
+      add("off", "is off");
+    }
+    return options;
+  };
+
+  // Ensure states for a given device (used in trigger UI)
+  const ensureStatesForDevice = async (deviceId) => {
+    if (!deviceId) return null;
+    if (statesByDevice[deviceId]) return statesByDevice[deviceId];
+    const dev = devices.find((d) => d.id === deviceId);
+    if (!dev?.stateEntityId) {
+      const fallback = [
+        { value: "on", label: "is on" },
+        { value: "off", label: "is off" },
+      ];
+      setStatesByDevice((prev) => ({ ...prev, [deviceId]: fallback }));
+      return fallback;
+    }
+    const entity = await apiFetch(`/entity/${dev.stateEntityId}`);
+    const options = deriveStatesFromEntity(entity);
+    setStatesByDevice((prev) => ({ ...prev, [deviceId]: options }));
+    return options;
+  };
 
   // ──────────────────────────────────────────────────────────
   // Fancy confirmation state & helpers
@@ -239,11 +381,17 @@ export default function AddAutomation() {
             <div className="w-full md:w-64">
               <Select
                 value={trigger.value.deviceId}
-                onChange={(event) =>
+                onChange={async (event) => {
+                  const newDeviceId = event.target.value;
+                  const opts = (await ensureStatesForDevice(newDeviceId)) || [
+                    { value: "on", label: "is on" },
+                    { value: "off", label: "is off" },
+                  ];
+                  const defaultState = opts[0]?.value || "on";
                   updateTrigger(trigger.id, {
-                    value: { ...trigger.value, deviceId: event.target.value },
-                  })
-                }
+                    value: { ...trigger.value, deviceId: newDeviceId, state: defaultState },
+                  });
+                }}
               >
                 <option value="">Select a device</option>
                 {devices.map((device) => (
@@ -256,14 +404,26 @@ export default function AddAutomation() {
             <div className="w-full md:w-48">
               <Select
                 value={trigger.value.state}
+                disabled={!statesByDevice[trigger.value.deviceId]}
                 onChange={(event) =>
                   updateTrigger(trigger.id, {
                     value: { ...trigger.value, state: event.target.value },
                   })
                 }
               >
-                <option value="on">is on</option>
-                <option value="off">is off</option>
+                {(() => {
+                  const options = statesByDevice[trigger.value.deviceId];
+                  if (!options) {
+                    return (
+                      <option value="on" key="loading">Loading states...</option>
+                    );
+                  }
+                  return options.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ));
+                })()}
               </Select>
             </div>
           </motion.div>
@@ -288,7 +448,14 @@ export default function AddAutomation() {
         </motion.div>
         <Select
           value={action.deviceId}
-          onChange={(event) => handleActionUpdate(action.id, { deviceId: event.target.value })}
+          onChange={async (event) => {
+            const newDeviceId = event.target.value;
+            // Load services for this device (if not already)
+            const opts = (await ensureServicesForDevice(newDeviceId)) || actionOptions;
+            // Default service to first available for the new device
+            const nextService = (opts[0]?.value) || "turn_on";
+            handleActionUpdate(action.id, { deviceId: newDeviceId, service: nextService });
+          }}
         >
           <option value="">Choose device</option>
           {devices.map((device) => (
@@ -303,11 +470,14 @@ export default function AddAutomation() {
           value={action.service}
           onChange={(event) => handleActionUpdate(action.id, { service: event.target.value })}
         >
-          {actionOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
+          {(() => {
+            const options = servicesByDevice[action.deviceId] || actionOptions;
+            return options.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ));
+          })()}
         </Select>
       </div>
       <StyledButton
@@ -329,13 +499,15 @@ export default function AddAutomation() {
       return "At " + trigger.value.format("HH:mm");
     }
     const deviceName = deviceLookup(trigger.value.deviceId) || "Device";
-    const stateLabel = trigger.value.state === "on" ? "turns on" : "turns off";
+    const opts = statesByDevice[trigger.value.deviceId] || [];
+    const labelMap = new Map(opts.map((o) => [o.value, o.label.replace(/^is\s+/i, "")]));
+    const stateLabel = labelMap.get(trigger.value.state) || trigger.value.state;
     return deviceName + " " + stateLabel;
   }
 
   function formatActionPreview(action, deviceLookup) {
     const deviceName = deviceLookup(action.deviceId) || "Device";
-    const verb = actionServiceLabels[action.service] ?? "Toggle";
+    const verb = actionServiceLabels[action.service] ?? action.service.replaceAll("_", " ");
     return verb + " " + deviceName;
   }
 
