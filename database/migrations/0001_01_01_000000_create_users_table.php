@@ -26,19 +26,19 @@ return new class extends Migration
         });
 
 
-        DB::table('users')->insert([
-            'username' => 'demo',
-            'email' => 'demo@digital.twin',
-            'email_verified_at' => now(),
-            'password' => Hash::make('demo'),
-            'remember_token' => Str::random(10),
-            'created_at' => now(),
-            'updated_at' => now(),
-            'preference' => 'Health;Security;Entertainment;Study',
-            'url_photo' => null,
-            'privacy_1' => false,
-            'privacy_2' => false,
-        ]);
+        // DB::table('users')->insert([
+        //     'username' => 'demo',
+        //     'email' => 'demo@digital.twin',
+        //     'email_verified_at' => now(),
+        //     'password' => Hash::make('demo'),
+        //     'remember_token' => Str::random(10),
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        //     'preference' => 'Health;Security;Entertainment;Study',
+        //     'url_photo' => null,
+        //     'privacy_1' => false,
+        //     'privacy_2' => false,
+        // ]);
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
