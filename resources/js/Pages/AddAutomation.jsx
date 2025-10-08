@@ -11,6 +11,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { getIcon, apiFetch } from "@/Components/Commons/Constants";
 import { StyledButton } from "@/Components/Commons/StyledBasedComponents";
 import { DeviceContextRefresh } from "@/Components/ContextProviders/DeviceProviderRefresh";
+import ToastNotification from "@/Components/Commons/ToastNotification";
 
 const classNames = (...classes) => classes.filter(Boolean).join(" ");
 
@@ -160,13 +161,23 @@ export default function AddAutomation() {
     [deviceList]
   );
 
+  const [automationName, setAutomationName] = useState("New automation");
   const [triggers, setTriggers] = useState(() => buildDefaultTriggers(devices));
   const [actions, setActions] = useState(() => buildDefaultActions(devices));
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
+  const [toastState, setToastState] = useState({ visible: false, type: "success", message: "" });
 
   const deviceSelectOptions = useMemo(
     () => devices.map((device) => ({ value: device.id, label: device.name })),
     [devices]
   );
+
+  const showToast = (type, message) => {
+    setToastState({ visible: true, type, message });
+  };
+
+  const hideToast = () => setToastState((prev) => ({ ...prev, visible: false }));
 
   // Map of deviceId -> array of service options [{value,label}]
   const [servicesByDevice, setServicesByDevice] = useState({});
@@ -364,10 +375,12 @@ export default function AddAutomation() {
   const selectContainerClass = "w-full md:max-w-[18rem]";
 
   const updateTrigger = (id, partial) => {
+    if (saveError) setSaveError("");
     setTriggers((prev) => prev.map((trigger) => (trigger.id === id ? { ...trigger, ...partial } : trigger)));
   };
 
   const handleTriggerTypeChange = (id, type) => {
+    if (saveError) setSaveError("");
     const nextValue =
       type === "date"
         ? dayjs()
@@ -378,6 +391,7 @@ export default function AddAutomation() {
   };
 
   const handleTriggerRemoval = (id) => {
+    if (saveError) setSaveError("");
     setTriggers((prev) => {
       if (prev.length === 1) return prev;
 
@@ -395,10 +409,12 @@ export default function AddAutomation() {
   };
 
   const handleActionUpdate = (id, partial) => {
+    if (saveError) setSaveError("");
     setActions((prev) => prev.map((action) => (action.id === id ? { ...action, ...partial } : action)));
   };
 
   const handleActionRemoval = (id) => {
+    if (saveError) setSaveError("");
     setActions((prev) => {
       if (prev.length === 1) return prev;
 
@@ -416,6 +432,7 @@ export default function AddAutomation() {
   };
 
   const handleReset = () => {
+    if (saveError) setSaveError("");
     requestConfirmation(
       "All conditions and actions will be reset to defaults.",
       () => {
@@ -576,8 +593,191 @@ export default function AddAutomation() {
     return verb + " " + deviceName;
   }
 
+  const buildAutomationDefinition = () => {
+    const errors = [];
+    const alias = automationName.trim();
+    if (!alias) {
+      errors.push("Inserisci un nome per l'automazione.");
+    }
+
+    const triggerPayload = [];
+    const dateFilters = [];
+
+    triggers.forEach((trigger) => {
+      if (trigger.type === "time") {
+        const timeValue = dayjs(trigger.value);
+        if (!timeValue.isValid()) {
+          errors.push("Orario del trigger non valido.");
+          return;
+        }
+        triggerPayload.push({ platform: "time", at: timeValue.format("HH:mm:ss") });
+      } else if (trigger.type === "device") {
+        const deviceId = trigger.value.deviceId;
+        const targetState = trigger.value.state;
+        if (!deviceId) {
+          errors.push("Seleziona un dispositivo per tutte le condizioni dispositivo.");
+          return;
+        }
+        const device = devices.find((d) => d.id === deviceId);
+        if (!device?.stateEntityId) {
+          errors.push("Il dispositivo selezionato non ha un'entità controllabile.");
+          return;
+        }
+        triggerPayload.push({
+          platform: "state",
+          entity_id: device.stateEntityId,
+          to: targetState,
+        });
+      } else if (trigger.type === "date") {
+        const dateValue = dayjs(trigger.value);
+        if (!dateValue.isValid()) {
+          errors.push("Data del trigger non valida.");
+          return;
+        }
+        dateFilters.push(dateValue.format("YYYY-MM-DD"));
+      }
+    });
+
+    if (!triggerPayload.length) {
+      errors.push("Aggiungi almeno un trigger temporale o di stato.");
+    }
+
+    const actionPayload = actions.reduce((acc, action) => {
+      if (!action.deviceId) {
+        errors.push("Seleziona un dispositivo per ogni azione.");
+        return acc;
+      }
+      const device = devices.find((d) => d.id === action.deviceId);
+      const entityId = device?.stateEntityId;
+      const domain = entityId ? entityId.split(".")[0] : null;
+      if (!entityId || !domain) {
+        errors.push("Impossibile determinare l'entità per una delle azioni.");
+        return acc;
+      }
+      const target = { entity_id: entityId };
+      acc.push({
+        service: `${domain}.${action.service}`,
+        target,
+        data: {},
+      });
+      return acc;
+    }, []);
+
+    if (!actionPayload.length) {
+      errors.push("Aggiungi almeno un'azione valida.");
+    }
+
+    const conditions = [];
+    if (dateFilters.length === 1) {
+      conditions.push({
+        condition: "template",
+        value_template: `{{ now().date().isoformat() == '${dateFilters[0]}' }}`,
+      });
+    } else if (dateFilters.length > 1) {
+      const allowedDates = dateFilters.map((date) => `'${date}'`).join(", ");
+      conditions.push({
+        condition: "template",
+        value_template: `{{ now().date().isoformat() in [${allowedDates}] }}`,
+      });
+    }
+
+    if (errors.length) {
+      return { errors };
+    }
+
+    const automation = {
+      id: `dt_${Date.now()}`,
+      alias,
+      trigger: triggerPayload,
+      condition: conditions,
+      action: actionPayload,
+      mode: "single",
+    };
+
+    return { errors, automation };
+  };
+
+  const hideSaveError = () => setSaveError("");
+
+  const handleSave = async () => {
+    if (isSaving) return;
+    const { errors, automation } = buildAutomationDefinition();
+    if (errors && errors.length) {
+      setSaveError(errors[0]);
+      showToast("error", errors[0]);
+      return;
+    }
+
+    hideSaveError();
+    setIsSaving(true);
+
+    try {
+      const response = await apiFetch("/automation", "POST", { automation });
+      if (!response) {
+        throw new Error("Impossibile salvare l'automazione.");
+      }
+
+      let success = false;
+      let message = "";
+
+      if (Array.isArray(response) && response.length >= 2) {
+        const raw = response[1];
+        let payload;
+        if (typeof raw === "string") {
+          try {
+            payload = JSON.parse(raw);
+          } catch (err) {
+            payload = { message: raw };
+          }
+        } else {
+          payload = raw;
+        }
+
+        if (payload?.result === "ok") {
+          success = true;
+          message = "Automazione salvata con successo.";
+        } else {
+          message = payload?.message || "Salvataggio non riuscito.";
+        }
+      }
+
+      if (!success) {
+        throw new Error(message || "Salvataggio non riuscito.");
+      }
+
+      showToast("success", "Automazione salvata con successo.");
+      setTimeout(() => {
+        if (typeof route === "function") {
+          window.location.href = route("automation");
+        }
+      }, 900);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Salvataggio non riuscito.";
+      setSaveError(message);
+      showToast("error", message);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const hasExecutableTrigger = triggers.some((trigger) => {
+    if (trigger.type === "time") return true;
+    if (trigger.type === "device") return Boolean(trigger.value.deviceId && trigger.value.state);
+    return false;
+  });
+
+  const hasValidAction = actions.some((action) => Boolean(action.deviceId));
+
+  const canSave = automationName.trim().length > 0 && hasExecutableTrigger && hasValidAction;
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <ToastNotification
+        message={toastState.message}
+        isVisible={toastState.visible}
+        onClose={hideToast}
+        type={toastState.type}
+      />
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -607,6 +807,26 @@ export default function AddAutomation() {
                     Choose when the automation should run and what it should do.
                   </p>
                 </div>
+              </div>
+              <div className="mt-4 w-full max-w-md">
+                <label
+                  className="block text-sm font-medium text-gray-600 dark:text-gray-300"
+                  htmlFor="automation-name"
+                >
+                  Automation name
+                </label>
+                <input
+                  id="automation-name"
+                  type="text"
+                  maxLength={80}
+                  value={automationName}
+                  onChange={(event) => {
+                    if (saveError) setSaveError("");
+                    setAutomationName(event.target.value);
+                  }}
+                  placeholder="Name your automation"
+                  className="mt-1 w-full rounded-xl border border-slate-200 bg-white/95 px-3 py-2 text-base font-medium text-slate-900 shadow-sm transition duration-150 ease-out focus:border-sky-400 focus:outline-none focus:ring-4 focus:ring-sky-200 dark:border-neutral-700 dark:bg-neutral-900 dark:text-gray-100 dark:focus:border-sky-400 dark:focus:ring-sky-500/30"
+                />
               </div>
             </motion.header>
 
@@ -664,7 +884,10 @@ export default function AddAutomation() {
 
               <div className="flex justify-end">
                 <StyledButton
-                  onClick={() => setTriggers((prev) => [...prev, createTrigger("date", devices)])}
+                  onClick={() => {
+                    if (saveError) setSaveError("");
+                    setTriggers((prev) => [...prev, createTrigger("date", devices)]);
+                  }}
                   className="flex items-center gap-2"
                 >
                   {getIcon("plus", "size-5")}
@@ -689,7 +912,10 @@ export default function AddAutomation() {
 
               <div className="flex justify-end">
                 <StyledButton
-                  onClick={() => setActions((prev) => [...prev, createAction(devices)])}
+                  onClick={() => {
+                    if (saveError) setSaveError("");
+                    setActions((prev) => [...prev, createAction(devices)]);
+                  }}
                   className="flex items-center gap-2"
                 >
                   {getIcon("plus", "size-5")}
@@ -797,12 +1023,20 @@ export default function AddAutomation() {
                 </button>
                 <button
                   type="button"
-                  disabled
-                  className="rounded-lg bg-lime-400 px-5 py-2 text-sm font-semibold text-gray-900 opacity-60 shadow transition focus:outline-none focus:ring-2 focus:ring-lime-200 disabled:cursor-not-allowed"
+                  onClick={handleSave}
+                  disabled={isSaving || !canSave}
+                  className={`rounded-lg px-5 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-lime-200 ${
+                    isSaving || !canSave
+                      ? "bg-lime-400 text-gray-900 opacity-60 shadow disabled:cursor-not-allowed"
+                      : "bg-lime-400 text-gray-900 shadow hover:bg-lime-500"
+                  }`}
                 >
-                  Save
+                  {isSaving ? "Saving..." : "Save"}
                 </button>
               </motion.div>
+              {saveError && (
+                <p className="text-center text-sm font-medium text-red-500">{saveError}</p>
+              )}
             </div>
           </motion.aside>
         </div>
