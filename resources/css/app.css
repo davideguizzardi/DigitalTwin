@@ -1,3 +1,33 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .automation-select {
+    @apply flex w-full cursor-pointer items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white/95 px-3 py-2 text-base font-medium text-slate-900 shadow-sm transition duration-150 ease-out hover:border-slate-300 focus:outline-none focus:ring-4 focus:ring-sky-200 dark:border-neutral-700 dark:bg-neutral-900 dark:text-gray-100 dark:hover:border-neutral-500 dark:focus:ring-sky-500/30;
+  }
+
+  .automation-select-disabled {
+    @apply cursor-not-allowed opacity-60 shadow-none hover:border-slate-200 dark:hover:border-neutral-700;
+  }
+
+  .automation-select-options {
+    @apply mt-2 max-h-64 w-full overflow-x-hidden overflow-y-auto rounded-xl border border-slate-200 bg-white/95 p-2 shadow-2xl backdrop-blur-lg dark:border-neutral-700 dark:bg-neutral-900/95;
+  }
+
+  .automation-select-option {
+    @apply flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition duration-100 ease-out hover:bg-sky-100/70 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-sky-500/20 dark:hover:text-sky-100;
+  }
+
+  .automation-select-option-active {
+    @apply bg-sky-100/80 text-sky-900 dark:bg-sky-500/25 dark:text-sky-100;
+  }
+
+  .automation-select-option-selected {
+    @apply bg-sky-500/15 text-sky-900 dark:bg-sky-500/40 dark:text-sky-100;
+  }
+
+  .automation-select-option-disabled {
+    @apply cursor-not-allowed text-slate-400 hover:bg-transparent hover:text-slate-400 dark:text-neutral-500 dark:hover:bg-transparent dark:hover:text-neutral-500;
+  }
+}

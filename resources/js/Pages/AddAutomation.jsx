@@ -1,15 +1,108 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { Fragment, useContext, useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
+import { Listbox, Transition } from "@headlessui/react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { Select } from "flowbite-react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { getIcon, apiFetch } from "@/Components/Commons/Constants";
 import { StyledButton } from "@/Components/Commons/StyledBasedComponents";
 import { DeviceContextRefresh } from "@/Components/ContextProviders/DeviceProviderRefresh";
+
+const classNames = (...classes) => classes.filter(Boolean).join(" ");
+
+const FancySelect = ({
+  value,
+  onChange,
+  options,
+  placeholder = "Select an option",
+  disabled = false,
+  className = "",
+  noOptionsMessage = "No options available",
+}) => {
+  const hasRealOptions = Array.isArray(options) && options.length > 0;
+  const displayOptions = hasRealOptions
+    ? options
+    : disabled
+    ? []
+    : [{ value: "__no_option__", label: noOptionsMessage, disabled: true }];
+  const selectedOption = hasRealOptions
+    ? options.find((option) => option.value === value)
+    : undefined;
+
+  return (
+    <Listbox value={value} onChange={onChange} disabled={disabled}>
+      {({ open }) => (
+        <div className={classNames("relative", className)}>
+          <Listbox.Button
+            className={classNames(
+              "automation-select",
+              open && !disabled &&
+                "border-sky-400 ring-4 ring-sky-200 dark:border-sky-400 dark:ring-sky-500/30",
+              disabled && "automation-select-disabled",
+              !selectedOption && "text-slate-400 dark:text-neutral-400"
+            )}
+          >
+            <span className="truncate text-left">
+              {selectedOption?.label ?? placeholder}
+            </span>
+            <ChevronDownIcon
+              className={classNames(
+                "size-5 shrink-0 transition-transform duration-200",
+                open && !disabled
+                  ? "rotate-180 text-sky-500 dark:text-sky-300"
+                  : "text-slate-400 dark:text-neutral-500"
+              )}
+            />
+          </Listbox.Button>
+
+          <Transition
+            as={Fragment}
+            show={open && displayOptions.length > 0}
+            enter="transition ease-out duration-150"
+            enterFrom="opacity-0 -translate-y-1"
+            enterTo="opacity-100 translate-y-0"
+            leave="transition ease-in duration-100"
+            leaveFrom="opacity-100 translate-y-0"
+            leaveTo="opacity-0 -translate-y-1"
+          >
+            <Listbox.Options className="automation-select-options absolute left-0 z-30 w-full origin-top">
+              {displayOptions.map((option) => (
+                <Listbox.Option
+                  key={`${option.value}`}
+                  value={option.value}
+                  disabled={option.disabled}
+                  className={({ active, selected, disabled: optionDisabled }) =>
+                    classNames(
+                      "automation-select-option",
+                      optionDisabled && "automation-select-option-disabled",
+                      active && !optionDisabled && "automation-select-option-active",
+                      selected && !optionDisabled && "automation-select-option-selected"
+                    )
+                  }
+                >
+                  {({ selected, disabled: optionDisabled }) => (
+                    <div className="flex w-full items-center justify-between gap-2">
+                      <span className="truncate">{option.label}</span>
+                      {selected && !optionDisabled && (
+                        <span className="text-sky-500 dark:text-sky-300">
+                          {getIcon("check", "size-4")}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </Listbox.Option>
+              ))}
+            </Listbox.Options>
+          </Transition>
+        </div>
+      )}
+    </Listbox>
+  );
+};
 
 const iconByTriggerType = {
   date: "weekday",
@@ -69,6 +162,11 @@ export default function AddAutomation() {
 
   const [triggers, setTriggers] = useState(() => buildDefaultTriggers(devices));
   const [actions, setActions] = useState(() => buildDefaultActions(devices));
+
+  const deviceSelectOptions = useMemo(
+    () => devices.map((device) => ({ value: device.id, label: device.name })),
+    [devices]
+  );
 
   // Map of deviceId -> array of service options [{value,label}]
   const [servicesByDevice, setServicesByDevice] = useState({});
@@ -131,12 +229,6 @@ export default function AddAutomation() {
     const deviceIds = Array.from(new Set(triggers.filter(t => t.type === "device").map(t => t.value?.deviceId).filter(Boolean)));
     deviceIds.forEach((id) => { void ensureStatesForDevice(id); });
   }, [triggers, devices]);
-
-  const getDefaultStateForDevice = (deviceId) => {
-    const device = devices.find((d) => d.id === deviceId);
-    const options = getStatesForClass(device?.deviceClass);
-    return options[0]?.value || "on";
-  };
 
   // Fetch available services/commands for a device's state entity
   const ensureServicesForDevice = async (deviceId) => {
@@ -269,6 +361,8 @@ export default function AddAutomation() {
     },
   };
 
+  const selectContainerClass = "w-full md:max-w-[18rem]";
+
   const updateTrigger = (id, partial) => {
     setTriggers((prev) => prev.map((trigger) => (trigger.id === id ? { ...trigger, ...partial } : trigger)));
   };
@@ -378,54 +472,37 @@ export default function AddAutomation() {
             transition={{ duration: 0.18, ease: "easeOut" }}
             className="flex flex-col gap-3 md:flex-row md:items-center"
           >
-            <div className="w-full md:w-64">
-              <Select
-                value={trigger.value.deviceId}
-                onChange={async (event) => {
-                  const newDeviceId = event.target.value;
-                  const opts = (await ensureStatesForDevice(newDeviceId)) || [
-                    { value: "on", label: "is on" },
-                    { value: "off", label: "is off" },
-                  ];
-                  const defaultState = opts[0]?.value || "on";
-                  updateTrigger(trigger.id, {
-                    value: { ...trigger.value, deviceId: newDeviceId, state: defaultState },
-                  });
-                }}
-              >
-                <option value="">Select a device</option>
-                {devices.map((device) => (
-                  <option key={device.id} value={device.id}>
-                    {device.name}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            <div className="w-full md:w-48">
-              <Select
-                value={trigger.value.state}
-                disabled={!statesByDevice[trigger.value.deviceId]}
-                onChange={(event) =>
-                  updateTrigger(trigger.id, {
-                    value: { ...trigger.value, state: event.target.value },
-                  })
-                }
-              >
-                {(() => {
-                  const options = statesByDevice[trigger.value.deviceId];
-                  if (!options) {
-                    return (
-                      <option value="on" key="loading">Loading states...</option>
-                    );
-                  }
-                  return options.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ));
-                })()}
-              </Select>
-            </div>
+            <FancySelect
+              className={selectContainerClass}
+              value={trigger.value.deviceId}
+              onChange={async (newDeviceId) => {
+                const opts = (await ensureStatesForDevice(newDeviceId)) || [
+                  { value: "on", label: "is on" },
+                  { value: "off", label: "is off" },
+                ];
+                const defaultState = opts[0]?.value || "on";
+                updateTrigger(trigger.id, {
+                  value: { ...trigger.value, deviceId: newDeviceId, state: defaultState },
+                });
+              }}
+              options={deviceSelectOptions}
+              placeholder={deviceSelectOptions.length ? "Select a device" : "No devices available"}
+              disabled={!deviceSelectOptions.length}
+              noOptionsMessage="No devices available"
+            />
+            <FancySelect
+              className={selectContainerClass}
+              value={trigger.value.state}
+              onChange={(newState) =>
+                updateTrigger(trigger.id, {
+                  value: { ...trigger.value, state: newState },
+                })
+              }
+              options={statesByDevice[trigger.value.deviceId] || []}
+              placeholder={statesByDevice[trigger.value.deviceId] ? "Select a state" : "Loading states..."}
+              disabled={!statesByDevice[trigger.value.deviceId]}
+              noOptionsMessage="No states available"
+            />
           </motion.div>
         )}
       </AnimatePresence>
@@ -442,44 +519,32 @@ export default function AddAutomation() {
       transition={{ type: "spring", stiffness: 220, damping: 20 }}
       className="relative flex flex-col gap-4 rounded-xl border border-neutral-300 bg-white p-4 shadow dark:border-neutral-700 dark:bg-neutral-900 md:flex-row md:items-center"
     >
-      <div className="flex items-center gap-3 md:w-64">
+      <div className={`flex w-full items-center gap-3 ${selectContainerClass}`}>
         <motion.div layout className="rounded-full bg-lime-100 p-3 text-lime-700 dark:bg-lime-500/20">
           {getIcon("puzzle", "size-6")}
         </motion.div>
-        <Select
+        <FancySelect
+          className="w-full"
           value={action.deviceId}
-          onChange={async (event) => {
-            const newDeviceId = event.target.value;
-            // Load services for this device (if not already)
+          onChange={async (newDeviceId) => {
             const opts = (await ensureServicesForDevice(newDeviceId)) || actionOptions;
-            // Default service to first available for the new device
-            const nextService = (opts[0]?.value) || "turn_on";
+            const nextService = opts[0]?.value || "turn_on";
             handleActionUpdate(action.id, { deviceId: newDeviceId, service: nextService });
           }}
-        >
-          <option value="">Choose device</option>
-          {devices.map((device) => (
-            <option key={device.id} value={device.id}>
-              {device.name}
-            </option>
-          ))}
-        </Select>
+          options={deviceSelectOptions}
+          placeholder={deviceSelectOptions.length ? "Choose device" : "No devices available"}
+          disabled={!deviceSelectOptions.length}
+          noOptionsMessage="No devices available"
+        />
       </div>
-      <div className="md:w-52">
-        <Select
-          value={action.service}
-          onChange={(event) => handleActionUpdate(action.id, { service: event.target.value })}
-        >
-          {(() => {
-            const options = servicesByDevice[action.deviceId] || actionOptions;
-            return options.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ));
-          })()}
-        </Select>
-      </div>
+      <FancySelect
+        className={selectContainerClass}
+        value={action.service}
+        onChange={(newService) => handleActionUpdate(action.id, { service: newService })}
+        options={servicesByDevice[action.deviceId] || actionOptions}
+        placeholder="Select action"
+        noOptionsMessage="No actions available"
+      />
       <StyledButton
         variant="delete"
         className="md:ml-auto"
@@ -568,20 +633,17 @@ export default function AddAutomation() {
                     transition={{ type: "spring", stiffness: 220, damping: 20 }}
                     className="relative flex flex-col gap-4 rounded-xl border border-neutral-300 bg-white p-4 shadow dark:border-neutral-700 dark:bg-neutral-800 md:flex-row md:items-center"
                   >
-                    <div className="flex items-center gap-3 md:w-64">
+                    <div className={`flex w-full items-center gap-3 ${selectContainerClass}`}>
                       <div className="rounded-full bg-lime-100 p-3 text-lime-700 dark:bg-lime-500/20">
                         {getIcon(iconByTriggerType[trigger.type], "size-6")}
                       </div>
-                      <Select
+                      <FancySelect
+                        className="w-full"
                         value={trigger.type}
-                        onChange={(event) => handleTriggerTypeChange(trigger.id, event.target.value)}
-                      >
-                        {triggerOptions.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </Select>
+                        onChange={(newType) => handleTriggerTypeChange(trigger.id, newType)}
+                        options={triggerOptions}
+                        placeholder="Select type"
+                      />
                     </div>
 
                     <motion.div layout className="flex-1">
