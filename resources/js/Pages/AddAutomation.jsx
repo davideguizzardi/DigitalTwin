@@ -1,4 +1,4 @@
-import { Fragment, useContext, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import dayjs from "dayjs";
 import { Listbox, Transition } from "@headlessui/react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -169,7 +169,7 @@ export default function AddAutomation() {
   const [isSaving, setIsSaving] = useState(false);
   const [isSimulating, setIsSimulating] = useState(false);
   const [saveError, setSaveError] = useState("");
-  const [toastState, setToastState] = useState({ visible: false, type: "success", message: "" });
+  const [toastState, setToastState] = useState({ visible: false, type: "success", message: "", duration: 3000 });
   const [simulationResult, setSimulationResult] = useState(null);
 
   const deviceSelectOptions = useMemo(
@@ -177,11 +177,33 @@ export default function AddAutomation() {
     [devices]
   );
 
-  const showToast = (type, message) => {
-    setToastState({ visible: true, type, message });
-  };
+  const toastTimerRef = useRef(null);
 
-  const hideToast = () => setToastState((prev) => ({ ...prev, visible: false, message: "" }));
+  const hideToast = useCallback(() => {
+    if (toastTimerRef.current) {
+      clearTimeout(toastTimerRef.current);
+      toastTimerRef.current = null;
+    }
+    setToastState((prev) => (prev.visible ? { ...prev, visible: false, message: "" } : prev));
+  }, []);
+
+  const showToast = useCallback((type, message, duration = 3200) => {
+    if (toastTimerRef.current) {
+      clearTimeout(toastTimerRef.current);
+    }
+    setToastState({ visible: true, type, message, duration });
+    toastTimerRef.current = window.setTimeout(() => {
+      hideToast();
+    }, duration);
+  }, [hideToast]);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) {
+        clearTimeout(toastTimerRef.current);
+      }
+    };
+  }, []);
 
   const invalidateSimulation = () => {
     setSimulationResult((prev) => (prev ? null : prev));
@@ -905,6 +927,7 @@ export default function AddAutomation() {
         isVisible={toastState.visible}
         onClose={hideToast}
         type={toastState.type}
+        duration={toastState.duration}
       />
       <motion.div
         initial={{ opacity: 0 }}
@@ -1239,7 +1262,7 @@ export default function AddAutomation() {
                   onClick={handleReset}
                   className="flex items-center gap-2 rounded-lg bg-red-400 px-5 py-2 text-sm font-semibold text-black shadow transition hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
                 >
-                  {getIcon("refresh", "size-5")}
+                  {getIcon("refresh", "size-5 text-red-700")}
                   Reset
                 </button>
                 <button
@@ -1249,10 +1272,10 @@ export default function AddAutomation() {
                   className={`flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-amber-200 ${
                     isSimulating || !canSave
                       ? "bg-amber-300 text-black shadow opacity-60 cursor-not-allowed"
-                      : "bg-amber-300 text-black shadow hover:bg-amber-400"
+                      : "bg-amber-400 text-black shadow hover:bg-amber-500"
                   }`}
                 >
-                  {getIcon("play", "size-5")}
+                  {getIcon("play", "size-5 text-amber-700")}
                   {isSimulating ? "Simulating..." : "Simulate"}
                 </button>
                 <button
@@ -1262,10 +1285,10 @@ export default function AddAutomation() {
                   className={`flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-lime-200 ${
                     isSaving || !canSave
                       ? "bg-lime-300 text-black shadow opacity-60 cursor-not-allowed"
-                      : "bg-lime-300 text-black shadow hover:bg-lime-400"
+                      : "bg-lime-400 text-black shadow hover:bg-lime-500"
                   }`}
                 >
-                  {getIcon("save", "size-5")}
+                  {getIcon("save", "size-5 text-lime-700")}
                   {isSaving ? "Saving..." : "Save"}
                 </button>
               </motion.div>
