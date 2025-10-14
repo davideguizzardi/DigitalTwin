@@ -142,6 +142,8 @@ const buildDefaultTriggers = (devices) => [
 
 const buildDefaultActions = (devices) => [createAction(devices)];
 
+const DEFAULT_AUTOMATION_NAME = "New automation";
+
 export default function AddAutomation() {
   const { deviceList = [] } = useContext(DeviceContextRefresh);
 
@@ -161,12 +163,14 @@ export default function AddAutomation() {
     [deviceList]
   );
 
-  const [automationName, setAutomationName] = useState("New automation");
+  const [automationName, setAutomationName] = useState(DEFAULT_AUTOMATION_NAME);
   const [triggers, setTriggers] = useState(() => buildDefaultTriggers(devices));
   const [actions, setActions] = useState(() => buildDefaultActions(devices));
   const [isSaving, setIsSaving] = useState(false);
+  const [isSimulating, setIsSimulating] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [toastState, setToastState] = useState({ visible: false, type: "success", message: "" });
+  const [simulationResult, setSimulationResult] = useState(null);
 
   const deviceSelectOptions = useMemo(
     () => devices.map((device) => ({ value: device.id, label: device.name })),
@@ -178,6 +182,20 @@ export default function AddAutomation() {
   };
 
   const hideToast = () => setToastState((prev) => ({ ...prev, visible: false }));
+
+  const invalidateSimulation = () => {
+    setSimulationResult((prev) => (prev ? null : prev));
+  };
+
+  const dateUsed = useMemo(() => triggers.some((trigger) => trigger.type === "date"), [triggers]);
+  const timeUsed = useMemo(() => triggers.some((trigger) => trigger.type === "time"), [triggers]);
+
+  const getTriggerOptionsFor = (currentTrigger) =>
+    triggerOptions.filter((option) => {
+      if (option.value === "date" && dateUsed && currentTrigger.type !== "date") return false;
+      if (option.value === "time" && timeUsed && currentTrigger.type !== "time") return false;
+      return true;
+    });
 
   // Map of deviceId -> array of service options [{value,label}]
   const [servicesByDevice, setServicesByDevice] = useState({});
@@ -376,11 +394,19 @@ export default function AddAutomation() {
 
   const updateTrigger = (id, partial) => {
     if (saveError) setSaveError("");
+    invalidateSimulation();
     setTriggers((prev) => prev.map((trigger) => (trigger.id === id ? { ...trigger, ...partial } : trigger)));
   };
 
   const handleTriggerTypeChange = (id, type) => {
     if (saveError) setSaveError("");
+    invalidateSimulation();
+    if (
+      (type === "date" && triggers.some((trigger) => trigger.id !== id && trigger.type === "date")) ||
+      (type === "time" && triggers.some((trigger) => trigger.id !== id && trigger.type === "time"))
+    ) {
+      return;
+    }
     const nextValue =
       type === "date"
         ? dayjs()
@@ -392,6 +418,7 @@ export default function AddAutomation() {
 
   const handleTriggerRemoval = (id) => {
     if (saveError) setSaveError("");
+    invalidateSimulation();
     setTriggers((prev) => {
       if (prev.length === 1) return prev;
 
@@ -410,11 +437,13 @@ export default function AddAutomation() {
 
   const handleActionUpdate = (id, partial) => {
     if (saveError) setSaveError("");
+    invalidateSimulation();
     setActions((prev) => prev.map((action) => (action.id === id ? { ...action, ...partial } : action)));
   };
 
   const handleActionRemoval = (id) => {
     if (saveError) setSaveError("");
+    invalidateSimulation();
     setActions((prev) => {
       if (prev.length === 1) return prev;
 
@@ -433,11 +462,15 @@ export default function AddAutomation() {
 
   const handleReset = () => {
     if (saveError) setSaveError("");
+    invalidateSimulation();
     requestConfirmation(
       "All conditions and actions will be reset to defaults.",
       () => {
         setTriggers(buildDefaultTriggers(devices));
         setActions(buildDefaultActions(devices));
+        setAutomationName(DEFAULT_AUTOMATION_NAME);
+        setSimulationResult(null);
+        setIsSimulating(false);
       },
       { title: "Reset builder", confirmLabel: "Yes, reset", variant: "warning", icon: "refresh" }
     );
@@ -592,6 +625,51 @@ export default function AddAutomation() {
     const verb = actionServiceLabels[action.service] ?? action.service.replaceAll("_", " ");
     return verb + " " + deviceName;
   }
+
+  const describeSuggestion = (suggestion) => {
+    if (!suggestion || typeof suggestion !== "object") return "Suggestion available.";
+    switch (suggestion.suggestion_type) {
+      case "better_activation": {
+        const time = suggestion.new_activation_time?.slice(0, 5) ?? "";
+        const saved = typeof suggestion.monthly_saved_money === "number"
+          ? `${suggestion.monthly_saved_money.toFixed(2)} €`
+          : null;
+        return saved
+          ? `Try moving the activation to ${time} to save about ${saved} per month.`
+          : `Try moving the activation to ${time}.`;
+      }
+      case "conflict_time_change": {
+        const times = Array.isArray(suggestion.new_activation_time)
+          ? suggestion.new_activation_time.join(" or ")
+          : suggestion.new_activation_time;
+        return `Move the activation to ${times} to resolve the conflict.`;
+      }
+      case "conflict_deactivate_automations": {
+        const list = Array.isArray(suggestion.automations_list)
+          ? suggestion.automations_list.join(", ")
+          : "other automations";
+        return `Consider disabling the following automations: ${list}.`;
+      }
+      case "conflict_split_automation":
+        return "Consider splitting the automation into multiple actions.";
+      default:
+        return suggestion.description || "Additional suggestion available.";
+    }
+  };
+
+  const describeConflict = (conflict) => {
+    if (!conflict || typeof conflict !== "object") return "Conflict detected.";
+    if (conflict.type === "Excessive energy consumption") {
+      const days = Array.isArray(conflict.days) ? conflict.days.join(", ") : "";
+      return `Excessive energy consumption above ${conflict.threshold} W between ${conflict.start} and ${conflict.end}${
+        days ? ` (${days})` : ""
+      }.`;
+    }
+    if (conflict.type === "Not feasible automation") {
+      return `Automation not feasible with the current limit (${conflict.threshold}).`;
+    }
+    return conflict.description || conflict.message || conflict.type || "Conflict detected.";
+  };
 
   const buildAutomationDefinition = () => {
     const errors = [];
@@ -760,6 +838,56 @@ export default function AddAutomation() {
     }
   };
 
+  const handleSimulate = async () => {
+    if (isSimulating) return;
+    const { errors, automation } = buildAutomationDefinition();
+    if (errors && errors.length) {
+      setSaveError(errors[0]);
+      showToast("error", errors[0]);
+      return;
+    }
+
+    setSaveError("");
+    setIsSimulating(true);
+    invalidateSimulation();
+
+    try {
+      const response = await apiFetch("/automation/simulate", "POST", { automation });
+      if (!response) {
+        throw new Error("Simulation failed.");
+      }
+
+      const suggestions = Array.isArray(response.suggestions) ? response.suggestions : [];
+      const conflicts = Array.isArray(response.conflicts) ? response.conflicts : [];
+      const stats = response.automation || {};
+
+      setSimulationResult({
+        suggestions,
+        conflicts,
+        stats: {
+          monthlyCost: stats.monthly_cost ?? null,
+          minCost: stats.minimum_cost_per_run ?? null,
+          maxCost: stats.maximum_cost_per_run ?? null,
+          energyConsumption: stats.energy_consumption ?? null,
+          averagePower: stats.average_power_drawn ?? null,
+        },
+      });
+
+      const message = conflicts.length
+        ? "Simulation complete: conflicts detected."
+        : suggestions.length
+        ? "Simulation complete with optimisation tips."
+        : "Simulation complete with no reported issues.";
+      showToast(conflicts.length ? "error" : "success", message);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Simulation failed.";
+      setSimulationResult(null);
+      showToast("error", message);
+    } finally {
+      setIsSimulating(false);
+    }
+  };
+
   const hasExecutableTrigger = triggers.some((trigger) => {
     if (trigger.type === "time") return true;
     if (trigger.type === "device") return Boolean(trigger.value.deviceId && trigger.value.state);
@@ -819,11 +947,12 @@ export default function AddAutomation() {
                   id="automation-name"
                   type="text"
                   maxLength={80}
-                  value={automationName}
-                  onChange={(event) => {
-                    if (saveError) setSaveError("");
-                    setAutomationName(event.target.value);
-                  }}
+                value={automationName}
+                onChange={(event) => {
+                  if (saveError) setSaveError("");
+                  invalidateSimulation();
+                  setAutomationName(event.target.value);
+                }}
                   placeholder="Name your automation"
                   className="mt-1 w-full rounded-xl border border-slate-200 bg-white/95 px-3 py-2 text-base font-medium text-slate-900 shadow-sm transition duration-150 ease-out focus:border-sky-400 focus:outline-none focus:ring-4 focus:ring-sky-200 dark:border-neutral-700 dark:bg-neutral-900 dark:text-gray-100 dark:focus:border-sky-400 dark:focus:ring-sky-500/30"
                 />
@@ -861,7 +990,7 @@ export default function AddAutomation() {
                         className="w-full"
                         value={trigger.type}
                         onChange={(newType) => handleTriggerTypeChange(trigger.id, newType)}
-                        options={triggerOptions}
+                        options={getTriggerOptionsFor(trigger)}
                         placeholder="Select type"
                       />
                     </div>
@@ -886,7 +1015,13 @@ export default function AddAutomation() {
                 <StyledButton
                   onClick={() => {
                     if (saveError) setSaveError("");
-                    setTriggers((prev) => [...prev, createTrigger("date", devices)]);
+                    invalidateSimulation();
+                    setTriggers((prev) => {
+                      const hasDate = prev.some((trigger) => trigger.type === "date");
+                      const hasTime = prev.some((trigger) => trigger.type === "time");
+                      const nextType = !hasDate ? "date" : !hasTime ? "time" : "device";
+                      return [...prev, createTrigger(nextType, devices)];
+                    });
                   }}
                   className="flex items-center gap-2"
                 >
@@ -914,6 +1049,7 @@ export default function AddAutomation() {
                 <StyledButton
                   onClick={() => {
                     if (saveError) setSaveError("");
+                    invalidateSimulation();
                     setActions((prev) => [...prev, createAction(devices)]);
                   }}
                   className="flex items-center gap-2"
@@ -995,42 +1131,141 @@ export default function AddAutomation() {
 
               <motion.div
                 layout
-                className="rounded-xl bg-gradient-to-r from-lime-200 via-emerald-200 to-sky-200 p-4 text-gray-900 dark:from-lime-500/20 dark:via-emerald-500/20 dark:to-sky-500/20 dark:text-gray-100"
+                className="rounded-xl border border-slate-200 bg-white/95 p-4 text-gray-900 shadow dark:border-neutral-700 dark:bg-neutral-900 dark:text-gray-100"
               >
-                <p className="text-sm font-semibold uppercase tracking-wide">Live preview</p>
-                <p className="mt-2 text-sm leading-relaxed">
-                  Once you complete this wizard the automation will trigger based on the timeline above and execute the selected actions.
-                </p>
+                <div className="flex items-center gap-2">
+                  <span className="text-sky-500">{getIcon("info", "size-5")}</span>
+                  <p className="text-sm font-semibold uppercase tracking-wide">Simulation feedback</p>
+                </div>
+                {isSimulating ? (
+                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">Running simulation...</p>
+                ) : simulationResult ? (
+                  <div className="mt-3 space-y-3">
+                    {simulationResult.conflicts?.length ? (
+                      <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-200">
+                        <p className="flex items-center gap-2 font-semibold">
+                          <span>{getIcon("warning", "size-5")}</span>
+                          Detected conflicts
+                        </p>
+                        <ul className="mt-2 space-y-1">
+                          {simulationResult.conflicts.map((conflict, index) => (
+                            <li key={`conflict-${index}`} className="flex items-start gap-2">
+                              <span className="mt-1 text-red-500">{getIcon("dot", "size-3")}</span>
+                              <span>{describeConflict(conflict)}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : (
+                      <div className="rounded-lg border border-lime-200 bg-lime-50 p-3 text-sm text-lime-700 dark:border-lime-500/40 dark:bg-lime-500/10 dark:text-lime-200">
+                        <p className="flex items-center gap-2 font-semibold">
+                          <span>{getIcon("check", "size-5")}</span>
+                          No conflicts detected
+                        </p>
+                        <p className="mt-1 text-sm">The model did not report blocking issues.</p>
+                      </div>
+                    )}
+
+                    {simulationResult.suggestions?.length > 0 && (
+                      <div className="rounded-lg border border-sky-200 bg-sky-50 p-3 text-sm text-sky-700 dark:border-sky-500/40 dark:bg-sky-500/10 dark:text-sky-200">
+                        <p className="flex items-center gap-2 font-semibold">
+                          <span>{getIcon("light", "size-5")}</span>
+                          Model suggestions
+                        </p>
+                        <ul className="mt-2 space-y-1">
+                          {simulationResult.suggestions.map((suggestion, index) => (
+                            <li key={`suggestion-${index}`} className="flex items-start gap-2">
+                              <span className="mt-1 text-sky-500">{getIcon("dot", "size-3")}</span>
+                              <span>{describeSuggestion(suggestion)}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {simulationResult.stats && (
+                      <div className="grid gap-2 rounded-lg border border-slate-200 bg-white/80 p-3 text-xs text-gray-600 dark:border-neutral-700 dark:bg-neutral-900/80 dark:text-gray-300 sm:grid-cols-2">
+                        {simulationResult.stats.energyConsumption != null && (
+                          <span>
+                            Estimated energy: {typeof simulationResult.stats.energyConsumption === "number"
+                              ? simulationResult.stats.energyConsumption.toFixed(2)
+                              : simulationResult.stats.energyConsumption} kWh
+                          </span>
+                        )}
+                        {simulationResult.stats.averagePower != null && (
+                          <span>
+                            Average power: {typeof simulationResult.stats.averagePower === "number"
+                              ? simulationResult.stats.averagePower.toFixed(2)
+                              : simulationResult.stats.averagePower} W
+                          </span>
+                        )}
+                        {simulationResult.stats.minCost != null && (
+                          <span>
+                            Minimum cost per run: {typeof simulationResult.stats.minCost === "number"
+                              ? simulationResult.stats.minCost.toFixed(3)
+                              : simulationResult.stats.minCost} €
+                          </span>
+                        )}
+                        {simulationResult.stats.maxCost != null && (
+                          <span>
+                            Maximum cost per run: {typeof simulationResult.stats.maxCost === "number"
+                              ? simulationResult.stats.maxCost.toFixed(3)
+                              : simulationResult.stats.maxCost} €
+                          </span>
+                        )}
+                        {simulationResult.stats.monthlyCost != null && (
+                          <span>
+                            Estimated monthly cost: {typeof simulationResult.stats.monthlyCost === "number"
+                              ? simulationResult.stats.monthlyCost.toFixed(2)
+                              : simulationResult.stats.monthlyCost} €
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                    Run the simulation to preview potential issues and optimisation tips.
+                  </p>
+                )}
               </motion.div>
 
               <motion.div
                 layout
-                className="mt-4 flex flex-wrap items-center justify-center gap-3"
+                className="mt-4 flex flex-nowrap items-center justify-center gap-3"
               >
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="rounded-lg bg-red-400 px-5 py-2 text-sm font-semibold text-white shadow transition hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
+                  className="flex items-center gap-2 rounded-lg bg-red-400 px-5 py-2 text-sm font-semibold text-white shadow transition hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
                 >
+                  {getIcon("refresh", "size-5")}
                   Reset
                 </button>
                 <button
                   type="button"
-                  disabled
-                  className="rounded-lg bg-amber-300 px-5 py-2 text-sm font-semibold text-gray-800 opacity-60 shadow transition focus:outline-none focus:ring-2 focus:ring-amber-200 disabled:cursor-not-allowed"
+                  onClick={handleSimulate}
+                  disabled={isSimulating || !canSave}
+                  className={`flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-amber-200 ${
+                    isSimulating || !canSave
+                      ? "bg-amber-400 text-white shadow opacity-60 cursor-not-allowed"
+                      : "bg-amber-500 text-white shadow hover:bg-amber-600"
+                  }`}
                 >
-                  Simulate
+                  {getIcon("play", "size-5")}
+                  {isSimulating ? "Simulating..." : "Simulate"}
                 </button>
                 <button
                   type="button"
                   onClick={handleSave}
                   disabled={isSaving || !canSave}
-                  className={`rounded-lg px-5 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-lime-200 ${
+                  className={`flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-lime-200 ${
                     isSaving || !canSave
-                      ? "bg-lime-400 text-gray-900 opacity-60 shadow disabled:cursor-not-allowed"
-                      : "bg-lime-400 text-gray-900 shadow hover:bg-lime-500"
+                      ? "bg-lime-400 text-white shadow opacity-60 cursor-not-allowed"
+                      : "bg-lime-500 text-white shadow hover:bg-lime-600"
                   }`}
                 >
+                  {getIcon("save", "size-5")}
                   {isSaving ? "Saving..." : "Save"}
                 </button>
               </motion.div>
