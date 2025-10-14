@@ -1,22 +1,27 @@
 
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Toast } from "flowbite-react";
 import { getIcon } from "../Commons/Constants";
-export default function ToastNotification({ 
-    message, 
-    isVisible, 
-    onClose, 
-    duration = 3000, 
+export default function ToastNotification({
+    message,
+    isVisible,
+    onClose,
+    duration = 3000,
     type = "success" // "success" or "error"
 }) {
     const [progress, setProgress] = useState(100);
+    const [shouldRender, setShouldRender] = useState(false);
+    const [animateIn, setAnimateIn] = useState(false);
+    const hideTimeoutRef = useRef(null);
 
     useEffect(() => {
         let timer;
         let progressInterval;
 
         if (isVisible) {
+            setShouldRender(true);
+            requestAnimationFrame(() => setAnimateIn(true));
             setProgress(100);
             timer = setTimeout(() => {
                 onClose();
@@ -26,13 +31,22 @@ export default function ToastNotification({
             progressInterval = setInterval(() => {
                 setProgress((prev) => Math.max(prev - 100 / (duration / 100), 0));
             }, 100);
+        } else if (shouldRender) {
+            setAnimateIn(false);
+            hideTimeoutRef.current = setTimeout(() => {
+                setShouldRender(false);
+            }, 300);
         }
 
         return () => {
             clearTimeout(timer);
             clearInterval(progressInterval);
+            if (hideTimeoutRef.current) {
+                clearTimeout(hideTimeoutRef.current);
+                hideTimeoutRef.current = null;
+            }
         };
-    }, [isVisible, duration, onClose]);
+    }, [isVisible, duration, onClose, shouldRender]);
 
     // Define styles for success and error toasts
     const styles = {
@@ -54,10 +68,10 @@ export default function ToastNotification({
 
     return (
         <div
-            className={`fixed left-1/2 top-5 z-[100] transform -translate-x-1/2 transition-opacity duration-500 
-                ${isVisible ? "opacity-100" : "opacity-0"}`}
+            className={`fixed left-1/2 top-5 z-[100] transform -translate-x-1/2 transition-opacity duration-300 
+                ${animateIn ? "opacity-100" : "opacity-0"}`}
         >
-            {isVisible && (
+            {shouldRender && (
                 <Toast className="overflow-hidden">
                     <div className={`inline-flex h-8 w-8 items-center justify-center rounded-lg ${toastStyle.bg} ${toastStyle.text}`}>
                         {toastStyle.icon}

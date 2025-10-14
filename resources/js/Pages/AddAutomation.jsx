@@ -179,6 +179,7 @@ export default function AddAutomation() {
 
   const toastTimerRef = useRef(null);
 
+  // Toast helpers keep a single timer alive so progress and fade stay in sync.
   const hideToast = useCallback(() => {
     if (toastTimerRef.current) {
       clearTimeout(toastTimerRef.current);
@@ -205,6 +206,7 @@ export default function AddAutomation() {
     };
   }, []);
 
+  // Reset simulation feedback whenever the configuration changes.
   const invalidateSimulation = () => {
     setSimulationResult((prev) => (prev ? null : prev));
   };
@@ -212,6 +214,7 @@ export default function AddAutomation() {
   const dateUsed = useMemo(() => triggers.some((trigger) => trigger.type === "date"), [triggers]);
   const timeUsed = useMemo(() => triggers.some((trigger) => trigger.type === "time"), [triggers]);
 
+  // Allow only one "Date" and one "Hour" option to remain available across triggers.
   const getTriggerOptionsFor = (currentTrigger) =>
     triggerOptions.filter((option) => {
       if (option.value === "date" && dateUsed && currentTrigger.type !== "date") return false;
@@ -423,6 +426,7 @@ export default function AddAutomation() {
   const handleTriggerTypeChange = (id, type) => {
     if (saveError) setSaveError("");
     invalidateSimulation();
+    // Block switching to Date/Hour when the quota has already been used elsewhere.
     if (
       (type === "date" && triggers.some((trigger) => trigger.id !== id && trigger.type === "date")) ||
       (type === "time" && triggers.some((trigger) => trigger.id !== id && trigger.type === "time"))
@@ -693,6 +697,7 @@ export default function AddAutomation() {
     return conflict.description || conflict.message || conflict.type || "Conflict detected.";
   };
 
+  // Map the UI model to the payload expected by the automation API.
   const buildAutomationDefinition = () => {
     const errors = [];
     const alias = automationName.trim();
@@ -741,6 +746,21 @@ export default function AddAutomation() {
     if (!triggerPayload.length) {
       errors.push("Aggiungi almeno un trigger temporale o di stato.");
     }
+
+    // Prevent contradictory states for the same device within the triggers list.
+    const deviceStateMap = new Map();
+    triggers
+      .filter((trigger) => trigger.type === "device")
+      .forEach((trigger) => {
+        const deviceId = trigger.value.deviceId;
+        const desiredState = trigger.value.state;
+        if (!deviceId) return;
+        if (deviceStateMap.has(deviceId) && deviceStateMap.get(deviceId) !== desiredState) {
+          // Same device appears with conflicting states; block creation.
+          errors.push("Il medesimo dispositivo ha stati in conflitto nelle condizioni.");
+        }
+        deviceStateMap.set(deviceId, desiredState);
+      });
 
     const actionPayload = actions.reduce((acc, action) => {
       if (!action.deviceId) {
