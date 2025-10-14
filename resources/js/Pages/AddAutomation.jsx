@@ -181,7 +181,7 @@ export default function AddAutomation() {
     setToastState({ visible: true, type, message });
   };
 
-  const hideToast = () => setToastState((prev) => ({ ...prev, visible: false }));
+  const hideToast = () => setToastState((prev) => ({ ...prev, visible: false, message: "" }));
 
   const invalidateSimulation = () => {
     setSimulationResult((prev) => (prev ? null : prev));
@@ -472,7 +472,7 @@ export default function AddAutomation() {
         setSimulationResult(null);
         setIsSimulating(false);
       },
-      { title: "Reset builder", confirmLabel: "Yes, reset", variant: "warning", icon: "refresh" }
+      { title: "Reset builder", confirmLabel: "Yes, reset", variant: "danger", icon: "refresh" }
     );
   };
 
@@ -1237,7 +1237,7 @@ export default function AddAutomation() {
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="flex items-center gap-2 rounded-lg bg-red-400 px-5 py-2 text-sm font-semibold text-white shadow transition hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
+                  className="flex items-center gap-2 rounded-lg bg-red-400 px-5 py-2 text-sm font-semibold text-black shadow transition hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
                 >
                   {getIcon("refresh", "size-5")}
                   Reset
@@ -1248,8 +1248,8 @@ export default function AddAutomation() {
                   disabled={isSimulating || !canSave}
                   className={`flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-amber-200 ${
                     isSimulating || !canSave
-                      ? "bg-amber-400 text-white shadow opacity-60 cursor-not-allowed"
-                      : "bg-amber-500 text-white shadow hover:bg-amber-600"
+                      ? "bg-amber-300 text-black shadow opacity-60 cursor-not-allowed"
+                      : "bg-amber-300 text-black shadow hover:bg-amber-400"
                   }`}
                 >
                   {getIcon("play", "size-5")}
@@ -1261,8 +1261,8 @@ export default function AddAutomation() {
                   disabled={isSaving || !canSave}
                   className={`flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-lime-200 ${
                     isSaving || !canSave
-                      ? "bg-lime-400 text-white shadow opacity-60 cursor-not-allowed"
-                      : "bg-lime-500 text-white shadow hover:bg-lime-600"
+                      ? "bg-lime-300 text-black shadow opacity-60 cursor-not-allowed"
+                      : "bg-lime-300 text-black shadow hover:bg-lime-400"
                   }`}
                 >
                   {getIcon("save", "size-5")}
