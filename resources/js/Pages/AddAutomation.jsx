@@ -1,39 +1,65 @@
+// Import React primitives used across the automation builder component
 import { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+// Import dayjs to handle date and time values consistently
 import dayjs from "dayjs";
+// Import Headless UI components for building an accessible custom select widget
 import { Listbox, Transition } from "@headlessui/react";
+// Import the MUI localization provider to wrap date and time pickers
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+// Import the dayjs adapter so MUI pickers work with the dayjs library
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+// Import the MUI DatePicker component for selecting dates
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+// Import the MUI TimePicker component for selecting times
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+// Import the Chevron icon used in dropdown buttons
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
+// Import animation utilities from Framer Motion for smooth UI transitions
 import { AnimatePresence, motion } from "framer-motion";
 
+// Import shared helpers for icons and API calls
 import { getIcon, apiFetch } from "@/Components/Commons/Constants";
+// Import a styled button component used throughout the page
 import { StyledButton } from "@/Components/Commons/StyledBasedComponents";
+// Import the device context that lets the page refresh device data
 import { DeviceContextRefresh } from "@/Components/ContextProviders/DeviceProviderRefresh";
+// Import the toast notification component for feedback messages
 import ToastNotification from "@/Components/Commons/ToastNotification";
 
+// Utility helper to concatenate conditional class names
 const classNames = (...classes) => classes.filter(Boolean).join(" ");
 
+// FancySelect component renders a reusable select input with custom styling
 const FancySelect = ({
+  // Selected value for the select control
   value,
+  // Callback triggered when the selection changes
   onChange,
+  // Available options presented in the dropdown
   options,
+  // Placeholder text shown when no option is selected
   placeholder = "Select an option",
+  // Flag to disable the interaction
   disabled = false,
+  // Additional class names for custom styling
   className = "",
+  // Fallback message when there are no options
   noOptionsMessage = "No options available",
 }) => {
+  // Figure out if the component received a useful options list
   const hasRealOptions = Array.isArray(options) && options.length > 0;
+  // Provide either the options, an empty array, or a synthetic message option
   const displayOptions = hasRealOptions
     ? options
     : disabled
     ? []
     : [{ value: "__no_option__", label: noOptionsMessage, disabled: true }];
+  // Find the currently selected option object if it exists
   const selectedOption = hasRealOptions
     ? options.find((option) => option.value === value)
     : undefined;
 
+  // Render the Listbox component as the custom select
   return (
     <Listbox value={value} onChange={onChange} disabled={disabled}>
       {({ open }) => (
@@ -105,19 +131,23 @@ const FancySelect = ({
   );
 };
 
+// Map each trigger type to the icon used in the UI list
 const iconByTriggerType = {
   date: "weekday",
   time: "time",
   device: "light",
 };
 
+// Human readable labels for the core service actions we support
 const actionServiceLabels = {
   turn_on: "Turn on",
   turn_off: "Turn off",
 };
 
+// Helper used for generating stable ids for triggers/actions
 const createId = () => Math.random().toString(36).slice(2, 9);
 
+// Build an initial trigger for the chosen type, defaulting to the first device if needed
 const createTrigger = (type = "date", devices = []) => ({
   id: createId(),
   type,
@@ -129,22 +159,26 @@ const createTrigger = (type = "date", devices = []) => ({
       : { deviceId: devices[0]?.id ?? "", state: "on" },
 });
 
+// Build an action skeleton pointing to the first available device
 const createAction = (devices = []) => ({
   id: createId(),
   deviceId: devices[0]?.id ?? "",
   service: "turn_on",
 });
 
+// Default triggers include a date and time control to give the user a starting point
 const buildDefaultTriggers = (devices) => [
   createTrigger("date", devices),
   createTrigger("time", devices),
 ];
 
+// Default action is just a "turn on" for the first available device
 const buildDefaultActions = (devices) => [createAction(devices)];
 
 const DEFAULT_AUTOMATION_NAME = "New automation";
 
 export default function AddAutomation() {
+  // Grab the list of devices from the refreshable context
   const { deviceList = [] } = useContext(DeviceContextRefresh);
 
   // Build a connected devices list with extra metadata useful for state/commands
@@ -163,20 +197,24 @@ export default function AddAutomation() {
     [deviceList]
   );
 
+  // Core builder state: automation name, trigger/action arrays and async flags
   const [automationName, setAutomationName] = useState(DEFAULT_AUTOMATION_NAME);
   const [triggers, setTriggers] = useState(() => buildDefaultTriggers(devices));
   const [actions, setActions] = useState(() => buildDefaultActions(devices));
   const [isSaving, setIsSaving] = useState(false);
   const [isSimulating, setIsSimulating] = useState(false);
   const [saveError, setSaveError] = useState("");
+  // Toast and simulation feedback state containers
   const [toastState, setToastState] = useState({ visible: false, type: "success", message: "", duration: 3000 });
   const [simulationResult, setSimulationResult] = useState(null);
 
+  // Memoize dropdown-ready device options to avoid recalculations on each render
   const deviceSelectOptions = useMemo(
     () => devices.map((device) => ({ value: device.id, label: device.name })),
     [devices]
   );
 
+  // Ref keeps track of the current toast dismissal timeout
   const toastTimerRef = useRef(null);
 
   // Toast helpers keep a single timer alive so progress and fade stay in sync.
@@ -389,22 +427,26 @@ export default function AddAutomation() {
     });
   };
 
+  // Quick lookup helper to translate device ids to readable names
   const deviceNameLookup = useMemo(() => {
     const map = new Map(devices.map((device) => [device.id, device.name]));
     return (id) => map.get(id);
   }, [devices]);
 
+  // Trigger types visually shown in the condition builder
   const triggerOptions = [
     { value: "date", label: "Date" },
     { value: "time", label: "Hour" },
     { value: "device", label: "Device state" },
   ];
 
+  // Fallback action options until we fetch device-specific services
   const actionOptions = [
     { value: "turn_on", label: "Turn on" },
     { value: "turn_off", label: "Turn off" },
   ];
 
+  // Shared MUI styling tweaks for date/time pickers
   const pickerSx = {
     ".MuiInputBase-root": {
       height: "3rem",
@@ -415,14 +457,17 @@ export default function AddAutomation() {
     },
   };
 
+  // CSS helper applied to several select wrappers for consistent widths
   const selectContainerClass = "w-full md:max-w-[18rem]";
 
+  // Trigger update helper ensures we centralise error resets and simulation invalidations
   const updateTrigger = (id, partial) => {
     if (saveError) setSaveError("");
     invalidateSimulation();
     setTriggers((prev) => prev.map((trigger) => (trigger.id === id ? { ...trigger, ...partial } : trigger)));
   };
 
+  // Handle changing trigger type while preserving limits and resetting default values
   const handleTriggerTypeChange = (id, type) => {
     if (saveError) setSaveError("");
     invalidateSimulation();
@@ -442,6 +487,7 @@ export default function AddAutomation() {
     updateTrigger(id, { type, value: nextValue });
   };
 
+  // Remove a trigger after user confirmation, keeping at least one
   const handleTriggerRemoval = (id) => {
     if (saveError) setSaveError("");
     invalidateSimulation();
@@ -461,12 +507,14 @@ export default function AddAutomation() {
     });
   };
 
+  // Update an action with the provided partial data
   const handleActionUpdate = (id, partial) => {
     if (saveError) setSaveError("");
     invalidateSimulation();
     setActions((prev) => prev.map((action) => (action.id === id ? { ...action, ...partial } : action)));
   };
 
+  // Remove an action after user confirmation, keeping at least one
   const handleActionRemoval = (id) => {
     if (saveError) setSaveError("");
     invalidateSimulation();
@@ -486,6 +534,7 @@ export default function AddAutomation() {
     });
   };
 
+  // Reset the entire builder back to defaults after confirmation
   const handleReset = () => {
     if (saveError) setSaveError("");
     invalidateSimulation();
@@ -502,6 +551,7 @@ export default function AddAutomation() {
     );
   };
 
+  // Render the right-side input block for a trigger based on its type
   const renderTriggerInput = (trigger) => {
     return (
       <AnimatePresence mode="wait">
@@ -585,6 +635,7 @@ export default function AddAutomation() {
     );
   };
 
+  // Render a single action row with device/service selectors and controls
   const renderActionRow = (action) => (
     <motion.div
       key={action.id}
@@ -632,6 +683,7 @@ export default function AddAutomation() {
     </motion.div>
   );
 
+  // Produce a readable string describing the trigger for previews and confirmations
   function formatTriggerPreview(trigger, deviceLookup) {
     if (trigger.type === "date") {
       return "On " + trigger.value.format("DD MMM YYYY");
@@ -646,12 +698,14 @@ export default function AddAutomation() {
     return deviceName + " " + stateLabel;
   }
 
+  // Produce a readable string describing an action in the preview list
   function formatActionPreview(action, deviceLookup) {
     const deviceName = deviceLookup(action.deviceId) || "Device";
     const verb = actionServiceLabels[action.service] ?? action.service.replaceAll("_", " ");
     return verb + " " + deviceName;
   }
 
+  // Turn API suggestions into readable bullet points
   const describeSuggestion = (suggestion) => {
     if (!suggestion || typeof suggestion !== "object") return "Suggestion available.";
     switch (suggestion.suggestion_type) {
@@ -683,6 +737,7 @@ export default function AddAutomation() {
     }
   };
 
+  // Convert conflict payloads from the simulator into a concise description
   const describeConflict = (conflict) => {
     if (!conflict || typeof conflict !== "object") return "Conflict detected.";
     if (conflict.type === "Excessive energy consumption") {
@@ -817,8 +872,10 @@ export default function AddAutomation() {
     return { errors, automation };
   };
 
+  // Clear any persisted save error message
   const hideSaveError = () => setSaveError("");
 
+  // Persist the automation by posting to the backend API
   const handleSave = async () => {
     if (isSaving) return;
     const { errors, automation } = buildAutomationDefinition();
@@ -880,6 +937,7 @@ export default function AddAutomation() {
     }
   };
 
+  // Run the automation through the simulation endpoint to get predictions/suggestions
   const handleSimulate = async () => {
     if (isSimulating) return;
     const { errors, automation } = buildAutomationDefinition();
@@ -930,18 +988,23 @@ export default function AddAutomation() {
     }
   };
 
+  // Derived booleans drive button enable/disable state for UX clarity
   const hasExecutableTrigger = triggers.some((trigger) => {
     if (trigger.type === "time") return true;
     if (trigger.type === "device") return Boolean(trigger.value.deviceId && trigger.value.state);
     return false;
   });
 
+  // Ensure at least one action has a real device before enabling save/simulate
   const hasValidAction = actions.some((action) => Boolean(action.deviceId));
 
+  // Final guard that drives primary CTA availability
   const canSave = automationName.trim().length > 0 && hasExecutableTrigger && hasValidAction;
 
+  // Main layout renders the builder columns and preview cards
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
+      {/* Toast stays mounted at root level to handle cross-section feedback */}
       <ToastNotification
         message={toastState.message}
         isVisible={toastState.visible}
@@ -949,6 +1012,7 @@ export default function AddAutomation() {
         type={toastState.type}
         duration={toastState.duration}
       />
+      {/* Main builder canvas provides animated layout transitions */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -956,6 +1020,7 @@ export default function AddAutomation() {
         className="min-h-screen w-full bg-gray-200 px-4 py-6 dark:bg-neutral-800"
       >
         <div className="mx-auto grid w-full max-w-[1200px] gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.55fr)]">
+          {/* Left column groups the configuration flow (header, triggers, actions) */}
           <motion.section
             layout
             className="flex flex-col gap-6"
@@ -1104,6 +1169,7 @@ export default function AddAutomation() {
             </motion.section>
           </motion.section>
 
+          {/* Right column hosts the live preview, simulation feedback, and CTA buttons */}
           <motion.aside
             layout
             initial={{ x: 24, opacity: 0 }}
@@ -1172,6 +1238,7 @@ export default function AddAutomation() {
                 </motion.ul>
               </div>
 
+              {/* Simulation summary area flips between loading, conflicts, suggestions, and metrics */}
               <motion.div
                 layout
                 className="rounded-xl border border-slate-200 bg-white/95 p-4 text-gray-900 shadow dark:border-neutral-700 dark:bg-neutral-900 dark:text-gray-100"
