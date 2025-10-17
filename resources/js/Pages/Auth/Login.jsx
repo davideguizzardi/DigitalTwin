@@ -11,6 +11,10 @@ import { useLaravelReactI18n } from "laravel-react-i18n";
 import { PasswordInput } from "@/Components/Commons/PasswordInput";
 import Cookies from "js-cookie";
 
+
+const rulebotEmail = import.meta.env.VITE_RULEBOT_USER_EMAIL
+const rulebotPassword = import.meta.env.VITE_RULEBOT_USER_PASSWORD
+
 export default function Login({ users, status, canResetPassword }) {
   const [selectedUser, setSelectedUser] = useState(null);
   const { t } = useLaravelReactI18n()
@@ -38,8 +42,8 @@ export default function Login({ users, status, canResetPassword }) {
 
       
       const body = JSON.stringify({
-        email: data.email,
-        password: data.password
+        email: rulebotEmail,//data.email,
+        password: rulebotPassword//data.password
       })
       
       const result = await fetch(`${rulebot}/login`, {

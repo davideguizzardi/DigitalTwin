@@ -366,6 +366,8 @@
   "service": "Servizio",
   "target": "Destinazione",
   "temperature": "Temperatura",
+  "battery":"Batteria",
+  "humidity":"Umidità",
   "hvac_mode": "Modalità HVAC",
   "fan_mode": "Modalità ventola",
   "swing_mode": "Modalità oscillazione",

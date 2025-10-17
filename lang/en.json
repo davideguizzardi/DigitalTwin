@@ -363,6 +363,8 @@
     "service": "Service",
     "target": "Target",
     "temperature": "Temperature",
+    "battery": "Battery",
+    "humidity": "Humidity",
     "hvac_mode": "HVAC mode",
     "fan_mode": "Fan mode",
     "swing_mode": "Swing mode",
@@ -379,5 +381,5 @@
     "event": "Event",
     "event_data": "Event data",
     "message_template": "Message template",
-    "color_temp_kelvin":"Color Temperature in Kelvin"
+    "color_temp_kelvin": "Color Temperature in Kelvin"
 }

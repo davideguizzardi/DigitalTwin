@@ -19,9 +19,9 @@ export const DeviceProviderRefresh = ({ children }) => {
       setDeviceList(filtered_devices);
       setConnectionOk(true)
 
-      const demo_response=await apiFetch(`/configuration/enable_demo`);
-      if (!demo_response) throw new Error("Failed to fetch demo info");
-      setIsDemo(demo_response.value=="1")
+      //const demo_response=await apiFetch(`/configuration/enable_demo`);
+      //if (!demo_response) throw new Error("Failed to fetch demo info");
+      //setIsDemo(demo_response.value=="1")
     } catch (err) {
       setConnectionOk(false)
     } 

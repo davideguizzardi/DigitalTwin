@@ -25,8 +25,6 @@ export function ConsumptionPredictionGraph({ url_in, future_steps, graphHeight =
     const cache = await apiFetch(url_cache)
     if (cache) {
       setDataset(cache.data)
-      if (user)
-        apiLog(user.username, logsEvents.CONSUMPTION_PREDICTION, "Entire House", "{}")
     }
     setLoading(true)
     const response = await apiFetch(url_in)
@@ -34,6 +32,8 @@ export function ConsumptionPredictionGraph({ url_in, future_steps, graphHeight =
       setDataset(response.data)
     }
     setLoading(false)
+    if (user)
+        apiLog(user.username, logsEvents.CONSUMPTION_PREDICTION, "Entire House", "{}")
   }
 
 
