@@ -208,7 +208,6 @@ const Dashboard3 = ({ maps, token }) => {
 
     return (
         <div className="h-fit w-full flex flex-col lg:grid lg:grid-cols-3 gap-4 p-3 overflow-auto">
-            <DiaryCheck user={user}/>
             <div className="col-span-2">
                 <TabLayout sections={sections} />
             </div>

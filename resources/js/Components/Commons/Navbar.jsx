@@ -15,6 +15,7 @@ import { StyledButton } from "./StyledBasedComponents";
 import { BsFullscreen, BsFullscreenExit } from "react-icons/bs";
 import { ImQuill } from "react-icons/im";
 import { diary_link } from "@/Components/Commons/Constants";
+import DiaryCheck from "./DiaryCheck";
 function NavLink({ connectedUser, routeName, isActive, children, className = '' }) {
     const user = useContext(UserContext);
 
@@ -87,6 +88,7 @@ export default function Navbar() {
 
     return (
         <div className="w-full h-13 grid grid-cols-5 justify-center text-3xl bg-zinc-50 p-1 border-b border-gray-300 sticky top-0 z-50">
+            <DiaryCheck user={user}/>
             <Modal show={!connectionOk}>
                 <Modal.Header>
                     <div className="flex flex-row gap-3 items-center">
