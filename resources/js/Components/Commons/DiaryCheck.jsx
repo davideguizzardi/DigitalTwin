@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Button } from "flowbite-react";
+import { Modal } from "flowbite-react";
 import { diary_link } from "./Constants";
 import { ImQuill } from "react-icons/im";
 
@@ -27,7 +27,7 @@ export default function DiaryCheck({ user }) {
             }
         };
         fetchDiaryData();
-    }, []);
+    }, [user]);
 
     return (
         <>
