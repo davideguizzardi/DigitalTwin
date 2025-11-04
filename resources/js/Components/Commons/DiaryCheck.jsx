@@ -13,8 +13,7 @@ export default function DiaryCheck({ user }) {
                 const res = await fetch(API_URL);
                 if (!res.ok) throw new Error("Failed to fetch diary data");
                 const data = await res.json();
-
-                const userDateStr = data[user.toLowerCase()]; 
+                const userDateStr = data[user.username]; 
                 if (!userDateStr) return;
 
                 const [day, month, year] = userDateStr.split("/").map(Number);

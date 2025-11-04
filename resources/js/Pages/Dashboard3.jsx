@@ -117,7 +117,7 @@ const Dashboard3 = ({ maps, token }) => {
         fetchData();
     }, []);
 
-    useEffect(() => {//TODO:remove this if not necessary
+/*     useEffect(() => {//TODO:remove this if not necessary
         const fetchUser = async () => {
             await fetch(`${domain}/sanctum/csrf-cookie`, {
                 credentials: 'include'
@@ -132,11 +132,11 @@ const Dashboard3 = ({ maps, token }) => {
             if (response.ok) {
                 const result = await response.json()
                 //apiLog(result.user.username, logsEvents.LOGIN, "", "")
-                setUser(result.user.username)
+                //setUser(result.user.username)
             }
         }
         fetchUser()
-    }, []);
+    }, []); */
 
     useEffect(() => {
         const updateState = deviceList
