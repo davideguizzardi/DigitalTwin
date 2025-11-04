@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { DeviceProviderRefresh } from "@/Components/ContextProviders/DeviceProviderRefresh";
 import Navbar from "@/Components/Commons/Navbar";
-
+import { apiLog,logsEvents } from "@/Components/Commons/Constants";
 
 export const UserContext = createContext({})
 
@@ -34,6 +34,7 @@ export function UserLayout({ children }) {
                 if (response.ok) {
                     const result = await response.json();
                     setUserState({ ...result.user });
+                    apiLog(result.user.username, logsEvents.LOGIN, "", "")
                 } else {
                     console.error("User fetch failed with status", response.status);
                 }

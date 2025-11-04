@@ -15,6 +15,9 @@ import Cookies from "js-cookie";
 const rulebotEmail = import.meta.env.VITE_RULEBOT_USER_EMAIL
 const rulebotPassword = import.meta.env.VITE_RULEBOT_USER_PASSWORD
 
+const { protocol, hostname } = window.location;
+const rulebotUrl = `${protocol}//${hostname}:8888`;
+
 export default function Login({ users, status, canResetPassword }) {
   const [selectedUser, setSelectedUser] = useState(null);
   const { t } = useLaravelReactI18n()
@@ -46,7 +49,7 @@ export default function Login({ users, status, canResetPassword }) {
         password: rulebotPassword//data.password
       })
       
-      const result = await fetch(`${rulebot}/login`, {
+      const result = await fetch(`${rulebotUrl}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -8,9 +8,13 @@ import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 import { DeviceContextRefresh } from "@/Components/ContextProviders/DeviceProviderRefresh";
 import WhiteCard from "@/Components/Commons/WhiteCard";
-import { apiFetch, apiLog, logsEvents, useIsMobile } from "@/Components/Commons/Constants";
+import { apiFetch, useIsMobile } from "@/Components/Commons/Constants";
 import dayjs from "dayjs";
 import { domain } from "@/Components/Commons/Constants";
+
+import { UserContext } from "@/Layouts/UserLayout";
+
+import DiaryCheck from "@/Components/Commons/DiaryCheck";
 
 function PowerConsumptionGauge({ powerUsage = 0, maxPower = 3000 }) {
     const radius = 90; // The radius of the semicircle
@@ -71,6 +75,8 @@ const Dashboard3 = ({ maps, token }) => {
     const [totalPower, setTotalPower] = useState(0)
     const [activeDevices, setActiveDevices] = useState(0)
 
+    const user = useContext(UserContext);
+
     const w2gCO2 = 0.431
     const minimumPower = 3
 
@@ -111,7 +117,7 @@ const Dashboard3 = ({ maps, token }) => {
         fetchData();
     }, []);
 
-    useEffect(() => {
+    useEffect(() => {//TODO:remove this if not necessary
         const fetchUser = async () => {
             await fetch(`${domain}/sanctum/csrf-cookie`, {
                 credentials: 'include'
@@ -125,7 +131,8 @@ const Dashboard3 = ({ maps, token }) => {
             })
             if (response.ok) {
                 const result = await response.json()
-                apiLog(result.user.username, logsEvents.LOGIN, "", "")
+                //apiLog(result.user.username, logsEvents.LOGIN, "", "")
+                setUser(result.user.username)
             }
         }
         fetchUser()
@@ -201,6 +208,7 @@ const Dashboard3 = ({ maps, token }) => {
 
     return (
         <div className="h-fit w-full flex flex-col lg:grid lg:grid-cols-3 gap-4 p-3 overflow-auto">
+            <DiaryCheck user={user}/>
             <div className="col-span-2">
                 <TabLayout sections={sections} />
             </div>
