@@ -330,8 +330,11 @@ export default function ControlPopup({ openDevice }) {
                 <div className="-ml-2 flex flex-col gap-4 items-start mb-2">
                   {device.state &&
 
-                    <div className="font-light font-[Inter]">
+                    <div className="font-light font-[Inter] flex items-center">
                       {t("State")}: <span className="font-semibold">{t(device.state)}</span>
+                      {device.state == "unavailable" &&
+                        getIcon("error", "size-7 rounded-full bg-red-500 animate-pulse")
+                      }
                     </div>
                   }
 

@@ -45,42 +45,45 @@ export default function CardAppliance({ appliancePos, setClickedDevice }) {
         }
     }
 
-    const getScale=(device)=>{
-        const power=getPower(device)
-        return 1+(Math.min(Math.floor(power/50),6)/10)
+    const getScale = (device) => {
+        const power = getPower(device)
+        return 1 + (Math.min(Math.floor(power / 50), 6) / 10)
     }
 
-    const isActive=(appliance)=>{
-        if(appliance.device_class=="sensor")
+    const isActive = (appliance) => {
+        if (appliance.device_class == "sensor")
             return true
 
-        if(appliance.power_entity_id=="" || appliance.category=="air_conditioner")
-            return appliance.state=="on"
+        if (appliance.power_entity_id == "" || appliance.category == "air_conditioner")
+            return appliance.state == "on"
 
-        return getPower(appliance)>1
+        return getPower(appliance) > 1
     }
 
     return (
         <motion.div
             className={`absolute rounded-full bg-gray-200`}
             style={{
-                top: appliancePos.top + "%", 
+                top: appliancePos.top + "%",
                 left: appliancePos.left + "%",
             }}
             variants={variants}
-            initial="initial" 
+            initial="initial"
             animate="animate"
-            onHoverStart={() => setOpenName(true)} 
+            onHoverStart={() => setOpenName(true)}
             onHoverEnd={() => setOpenName(false)}
         >
-            <div className={`flex flex-row gap-1 items-center scale-[${getScale(appliancePos)}]`}
+            <div className={`relative flex flex-row gap-1 items-center scale-[${getScale(appliancePos)}]`}
                 style={{ cursor: "pointer", zIndex: "20" }}
                 onClick={() => setClickedDevice(appliancePos)}
             >
 
                 {getDeviceIcon(appliancePos.category, "size-9", isActive(appliancePos))}
-                {openName && false &&
+                {openName && false && //TODO:remove this
                     appliancePos.name
+                }
+                {appliancePos.state == "unavailable" &&
+                    getIcon("error", "size-5 absolute top-0 left-0 rounded-full bg-red-500 animate-pulse")
                 }
             </div>
         </motion.div>
