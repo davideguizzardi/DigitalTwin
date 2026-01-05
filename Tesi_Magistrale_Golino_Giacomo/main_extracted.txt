@@ -1,0 +1,1924 @@
+DIPARTIMENTO DI INGEGNERIA
+
+DELL’INFORMAZIONE
+
+Corso di Laurea
+
+in Ingegneria Informatica Magistrale
+
+Relazione Finale
+
+Integrazione di funzionalit(cid:224) di
+
+Trigger-Action Programming nel Gemello
+
+Digitale di una Smart Home
+
+Relatore: Prof.sa Daniela Fogli
+
+Correlatore: Prof.sa Barbara Barricelli
+
+Correlatore: Ing. Davide Guizzardi
+
+Studente:
+
+Giacomo Golino (719210)
+
+Anno Accademico 2024/2025
+
+Indice
+
+Introduzione
+
+1 Titolo cap - 1
+
+1.1
+
+Introduzione . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+2 Stato dell’arte
+
+2.1 Concetti di Base
+
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+2.1.1 Requisiti di una buona automazione . . . . . . . . . . . . . . .
+
+2.2 Panoramica sulle piattaforme principali . . . . . . . . . . . . . . . . .
+
+2.2.1 Amazon Alexa
+
+. . . . . . . . . . . . . . . . . . . . . . . . . .
+
+2.2.2 Google Home . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+2.2.3 Apple Casa . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+2.3 Metodi e Applicazioni per la Creazione di Automazioni
+
+. . . . . . . .
+
+2.3.1 Applicazioni per il Trigger-Action Programming . . . . . . . .
+
+ii
+
+1
+
+1
+
+2
+
+3
+
+4
+
+5
+
+5
+
+6
+
+7
+
+8
+
+8
+
+2.3.2 Confronto fra le tre piattaforme . . . . . . . . . . . . . . . . . 12
+
+2.3.3 Approcci nella letteratura scienti(cid:28)ca . . . . . . . . . . . . . . 13
+
+3 Architettura del sistema
+
+21
+
+3.1
+
+Introduzione all’architettura . . . . . . . . . . . . . . . . . . . . . . . 21
+
+3.2
+
+Interazione con gli utenti . . . . . . . . . . . . . . . . . . . . . . . . . 23
+
+3.3 Simulation Management Module . . . . . . . . . . . . . . . . . . . . . 26
+
+3.4 Home Assistant Integration Module . . . . . . . . . . . . . . . . . . . 32
+
+3.5 Con(cid:28)guration Management Module . . . . . . . . . . . . . . . . . . . 35
+
+3.6 Data Analysis Module . . . . . . . . . . . . . . . . . . . . . . . . . . 36
+
+3.7 Smart Home e Home Assistant . . . . . . . . . . . . . . . . . . . . . . 39
+
+3.8 De(cid:28)nizione delle automazioni da parte dell’utente . . . . . . . . . . . 40
+
+Conclusioni
+
+42
+
+i
+
+Introduzione
+
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut purus elit, vestibulum
+
+ut, placerat ac, adipiscing vitae, felis. Curabitur dictum gravida mauris. Nam arcu
+
+libero, nonummy eget, consectetuer id, vulputate a, magna. Donec vehicula augue
+
+eu neque. Pellentesque habitant morbi tristique senectus et netus et malesuada
+
+fames ac turpis egestas. Mauris ut leo. Cras viverra metus rhoncus sem. Nulla et
+
+lectus vestibulum urna fringilla ultrices. Phasellus eu tellus sit amet tortor gravida
+
+placerat. Integer sapien est, iaculis in, pretium quis, viverra ac, nunc. Praesent eget
+
+sem vel leo ultrices bibendum. Aenean faucibus. Morbi dolor nulla, malesuada eu,
+
+pulvinar at, mollis ac, nulla. Curabitur auctor semper nulla. Donec varius orci eget
+
+risus. Duis nibh mi, congue eu, accumsan eleifend, sagittis quis, diam. Duis eget
+
+orci sit amet orci dignissim rutrum.
+
+Nam dui ligula, fringilla a, euismod sodales, sollicitudin vel, wisi. Morbi auctor
+
+lorem non justo. Nam lacus libero, pretium at, lobortis vitae, ultricies et, tellus.
+
+Donec aliquet, tortor sed accumsan bibendum, erat ligula aliquet magna, vitae
+
+ornare odio metus a mi. Morbi ac orci et nisl hendrerit mollis. Suspendisse ut
+
+massa. Cras nec ante. Pellentesque a nulla. Cum sociis natoque penatibus et
+
+magnis dis parturient montes, nascetur ridiculus mus. Aliquam tincidunt urna.
+
+Nulla ullamcorper vestibulum turpis. Pellentesque cursus luctus mauris.
+
+ii
+
+1. Titolo cap - 1
+
+1.1
+
+Introduzione
+
+Da introdurre gli obiettivi e il contesto della tesi, ed eventualmente la sua struttura.
+
+1
+
+2. Stato dell’arte
+
+In questo capitolo verranno analizzati e approfonditi i metodi e le applicazioni
+
+per la creazione di automazioni (chiamate anche routine) in ecosistemi Internet
+
+of Things (IoT). In particolare, verranno a(cid:27)rontate con maggiore attenzione le
+
+smart home come ecosistemi IoT, andando ad analizzare quali sono le principali
+
+piattaforme utilizzate per la creazione di automazioni.
+
+Si de(cid:28)niscono automazioni o routine degli insiemi strutturati di istruzioni che, una
+
+volta impostati, consentono di eseguire automaticamente una serie di azioni al veri-
+
+(cid:28)carsi di determinati eventi (o trigger ). Tali azioni possono comprendere operazioni
+
+ripetitive, come l’accensione o lo spegnimento di dispositivi smart, oppure processi
+
+piø complessi che coinvolgono diversi servizi, con l’obiettivo (cid:28)nale di sempli(cid:28)care e
+
+ottimizzare la gestione dell’ecosistema.
+
+Le azioni (action) costituiscono la parte esecutiva di una routine: al veri(cid:28)carsi
+
+dell’evento scatenante (trigger ), l’azione de(cid:28)nita viene avviata per compiere l’ope-
+
+razione desiderata. Pu(cid:242) trattarsi di semplici attivit(cid:224) oppure di processi articolati
+
+che si integrano con servizi diversi.
+
+All’interno di questo capitolo verranno quindi presentati:
+
+(cid:136) I concetti chiave relativi alle automazioni/routine e la loro importanza nel
+
+contesto IoT.
+
+(cid:136) Le principali piattaforme sul mercato che consentono di creare routine, nello
+
+speci(cid:28)co Amazon Alexa, Google Home e Apple Casa.
+
+(cid:136) Altri sistemi per il Trigger-Action Programming che si sono recentemente
+
+a(cid:27)ermati e alcuni approcci proposti nella letteratura scienti(cid:28)ca.
+
+2
+
+2. Stato dell’arte
+
+2.1 Concetti di Base
+
+Le automazioni o routine nel contesto dell’IoT consistono in regole di tipo trigger-
+
+action, dove un evento scatenante (ad esempio, un orario prede(cid:28)nito, un comando
+
+vocale o una condizione ambientale rilevata da un sensore) provoca una o piø azioni
+
+(come l’accensione di una luce, l’avvio di un elettrodomestico, l’invio di una noti(cid:28)ca,
+
+ecc.). Questa logica di base, semplice da comprendere, si Ł rivelata estremamente
+
+potente e versatile in quanto:
+
+(cid:136) Riduce la necessit(cid:224) di interventi manuali da parte dell’utente, automatizzando
+
+task ripetitivi.
+
+(cid:136) Consente di personalizzare lo spazio domestico in base alle preferenze e alle
+
+abitudini di ognuno.
+
+(cid:136) Si presta a una gestione modulare: i vari eventi e azioni possono essere com-
+
+binati per creare routine piø avanzate.
+
+Alcuni studi hanno evidenziato come la programmazione di tipo trigger-action (TAP)
+
+si adatti alla maggior parte delle esigenze di automazione espresse dagli utenti [1,
+
+2], risultando intuitiva anche per chi non possiede competenze tecniche avanzate.
+
+In particolare,
+
+l’analisi di oltre 67.000 programmi condivisi su IFTTT e un test
+
+di usabilit(cid:224) condotto su 226 partecipanti conferma che, grazie alla semplicit(cid:224) di
+
+combinare in modo (cid:29)essibile molteplici trigger e action, la curva di apprendimento
+
+rimane bassa, favorendo un’ampia adozione [1].
+
+Nell’immagine qui di seguito ((cid:28)g. 2.1) vengono mostrati alcuni esempi di quelli che
+
+potrebbero essere dei trigger e delle action.
+
+3
+
+2. Stato dell’arte
+
+Figura 2.1: Esempio di trigger e azioni
+
+2.1.1 Requisiti di una buona automazione
+
+Per risultare e(cid:30)cace [3], un’automazione deve essere:
+
+(cid:136) Facile da creare e gestire: l’utente (cid:28)nale (che spesso non possiede compe-
+
+tenze di programmazione) deve poter de(cid:28)nire e modi(cid:28)care le routine in maniera
+
+intuitiva.
+
+(cid:136) A(cid:30)dabile: deve funzionare in modo consistente nel tempo, senza errori o
+
+interruzioni non previste.
+
+(cid:136) Adattabile: dev’essere in grado di gestire modi(cid:28)che nelle preferenze dell’u-
+
+tente, nelle caratteristiche dei dispositivi o nell’assetto del sistema.
+
+(cid:136) Sicura: in un ecosistema connesso, la privacy e la sicurezza di reti e dispositivi
+
+sono fondamentali.
+
+4
+
+2. Stato dell’arte
+
+2.2 Panoramica sulle piattaforme principali
+
+Storicamente, le automazioni si basavano principalmente su timer o sensori semplici
+
+(come termostati o rilevatori di movimento) per poter funzionare. Al giorno d’oggi,
+
+invece, le piattaforme commerciali (e non) o(cid:27)rono soluzioni ben diverse rispetto a
+
+quelle di una volta. Nello speci(cid:28)co attualmente vengono utilizzate:
+
+(cid:136) Interfacce gra(cid:28)che drag-and-drop per comporre in modo visivo le regole.
+(cid:136) Integrazione con assistenti vocali (es. Amazon Alexa, Google Assistant e Apple
+
+Siri) per impostare routine con frasi naturali.
+
+(cid:136) Utilizzo di tecniche di machine learning e context awareness per proporre auto-
+
+mazioni (cid:16)intelligenti(cid:22) o per adattare le routine al comportamento dell’utente.
+
+Il panorama degli strumenti per la creazione di automazioni Ł estremamente ampio.
+
+In particolare, i sistemi Amazon Alexa, Google Home e Apple Casa sono le
+
+principali piattaforme commerciali per la gestione domestica, ciascuno caratterizzato
+
+da speci(cid:28)che architetture, protocolli di comunicazione e modelli di integrazione con
+
+dispositivi di terze parti.
+
+2.2.1 Amazon Alexa
+
+Amazon Alexa Ł un assistente vocale lanciato inizialmente su dispositivi Echo, poi
+
+rapidamente esteso a numerosi dispositivi di terze parti. Le routine di Alexa possono
+
+essere create tramite:
+
+(cid:136) L’app Alexa su smartphone.
+(cid:136) Interazione vocale diretta (nello speci(cid:28)co grazie alla sottoscrizione del servizio
+
+Alexa+, disponibile al momento solo negli USA).
+
+(cid:136) Skill aggiuntive, sviluppate da terze parti.
+
+Inoltre, negli ultimi anni, Amazon ha introdotto:
+
+(cid:136) Riconoscimento di suoni speci(cid:28)ci: ad esempio, la piattaforma Ł in grado
+
+di distinguere il suono di vetri rotti, avvisando di conseguenza l’utente. ¨
+
+5
+
+2. Stato dell’arte
+
+importante sottolineare che questa funzionalit(cid:224) Ł disponibile al momento so-
+
+lamente su Echo smart speakers e sui dispotivi Echo smart displays.
+
+(cid:136) Hunches: questa funzionalit(cid:224), se attivata attraverso l’applicazione, consente
+
+ad Alexa di apprendere determinate routine ricorrenti, cos(cid:236) da poter avvisare
+
+l’utente qualora tali azioni non vengano eseguite. Ad esempio, Alexa potrebbe
+
+imparare che ogni volta che un utente esce di casa, Ł solito spegnere tutte le
+
+luci e chiudere la porta. Nel caso in cui l’utente dovesse dimenticare di svolgere
+
+una o entrambe le azioni, il sistema lo noti(cid:28)cherebbe, chiedendo se Ł necessario
+
+eseguire queste azioni.
+
+(cid:136) Integrazioni con servizi esterni: questa funzionalit(cid:224) consente l’integrazione
+
+con servizi di terze parti come calendari, servizi di musica in streaming o
+
+applicazioni di messaggistica.
+
+2.2.2 Google Home
+
+Google Home si basa sull’assistente vocale Google Assistant, sfruttando l’ampia rete
+
+di servizi Google. Le automazioni possono derivare dall’utilizzo di:
+
+(cid:136) Comandi vocali per la creazione e gestione delle routine. Gli utenti possono
+
+avviare la con(cid:28)gurazione di una routine semplicemente pronunciando frasi co-
+
+me (cid:16)Ok Google, crea una routine per...(cid:22), dopodichØ Google Assistant guider(cid:224)
+
+attraverso i passaggi per impostare un trigger e una o piø action. Questo me-
+
+todo sempli(cid:28)ca notevolmente l’automazione per chi preferisce un’interazione
+
+naturale senza dover passare obbligatoriamente da un’applicazione.
+
+(cid:136) L’app Google Home, che permette di de(cid:28)nire trigger e action utilizzando
+
+dispositivi compatibili.
+
+(cid:136) L’integrazione con Google Calendar o Google Maps (permettendo, ad esempio,
+
+di attivare una routine se si Ł vicini a casa).
+
+L’ecosistema Google si Ł evoluto introducendo:
+
+6
+
+2. Stato dell’arte
+
+(cid:136) Eventi geolocalizzati (geofencing): la routine si attiva o disattiva in base
+
+alla posizione dell’utente. Il geofencing Ł una tecnologia basata sulla geolo-
+
+calizzazione che permette di de(cid:28)nire un’area virtuale attorno a una posizione
+
+(cid:28)sica (come casa ad esempio). Quando il dispositivo dell’utente entra o esce da
+
+questa zona prede(cid:28)nita, viene attivata una routine automatica. Ad esempio,
+
+si pu(cid:242) con(cid:28)gurare l’accensione delle luci smart quando si arriva a casa o la
+
+disattivazione del riscaldamento quando si lascia l’abitazione.
+
+(cid:136) Riconoscimento vocale avanzato (Voice Match):
+
+l’assistente riconosce
+
+la voce di diverse persone e personalizza alcune automazioni (ad esempio, la
+
+musica preferita) in base al pro(cid:28)lo.
+
+2.2.3 Apple Casa
+
+Apple Casa Ł l’applicazione di Apple per la gestione della domotica, basata sulla
+
+piattaforma HomeKit. Rispetto a soluzioni piø aperte, punta molto sulla semplicit(cid:224)
+
+d’uso e su elevati standard di privacy e sicurezza. Di seguito sono riportate alcune
+
+delle principali caratteristiche di questa piattaforma:
+
+(cid:136) App Casa su iOS: qui si impostano automazioni basate sull’orario, sul rileva-
+
+mento di un sensore, o sull’entrata/uscita da una determinata area geogra(cid:28)ca.
+(cid:136) Supporto a scene e stanze: l’utente pu(cid:242) creare (cid:16)scene(cid:22) (sequenze di azioni)
+
+o associare dispositivi a stanze, sempli(cid:28)cando la gestione.
+
+(cid:136) Apertura verso standard di connettivit(cid:224): Apple ha recentemente esteso
+
+il supporto a protocolli come Matter, garantendo piø integrazione con prodotti
+
+non-Apple.
+
+Le ultime versioni di iOS hanno introdotto:
+
+(cid:136) Rilevamento della presenza via Apple Watch: se l’utente indossa un
+
+Apple Watch, il sistema pu(cid:242) capire se si trova e(cid:27)ettivamente in casa (o nei
+
+dintorni).
+
+7
+
+2. Stato dell’arte
+
+2.3 Metodi e Applicazioni per la Creazione di Au-
+
+tomazioni
+
+Oltre alle piattaforme citate, esistono molteplici approcci al Trigger-Action Pro-
+
+gramming, come visto in [2, 4, 5]. Nei seguenti sottocapitoli verr(cid:224) proposta un’a-
+
+nalisi delle caratteristiche principali delle piattaforme piø famose che permettono la
+
+Trigger-Action Programming.
+
+2.3.1 Applicazioni per il Trigger-Action Programming
+
+IFTTT
+
+Acronimo di If This Then That Ł una delle prime piattaforme di automazione
+
+su larga scala, nota per la sua interfaccia intuitiva e la capacit(cid:224) di integrare servizi
+
+eterogenei senza richiedere competenze tecniche avanzate [1]. ¨ possibile lavorare
+
+con questa piattaforma direttamente dal web, accedendo al sito: ifttt.com.
+
+Gli utenti possono creare semplici regole IF-THEN (se accade un evento (IF ), allora
+
+esegui un’azione (THEN )) selezionando trigger e azioni prede(cid:28)nite. Ad esempio, si
+
+pu(cid:242) con(cid:28)gurare l’invio automatico di un’email quando viene pubblicato un nuovo
+
+post su un blog. Tuttavia, rispetto ad altre soluzioni, IFTTT presenta limitazioni
+
+in termini di personalizzazione e controllo, e alcune funzionalit(cid:224) avanzate sono
+
+disponibili solo nella versione a pagamento.
+
+In ((cid:28)g. 2.2) viene mostrato un esempio della creazione di un’automazione che, al
+
+veri(cid:28)carsi di una speci(cid:28)ca condizione meteo (trigger ) invia una noti(cid:28)ca all’utente
+
+(action).
+
+8
+
+2. Stato dell’arte
+
+Figura 2.2: Esempio di creazione di una automazione con l’ausilio di IFTTT
+
+Home Assistant
+
+¨ una piattaforma open-source per la gestione avanzata della domotica, partico-
+
+larmente apprezzata dagli utenti piø esperti per la sua elevata con(cid:28)gurabilit(cid:224) e il
+
+supporto a un’ampia gamma di dispositivi. ¨ possibile reperire la documentazione
+
+di questa piattaforma sul sito: www.home-assistant.io.
+
+Le automazioni possono essere create sia tramite un’interfaccia gra(cid:28)ca (Graphic
+
+User Interface, GUI) che mediante codice YAML, consentendo logiche piø so(cid:28)sticate
+
+rispetto a soluzioni come IFTTT. Nell’esempio riportato in ((cid:28)g. 2.3), Ł possibile
+
+vedere come Ł stato possibile programmare una sequenza di eventi condizionali, come
+
+l’accensione delle luci in una particolare stanza quando un sensore di un garage rileva
+
+l’apertura del suddetto, solo se il sole Ł gi(cid:224) calato, mediante l’interfaccia gra(cid:28)ca di
+
+Home Assistant.
+
+9
+
+2. Stato dell’arte
+
+Figura 2.3: Esempio di creazione di un’automazione mediante GUI
+
+La creazione di automazioni mediante codice YAML pu(cid:242) risultare per(cid:242) piø complessa
+
+per degli utenti non esperti, rispetto a quella tramite GUI. Nell’esempio di seguito
+
+riportato in ((cid:28)g. 2.4) Ł illustrato come sia possibile de(cid:28)nire un’automazione basata
+
+sulla geolocalizzazione degli utenti.
+
+In particolare, l’evento scatenante (trigger)
+
+si veri(cid:28)ca quando uno dei dispositivi tracciati cambia stato da not_home a home,
+
+attivando cos(cid:236) le azioni corrispondenti dopo un ritardo di un minuto.
+
+Figura 2.4: Esempio di codice YAML per la creazione di un’automazione
+
+10
+
+2. Stato dell’arte
+
+Node-RED
+
+¨ un ambiente di sviluppo visuale basato su (cid:29)ussi, che consente di creare automazioni
+
+collegando elementi modulari chiamati (cid:16)nodi(cid:22). Ogni nodo rappresenta un trigger,
+
+un’elaborazione o un’azione, e pu(cid:242) essere connesso agli altri in un diagramma di
+
+(cid:29)usso gra(cid:28)co. Questo approccio o(cid:27)re un controllo piø avanzato rispetto a IFTTT e
+
+una maggiore semplicit(cid:224) rispetto alla con(cid:28)gurazione testuale di Home Assistant. Ad
+
+esempio, un nodo pu(cid:242) ricevere dati da un sensore di temperatura, elaborarli con una
+
+soglia personalizzata e inviare una noti(cid:28)ca solo se viene superato un valore critico.
+
+Tuttavia, essendo una piattaforma piø tecnica, richiede una certa familiarit(cid:224) con
+
+concetti di programmazione e rete.
+
+¨ possibile reperire la documentazione per l’utilizzo di questa piattaforma presso il
+
+sito: www.nodered.org. In ((cid:28)g. 2.5) si mostra un (cid:29)usso di Node-RED che, dopo
+
+aver recuperato le condizioni meteorologiche e la temperatura corrente, interroga
+
+uno smartwatch per rilevare il numero di passi compiuti dall’utente durante la
+
+giornata; se tale valore Ł inferiore a 1000, il sistema invia automaticamente un’e-mail
+
+di noti(cid:28)ca.
+
+11
+
+2. Stato dell’arte
+
+Figura 2.5: Esempio di generazione di un’automazione con Node-RED
+
+2.3.2 Confronto fra le tre piattaforme
+
+Per confrontare IFTTT, Home Assistant e Node-RED sono state considerate metri-
+
+che analizzate in [6, 7, 8] come:
+
+a) Facilit(cid:224) d’uso e curva di apprendimento
+
+b) Potenza espressiva delle regole
+
+c) Modalit(cid:224) di esecuzione (cloud o locale)
+
+d) Ampiezza delle integrazioni disponibili
+
+e) Costo di adozione
+
+Studi recenti sottolineano come gli strumenti interamente visuali (es. IFTTT) fa-
+
+voriscano la rapidit(cid:224) di prototipazione, ma impongano limiti man mano che cresce
+
+la complessit(cid:224) logica [6]. Soluzioni a (cid:29)usso come Node-RED colmano questo gap
+
+o(cid:27)rendo un controllo granulare senza richiedere la completa transizione a un ap-
+
+proccio testuale; Home Assistant si colloca a met(cid:224) strada grazie alla combinazione
+
+12
+
+2. Stato dell’arte
+
+di un’interfaccia gra(cid:28)ca con la possibilit(cid:224) dell’utilizzo di YAML, mantenendo una
+
+soglia di ingresso relativamente accessibile ma consentendo automazioni avanzate [7,
+
+8].
+
+Criterio
+
+IFTTT
+
+Home Assistant
+
+Node-RED
+
+Facilit(cid:224) d’uso
+
+Alta
+
+Media
+
+Media-bassa
+
+Potenza logica
+
+Esecuzione
+
+Integrazioni
+
+Bassa (cid:21)(cid:21) singola
+
+Alta (cid:21)(cid:21) automazioni
+
+Alta (cid:21)(cid:21) (cid:29)ussi
+
+regola
+
+Cloud
+
+∼ 700 servizi
+
+cloud
+
+/ script
+
+arbitrari
+
+Locale / Cloud
+
+Locale
+
+∼ 2500 integrazioni
+
+∼ 3500 nodi
+
+Costo
+
+Freemium
+
+Open-source
+
+Open-source
+
+Tabella 2.1: Confronto fra IFTTT, Home Assistant e Node-RED
+
+In sintesi, IFTTT si distingue per la rapidit(cid:224) con cui consente di realizzare automa-
+
+zioni semplici; Home Assistant eccelle nei casi domestici complessi grazie all’ampio
+
+catalogo di integrazioni e alla combinazione di interfaccia gra(cid:28)ca e con(cid:28)gurazioni
+
+testuali; Node-RED o(cid:27)re la massima (cid:29)essibilit(cid:224) architetturale, risultando ideale per
+
+scenari IoT multi-dominio che richiedono logiche di (cid:29)usso elaborate.
+
+2.3.3 Approcci nella letteratura scienti(cid:28)ca
+
+Negli ultimi anni, la ricerca si Ł concentrata su come rendere accessibile la crea-
+
+zione di routine e (cid:29)ussi di automazione anche a quegli utenti che non possiedono
+
+competenze di programmazione (End-User Development, EUD). In particolare, sono
+
+emersi due approcci complementari per aiutare l’utente nella de(cid:28)nizione di regole e
+
+work(cid:29)ow: le interfacce visuali e le interfacce conversazionali [2].
+
+In seguito si Ł poi deciso di provare a combinare i punti di forza di entrambi
+
+gli approcci dando vita alle interfacce multimodali, che consentono di sfruttare
+
+13
+
+2. Stato dell’arte
+
+simultaneamente modalit(cid:224) di input e output sia visuali sia conversazionali, o(cid:27)rendo
+
+cos(cid:236) un’esperienza piø ricca e (cid:29)essibile per l’utente.
+
+Interfacce Visuali
+
+Le interfacce visuali hanno come principale vantaggio la rappresentazione esplicita
+
+dei trigger e delle action, tramite blocchi e connettori, o attraverso gra(cid:28)che facil-
+
+mente riconoscibili dall’utente (cid:28)nale. Paradigmi come il (cid:29)ow-based programming e il
+
+block-based programming permettono di trascinare e collegare componenti, rendendo
+
+chiari i passaggi di input e output e minimizzando gli errori di con(cid:28)gurazione.
+
+Inoltre, rappresentazioni iconiche (ad esempio una lampadina o un termostato)
+
+possono sempli(cid:28)care l’interazione e o(cid:27)rire un riscontro immediato di ci(cid:242) che si sta
+
+progettando.
+
+Un semplice esempio per la creazione di un’automazione mediante interfaccia visuale
+
+Ł possibile vederla in ((cid:28)g. 2.5).
+
+Vantaggi Gli editor gra(cid:28)ci o(cid:27)rono una bassa soglia di ingresso per gli utenti non
+
+programmatori: negli studi controllati il tempo di apprendimento medio Ł inferiore
+
+a 15 minuti [9]. Nel progetto, gli utenti coinvolti hanno de(cid:28)nito la programmazio-
+
+ne come (cid:19)estremamente facile(cid:20), segnalando un immediato senso di successo nella
+
+creazione di regole semplici [10].
+
+Svantaggi. All’aumentare della complessit(cid:224), i bene(cid:28)ci iniziali si attenuano:
+
+l’e-
+
+spressione di condizioni composte o di regole multi-dispositivo fa crescere tempi di
+
+completamento e tassi d’errore [10].
+
+Ambienti di sviluppo come Node-RED (vedasi 2.3.1) mostrano problemi di scala-
+
+bilit(cid:224) visiva: poche decine di nodi superano lo spazio dello schermo, generando
+
+sovraccarico cognitivo e rendendo di(cid:30)cile comprendere le cause di un’azione [11].
+
+Ulteriori limiti emersi riguardano:
+
+14
+
+2. Stato dell’arte
+
+(cid:136) L’ambiguit(cid:224) tra eventi e stati, che confonde gli utenti [11].
+(cid:136) La mancanza di supporto multi-utente e di possibilit(cid:224) di simulazione, eviden-
+
+ziata da Caivano et al. nel confronto Atooma/IFTTT/Tasker [12].
+
+(cid:136) L’assenza di meccanismi di risoluzione di con(cid:29)itti: loop, collisioni e ridondanze
+
+possono produrre comportamenti inattesi [13, 14].
+
+In sintesi, le interfacce visuali rimangono e(cid:30)caci per regole semplici e utenti alle
+
+prime armi, ma necessitano di funzioni di astrazione, (cid:28)ltraggio e analisi per restare
+
+usabili in scenari reali e dinamici.
+
+Interfacce Conversazionali
+
+Parallelamente all’approccio visuale, diversi studi hanno approfondito l’e(cid:30)cacia delle
+
+cosiddette interfacce conversazionali [2], che consentono la de(cid:28)nizione di routine
+
+mediante interazione in linguaggio naturale con assistenti vocali (ad es. Amazon
+
+Alexa, Google Assistant, Apple Siri). In questo caso, la creazione di una regola o
+
+routine avviene attraverso un dialogo guidato, dove l’utente pu(cid:242) speci(cid:28)care trigger
+
+e azioni utilizzando frasi colloquiali [2, 15].
+
+L’utilizzo del linguaggio naturale pu(cid:242) apparire piø intuitivo rispetto a un’interfaccia
+
+a blocchi, specialmente per utenti poco esperti, poichØ non richiede di apprendere
+
+una sintassi formale o di manipolare elementi gra(cid:28)ci. Tuttavia, la s(cid:28)da maggiore
+
+risiede nella corretta interpretazione delle richieste (Natural Language Understan-
+
+ding, NLU ) e nella necessit(cid:224) di meccanismi di conferma o riepilogo, che riducano il
+
+rischio di errori o ambiguit(cid:224).
+
+Viene riportato di seguito un esempio di un’interazione vocale creata partendo dal
+
+sistema analizzato in [2].
+
+Esempio di una possibile interazione vocale:
+
+Utente: (cid:16)Alexa, voglio creare una nuova routine.(cid:22)
+
+Assistente: (cid:16)Va bene, come desideri attivare la routine? Puoi impo-
+
+15
+
+2. Stato dell’arte
+
+stare un comando vocale, un giorno e orario speci(cid:28)ci, oppure l’alba o il
+
+tramonto.(cid:22)
+
+Utente: (cid:16)Imposta il comando vocale.(cid:22)
+
+Assistente: (cid:16)Hai scelto di attivare la routine tramite un comando vo-
+
+cale. Dimmi la frase che vuoi usare per avviarla.(cid:22)
+
+Utente: (cid:16)Accendi luci salotto.(cid:22)
+
+Assistente: (cid:16)Perfetto, hai impostato il comando vocale ‘Accendi luci
+
+salotto.’ Ora, desideri aggiungere una o piø azioni alla routine?(cid:22)
+
+Utente: (cid:16)S(cid:236), aggiungi il comando di accendere le luci del salotto.(cid:22)
+
+Assistente: (cid:16)Aggiungo l’azione ‘accensione luci salotto.’ Vuoi aggiun-
+
+gere altro o salvare la routine?(cid:22)
+
+Utente: (cid:16)Salva routine.(cid:22)
+
+Assistente:
+
+(cid:16)La tua routine Ł stata salvata con il comando vocale
+
+‘Accendi luci salotto.’ Puoi modi(cid:28)carla in qualsiasi momento.(cid:22)
+
+In questo esempio, si evidenzia come l’assistente debba fornire indicazioni chiare per
+
+ciascun passaggio, ripetere o confermare le scelte dell’utente e limitare la complessit(cid:224)
+
+di ogni richiesta per evitare sovraccarico cognitivo. Questo approccio Ł coerente con
+
+i principi di progettazione conversazionale e con la cosiddetta Miller’s Law [16],
+
+che evidenzia come la capacit(cid:224) di memorizzazione e comprensione degli utenti sia
+
+limitata a un numero ristretto di elementi per volta.
+
+Vantaggi
+
+L’interazione in linguaggio naturale consente un accesso (cid:16)senza mani(cid:17) e a bassa soglia
+
+cognitiva: negli esperimenti con smart speaker speech-only, il tasso di completamento
+
+delle routine semplici ha raggiunto il 94 % con un punteggio SUS medio di 78/100
+
+[2, 11, 17] . Jarvis (assistente conversazionale progettato per la gestione di sistemi
+
+IoT complessi tramite linguaggio naturale) [11] mostra che la formulazione vocale
+
+riduce il tempo medio di espressione di una regola del 30 % rispetto alla costruzione
+
+gra(cid:28)ca in Node-RED (2.3.1) [11].
+
+16
+
+2. Stato dell’arte
+
+L’impiego di chatbot basati su modelli linguistici di grandi dimensioni (es. Ru-
+
+leBot++) migliora la comprensione da parte del sistema delle richieste e(cid:27)ettuate
+
+dall’utente [15].
+
+Inoltre gli assistenti vocali risultano inclusivi per utenti con ridotta capacit(cid:224) visiva
+
+o con mani occupate, ampliando l’accessibilit(cid:224) del controllo domestico [18].
+
+Svantaggi
+
+(cid:136) Ambiguit(cid:224) semantiche:
+
+la stessa frase pu(cid:242) essere interpretata in modi
+
+diversi; nelle prove di Jarvis oltre il 20 % dei comandi liberi ha richiesto
+
+chiarimenti [11].
+
+(cid:136) Recupero da errori: senza un supporto visivo, gli utenti faticano a capire che
+
+cosa non sia stato compreso e come riformulare; ParlAmI riporta interazioni
+
+interrotte nel 15 % dei casi [19].
+
+(cid:136) Scalabilit(cid:224) logica: con regole che includono piø di due trigger e tre azio-
+
+ni aumentano i turni di dialogo; RuleBot++ registra un +42 % di turni di
+
+chiarimento rispetto a regole elementari [15].
+
+(cid:136) Privacy e (cid:28)ducia: nei diari d’uso longitudinali di Sciuto et al. il 38 % degli
+
+utenti ha limitato i comandi sensibili per timore di ascolto continuo [18].
+
+In sintesi, le interfacce conversazionali sempli(cid:28)cano l’accesso e rendono naturale la
+
+de(cid:28)nizione di automazioni semplici; per scenari complessi occorrono strategie di
+
+disambiguazione, conferma e sintesi per mantenere a(cid:30)dabilit(cid:224) ed e(cid:30)cienza.
+
+Interfacce Multi-modali
+
+Per far fronte alle problematiche che possono nascere dall’utilizzo di un’interfaccia
+
+puramente conversazionale o visuale Ł possibile andare ad utilizzare quelle che
+
+vengono de(cid:28)nite interfacce multi-modali. Con questo termine si identi(cid:28)cano quei
+
+dispositivi che permettono di interagire con il sistema sfruttando simultaneamente
+
+17
+
+2. Stato dell’arte
+
+piø canali comunicativi, come ad esempio voce e visualizzazione di un’interfaccia
+
+gra(cid:28)ca. [5, 19]
+
+Un’evoluzione di questo (cid:28)lone Ł RuleBot ++ [15], un chatbot basato su ChatGPT
+
+(GPT-4) integrato in un’interfaccia multi-modale: l’utente pu(cid:242) impartire i comandi a
+
+voce o via chat, visualizzare la regola generata sul display (o in app) e, se necessario,
+
+correggerla toccando i singoli parametri. Nei test di usabilit(cid:224) (16 partecipanti)
+
+RuleBot ++ ha fatto registrare un punteggio SUS medio di 78/100 e un time-on-task
+
+inferiore del 35 % rispetto alla GUI di Home Assistant. [17]
+
+In ((cid:28)g. 2.6) Ł possibile vedere un ulteriore esempio di interfaccia multi-modale
+
+utilizzata per la de(cid:28)nizione di una nuova routine tramite l’ausilio di un dispositivo
+
+Amazon Alexa. [5]
+
+Figura 2.6: Esempio di un sistema multi-modale utilizzato per la generazione di
+
+routine
+
+Una recente analisi sperimentale condotta in [5] ha evidenziato i vantaggi dell’utilizzo
+
+di soluzioni multi-modali per la creazione di routine all’interno di ecosistemi IoT, in
+
+quanto:
+
+(cid:136) Le interfacce multi-modali risultano piø apprezzate dagli utenti rispetto alle
+
+interazioni voice-only, specialmente per la possibilit(cid:224) di visualizzare in tempo
+
+reale le scelte gi(cid:224) e(cid:27)ettuate e selezionare i comandi su schermo.
+
+(cid:136) Le interfacce conversazionali puramente vocali mantengono un elevato grado
+
+di accessibilit(cid:224), ma richiedono una maggiore attenzione e memoria da parte
+
+dell’utente per seguire l’intero dialogo ed evitare di perdersi tra le opzioni
+
+disponibili.
+
+18
+
+2. Stato dell’arte
+
+(cid:136) Aspetti come la dipendenza dal brand (ad esempio, la familiarit(cid:224) con Alexa o
+
+con Google Assistant) e il livello di esperienza con i dispositivi smart possono
+
+in(cid:29)uire signi(cid:28)cativamente sulla percezione di usabilit(cid:224) e soddisfazione, sugge-
+
+rendo che la personalizzazione dell’interfaccia e la coerenza del dialogo siano
+
+fattori chiave.
+
+Vantaggi
+
+(cid:136) Integrazione voce e display: quando input vocali e riscontri gra(cid:28)ci/tattili
+
+convivono, i limiti del canale singolo si riducono sensibilmente:
+
+l’utente pu(cid:242)
+
+parlare per avviare la routine e, nello stesso tempo, veri(cid:28)care a colpo d’occhio
+
+ci(cid:242) che il sistema ha compreso.
+
+(cid:136) Maggiore usabilit(cid:224) del sistema: come mostrato in [5], l’utilizzo di una
+
+soluzione multimodale ha portato ad un incremento del tasso di completamento
+
+dei compiti assegnati agli utenti. Nello speci(cid:28)co si Ł passati da un 88 % (solo
+
+voce) ad un 97 % dei task completati e ad innalzo del punteggio SUS da 74/100
+
+a 83/100. Tutto ci(cid:242) conferma che la doppia modalit(cid:224) migliora sia e(cid:30)cacia sia
+
+soddisfazione. [17]
+(cid:136) Maggiore controllo:
+
+i partecipanti allo studio hanno apprezzato di poter
+
+usare il display per rivedere o correggere parametri complessi, lasciando alla
+
+voce i comandi rapidi ((cid:19)Alexa, salva(cid:20)).[5]
+
+(cid:136) Accessibilit(cid:224) ampli(cid:28)cata: la ridondanza dei canali favorisce pubblici diversi:
+
+persone con disabilit(cid:224) visive possono a(cid:30)darsi alla sintesi vocale, mentre chi
+
+opera in ambienti rumorosi ricorre all’interfaccia touch.
+
+(cid:136) Supporto (cid:16)intelligente(cid:22) alla correzione: integrando un Large Language
+
+Model (LLM), come nel caso di RuleBot ++, l’interfaccia Ł in grado di proporre
+
+suggerimenti o versioni alternative della routine, riducendo errori sintattici e
+
+velocizzando la ri(cid:28)nitura delle regole [15].
+
+Svantaggi
+
+19
+
+2. Stato dell’arte
+
+(cid:136) Aumento della complessit(cid:224) dell’UI: alcuni utenti hanno segnalato con-
+
+fusione sul (cid:16)dove guardare(cid:22) quando la creazione di una routine visualizzava
+
+contemporaneamente conferme testuali e vocali [2].
+
+(cid:136) Costi e frammentazione: display intelligenti e robot aumentano i costi
+
+di adozione e introducono di(cid:27)erenze tra ecosistemi (Amazon vs Google) che
+
+richiedono percorsi di progettazione paralleli [2].
+
+(cid:136) Gestione dei con(cid:29)itti multimodali: ParlAmI riporta episodi di competizio-
+
+ne tra input vocali e tocchi simultanei, con necessit(cid:224) di strategie di arbitraggio
+
+per evitare comandi duplicati [19].
+
+(cid:136) Maggiore carico cognitivo in scenari complessi: quando la regola supera
+
+tre azioni, il passaggio continuo voce a touch e viceversa aumenta il tempo
+
+medio di completamento del 22 % rispetto alla sola interazione touch [2].
+
+20
+
+3. Architettura del sistema
+
+In questo capitolo verr(cid:224) descritta e approfondita l’architettura del sistema oggetto
+
+dell’elaborato.
+
+Il Gemello Digitale in questione Ł progettato per la gestione intelligente di abitazioni,
+
+con una particolare attenzione alla sostenibilit(cid:224) energetica e all’ottimizzazione dei
+
+consumi.
+
+3.1
+
+Introduzione all’architettura
+
+L’architettura Ł concepita per favorire una gestione ottimizzata e sostenibile delle
+
+risorse energetiche e degli apparati domestici. Uno dei principali obiettivi del si-
+
+stema Ł la creazione di un’interazione semplice e intuitiva tra l’utente e l’ambiente
+
+domestico intelligente.
+
+Una rappresentazione gra(cid:28)ca dettagliata di tale architettura viene mostrata in ((cid:28)g.
+
+3.1).
+
+21
+
+3. Architettura del sistema
+
+Figura 3.1: Rappresentazione dell’architettura presa in analisi
+
+Tale architettura consente agli utenti di realizzare automazioni domestiche attraver-
+
+so un’interfaccia gra(cid:28)ca (GUI). Questa interfaccia, sulla base di controlli e previsioni
+
+relativi ai consumi energetici, restituisce un feedback all’utente indicando chiaramen-
+
+te se l’automazione proposta Ł consentita oppure se genera con(cid:29)itti con altre automa-
+
+zioni precedentemente impostate o, ancora, se rischia di eccedere il limite massimo
+
+di consumo energetico, andando a suggerire possibili modi(cid:28)che all’automazione che
+
+si stava cercando di creare.
+
+22
+
+3. Architettura del sistema
+
+3.2
+
+Interazione con gli utenti
+
+Una sezione fondamentale dell’architettura analizzata Ł dedicata all’interazione tra
+
+utente e sistema mediante un’interfaccia gra(cid:28)ca. La parte relativa all’interazione
+
+sistema-utente dell’architettura viene mostrata in ((cid:28)g. 3.2).
+
+Figura 3.2: Sezione dell’architettura dedicata all’interazione con l’utente
+
+Questa componente permette agli utenti di creare automazioni personalizzate, segna-
+
+lando tempestivamente eventuali con(cid:29)itti che potrebbero sorgere rispetto ad altre
+
+automazioni gi(cid:224) presenti. Al momento, l’interfaccia dedicata alla generazione delle
+
+automazioni Ł ancora in fase di sviluppo e sar(cid:224) oggetto di approfondimento nei
+
+capitoli successivi.
+
+Inoltre, questa sezione o(cid:27)re agli utenti consigli utili riguardanti le automazioni che
+
+si ha intenzione di aggiungere nella smart home, proponendo suggerimenti mirati al
+
+risparmio energetico e all’ottimizzazione delle risorse.
+
+23
+
+3. Architettura del sistema
+
+Un prototipo dell’interfaccia, mostrato in ((cid:28)g. 3.3), evidenzia chiaramente le au-
+
+tomazioni che sono state attivate (o disattivate) mediante uno slider, consentendo
+
+cos(cid:236) all’utente una comprensione intuitiva dello stato delle automazioni. Inoltre que-
+
+st’interfaccia permette di avviare manualmente un’automazione grazie a un pulsante
+
+dedicato. In(cid:28)ne, se il sistema o(cid:27)re un suggerimento energetico, viene visualizzata
+
+un’icona informativa.
+
+Figura 3.3: Prototipo dell’interfaccia GUI per la gestione delle automazioni
+
+Una seconda componente, sempre appartenente alla sezione di interazione con l’u-
+
+tente, ha il compito di fornire i dati necessari per una corretta visualizzazione
+
+dell’interfaccia gra(cid:28)ca. Questa parte gestisce l’aggiornamento e la modi(cid:28)ca dei dati
+
+dell’utente o piø in generale delle con(cid:28)gurazioni dell’applicazione, come ad esempio il
+
+nome dell’abitazione o quello di un dispositivo smart speci(cid:28)co. La ((cid:28)g. 3.4) illustra
+
+tale sezione del sistema.
+
+24
+
+3. Architettura del sistema
+
+Figura 3.4: Sezione dell’architettura dedicata alla modi(cid:28)ca e dei dati dell’utente
+
+Una volta impostati i dati personali e le preferenze, questi vengono visualizzati
+
+all’interno dell’interfaccia dedicata. Ne viene riportato un prototipo in ((cid:28)g. 3.5).
+
+25
+
+3. Architettura del sistema
+
+Figura 3.5: Prototipo di GUI contenente le informazioni e le preferenze dell’utente
+
+Questa sezione dell’architettura,
+
+illustrata in ((cid:28)g.
+
+3.4), consente agli utenti di
+
+interagire con ciascun dispositivo presente nella Smart Home, permettendo loro di
+
+modi(cid:28)carne lo stato o di svolgere speci(cid:28)che operazioni.
+
+3.3 Simulation Management Module
+
+Il Simulation Management Module rappresenta un componente centrale nell’archi-
+
+tettura del gemello digitale di una smart home, svolgendo un ruolo chiave nel
+
+garantire che le automazioni proposte dagli utenti siano e(cid:30)caci, sicure e coerenti
+
+con le preferenze personali e gli obiettivi di ciascun utente.
+
+Questo modulo gestisce principalmente la simulazione e la validazione preventiva
+
+delle automazioni de(cid:28)nite dagli utenti, al (cid:28)ne di prevenire eventuali con(cid:29)itti e
+
+massimizzare l’e(cid:30)cienza operativa della smart home.
+
+Nello speci(cid:28)co il processo inizia quando l’utente de(cid:28)nisce una nuova automazione,
+
+la quale viene inviata direttamente al Simulation Management Module ((cid:28)g. 3.6)
+
+26
+
+3. Architettura del sistema
+
+Figura 3.6: Invio delle automazioni dall’utente al Simulation Management Module
+
+A questo punto, il modulo procede ad acquisire dal Home Assistant Integration
+
+Module le automazioni che son gi(cid:224) state de(cid:28)nite all’interno della Smart Home,
+
+insieme ai dati relativi agli stati (come consumi, temperature, ecc.) di tutti i
+
+dispositivi collegati.
+
+¨ possibile visualizzare la porzione di architettura che si occupa di queste operazioni
+
+in ((cid:28)g. 3.7)
+
+27
+
+3. Architettura del sistema
+
+Figura 3.7: Acquisizione da parte del Simulation Management Module delle
+
+automazioni e dei dati della Smart Home
+
+Parallelamente, il Simulation Management Module procede ad acquisire tutte le
+
+informazioni sugli obiettivi e le preferenze impostate dall’utente tramite il Con(cid:28)gu-
+
+ration Management Module, garantendo cos(cid:236) il rispetto delle sue esigenze personali
+
+((cid:28)g. 3.8).
+
+Figura 3.8: Acquisizione da parte del Simulation Management Module delle
+
+preferenze dell’utente
+
+Una volta raccolti tutti questi dati, il Simulation Management Module esegue una
+
+28
+
+3. Architettura del sistema
+
+simulazione dell’automazione che l’utente aveva intenzione di implementare nel si-
+
+stema. Tale simulazione non solo veri(cid:28)ca il corretto funzionamento dell’automazione
+
+stessa, ma anche l’interazione con eventuali automazioni preesistenti. Un obiettivo
+
+fondamentale del modulo Ł quello di individuare possibili con(cid:29)itti che potrebbero
+
+sorgere, ad esempio automazioni che si contraddicono o che, se attivate contempora-
+
+neamente, potrebbero causare un uso ine(cid:30)ciente delle risorse energetiche o problemi
+
+di comfort per gli utenti.
+
+Al termine della simulazione, il modulo produce una serie di suggerimenti e spie-
+
+gazioni dettagliate destinate all’utente, evidenziando eventuali migliorie possibili o
+
+segnalando i con(cid:29)itti riscontrati durante l’analisi. Queste permettono agli utenti
+
+di prendere decisioni informate riguardo all’adozione, alla modi(cid:28)ca o alla rimozione
+
+delle automazioni proposte, contribuendo cos(cid:236) a migliorare continuamente la gestione
+
+energetica e funzionale della propria abitazione ((cid:28)g. 3.9).
+
+Figura 3.9: Generazione e invio di suggerimenti e spiegazioni da parte del Simulation
+
+Management Module all’utente
+
+Nel caso invece in cui la simulazione confermi l’assenza di problemi, il Simulation
+
+Management Module inoltra automaticamente le automazioni approvate al Home
+
+29
+
+3. Architettura del sistema
+
+Assistant Integration Module, che provvede poi all’e(cid:27)ettiva implementazione e atti-
+
+vazione delle automazioni all’interno della smart home ((cid:28)g. 3.7). In questo modo, il
+
+modulo assicura un passaggio (cid:29)uido ed e(cid:30)ciente dalla simulazione teorica alla reale
+
+implementazione delle automazioni, minimizzando il rischio di imprevisti operativi
+
+o ine(cid:30)cienze.
+
+I comandi forniti dall’utente vengono inizialmente acquisiti dalla Digital Twin In-
+
+terface, che provvede poi a inoltrarli al Simulation Management Module ((cid:28)g. 3.10).
+
+Quest’ultimo li utilizzer(cid:224) per eseguire i necessari controlli e simulazioni, come de-
+
+scritto precedentemente per l’implementazione di nuove automazioni.
+
+Figura 3.10: Ricezione da parte dell’interfaccia del Digital Twin dei comandi dati
+
+dall’utente
+
+Successivamente, al termine delle simulazioni, il Simulation Management Module
+
+inoltra i comandi validati al Home Assistant Integration Module ((cid:28)g. 3.11), il quale
+
+li applica concretamente nella Smart Home (cid:28)sica.
+
+30
+
+3. Architettura del sistema
+
+Figura 3.11: Invio dei comandi utente da parte del Simulation Management Module
+
+al Home Assistant Integration Module
+
+Nel mentre al Digital Twin Interface vengono inviati tutti i suggerimenti e spiega-
+
+zioni generati durante la fase di simulazione ((cid:28)g. 3.12). Questo permetter(cid:224) quindi
+
+di andare ad integrarli all’interno della GUI che l’utente utilizza.
+
+Figura 3.12: Invio dei suggerimenti generati durante la fase di simulazione all’inter-
+
+faccia del Digital Twin
+
+In sintesi, il Simulation Management Module rappresenta un elemento fondamentale
+
+per assicurare che le automazioni de(cid:28)nite dagli utenti siano sempre ottimali, prive di
+
+con(cid:29)itti e perfettamente allineate agli obiettivi di sostenibilit(cid:224), e(cid:30)cienza e comfort
+
+tipici di una smart home evoluta.
+
+31
+
+3. Architettura del sistema
+
+3.4 Home Assistant Integration Module
+
+Il Home Assistant Integration Module, rappresenta una componente centrale dell’ar-
+
+chitettura del Gemello Digitale della Smart Home. Questo modulo svolge una serie di
+
+funzioni essenziali che garantiscono la comunicazione tra il sistema di gestione smart
+
+home, rappresentato da Home Assistant, e il resto dell’architettura del Gemello
+
+Digitale.
+
+Innanzitutto, il modulo ha il compito di raccogliere in maniera continua i dati
+
+provenienti dai dispositivi smart integrati nell’ambiente domestico tramite Home
+
+Assistant. Questi dati, oltre ad includere gli stati attuali di ogni dispositivo, forni-
+
+scono anche informazioni inerenti a come i dispositivi sono stati impostati dall’utente
+
+(o da alcune automazioni), ad esempio come la temperatura impostata mediante un
+
+termostato o la luminosit(cid:224) di lampade.
+
+Oltre ad acquisire le informazioni descritte, l’Home Assistant Integration Module
+
+recupera anche i dati di tutte le automazioni con(cid:28)gurate in Home Assistant. Questa
+
+operazione assicura che il sistema disponga di un quadro completo e aggiornato delle
+
+automazioni attive.
+
+La sezione di architettura che si occupa di queste funzionalit(cid:224) Ł mostrata in ((cid:28)g.
+
+3.13).
+
+32
+
+3. Architettura del sistema
+
+Figura 3.13: Ricezione dello stato dei dispositivi, del loro storico e delle automazioni
+
+Parallelamente allo stato corrente, il modulo acquisisce anche uno storico dettaglia-
+
+to dei consumi energetici generati dai vari dispositivi, come elettrodomestici, luci
+
+intelligenti, climatizzatori e sistemi di riscaldamento. Questo registro permette non
+
+solo di avere una panoramica chiara delle abitudini di utilizzo degli utenti, ma Ł
+
+anche fondamentale per analisi future e per la realizzazione di previsioni accurate
+
+riguardo al consumo energetico domestico.
+
+Una volta acquisiti, questi dati di consumo vengono inoltrati a un database speci-
+
+(cid:28)camente predisposto ((cid:28)g. 3.14). Tale database non rappresenta semplicemente un
+
+archivio passivo, ma costituisce una componente che rende disponibili le informazioni
+
+raccolte per successive analisi predittive. Grazie a queste informazioni dettagliate e
+
+cronologicamente ordinate, il sistema pu(cid:242) identi(cid:28)care pattern, rilevare anomalie nei
+
+consumi e suggerire strategie di ottimizzazione energetica agli utenti.
+
+33
+
+3. Architettura del sistema
+
+Figura 3.14: Invio dei dati di consumo al database
+
+Oltre alla raccolta e archiviazione dei dati di consumo, il Home Assistant Integration
+
+Module mantiene costantemente aggiornata una lista di tutte le automazioni con(cid:28)gu-
+
+rate in Home Assistant. Questa lista dettagliata e aggiornata Ł cruciale per garantire
+
+che la Digital Twin Interface disponga sempre delle informazioni piø recenti circa
+
+le automazioni attive ((cid:28)g. 3.15). Ci(cid:242) consente agli utenti del Gemello Digitale
+
+di visualizzare chiaramente tutte le automazioni esistenti, gestirle e modi(cid:28)carle in
+
+tempo reale.
+
+Figura 3.15: Invio delle automazioni alla Digital Twin Interface
+
+In(cid:28)ne il modulo funge anche da intermediario per la comunicazione verso il sistema
+
+34
+
+3. Architettura del sistema
+
+Home Assistant. Nello speci(cid:28)co, riceve dal Simulation Management Module le
+
+automazioni e i comandi manuali generati dagli utenti in fase di simulazione e
+
+veri(cid:28)ca. Questi comandi, dopo essere stati validati attraverso le simulazioni, vengono
+
+trasmessi a Home Assistant per la loro implementazione e(cid:27)ettiva nell’ambiente
+
+domestico reale ((cid:28)g. 3.16). In questo modo, il modulo assicura che l’applicazione
+
+delle automazioni simulate sia accurata e coerente con le intenzioni degli utenti,
+
+riducendo il rischio di errori o con(cid:29)itti operativi.
+
+Figura 3.16: Invio dei comandi e delle automazioni a Home Assistant
+
+Attraverso queste funzionalit(cid:224) integrate e coordinate, il Home Assistant Integra-
+
+tion Module gioca un ruolo fondamentale nel mantenere l’intera architettura del
+
+Gemello Digitale sincronizzata, aggiornata e perfettamente funzionante, garantendo
+
+un’elevata a(cid:30)dabilit(cid:224) e una user experience ottimale.
+
+3.5 Con(cid:28)guration Management Module
+
+Il modulo di gestione della con(cid:28)gurazione svolge la funzione di raccogliere e conser-
+
+vare in modo coerente tutte le preferenze espresse dagli utenti, gli obiettivi de(cid:28)niti
+
+e le speci(cid:28)che impostazioni di con(cid:28)gurazione che questi hanno precedentemente
+
+inserito nel sistema. Tali informazioni vengono memorizzate all’interno del database,
+
+35
+
+3. Architettura del sistema
+
+garantendo cos(cid:236) la disponibilit(cid:224) continua e l’aggiornamento tempestivo dei dati
+
+rilevanti.
+
+Per poter modi(cid:28)care tali dati Ł possibile accedervi tramite l’interfaccia del Digital
+
+Twin ((cid:28)g. 3.17).
+
+Figura 3.17: Porzione di architettura che si occupa dell’accesso e modi(cid:28)ca delle
+
+con(cid:28)gurazioni dell’utente
+
+3.6 Data Analysis Module
+
+Il Data Analysis Module rappresenta una componente fondamentale all’interno del-
+
+l’architettura presa in esame, svolgendo il ruolo cruciale di raccogliere, elaborare e
+
+interpretare i dati energetici generati dagli utenti e dai dispositivi domestici. Attra-
+
+verso processi di analisi avanzati, questo modulo permette di ottenere informazioni
+
+approfondite e utili per ottimizzare la gestione energetica della casa, migliorando
+
+l’e(cid:30)cienza e la sostenibilit(cid:224) complessiva del sistema.
+
+36
+
+3. Architettura del sistema
+
+In particolare, il modulo svolge tre funzioni primarie:
+
+1. Acquisizione e validazione dei dati: estrae dal database tutti i dati storici
+
+di consumo energetico provenienti dai dispositivi integrati in Home Assistant.
+
+2. Elaborazione e modellazione: i dati vengono arricchiti con variabili con-
+
+testuali (ad esempio il giorno della settimana e la fascia oraria) e sottoposti a
+
+pipeline di feature engineering per alimentare diversi modelli di Machine Lear-
+
+ning (ML) e Deep Learning (DL) impiegati per analisi descrittive, predittive
+
+e prescrittive.
+
+3. Servizi di esposizione:
+
+rende disponibili, tramite API REST, le previ-
+
+sioni fatte alla Digital Twin Interface e al Simulation Management Modu-
+
+le, consentendo cos(cid:236) la veri(cid:28)ca della sostenibilit(cid:224) e il supporto alle decisioni
+
+operative.
+
+Tutti questi processi vengono eseguiti dalla seguente porzione di architettura ((cid:28)g.
+
+3.18).
+
+Figura 3.18: Porzione di architettura che si occupa di e(cid:27)ettuare le predizioni sui
+
+consumi
+
+37
+
+3. Architettura del sistema
+
+In particolare, per la previsione dei consumi futuri Ł stato adottato un approccio
+
+basato su modelli di Long Short-Term Memory (LSTM), che risultano particolar-
+
+mente e(cid:30)caci nell’analisi di dati temporali grazie alla loro capacit(cid:224) di apprendere
+
+dipendenze sequenziali anche su intervalli temporali lunghi [20]. I modelli sono stati
+
+allenati su dati storici di consumo energetico provenienti dall’ambiente domestico
+
+reale, arricchiti con informazioni contestuali come il giorno della settimana e la
+
+fascia oraria. Le predizioni generate vengono poi impiegate per valutare, in fase
+
+preventiva, l’impatto delle automazioni sulla sostenibilit(cid:224) energetica dell’abitazione,
+
+supportando l’utente nel prendere decisioni piø consapevoli e informate. Per la
+
+selezione dei modelli piø performanti Ł stata condotta una procedura di ottimizza-
+
+zione iperparametrica mediante grid search, in grado di individuare le combinazioni
+
+ottimali dei parametri principali del modello in base all’accuratezza predittiva. Tutti
+
+i dettagli di questa metodologia sono descritti in [20].
+
+38
+
+3. Architettura del sistema
+
+3.7 Smart Home e Home Assistant
+
+La Smart Home rappresenta l’ambiente (cid:28)sico reale in cui vengono applicate e spe-
+
+rimentate le automazioni create e gestite dal sistema. Questo ambiente comprende
+
+una variet(cid:224) di dispositivi domestici intelligenti, tra cui elettrodomestici, sistemi di
+
+illuminazione, climatizzazione, sensori ambientali e dispositivi di sicurezza. Questi
+
+dispositivi comunicano costantemente con il sistema centrale tramite Home Assi-
+
+stant, che funge da ponte essenziale tra gli utenti, il Gemello Digitale e l’ambiente
+
+(cid:28)sico.
+
+Home Assistant svolge principalmente due ruoli fondamentali.
+
+In primo luogo,
+
+raccoglie continuamente i dati provenienti dai dispositivi domestici, registrandone lo
+
+stato corrente (ad esempio acceso, spento, temperatura rilevata, consumo energetico)
+
+e noti(cid:28)cando eventuali cambiamenti di stato in tempo reale al sistema centrale.
+
+In secondo luogo, Home Assistant riceve i comandi generati dall’utente attraverso
+
+l’interfaccia digitale o elaborati dal Gemello Digitale e li inoltra direttamente ai
+
+dispositivi appropriati. Ci(cid:242) assicura che le automazioni desiderate dagli utenti siano
+
+correttamente implementate, garantendo cos(cid:236) un’e(cid:30)ciente interazione e un elevato
+
+grado di integrazione tra il mondo (cid:28)sico reale e la sua controparte digitale.
+
+Questa gestione bidirezionale dei dati e dei comandi consente di mantenere sincro-
+
+nizzati e aggiornati costantemente entrambi gli ambienti, permettendo al Gemello
+
+Digitale di simulare fedelmente e prevedere con precisione le condizioni operative
+
+della Smart Home, migliorando cos(cid:236) la qualit(cid:224) e l’e(cid:30)cienza complessiva della gestione
+
+domestica ((cid:28)g. 3.19).
+
+39
+
+3. Architettura del sistema
+
+Figura 3.19: Smart Home (cid:28)sica
+
+3.8 De(cid:28)nizione delle automazioni da parte dell’u-
+
+tente
+
+Sebbene l’architettura descritta copra in maniera approfondita aspetti cruciali quali
+
+la simulazione preventiva delle automazioni, l’integrazione con Home Assistant e la
+
+gestione avanzata dei dati energetici, rimane ancora incompleta la parte riguardante
+
+la de(cid:28)nizione delle automazioni da parte dell’utente (cid:28)nale.
+
+Al momento, l’interfaccia gra(cid:28)ca presentata consiste in un prototipo che consente
+
+principalmente l’attivazione e la disattivazione intuitiva di automazioni prede(cid:28)nite
+
+tramite uno slider, nonchØ la visualizzazione di suggerimenti energetici generati
+
+a seguito delle simulazioni preventive. Tuttavia, essa non permette ancora agli
+
+utenti di creare da zero nuove automazioni personalizzate, de(cid:28)nendo in autonomia
+
+le condizioni speci(cid:28)che di attivazione (trigger), le azioni conseguenti e i dispositivi
+
+coinvolti.
+
+La progettazione e implementazione completa di questa componente, che costituir(cid:224)
+
+40
+
+3. Architettura del sistema
+
+un elemento fondamentale del sistema, sar(cid:224) trattata nel prossimo capitolo. Tale
+
+capitolo approfondir(cid:224) in dettaglio come gli utenti potranno interagire con una GUI
+
+dedicata, semplice e intuitiva, per de(cid:28)nire autonomamente le proprie automazioni.
+
+Questo sviluppo contribuir(cid:224) signi(cid:28)cativamente a estendere le capacit(cid:224) del sistema,
+
+valorizzando ulteriormente l’interazione utente-sistema e promuovendo una gestione
+
+domestica ancora piø (cid:29)essibile.
+
+41
+
+Conclusioni
+
+Fusce mauris. Vestibulum luctus nibh at lectus. Sed bibendum, nulla a faucibus
+
+semper, leo velit ultricies tellus, ac venenatis arcu wisi vel nisl. Vestibulum diam.
+
+Aliquam pellentesque, augue quis sagittis posuere, turpis lacus congue quam, in
+
+hendrerit risus eros eget felis. Maecenas eget erat in sapien mattis porttitor. Ve-
+
+stibulum porttitor. Nulla facilisi. Sed a turpis eu lacus commodo facilisis. Morbi
+
+fringilla, wisi in dignissim interdum, justo lectus sagittis dui, et vehicula libero dui
+
+cursus dui. Mauris tempor ligula sed lacus. Duis cursus enim ut augue. Cras ac
+
+magna. Cras nulla. Nulla egestas. Curabitur a leo. Quisque egestas wisi eget nunc.
+
+Nam feugiat lacus vel est. Curabitur consectetuer.
+
+42
+
+Bibliogra(cid:28)a
+
+[1] Blase Elyse Ur, Elyse McManus Ho, Melwyn Pak Yong Ho e Michael L.
+
+Littman. (cid:19)Practical Trigger-Action Programming in the Smart Home(cid:20). In:
+
+Proceedings of the SIGCHI Conference on Human Factors in Computing Sy-
+
+stems (CHI ’14). New York, NY, USA: Association for Computing Machinery,
+2014, pp. 803(cid:21)812. isbn: 9781450324731. doi: 10.1145/2556288.2557420.
+url: https://doi.org/10.1145/2556288.2557420.
+
+[2] Barbara Rita Barricelli, Alessandro Bondioli, Daniela Fogli, Letizia Iemmolo e
+
+Angela Locoro. (cid:19)Creating Routines for IoT Ecosystems through Conversation
+
+with Smart Speakers(cid:20). In: International Journal of Human(cid:21)Computer Inte-
+raction 40.20 (2024), pp. 6109(cid:21)6127. doi: 10.1080/10447318.2023.2247845.
+url: https://doi.org/10.1080/10447318.2023.2247845.
+
+[3] Michaela R. Reisinger, Sebastian Prost, Johann Schrammel e Peter Fr(cid:246)hlich.
+
+(cid:19)User requirements for the design of smart homes: dimensions and goals(cid:20).
+
+In: Journal of Ambient Intelligence and Humanized Computing 14 (2023),
+pp. 15761(cid:21)15780. doi: 10.1007/s12652-021-03651-6. url: https://doi.
+
+org/10.1007/s12652-021-03651-6.
+
+[4] Fulvio Corno, Luigi De Russis e Alberto Monge Ro(cid:27)arello. (cid:19)From Users’ In-
+
+tentions to IF-THEN Rules in the Internet of Things(cid:20). In: ACM Transactions
+on Information Systems 39.4 (2021), 53:1(cid:21)53:33. doi: 10.1145/3447264. url:
+
+https://doi.org/10.1145/3447264.
+
+[5] Barbara Rita Barricelli, Daniela Fogli, Letizia Iemmolo e Angela Locoro. (cid:19)A
+
+Multi-Modal Approach to Creating Routines for Smart Speakers(cid:20). In: Pro-
+
+ceedings of the 2022 International Conference on Advanced Visual Interfaces
+(AVI ’22). Association for Computing Machinery, 2022, pp. 1(cid:21)5. doi: 10 .
+1145 / 3531073 . 3531168. url: https : / / doi . org / 10 . 1145 / 3531073 .
+
+3531168.
+
+43
+
+3. BIBLIOGRAFIA
+
+[6] McKenna McCall, Eric Zeng, Faysal Hossain Shezan, Mitchell Yang, Lujo
+
+Bauer, Abhishek Bichhawat, Camille Cobb, Limin Jia e Yuan Tian. (cid:19)Towards
+
+Usable Security Analysis Tools for Trigger-Action Programming(cid:20). In: Procee-
+
+dings of the Nineteenth Symposium on Usable Privacy and Security (SOUPS
+
+2023). A cura di Patrick G. Kelley e Apu Kapadia. Anaheim, CA: USENIX
+Association, ago. 2023, pp. 301(cid:21)320. isbn: 978-1-939133-36-6. url: https :
+
+//www.usenix.org/system/files/soups2023-mccall.pdf.
+
+[7] Likewin Thomas, M. K. Manoj Kumar, S. D. Shiva Darshan e B. S. Pra-
+
+shanth. (cid:19)Towards Comprehensive Home Automation: Leveraging the IoT,
+
+Node-RED, and Wireless Sensor Networks for Enhanced Control and Con-
+nectivity(cid:20). In: Engineering Proceedings. Vol. 59. 2023, p. 173. doi: 10.3390/
+
+engproc2023059173.
+
+[8] Anders Peter Aavild, Aleksander Rosenkrantz de Lasson, Christian Moesgaard,
+
+Erik Christensen, Sergio Moreschini, David Hastbacka, Davide Taibi e Michele
+
+Albano. (cid:19)Distributed Home Automation with Home Assistant(cid:20). In: Procee-
+
+dings of the 14th International Conference on the Internet of Things (IoT
+’24). 2024, pp. 206(cid:21)212. doi: 10.1145/3703790.3703828.
+
+[9] Giuseppe Desolda, Carmelo Ardito e Maristella Matera. (cid:19)Empowering End
+
+Users to Customize Their Smart Environments: Model, Composition Para-
+
+digms, and Domain-Speci(cid:28)c Tools(cid:20). In: ACM Transactions on Computer-
+Human Interaction 24.2 (2017), 12:1(cid:21)12:52. doi: 10 . 1145 / 3057859. url:
+
+https://doi.org/10.1145/3057859.
+
+[10] Joºlle Coutaz e James L. Crowley. (cid:19)A First-Person Experience with End-User
+
+Development for Smart Homes(cid:20). In: IEEE Pervasive Computing 15.2 (2016),
+pp. 26(cid:21)36. doi: 10.1109/MPRV.2016.34. url: https://doi.org/10.1109/
+
+MPRV.2016.34.
+
+[11] AndrØ Sousa Lago, Joªo Pedro Dias e Hugo Sereno Ferreira. (cid:19)Managing non-
+
+trivial internet-of-things systems with conversational assistants: A prototype
+
+and a feasibility experiment(cid:20). In: Journal of Computational Science 51 (2021),
+
+44
+
+3. BIBLIOGRAFIA
+
+p. 101324. doi: 10.1016/j.jocs.2021.101324. url: https://doi.org/10.
+
+1016/j.jocs.2021.101324.
+
+[12] Danilo Caivano, Daniela Fogli, Rosa Lanzilotti, Antonio Piccinno e Fabio Cas-
+
+sano. (cid:19)Supporting end users to control their smart home: Design implications
+
+from a literature review and an empirical investigation(cid:20). In: The Journal of
+Systems & Software 144 (2018), pp. 295(cid:21)313. doi: 10.1016/j.jss.2018.06.
+035. url: https://doi.org/10.1016/j.jss.2018.06.035.
+
+[13] Fulvio Corno, Luigi De Russis e Alberto Monge Ro(cid:27)arello. (cid:19)Loops, Inconsi-
+
+stencies and Redundancies in Trigger-Action Rules for Smart Environments(cid:20).
+
+In: Proceedings of the 5th International Conference on Internet of Things
+
+Design and Implementation (IoTDI ’20). New York, NY, USA: Association for
+Computing Machinery, 2020, pp. 259(cid:21)270. doi: 10.1145/3386910.3397254.
+url: https://doi.org/10.1145/3386910.3397254.
+
+[14] Xiang Chen, Yuncong Li, Earlence Fernandes e Atul Prakash. (cid:19)Understan-
+
+ding Rule Preventions, Collisions, and Unexpected Chains in Trigger-Action
+
+Programming(cid:20). In: Proceedings of the 42nd IEEE Symposium on Security and
+Privacy (S&P ’21). IEEE, 2021, pp. 1154(cid:21)1171. doi: 10.1109/SP40001.2021.
+00091. url: https://doi.org/10.1109/SP40001.2021.00091.
+
+[15] Simone Gallo, Fabio Patern(cid:242) e Alessio Malizia. (cid:19)A Conversational Agent for
+
+Creating Automations Exploiting Large Language Models(cid:20). In: Personal and
+Ubiquitous Computing 28.5 (2024), pp. 931(cid:21)946. doi: 10.1007/s00779-024-
+01825-5. url: https://doi.org/10.1007/s00779-024-01825-5.
+
+[16] George A. Miller. (cid:19)The Magical Number Seven, Plus or Minus Two: Some
+
+Limits on Our Capacity for Processing Information(cid:20). In: Psychological Review
+101.2 (1994), pp. 343(cid:21)352. doi: 10 . 1037 / 0033 - 295X . 101 . 2 . 343. url:
+
+https://doi.org/10.1037/0033-295X.101.2.343.
+
+[17] John Brooke. (cid:19)SUS: A Quick and Dirty Usability Scale(cid:20). In: Usability Eva-
+
+luation in Industry. A cura di Patrick W. Jordan, Bruce Thomas, Bernard A.
+
+Weerdmeester e Ian L. McClelland. CRC Press, 1996, pp. 189(cid:21)194.
+
+45
+
+3. BIBLIOGRAFIA
+
+[18] Andrea Sciuto, Arnita Saini, Jodi Forlizzi e Jason I. Hong. (cid:19)"Hey Alexa,
+
+What’s Up?": A Mixed-Methods Study of In-Home Conversational Agent
+
+Usage(cid:20). In: Proceedings of the 2018 Designing Interactive Systems Conference
+(DIS ’18). ACM, 2018, pp. 857(cid:21)868. doi: 10.1145/3196709.3196772.
+
+[19] Evropi Stefanidi, Michalis Foukarakis, Dimitrios Arampatzis, Maria Korozi,
+
+Asterios Leonidis e Margherita Antona. (cid:19)ParlAmI: A Multimodal Approach
+
+for Programming Intelligent Environments(cid:20). In: Technologies 7.1 (2019), p. 11.
+doi: 10.3390/technologies7010011. url: https://doi.org/10.3390/
+
+technologies7010011.
+
+[20] Davide Guizzardi, Barbara Rita Barricelli e Daniela Fogli. (cid:19)A User-in-the-loop
+
+Digital Twin for Energy Consumption Prediction in Smart Homes(cid:20). In: AXAI
+
+2025: Workshop on Adaptive eXplainable AI. Department of Information En-
+
+gineering, University of Brescia. CEUR-WS. Brescia, Italy, 2025.
+
+46
+
+

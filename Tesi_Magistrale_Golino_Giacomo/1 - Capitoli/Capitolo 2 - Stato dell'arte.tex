@@ -1,0 +1,404 @@
+% --------------------------- INIZIO CAPITOLO --------------------------- %
+
+\chapter{Stato dell'arte}
+In questo capitolo verranno analizzati e approfonditi i \textbf{metodi} e le \textbf{applicazioni} per la creazione di \emph{automazioni} (chiamate anche \emph{routine}) in ecosistemi \emph{Internet of Things} (IoT).
+In particolare, verranno affrontate con maggiore attenzione le \emph{smart home} come ecosistemi IoT, andando ad analizzare quali sono le principali piattaforme utilizzate per la creazione di \textit{automazioni}.
+
+Si definiscono \emph{\textbf{automazioni}} o \emph{routine} degli insiemi strutturati di istruzioni che, una volta impostati, consentono di eseguire automaticamente una serie di azioni al verificarsi di determinati eventi (o \emph{trigger}). Tali azioni possono comprendere operazioni ripetitive, come l'accensione o lo spegnimento di dispositivi smart, oppure processi più complessi che coinvolgono diversi servizi, con l'obiettivo finale di semplificare e ottimizzare la gestione dell'ecosistema.
+
+Le \emph{\textbf{azioni}} (\emph{action}) costituiscono la parte esecutiva di una routine: al verificarsi dell’evento scatenante (\emph{\textbf{trigger}}), l’azione definita viene avviata per compiere l’operazione desiderata. Può trattarsi di semplici attività oppure di processi articolati che si integrano con servizi diversi.
+
+All’interno di questo capitolo verranno quindi presentati:
+\begin{itemize}
+  \item I concetti chiave relativi alle automazioni/routine e la loro importanza nel contesto IoT.
+  \item Le principali piattaforme sul mercato che consentono di creare routine, nello specifico \textbf{Amazon Alexa}, \textbf{Google Home} e \textbf{Apple Casa}.
+  \item Altri sistemi per il \textbf{Trigger-Action Programming} che si sono recentemente affermati e alcuni approcci proposti nella letteratura scientifica.
+
+\end{itemize}
+
+
+% -------------- SECTION 2.1 - CONCETTI BASE, AUTOMAZIONI E ROUTINE -------------- %
+
+
+\newpage
+\section{Concetti di Base}
+Le \emph{automazioni} o \emph{routine} nel contesto dell’IoT consistono in regole di tipo \emph{trigger-action}, dove un evento scatenante (ad esempio, un orario predefinito, un comando vocale o una condizione ambientale rilevata da un sensore) provoca una o più azioni (come l’accensione di una luce, l’avvio di un elettrodomestico, l’invio di una notifica, ecc.). Questa logica di base, semplice da comprendere, si è rivelata estremamente potente e versatile in quanto:
+
+\begin{itemize}
+  \item Riduce la necessità di interventi manuali da parte dell’utente, automatizzando \textbf{task} ripetitivi.
+  \item Consente di \emph{personalizzare} lo spazio domestico in base alle preferenze e alle abitudini di ognuno.
+  \item Si presta a una gestione modulare: i vari eventi e azioni possono essere combinati per creare routine più avanzate.
+\end{itemize}
+
+Alcuni studi hanno evidenziato come la programmazione di tipo \emph{trigger-action} (TAP) si adatti alla maggior parte delle esigenze di automazione espresse dagli utenti \cite{Ur2014, Barricelli2024}, risultando intuitiva anche per chi non possiede competenze tecniche avanzate. In particolare, l’analisi di oltre 67.000 programmi condivisi su \href{https://www.IFTTT.com}{\texttt{IFTTT}} e un test di usabilità condotto su 226 partecipanti conferma che, grazie alla semplicità di combinare in modo flessibile molteplici \emph{trigger} e \emph{action}, la curva di apprendimento rimane bassa, favorendo un’ampia adozione \cite{Ur2014}.
+
+Nell'immagine qui di seguito (fig. \ref{fig:ch2-trigger and actions}) vengono mostrati alcuni esempi di quelli che potrebbero essere dei \textbf{trigger} e delle \textbf{action}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{images/Chap - 2/Trigger and actions - no background.png}
+    \caption{Esempio di trigger e azioni}
+    \label{fig:ch2-trigger and actions}
+\end{figure}
+
+
+% --------------------------- SUBSECTION  2.1 - REQUISITI DI UNA BUONA AUTOMAZIONE --------------------------- %
+
+
+\subsection{Requisiti di una buona automazione}
+Per risultare efficace \cite{Reisinger2023SmartHomeReq}, un'automazione deve essere:
+\begin{itemize}
+  \item \textbf{Facile da creare e gestire}: l'utente finale (che spesso non possiede competenze di programmazione) deve poter definire e modificare le routine in maniera intuitiva.
+  \item \textbf{Affidabile}: deve funzionare in modo consistente nel tempo, senza errori o interruzioni non previste.
+  \item \textbf{Adattabile}: dev'essere in grado di gestire modifiche nelle preferenze dell’utente, nelle caratteristiche dei dispositivi o nell’assetto del sistema.
+  \item \textbf{Sicura}: in un ecosistema connesso, la \emph{privacy} e la \emph{sicurezza} di reti e dispositivi sono fondamentali.
+\end{itemize}
+
+% --------------------------- SECTION 2.2 - PANORAMICA DELLE PIATTAFORME PRINCIPALI --------------------------- %
+
+
+\section{Panoramica sulle piattaforme principali}
+Storicamente, le automazioni si basavano principalmente su \emph{timer} o sensori semplici (come termostati o rilevatori di movimento) per poter funzionare. 
+Al giorno d'oggi, invece, le piattaforme commerciali (e non) offrono soluzioni ben diverse rispetto a quelle di una volta. 
+Nello specifico attualmente vengono utilizzate:
+\begin{itemize}
+  \item Interfacce grafiche \emph{drag-and-drop} per comporre in modo visivo le regole.
+  \item Integrazione con \emph{assistenti vocali} (es. Amazon Alexa, Google Assistant e Apple Siri) per impostare routine con frasi naturali.
+  \item Utilizzo di tecniche di \emph{machine learning} e \emph{context awareness} per proporre automazioni “intelligenti— o per adattare le routine al comportamento dell’utente.
+\end{itemize}
+
+Il panorama degli strumenti per la creazione di automazioni è estremamente ampio. In particolare, i sistemi \textbf{Amazon Alexa}, \textbf{Google Home} e \textbf{Apple Casa} sono le principali piattaforme commerciali per la gestione domestica, ciascuno caratterizzato da specifiche architetture, protocolli di comunicazione e modelli di integrazione con dispositivi di terze parti.
+
+% --------------------------- SUBSECTION 2.2.1 - ALEXA --------------------------- %
+
+
+\subsection{Amazon Alexa}
+Amazon Alexa è un assistente vocale lanciato inizialmente su dispositivi \emph{Echo}, poi rapidamente esteso a numerosi dispositivi di terze parti. Le \emph{routine} di Alexa possono essere create tramite:
+\begin{itemize}
+  \item L’app Alexa su smartphone.
+  \item Interazione vocale diretta (nello specifico grazie alla sottoscrizione del servizio \textit{Alexa+}, disponibile al momento solo negli USA).
+  \item \emph{Skill} aggiuntive, sviluppate da terze parti.
+\end{itemize}
+
+Inoltre, negli ultimi anni, Amazon ha introdotto:
+\begin{itemize}
+  \item \textbf{Riconoscimento di suoni specifici}: ad esempio, la piattaforma è in grado di distinguere il suono di vetri rotti, avvisando di conseguenza l'utente. È importante sottolineare che questa funzionalità è disponibile al momento solamente su \textbf{Echo smart speakers} e sui dispotivi \textbf{Echo smart displays}.\\
+  
+  \item \textbf{Hunches}: questa funzionalità, se attivata attraverso l’applicazione, consente ad Alexa di apprendere determinate routine ricorrenti, così da poter avvisare l’utente qualora tali azioni non vengano eseguite.
+  Ad esempio, Alexa potrebbe imparare che ogni volta che un utente esce di casa, è solito spegnere tutte le luci e chiudere la porta. Nel caso in cui l'utente dovesse dimenticare di svolgere una o entrambe le azioni, il sistema lo notificherebbe, chiedendo se è necessario eseguire queste azioni.\\
+  
+  \item \textbf{Integrazioni con servizi esterni}: questa funzionalità consente l'integrazione con servizi di terze parti come calendari, servizi di musica in streaming o applicazioni di messaggistica.
+\end{itemize}
+
+
+% --------------------------- SUBSECTION 2.2.2 - GOOGLE HOME --------------------------- %
+
+
+\subsection{Google Home}
+Google Home si basa sull’assistente vocale Google Assistant, sfruttando l’ampia rete di servizi Google. Le automazioni possono derivare dall’utilizzo di:
+\begin{itemize}
+  \item Comandi vocali per la creazione e gestione delle \emph{routine}. Gli utenti possono avviare la configurazione di una routine semplicemente pronunciando frasi come “Ok Google, crea una routine per...—, dopodiché Google Assistant guiderà attraverso i passaggi per impostare un \emph{trigger} e una o più \emph{action}. Questo metodo semplifica notevolmente l’automazione per chi preferisce un'interazione naturale senza dover passare obbligatoriamente da un'applicazione.
+  \item L’app Google Home, che permette di definire \emph{trigger} e \emph{action} utilizzando dispositivi compatibili.
+  \item L’integrazione con Google Calendar o Google Maps (permettendo, ad esempio, di attivare una routine se si è vicini a casa).
+\end{itemize}
+
+
+L’ecosistema Google si è evoluto introducendo:
+\begin{itemize}
+  \item \textbf{Eventi geolocalizzati (geofencing)}: la routine si attiva o disattiva in base alla posizione dell’utente. Il \emph{geofencing} è una tecnologia basata sulla geolocalizzazione che permette di definire un'area virtuale attorno a una posizione fisica (come casa ad esempio). Quando il dispositivo dell’utente entra o esce da questa zona predefinita, viene attivata una routine automatica. Ad esempio, si può configurare l’accensione delle luci smart quando si arriva a casa o la disattivazione del riscaldamento quando si lascia l’abitazione.
+  \item \textbf{Riconoscimento vocale avanzato (Voice Match)}: l’assistente riconosce la voce di diverse persone e personalizza alcune automazioni (ad esempio, la musica preferita) in base al profilo.
+\end{itemize}
+
+
+% --------------------------- SUBSECTION 2.2.1 - APPLE CASA --------------------------- %
+
+
+\subsection{Apple Casa}
+Apple Casa è l’applicazione di Apple per la gestione della domotica, basata sulla piattaforma HomeKit. Rispetto a soluzioni più aperte, punta molto sulla semplicità d’uso e su elevati standard di privacy e sicurezza.
+Di seguito sono riportate alcune delle principali caratteristiche di questa piattaforma:
+\begin{itemize}
+  \item \textbf{App Casa su iOS}: qui si impostano automazioni basate sull’orario, sul rilevamento di un sensore, o sull’entrata/uscita da una determinata area geografica.
+  \item \textbf{Supporto a scene e stanze}: l’utente può creare “scene— (sequenze di azioni) o associare dispositivi a stanze, semplificando la gestione.
+  \item \textbf{Apertura verso standard di connettività}: Apple ha recentemente esteso il supporto a protocolli come Matter, garantendo più integrazione con prodotti non-Apple.
+\end{itemize}
+
+Le ultime versioni di iOS hanno introdotto:
+\begin{itemize}
+  \item \textbf{Rilevamento della presenza via Apple Watch}: se l’utente indossa un Apple Watch, il sistema può capire se si trova effettivamente in casa (o nei dintorni).
+\end{itemize}
+
+
+% --------------------------- SECTION 2.3 - METODI E APPLICAZIONI PER LA CREAZIONE DI AUTOMAZIONI --------------------------- %
+
+
+\section{Metodi e Applicazioni per la Creazione di Automazioni}
+Oltre alle piattaforme citate, esistono molteplici approcci al \emph{Trigger-Action Programming}, come visto in \cite{Barricelli2024, Corno2021, Barricelli2022MultiModal}.
+Nei seguenti sottocapitoli verrà proposta un’analisi delle caratteristiche principali delle piattaforme più famose che permettono la \emph{Trigger-Action Programming}.
+
+
+% --------------------------- SUBSECTION - 2.3.1 - Applicazioni per il Trigger-Action Programming --------------------------- %
+\subsection{Applicazioni per il Trigger-Action Programming}
+
+\subsubsection{IFTTT}
+Acronimo di \textbf{If This Then That} è una delle prime piattaforme di automazione su larga scala, nota per la sua interfaccia intuitiva e la capacità di integrare servizi eterogenei senza richiedere competenze tecniche avanzate \cite{Ur2014}.
+È possibile lavorare con questa piattaforma direttamente dal web, accedendo al sito: \href{https://ifttt.com}{\texttt{ifttt.com}}.\\
+Gli utenti possono creare semplici regole \emph{IF-THEN} (se accade un evento (\textit{IF}), allora esegui un’azione (\textit{THEN})) selezionando trigger e azioni predefinite. Ad esempio, si può configurare l’invio automatico di un'email quando viene pubblicato un nuovo post su un blog. Tuttavia, rispetto ad altre soluzioni, IFTTT presenta limitazioni in termini di personalizzazione e controllo, e alcune funzionalità avanzate sono disponibili solo nella versione a pagamento.\\ In (fig. \ref{fig:ch2_ifttt_ex}) viene mostrato un esempio della creazione di un'automazione che, al verificarsi di una specifica condizione meteo (\textit{trigger}) invia una notifica all'utente (\textit{action}). \\
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/Chap - 2/ifttt example.png}
+    \caption{Esempio di creazione di una automazione con l'ausilio di IFTTT}
+    \label{fig:ch2_ifttt_ex}
+\end{figure}
+
+
+% --------------------------- SUBSUBSECTION - HOME ASSISTANT --------------------------- %
+
+
+\subsubsection{Home Assistant}
+È una piattaforma open-source per la gestione avanzata della domotica, particolarmente apprezzata dagli utenti più esperti per la sua elevata configurabilità e il supporto a un’ampia gamma di dispositivi. 
+È possibile reperire la documentazione di questa piattaforma sul sito:  \href{https://www.home-assistant.io}{\texttt{www.home-assistant.io}}.
+
+Le automazioni possono essere create sia tramite un’interfaccia grafica (Graphic User Interface, GUI) che mediante codice YAML, consentendo logiche più sofisticate rispetto a soluzioni come IFTTT. 
+Nell'esempio riportato in (fig. \ref{fig:ch2:home_assistant_gui}), è possibile vedere come è stato possibile programmare una sequenza di eventi condizionali, come l'accensione delle luci in una particolare stanza quando un sensore di un garage rileva l'apertura del suddetto, solo se il sole è già calato, mediante l'interfaccia grafica di Home Assistant.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{images/Chap - 2/homeassistant_gui.png}
+    \caption{Esempio di creazione di un'automazione mediante GUI}
+    \label{fig:ch2:home_assistant_gui}
+\end{figure}
+
+La creazione di automazioni mediante codice YAML può risultare però più complessa per degli utenti non esperti, rispetto a quella tramite GUI.
+Nell’esempio di seguito riportato in (fig. \ref{fig:ch2_homeassistant_yaml}) è illustrato come sia possibile definire un'automazione basata sulla geolocalizzazione degli utenti. In particolare, l'evento scatenante (\texttt{trigger}) si verifica quando uno dei dispositivi tracciati cambia stato da \texttt{not\_home} a \texttt{home}, attivando così le azioni corrispondenti dopo un ritardo di un minuto.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=1\linewidth]{images/Chap - 2/homeassistant_yaml.png}
+    \caption{Esempio di codice YAML per la creazione di un'automazione}
+    \label{fig:ch2_homeassistant_yaml}
+\end{figure}
+
+
+% --------------------------- SUBSECTION 2.3.3 - NODE-RED --------------------------- %
+
+
+\subsubsection{Node-RED} \label{Node-RED}
+È un ambiente di sviluppo visuale basato su flussi, che consente di creare automazioni collegando elementi modulari chiamati “nodi—.
+Ogni nodo rappresenta un trigger, un’elaborazione o un’azione, e può essere connesso agli altri in un diagramma di flusso grafico. Questo approccio offre un controllo più avanzato rispetto a IFTTT e una maggiore semplicità rispetto alla configurazione testuale di Home Assistant. Ad esempio, un nodo può ricevere dati da un sensore di temperatura, elaborarli con una soglia personalizzata e inviare una notifica solo se viene superato un valore critico. Tuttavia, essendo una piattaforma più tecnica, richiede una certa familiarità con concetti di programmazione e rete.
+
+È possibile reperire la documentazione per l'utilizzo di questa piattaforma presso il sito: \href{https://nodered.org/docs/}{\texttt{www.nodered.org}}.
+In (fig. \ref{fig:ch2_redNode}) si mostra un flusso di Node-RED che, dopo aver recuperato le condizioni meteorologiche e la temperatura corrente, interroga uno smartwatch per rilevare il numero di passi compiuti dall'utente durante la giornata; se tale valore è inferiore a $1000$, il sistema invia automaticamente un'e-mail di notifica. \\
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{images/Chap - 2/rednode 2.png}
+    \caption{Esempio di generazione di un'automazione con Node-RED}
+      \label{fig:ch2_redNode}
+  \end{figure}
+
+  % \begin{figure}[H]
+  %     \centering
+  %     \includegraphics[width=1\linewidth]{images/Chap - 2/RedNote.png}
+  %     \caption{Esempio di generazione di un'automazione con Node-RED}
+  %     \label{fig:ch2_redNote}
+  % \end{figure}
+
+
+% --------------------------- SUBSECTION 2.3.2 - CONFRONTO FRA LE TRE PIATTAFORME --------------------------- %
+
+
+\subsection{Confronto fra le tre piattaforme}
+\label{sec:confronto_piattaforme}
+
+Per confrontare IFTTT, Home Assistant e Node-RED sono state considerate metriche analizzate in \cite{McCall2023,Thomas2023,Aavild2024} come:
+
+\begin{enumerate}[label=\alph*)]
+  \item \textbf{Facilità d’uso e curva di apprendimento}
+  \item \textbf{Potenza espressiva delle regole}
+  \item \textbf{Modalità di esecuzione (cloud o locale)}
+  \item \textbf{Ampiezza delle integrazioni disponibili}
+  \item \textbf{Costo di adozione}
+\end{enumerate}
+
+Studi recenti sottolineano come gli strumenti interamente visuali (es.\ IFTTT) favoriscano la rapidità di prototipazione, ma impongano limiti man mano che cresce la complessità logica \cite{McCall2023}. Soluzioni a flusso come Node-RED colmano questo gap offrendo un controllo granulare senza richiedere la completa transizione a un approccio testuale; Home Assistant si colloca a metà strada grazie alla combinazione di un'interfaccia grafica con la possibilità dell'utilizzo di YAML, mantenendo una soglia di ingresso relativamente accessibile ma consentendo automazioni avanzate \cite{Thomas2023,Aavild2024}.
+
+\definecolor{lightgray}{HTML}{b0b7c2}
+\rowcolors{2}{white}{lightgray}           % righe alternate
+
+
+\begin{table}[H]
+  \centering
+  \renewcommand{\arraystretch}{1.4}  % spazio verticale extra (facoltativo)
+  \rowcolors{2}{white}{lightgray}   % se vuoi righe alternate
+  \begin{tabular}{|C{0.20\textwidth}|C{0.2\textwidth}|C{0.25\textwidth}|C{0.2\textwidth}|}
+    \hline
+    \textbf{Criterio} & \textbf{IFTTT} & \textbf{Home Assistant} & \textbf{Node-RED} \\ \hline
+    \textbf{Facilità d’uso}    & Alta                   & Media           & Media-bassa \\ \hline
+    \textbf{Potenza logica}    & Bassa –– singola regola      & Alta –– automazioni / script & Alta –– flussi arbitrari \\ \hline
+    \textbf{Esecuzione}        & Cloud                        & Locale / Cloud              & Locale \\ \hline
+    \textbf{Integrazioni}      & $\sim$ 700 servizi cloud      & $\sim$ 2500 integrazioni      & $\sim$ 3500 nodi \\ \hline
+    \textbf{Costo}             & Freemium                     & Open-source                  & Open-source \\ \hline
+  \end{tabular}
+  \caption{Confronto fra IFTTT, Home Assistant e Node-RED}
+  \label{tab:confronto_piattaforme}
+\end{table}
+
+
+
+In sintesi, \emph{IFTTT} si distingue per la rapidità con cui consente di realizzare automazioni semplici; \emph{Home Assistant} eccelle nei casi domestici complessi grazie all’ampio catalogo di integrazioni e alla combinazione di interfaccia grafica e configurazioni testuali; \emph{Node-RED} offre la massima flessibilità architetturale, risultando ideale per scenari IoT multi-dominio che richiedono logiche di flusso elaborate.
+
+
+
+% --------------------------- SUBSECTION 2.3.5 - APPROCCI NELLA LETTERATURA SCIENTIFICA --------------------------- %
+
+
+\subsection{Approcci nella letteratura scientifica}
+Negli ultimi anni, la ricerca si è concentrata su come rendere accessibile la creazione di routine e flussi di automazione anche a quegli utenti che non possiedono competenze di programmazione (\textit{End-User Development}, EUD). In particolare, sono emersi due approcci complementari per aiutare l’utente nella definizione di regole e workflow: le \emph{interfacce visuali} e le \emph{interfacce conversazionali} \cite{Barricelli2024}. \\
+In seguito si è poi deciso di provare a combinare i punti di forza di entrambi gli approcci dando vita alle \emph{interfacce multimodali}, che consentono di sfruttare simultaneamente modalità di input e output sia visuali sia conversazionali, offrendo così un’esperienza più ricca e flessibile per l’utente.
+
+
+% --------------------------- SUBSECTION 2.3.6 - INTERFACCE VISUALI --------------------------- %
+
+\subsubsection{Interfacce Visuali}
+
+Le interfacce visuali hanno come principale vantaggio la rappresentazione esplicita dei \emph{trigger} e delle \emph{action}, tramite blocchi e connettori, o attraverso grafiche facilmente riconoscibili dall’utente finale. Paradigmi come il \emph{flow-based programming} e il \emph{block-based programming} permettono di trascinare e collegare componenti, rendendo chiari i passaggi di input e output e minimizzando gli errori di configurazione. Inoltre, rappresentazioni iconiche (ad esempio una lampadina o un termostato) possono semplificare l’interazione e offrire un riscontro immediato di ciò che si sta progettando.
+
+Un semplice esempio per la creazione di un'automazione mediante \textit{interfaccia visuale} è possibile vederla in (fig. \ref{fig:ch2_redNode}).
+
+\paragraph{Vantaggi}
+
+Gli editor grafici offrono una \emph{bassa soglia di ingresso} per gli utenti non programmatori: negli studi controllati il tempo di apprendimento medio è inferiore a 15 minuti \cite{Desolda2017}. 
+Nel progetto, gli utenti coinvolti hanno definito la programmazione come «estremamente facile», segnalando un immediato senso di successo nella creazione di regole semplici~\cite{Coutaz2016}.
+
+
+\paragraph{Svantaggi.}
+All’aumentare della complessità, i benefici iniziali si attenuano: l’espressione di condizioni composte o di regole multi‑dispositivo fa crescere tempi di completamento e tassi d’errore~\cite{Coutaz2016}. \\
+Ambienti di sviluppo come Node‑RED (vedasi \ref{Node-RED})  mostrano problemi di \emph{scalabilità visiva}: poche decine di nodi superano lo spazio dello schermo, generando sovraccarico cognitivo e rendendo difficile comprendere le cause di un’azione \cite{Lago2021}.
+Ulteriori limiti emersi riguardano:
+\begin{itemize}
+    \item L’ambiguità tra eventi e stati, che confonde gli utenti~\cite{Lago2021}.
+    \item La mancanza di supporto multi‑utente e di possibilità di simulazione, evidenziata da Caivano et al. nel confronto Atooma/IFTTT/Tasker \cite{Caivano2018}.
+    \item L’assenza di meccanismi di risoluzione di conflitti: loop, collisioni e ridondanze possono produrre comportamenti inattesi \cite{Corno2020,Chen2021}.
+\end{itemize}
+In sintesi, le interfacce visuali rimangono efficaci per regole semplici e utenti alle prime armi, ma necessitano di funzioni di astrazione, filtraggio e analisi per restare usabili in scenari reali e dinamici.
+
+
+% --------------------------- SUBSECTION 2.3.7 - INTERFACCE CONVERSAZIONALI --------------------------- %
+
+
+\subsubsection{Interfacce Conversazionali}
+Parallelamente all’approccio visuale, diversi studi hanno approfondito l’efficacia delle cosiddette \emph{interfacce conversazionali} \cite{Barricelli2024}, che consentono la definizione di routine mediante interazione in linguaggio naturale con assistenti vocali (ad es.\ Amazon Alexa, Google Assistant, Apple Siri). 
+In questo caso, la creazione di una regola o routine avviene attraverso un dialogo guidato, dove l’utente può specificare trigger e azioni utilizzando frasi colloquiali \cite{Barricelli2024, Gallo2024Conversational}.
+
+L’utilizzo del linguaggio naturale può apparire più intuitivo rispetto a un’interfaccia a blocchi, specialmente per utenti poco esperti, poiché non richiede di apprendere una sintassi formale o di manipolare elementi grafici. Tuttavia, la sfida maggiore risiede nella corretta interpretazione delle richieste (\emph{Natural Language Understanding, NLU}) e nella necessità di meccanismi di conferma o riepilogo, che riducano il rischio di errori o ambiguità.
+
+Viene riportato di seguito un esempio di un'interazione vocale creata partendo dal sistema analizzato in \cite{Barricelli2024}. 
+
+\noindent \textbf{Esempio di una possibile interazione vocale:}
+\begin{quote}
+\textbf{Utente}: “Alexa, voglio creare una nuova routine.—\\
+\textbf{Assistente}: “Va bene, come desideri attivare la routine? Puoi impostare un comando vocale, un giorno e orario specifici, oppure l’alba o il tramonto.—\\
+\textbf{Utente}: “Imposta il comando vocale.—\\
+\textbf{Assistente}: “Hai scelto di attivare la routine tramite un comando vocale. Dimmi la frase che vuoi usare per avviarla.—\\
+\textbf{Utente}: “Accendi luci salotto.—\\
+\textbf{Assistente}: “Perfetto, hai impostato il comando vocale ‘Accendi luci salotto.’ Ora, desideri aggiungere una o più azioni alla routine?—\\
+\textbf{Utente}: “Sì, aggiungi il comando di accendere le luci del salotto.—\\
+\textbf{Assistente}: “Aggiungo l’azione ‘accensione luci salotto.’ Vuoi aggiungere altro o salvare la routine?—\\
+\textbf{Utente}: “Salva routine.—\\
+\textbf{Assistente}: “La tua routine è stata salvata con il comando vocale ‘Accendi luci salotto.’ Puoi modificarla in qualsiasi momento.—
+\end{quote}
+
+\noindent In questo esempio, si evidenzia come l'assistente debba fornire indicazioni chiare per ciascun passaggio, ripetere o confermare le scelte dell'utente e limitare la complessità di ogni richiesta per evitare sovraccarico cognitivo. Questo approccio è coerente con i principi di progettazione conversazionale e con la cosiddetta \emph{Miller’s Law} \cite{Miller1994}, che evidenzia come la capacità di memorizzazione e comprensione degli utenti sia limitata a un numero ristretto di elementi per volta.
+
+\paragraph{Vantaggi}
+\noindent
+\newline \newline L’interazione in linguaggio naturale consente un accesso ``senza mani'' e a bassa soglia cognitiva: negli esperimenti con smart speaker \emph{speech‑only}, il tasso di completamento delle routine semplici ha raggiunto il 94\,\% con un punteggio SUS medio di 78/100 ~\cite{Barricelli2024, Lago2021, Brooke1996} .  
+Jarvis (assistente conversazionale progettato per la gestione di sistemi IoT complessi tramite linguaggio naturale) \cite{Lago2021} mostra che la formulazione vocale riduce il tempo medio di espressione di una regola del 30\,\% rispetto alla costruzione grafica in Node‑RED (\ref{Node-RED}) \cite{Lago2021}.  
+
+L’impiego di chatbot basati su modelli linguistici di grandi dimensioni (es.\ RuleBot++) migliora la comprensione da parte del sistema delle richieste effettuate dall'utente \cite{Gallo2024Conversational}.  
+
+Inoltre gli assistenti vocali risultano inclusivi per utenti con ridotta capacità visiva o con mani occupate, ampliando l'accessibilità del controllo domestico~\cite{Sciuto2018}.
+
+\paragraph{Svantaggi} 
+\begin{itemize}
+  \item \textbf{Ambiguità semantiche}: la stessa frase può essere interpretata in modi diversi; nelle prove di Jarvis oltre il 20\,\% dei comandi liberi ha richiesto chiarimenti \cite{Lago2021}.
+  \item \textbf{Recupero da errori}: senza un supporto visivo, gli utenti faticano a capire che cosa non sia stato compreso e come riformulare; ParlAmI riporta interazioni interrotte nel 15\,\% dei casi~\cite{ParlAmi2019}.
+  \item \textbf{Scalabilità logica}: con regole che includono più di due trigger e tre azioni aumentano i turni di dialogo; RuleBot++ registra un +42\,\% di turni di chiarimento rispetto a regole elementari \cite{Gallo2024Conversational}.
+  \item \textbf{Privacy e fiducia}: nei diari d’uso longitudinali di Sciuto et al.\ il 38\,\% degli utenti ha limitato i comandi sensibili per timore di ascolto continuo~\cite{Sciuto2018}.
+\end{itemize}
+
+In sintesi, le interfacce conversazionali semplificano l'accesso e rendono naturale la definizione di automazioni semplici; per scenari complessi occorrono strategie di disambiguazione, conferma e sintesi per mantenere affidabilità ed efficienza.
+
+
+% --------------------------- SUBSECTION 2.3.7 - INTERFACCE MULTIMODALI --------------------------- %
+
+\subsubsection{Interfacce Multi-modali}
+Per far fronte alle problematiche che possono nascere dall'utilizzo di un'interfaccia puramente conversazionale o visuale è possibile andare ad utilizzare quelle che vengono definite \textit{interfacce multi-modali}. Con questo termine si identificano quei dispositivi che permettono di interagire con il sistema sfruttando simultaneamente più canali comunicativi, come ad esempio voce e visualizzazione di un'interfaccia grafica. \cite{Barricelli2022MultiModal, ParlAmi2019}
+
+Un’evoluzione di questo filone è \textbf{RuleBot ++}
+\cite{Gallo2024Conversational}, un chatbot basato su ChatGPT (GPT-4)
+integrato in un’interfaccia multi-modale:  
+l’utente può impartire i comandi a voce o via chat,
+visualizzare la regola generata sul display (o in app) e,
+se necessario, correggerla toccando i singoli parametri.
+Nei test di usabilità (16 partecipanti) RuleBot ++ ha fatto
+registrare un punteggio SUS medio di 78/100 e un
+\emph{time-on-task} inferiore del 35 \% rispetto alla GUI
+di Home Assistant. \cite{Brooke1996}
+
+In (fig. \ref{fig:chap2 multimodal}) è possibile vedere un ulteriore esempio di interfaccia multi-modale utilizzata per la definizione di una nuova routine tramite l'ausilio di un dispositivo \textit{Amazon Alexa}. \cite{Barricelli2022MultiModal}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{images/Chap - 2/Multimodal.png}
+    \caption{Esempio di un sistema multi-modale utilizzato per la generazione di routine}
+    \label{fig:chap2 multimodal}
+\end{figure}
+
+Una recente analisi sperimentale condotta in \cite{Barricelli2022MultiModal} ha evidenziato i vantaggi dell'utilizzo di soluzioni multi-modali per la creazione di routine all'interno di ecosistemi IoT, in quanto: 
+\begin{itemize}
+\item Le interfacce multi-modali risultano più apprezzate dagli utenti rispetto alle interazioni \emph{voice-only}, specialmente per la possibilità di visualizzare in tempo reale le scelte già effettuate e selezionare i comandi su schermo.
+\item Le interfacce conversazionali puramente vocali mantengono un elevato grado di accessibilità, ma richiedono una maggiore attenzione e memoria da parte dell’utente per seguire l’intero dialogo ed evitare di perdersi tra le opzioni disponibili.
+\item Aspetti come la dipendenza dal brand (ad esempio, la familiarità con Alexa o con Google Assistant) e il livello di esperienza con i dispositivi smart possono influire significativamente sulla percezione di usabilità e soddisfazione, suggerendo che la personalizzazione dell’interfaccia e la coerenza del dialogo siano fattori chiave.
+\end{itemize}
+
+\paragraph{Vantaggi}
+\begin{itemize}
+  \item \textbf{Integrazione voce e display}: quando input vocali e riscontri grafici/tattili convivono, i
+        limiti del canale singolo si riducono sensibilmente: l’utente
+        può parlare per avviare la routine e, nello stesso tempo,
+        verificare a colpo d’occhio ciò che il sistema ha compreso.
+
+  \item \textbf{Maggiore usabilità del sistema}: come mostrato in \cite{Barricelli2022MultiModal}, l'utilizzo di una soluzione multimodale ha portato
+        ad un incremento del tasso di completamento dei compiti assegnati agli utenti. Nello specifico si è passati da un 88 \% (solo voce) ad un 97 \% dei task completati e ad innalzo del punteggio SUS da 74/100 a 83/100. Tutto ciò conferma
+        che la doppia modalità migliora sia efficacia sia
+        soddisfazione. \cite{Brooke1996}
+
+  \item \textbf{Maggiore controllo}: i partecipanti allo studio hanno apprezzato di poter usare il
+        display per rivedere o correggere parametri complessi,
+        lasciando alla voce i comandi rapidi («Alexa, salva»).\cite{Barricelli2022MultiModal}
+
+  \item \textbf{Accessibilità amplificata}: la ridondanza dei canali favorisce pubblici diversi:  
+        persone con disabilità visive possono affidarsi alla sintesi
+        vocale, mentre chi opera in ambienti rumorosi ricorre all’interfaccia touch.
+
+  \item \textbf{Supporto “intelligente— alla correzione}: integrando un \textit{Large Language Model} (LLM), come nel caso di \emph{RuleBot ++},
+        l’interfaccia è in grado di proporre suggerimenti o versioni
+        alternative della routine, riducendo errori sintattici e
+        velocizzando la rifinitura delle regole \cite{Gallo2024Conversational}.
+\end{itemize}
+
+\paragraph{Svantaggi}
+\begin{itemize}
+  \item \textbf{Aumento della complessità dell’UI}: alcuni utenti hanno segnalato   confusione sul “dove guardare— quando la creazione di una routine visualizzava contemporaneamente conferme testuali e vocali~\cite{Barricelli2024}.
+  \item \textbf{Costi e frammentazione}: display intelligenti e robot aumentano i costi
+        di adozione e introducono differenze tra ecosistemi (Amazon vs Google)
+        che richiedono percorsi di progettazione paralleli~\cite{Barricelli2024}.
+  \item \textbf{Gestione dei conflitti multimodali}: ParlAmI riporta episodi
+        di competizione tra input vocali e tocchi simultanei, con necessità di
+        strategie di arbitraggio per evitare comandi duplicati~\cite{ParlAmi2019}.
+  \item \textbf{Maggiore carico cognitivo in scenari complessi}: quando la
+        regola supera tre azioni, il passaggio continuo voce a touch e viceversa aumenta il tempo
+        medio di completamento del 22 \% rispetto alla sola interazione touch~\cite{Barricelli2024}.
+\end{itemize}

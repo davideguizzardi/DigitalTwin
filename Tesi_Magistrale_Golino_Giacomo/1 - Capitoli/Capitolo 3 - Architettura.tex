@@ -1,0 +1,268 @@
+\chapter{Architettura del sistema}
+\label{chap:digital-twin-smart-home}
+
+In questo capitolo verrà descritta e approfondita l'architettura del sistema oggetto dell'elaborato. 
+
+Il \emph{Gemello Digitale} in questione è progettato per la gestione intelligente di abitazioni, con una particolare attenzione alla sostenibilità energetica e all'ottimizzazione dei consumi.
+
+\section{Introduzione all'architettura}
+L'architettura è concepita per favorire una gestione ottimizzata e sostenibile delle risorse energetiche e degli apparati domestici. Uno dei principali obiettivi del sistema è la creazione di un'interazione semplice e intuitiva tra l'utente e l'ambiente domestico intelligente.
+
+Una rappresentazione grafica dettagliata di tale architettura viene mostrata in (fig. \ref{fig:arch_overview}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{images/Chap - 3/architecture.png}
+    \caption{Rappresentazione dell'architettura presa in analisi}
+    \label{fig:arch_overview}
+\end{figure}
+
+Tale architettura consente agli utenti di realizzare automazioni domestiche attraverso un'interfaccia grafica (GUI). Questa interfaccia, sulla base di controlli e previsioni relativi ai consumi energetici, restituisce un feedback all'utente indicando chiaramente se l'automazione proposta è consentita oppure se genera conflitti con altre automazioni precedentemente impostate o, ancora, se rischia di eccedere il limite massimo di consumo energetico, andando a suggerire possibili modifiche all'automazione che si stava cercando di creare.
+
+\newpage
+\section{Digital Twin Interface}
+La \textit{Digital Twin Interface} costituisce la componente del sistema che permette
+all'utente finale di interagire con il Gemello Digitale sviluppato in questa tesi.
+A differenza della \textit{Automation Creation App} conversazionale progettata dal CNR
+e attualmente eseguita come applicazione esterna, la Digital Twin Interface espone una
+applicazione web tradizionale che offre viste analitiche e strumenti operativi per
+comprendere lo stato della smart home, controllarne i dispositivi e integrare le nuove
+funzionalit\`a di generazione delle automazioni descritte nel capitolo successivo.
+
+L'interfaccia attuale \`e organizzata in quattro sezioni principali:
+\begin{itemize}
+    \item \textbf{Dashboard} \textemdash{} riassume lo stato energetico della casa mostrando
+    mappe interattive degli ambienti, indicatori sui dispositivi attivi e l'esito dei
+    suggerimenti energetici ricevuti dal \textit{Data Analysis Module}. Da questa vista
+    l'utente pu\`o inviare comandi manuali che vengono inoltrati al \textit{Simulation
+    Management Module} (fig. \ref{fig:dig_twin_to_simul}).
+    \item \textbf{Consumption} \textemdash{} espone grafici storici e predittivi dei consumi
+    energetici (fig. \ref{fig:dam}) alimentati dalle API del \textit{Data Analysis Module}.
+    L'utente pu\`o cambiare intervalli temporali, confrontare dispositivi e ricevere
+    notifiche quando le stime superano le soglie definite nel \textit{Configuration
+    Management Module}.
+    \item \textbf{Automations} \textemdash{} elenca le automazioni presenti in Home Assistant,
+    permettendo di attivarle o disattivarle, avviarne l'esecuzione e consultare i
+    suggerimenti prodotti dal Simulation Management Module quando vengono rilevati conflitti
+    o consumi eccessivi (fig. \ref{fig:sim_to_dig}). In questa sezione verr\`a integrato il
+    nuovo builder visuale implementato in questa tesi, eliminando la dipendenza dalla sola
+    Automation Creation App.
+    \item \textbf{Configuration e User area} \textemdash{} permettono di modificare i dati
+    personali, impostare le preferenze dell'utente e configurare mappe, dispositivi,
+    gruppi e piano energetico. I dati inseriti vengono salvati nel \textit{Configuration
+    Management Module} e resi disponibili agli altri moduli del sistema.
+\end{itemize}
+
+Oltre alle funzionalit\`a rivolte all'utente, la Digital Twin Interface gestisce la
+comunicazione con Home Assistant, con il Simulation Management Module e con i servizi Rulebot:
+\begin{itemize}
+    \item invia i comandi manuali e le nuove automazioni al Simulation Management Module,
+    che dopo la simulazione li inoltra al \textit{Home Assistant Integration Module} per
+    l'esecuzione effettiva (fig. \ref{fig:sim_to_home});
+    \item sincronizza lo stato dei dispositivi e delle automazioni leggendo i dati esposti
+    dall'Home Assistant Integration Module e li rende disponibili alla pagina Automations;
+    \item integra nella stessa interfaccia la vista dell'applicazione Rulebot esistente,
+    fornendo all'utente un flusso continuo fra generazione, simulazione e attuazione
+    delle regole.
+\end{itemize}
+
+La Automation Creation App rimane oggi un canale complementare per gli utenti che prediligono
+l'interazione conversazionale e continua a essere eseguita come componente esterna.
+L'obiettivo di questa tesi \`e integrare progressivamente quelle funzionalit\`a nella
+Digital Twin Interface, rendendo il builder visuale il punto di accesso unico alla creazione
+delle automazioni: il flusso sar\`a interamente web, dalla definizione della regola
+all'invio ai moduli di simulazione e all'implementazione su Home Assistant.
+
+In sintesi, la Digital Twin Interface \`e il punto di contatto tra utente e architettura
+software e verr\`a ulteriormente estesa nel capitolo successivo per completare il percorso
+di progettazione e attivazione delle automazioni.
+
+
+\section{Simulation Management Module}
+
+Il \emph{Simulation Management Module} rappresenta un componente centrale nell'architettura del gemello digitale di una smart home, svolgendo un ruolo chiave nel garantire che le automazioni proposte dagli utenti siano efficaci, sicure e coerenti con le preferenze personali e gli obiettivi di ciascun utente. 
+
+Questo modulo gestisce principalmente la simulazione e la validazione preventiva delle automazioni definite dagli utenti, al fine di prevenire eventuali conflitti e massimizzare l'efficienza operativa della smart home.
+
+Nello specifico il processo inizia quando l'utente definisce una nuova automazione, la quale viene inviata direttamente al \textit{Simulation Management Module} (fig. \ref{fig:user_to_simManMod}) \\[0.4cm]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{images/Chap - 3/Simulation/simulation 1.png}
+    \caption{Invio delle automazioni dall'utente al Simulation Management Module}
+    \label{fig:user_to_simManMod}
+\end{figure}
+
+A questo punto, il modulo procede ad acquisire dal \emph{Home Assistant Integration Module} le automazioni che son già state definite all'interno della Smart Home, insieme ai dati relativi agli stati (come consumi, temperature, ecc.) di tutti i dispositivi collegati. 
+
+È possibile visualizzare la porzione di architettura che si occupa di queste operazioni in (fig. \ref{fig:home_to_simulation}) \\[0.4cm]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{images/Chap - 3/Simulation/simulation 2.png}
+    \caption{Acquisizione da parte del Simulation Management Module delle automazioni e dei dati della Smart Home}
+    \label{fig:home_to_simulation}
+\end{figure}
+
+Parallelamente, il \textit{Simulation Management Module} procede ad acquisire tutte le informazioni sugli obiettivi e le preferenze impostate dall'utente tramite il \textit{Configuration Management Module}, garantendo così il rispetto delle sue esigenze personali (fig. \ref{fig:conf_to_sim}). \\[0.4cm]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/Chap - 3/Simulation/simulation 3.png}
+    \caption{Acquisizione da parte del Simulation Management Module delle preferenze dell'utente}
+    \label{fig:conf_to_sim}
+\end{figure}
+
+Una volta raccolti tutti questi dati, il \textit{Simulation Management Module} esegue una simulazione dell'automazione che l'utente aveva intenzione di implementare nel sistema. 
+Tale simulazione non solo verifica il corretto funzionamento dell'automazione stessa, ma anche l'interazione con eventuali automazioni preesistenti. Un obiettivo fondamentale del modulo è quello di individuare possibili conflitti che potrebbero sorgere, ad esempio automazioni che si contraddicono o che, se attivate contemporaneamente, potrebbero causare un uso inefficiente delle risorse energetiche o problemi di comfort per gli utenti.
+
+Al termine della simulazione, il modulo produce una serie di suggerimenti e spiegazioni dettagliate destinate all'utente, evidenziando eventuali migliorie possibili o segnalando i conflitti riscontrati durante l'analisi. Queste permettono agli utenti di prendere decisioni informate riguardo all'adozione, alla modifica o alla rimozione delle automazioni proposte, contribuendo così a migliorare continuamente la gestione energetica e funzionale della propria abitazione (fig. \ref{fig:simManMod_to_user}). \\[0.4cm]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{images/Chap - 3//Simulation/simulation 4.png}
+    \caption{Generazione e invio di suggerimenti e spiegazioni da parte del Simulation Management Module all'utente}
+    \label{fig:simManMod_to_user}
+\end{figure}
+
+Nel caso invece in cui la simulazione confermi l'assenza di problemi, il \textit{Simulation Management Module} inoltra automaticamente le automazioni approvate al \textit{Home Assistant Integration Module}, che provvede poi all'effettiva implementazione e attivazione delle automazioni all'interno della smart home (fig. \ref{fig:home_to_simulation}). In questo modo, il modulo assicura un passaggio fluido ed efficiente dalla simulazione teorica alla reale implementazione delle automazioni, minimizzando il rischio di imprevisti operativi o inefficienze. 
+
+I comandi forniti dall'utente vengono inizialmente acquisiti dalla \textit{Digital Twin Interface}, che provvede poi a inoltrarli al \textit{Simulation Management Module} (fig. \ref{fig:dig_twin_to_simul}). Quest'ultimo li utilizzerà per eseguire i necessari controlli e simulazioni, come descritto precedentemente per l'implementazione di nuove automazioni. \\[0.4cm]
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.8\linewidth]{images/Chap - 3//Simulation/simulation 8.png}
+\caption{Ricezione da parte dell'interfaccia del Digital Twin dei comandi dati dall'utente}
+\label{fig:dig_twin_to_simul}
+\end{figure}
+
+Successivamente, al termine delle simulazioni, il \textit{Simulation Management Module} inoltra i comandi validati al \textit{Home Assistant Integration Module} (fig. \ref{fig:sim_to_home}), il quale li applica concretamente nella Smart Home fisica. \\[0.4cm]
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.3\linewidth]{images/Chap - 3//Simulation/simulation 5.png}
+\caption{Invio dei comandi utente da parte del Simulation Management Module al Home Assistant Integration Module}
+\label{fig:sim_to_home}
+\end{figure}
+
+Nel mentre al \textit{Digital Twin Interface} vengono inviati tutti i suggerimenti e spiegazioni generati durante la fase di simulazione (fig. \ref{fig:sim_to_dig}).
+Questo permetterà quindi di andare ad integrarli all'interno della GUI che l'utente utilizza. \\[0.4cm]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{images/Chap - 3//Simulation/simulation 9.png}
+    \caption{Invio dei suggerimenti generati durante la fase di simulazione all'interfaccia del Digital Twin}
+    \label{fig:sim_to_dig}
+\end{figure}
+
+In sintesi, il \textit{Simulation Management Module} rappresenta un elemento fondamentale per assicurare che le automazioni definite dagli utenti siano sempre ottimali, prive di conflitti e perfettamente allineate agli obiettivi di sostenibilità, efficienza e comfort tipici di una smart home evoluta.
+
+\section{Home Assistant Integration Module}
+
+Il \textit{Home Assistant Integration Module}, rappresenta una componente centrale dell'architettura del Gemello Digitale della Smart Home. Questo modulo svolge una serie di funzioni essenziali che garantiscono la comunicazione tra il sistema di gestione smart home, rappresentato da \textit{Home Assistant}, e il resto dell'architettura del Gemello Digitale.
+
+Innanzitutto, il modulo ha il compito di raccogliere in maniera continua i dati provenienti dai dispositivi smart integrati nell'ambiente domestico tramite \textit{Home Assistant}. 
+Questi dati, oltre ad includere gli stati attuali di ogni dispositivo, forniscono anche informazioni inerenti a come i dispositivi sono stati impostati dall'utente (o da alcune automazioni), ad esempio come la temperatura impostata mediante un termostato o la luminosità di lampade.
+
+Oltre ad acquisire le informazioni descritte, l'\textit{Home Assistant Integration Module} recupera anche i dati di tutte le automazioni configurate in \textit{Home Assistant}. Questa operazione assicura che il sistema disponga di un quadro completo e aggiornato delle automazioni attive.
+
+La sezione di architettura che si occupa di queste funzionalità è mostrata in (fig. \ref{fig:ch3_ha_to_hoim}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.7\linewidth]{images/Chap - 3//Home Integration/home_1.png}
+    \caption{Ricezione dello stato dei dispositivi, del loro storico e delle automazioni}
+    \label{fig:ch3_ha_to_hoim}
+\end{figure}
+
+Parallelamente allo stato corrente, il modulo acquisisce anche uno storico dettagliato dei consumi energetici generati dai vari dispositivi, come elettrodomestici, luci intelligenti, climatizzatori e sistemi di riscaldamento. Questo registro permette non solo di avere una panoramica chiara delle abitudini di utilizzo degli utenti, ma è anche fondamentale per analisi future e per la realizzazione di previsioni accurate riguardo al consumo energetico domestico.
+
+Una volta acquisiti, questi dati di consumo vengono inoltrati a un database specificamente predisposto (fig. \ref{fig:ha_to_db}). Tale database non rappresenta semplicemente un archivio passivo, ma costituisce una componente che rende disponibili le informazioni raccolte per successive analisi predittive. Grazie a queste informazioni dettagliate e cronologicamente ordinate, il sistema può identificare pattern, rilevare anomalie nei consumi e suggerire strategie di ottimizzazione energetica agli utenti. \\[0.4cm]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{images/Chap - 3//Home Integration/home_2.png}
+    \caption{Invio dei dati di consumo al database}
+    \label{fig:ha_to_db}
+\end{figure}
+
+Oltre alla raccolta e archiviazione dei dati di consumo, il \textit{Home Assistant Integration Module} mantiene costantemente aggiornata una lista di tutte le automazioni configurate in \textit{Home Assistant}. Questa lista dettagliata e aggiornata è cruciale per garantire che la \textit{Digital Twin Interface} disponga sempre delle informazioni più recenti circa le automazioni attive (fig. \ref{fig:ha_to_dti}). Ciò consente agli utenti del Gemello Digitale di visualizzare chiaramente tutte le automazioni esistenti, gestirle e modificarle in tempo reale. \\[0.4cm]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{images/Chap - 3//Home Integration/home_3.png}
+    \caption{Invio delle automazioni alla Digital Twin Interface}
+    \label{fig:ha_to_dti}
+\end{figure}
+
+Infine il modulo funge anche da intermediario per la comunicazione verso il sistema \textit{Home Assistant}. Nello specifico, riceve dal \textit{Simulation Management Module} le automazioni e i comandi manuali generati dagli utenti in fase di simulazione e verifica. Questi comandi, dopo essere stati validati attraverso le simulazioni, vengono trasmessi a \textit{Home Assistant} per la loro implementazione effettiva nell'ambiente domestico reale (fig. \ref{fig:haim_to_ha}). In questo modo, il modulo assicura che l'applicazione delle automazioni simulate sia accurata e coerente con le intenzioni degli utenti, riducendo il rischio di errori o conflitti operativi. \\[0.4cm]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.6\linewidth]{images/Chap - 3//Home Integration/home_4.png}
+    \caption{Invio dei comandi e delle automazioni a Home Assistant}
+    \label{fig:haim_to_ha}
+\end{figure}
+
+Attraverso queste funzionalità integrate e coordinate, il \textit{Home Assistant Integration Module} gioca un ruolo fondamentale nel mantenere l'intera architettura del Gemello Digitale sincronizzata, aggiornata e perfettamente funzionante, garantendo un'elevata affidabilità e una user experience ottimale.
+
+\section{Configuration Management Module}
+Il modulo di gestione della configurazione svolge la funzione di raccogliere e conservare in modo coerente tutte le preferenze espresse dagli utenti, gli obiettivi definiti e le specifiche impostazioni di configurazione che questi hanno precedentemente inserito nel sistema. Tali informazioni vengono memorizzate all'interno del database, garantendo così la disponibilità continua e l'aggiornamento tempestivo dei dati rilevanti. 
+
+Per poter modificare tali dati è possibile accedervi tramite l'interfaccia del Digital Twin (fig. \ref{fig:config_1}).\\[0.4cm]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.325\linewidth]{images/Chap - 3/Configuration/configuration_1.png}
+    \caption{Porzione di architettura che si occupa dell'accesso e modifica delle configurazioni dell'utente}
+    \label{fig:config_1}
+\end{figure}
+
+
+\section{Data Analysis Module}
+
+Il \textit{Data Analysis Module} rappresenta una componente fondamentale all'interno dell'architettura presa in esame, svolgendo il ruolo cruciale di raccogliere, elaborare e interpretare i dati energetici generati dagli utenti e dai dispositivi domestici. Attraverso processi di analisi avanzati, questo modulo permette di ottenere informazioni approfondite e utili per ottimizzare la gestione energetica della casa, migliorando l'efficienza e la sostenibilità complessiva del sistema.
+
+In particolare, il modulo svolge tre funzioni primarie:
+
+\begin{enumerate}
+\item \textbf{Acquisizione e validazione dei dati}: estrae dal database tutti i dati storici di consumo energetico provenienti dai dispositivi integrati in \textit{Home Assistant}.
+\item \textbf{Elaborazione e modellazione}: i dati vengono arricchiti con variabili contestuali (ad esempio il giorno della settimana e la fascia oraria) e sottoposti a pipeline di \textit{feature engineering} per alimentare diversi modelli di Machine Learning (ML) e Deep Learning (DL) impiegati per analisi descrittive, predittive e prescrittive.
+\item \textbf{Servizi di esposizione}: rende disponibili, tramite API REST, le previsioni fatte alla \textit{Digital Twin Interface} e al \textit{Simulation Management Module}, consentendo così la verifica della sostenibilità e il supporto alle decisioni operative.
+\end{enumerate}
+
+Tutti questi processi vengono eseguiti dalla seguente porzione di architettura (fig. \ref{fig:dam}).\\[0.4cm]
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.3\linewidth]{images/Chap - 3//Data/data_1.png}
+\caption{Porzione di architettura che si occupa di effettuare le predizioni sui consumi}
+\label{fig:dam}
+\end{figure}
+
+In particolare, per la previsione dei consumi futuri è stato adottato un approccio basato su modelli di \textit{Long Short-Term Memory} (LSTM), che risultano particolarmente efficaci nell'analisi di dati temporali grazie alla loro capacità di apprendere dipendenze sequenziali anche su intervalli temporali lunghi \cite{guizzardi2025user}. I modelli sono stati allenati su dati storici di consumo energetico provenienti dall’ambiente domestico reale, arricchiti con informazioni contestuali come il giorno della settimana e la fascia oraria. Le predizioni generate vengono poi impiegate per valutare, in fase preventiva, l’impatto delle automazioni sulla sostenibilità energetica dell’abitazione, supportando l’utente nel prendere decisioni più consapevoli e informate. Per la selezione dei modelli più performanti è stata condotta una procedura di ottimizzazione iperparametrica mediante \textit{grid search}, in grado di individuare le combinazioni ottimali dei parametri principali del modello in base all’accuratezza predittiva. Tutti i dettagli di questa metodologia sono descritti in \cite{guizzardi2025user}.
+
+\newpage
+\section{Smart Home e Home Assistant}
+La \textit{Smart Home} rappresenta l'ambiente fisico reale in cui vengono applicate e sperimentate le automazioni create e gestite dal sistema. Questo ambiente comprende una varietà di dispositivi domestici intelligenti, tra cui elettrodomestici, sistemi di illuminazione, climatizzazione, sensori ambientali e dispositivi di sicurezza. Questi dispositivi comunicano costantemente con il sistema centrale tramite \textit{Home Assistant}, che funge da ponte essenziale tra gli utenti, il Gemello Digitale e l'ambiente fisico.
+
+\textit{Home Assistant} svolge principalmente due ruoli fondamentali. In primo luogo, raccoglie continuamente i dati provenienti dai dispositivi domestici, registrandone lo stato corrente (ad esempio acceso, spento, temperatura rilevata, consumo energetico) e notificando eventuali cambiamenti di stato in tempo reale al sistema centrale. In secondo luogo, \textit{Home Assistant} riceve i comandi generati dall'utente attraverso l'interfaccia digitale o elaborati dal Gemello Digitale e li inoltra direttamente ai dispositivi appropriati. Ciò assicura che le automazioni desiderate dagli utenti siano correttamente implementate, garantendo così un'efficiente interazione e un elevato grado di integrazione tra il mondo fisico reale e la sua controparte digitale.
+
+Questa gestione bidirezionale dei dati e dei comandi consente di mantenere sincronizzati e aggiornati costantemente entrambi gli ambienti, permettendo al Gemello Digitale di simulare fedelmente e prevedere con precisione le condizioni operative della Smart Home, migliorando così la qualità e l'efficienza complessiva della gestione domestica (fig. \ref{fig:smart_home_fisica}).\\[0.4cm]
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.35\linewidth]{images/Chap - 3//Home/home_fis_1.png}
+\caption{Smart Home fisica}
+\label{fig:smart_home_fisica}
+\end{figure}
+
+\section{Definizione delle automazioni da parte dell'utente}
+
+Sebbene l'architettura descritta copra in maniera approfondita aspetti cruciali quali la simulazione preventiva delle automazioni, l'integrazione con \textit{Home Assistant} e la gestione avanzata dei dati energetici, rimane ancora incompleta la parte riguardante la definizione delle automazioni da parte dell'utente finale.
+
+Al momento, l'interfaccia grafica presentata consiste in un prototipo che consente principalmente l'attivazione e la disattivazione intuitiva di automazioni predefinite tramite uno slider, nonché la visualizzazione di suggerimenti energetici generati a seguito delle simulazioni preventive. Tuttavia, essa non permette ancora agli utenti di creare da zero nuove automazioni personalizzate, definendo in autonomia le condizioni specifiche di attivazione (trigger), le azioni conseguenti e i dispositivi coinvolti.
+
+La progettazione e implementazione completa di questa componente, che costituirà un elemento fondamentale del sistema, sarà trattata nel prossimo capitolo. Tale capitolo approfondirà in dettaglio come gli utenti potranno interagire con una GUI dedicata, semplice e intuitiva, per definire autonomamente le proprie automazioni.
+
+Questo sviluppo contribuirà significativamente a estendere le capacità del sistema, valorizzando ulteriormente l'interazione utente-sistema e promuovendo una gestione domestica ancora più flessibile.

@@ -13,9 +13,9 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 // Import the MUI TimePicker component for selecting times
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 // Import the Chevron icon used in dropdown buttons
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { ChevronDownIcon, Bars3Icon } from "@heroicons/react/20/solid";
 // Import animation utilities from Framer Motion for smooth UI transitions
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, Reorder, useDragControls } from "framer-motion";
 
 // Import shared helpers for icons and API calls
 import { getIcon, apiFetch } from "@/Components/Commons/Constants";
@@ -166,6 +166,178 @@ const createAction = (devices = []) => ({
   service: "turn_on",
 });
 
+// Utility to check if two ordered lists of items share the same id sequence
+const haveSameOrder = (current, next) => {
+  if (!Array.isArray(current) || !Array.isArray(next)) return false;
+  if (current.length !== next.length) return false;
+  for (let index = 0; index < current.length; index += 1) {
+    if (!current[index] || !next[index] || current[index].id !== next[index].id) {
+      return false;
+    }
+  }
+  return true;
+};
+
+// Render a draggable trigger card with a dedicated handle and smooth animations
+const TriggerItem = ({
+  trigger,
+  iconByTriggerType,
+  getTriggerOptionsFor,
+  onTriggerTypeChange,
+  renderTriggerInput,
+  onRemove,
+  selectContainerClass,
+  canDelete,
+}) => {
+  const dragControls = useDragControls();
+
+  return (
+    <Reorder.Item
+      value={trigger}
+      drag="y"
+      layout
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -16 }}
+      transition={{
+        type: "spring",
+        stiffness: 240,
+        damping: 26,
+        layout: { type: "spring", stiffness: 300, damping: 28 },
+      }}
+      dragControls={dragControls}
+      dragListener={false}
+      whileDrag={{
+        scale: 0.99,
+        boxShadow: "0 24px 55px rgba(15, 23, 42, 0.18)",
+      }}
+      className="relative flex flex-col gap-4 rounded-xl border border-neutral-300 bg-white p-4 shadow dark:border-neutral-700 dark:bg-neutral-800 md:flex-row md:items-center"
+    >
+      <div className={`flex w-full items-center gap-3 ${selectContainerClass}`}>
+        <button
+          type="button"
+          aria-label="Reorder condition"
+          onPointerDown={(event) => {
+            event.preventDefault();
+            dragControls.start(event);
+          }}
+          className="flex size-10 shrink-0 items-center justify-center rounded-full border border-transparent bg-gray-100 text-gray-500 transition hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-300 dark:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 dark:focus:ring-sky-500/40 cursor-grab active:cursor-grabbing"
+        >
+          <Bars3Icon className="size-5" />
+        </button>
+        <div className="shrink-0 rounded-full bg-lime-100 p-3 text-lime-700 dark:bg-lime-500/20">
+          {getIcon(iconByTriggerType[trigger.type], "size-6")}
+        </div>
+        <FancySelect
+          className="w-full"
+          value={trigger.type}
+          onChange={(newType) => onTriggerTypeChange(trigger.id, newType)}
+          options={getTriggerOptionsFor(trigger)}
+          placeholder="Select type"
+        />
+      </div>
+
+      <motion.div layout className="flex-1">
+        {renderTriggerInput(trigger)}
+      </motion.div>
+
+      <StyledButton
+        variant="delete"
+        className="md:ml-auto"
+        onClick={() => onRemove(trigger.id)}
+        disabled={!canDelete}
+      >
+        {getIcon("delete", "size-5")}
+      </StyledButton>
+    </Reorder.Item>
+  );
+};
+
+// Render a draggable action card with a reorder handle and existing controls
+const ActionItem = ({
+  action,
+  deviceSelectOptions,
+  ensureServicesForDevice,
+  actionOptions,
+  onActionUpdate,
+  servicesByDevice,
+  onActionRemove,
+  selectContainerClass,
+  actionsLength,
+}) => {
+  const dragControls = useDragControls();
+
+  return (
+    <Reorder.Item
+      value={action}
+      drag="y"
+      layout
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -16 }}
+      transition={{
+        type: "spring",
+        stiffness: 240,
+        damping: 26,
+        layout: { type: "spring", stiffness: 300, damping: 28 },
+      }}
+      dragControls={dragControls}
+      dragListener={false}
+      whileDrag={{
+        scale: 0.99,
+        boxShadow: "0 24px 55px rgba(15, 23, 42, 0.18)",
+      }}
+      className="relative flex flex-col gap-4 rounded-xl border border-neutral-300 bg-white p-4 shadow dark:border-neutral-700 dark:bg-neutral-900 md:flex-row md:items-center"
+    >
+      <div className={`flex w-full items-center gap-3 ${selectContainerClass}`}>
+        <button
+          type="button"
+          aria-label="Reorder action"
+          onPointerDown={(event) => {
+            event.preventDefault();
+            dragControls.start(event);
+          }}
+          className="flex size-10 shrink-0 items-center justify-center rounded-full border border-transparent bg-gray-100 text-gray-500 transition hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-300 dark:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 dark:focus:ring-sky-500/40 cursor-grab active:cursor-grabbing"
+        >
+          <Bars3Icon className="size-5" />
+        </button>
+        <motion.div layout className="shrink-0 rounded-full bg-lime-100 p-3 text-lime-700 dark:bg-lime-500/20">
+          {getIcon("puzzle", "size-6")}
+        </motion.div>
+        <FancySelect
+          className="w-full"
+          value={action.deviceId}
+          onChange={async (newDeviceId) => {
+            const opts = (await ensureServicesForDevice(newDeviceId)) || actionOptions;
+            const nextService = opts[0]?.value || "turn_on";
+            onActionUpdate(action.id, { deviceId: newDeviceId, service: nextService });
+          }}
+          options={deviceSelectOptions}
+          placeholder={deviceSelectOptions.length ? "Choose device" : "No devices available"}
+          disabled={!deviceSelectOptions.length}
+          noOptionsMessage="No devices available"
+        />
+      </div>
+      <FancySelect
+        className={selectContainerClass}
+        value={action.service}
+        onChange={(newService) => onActionUpdate(action.id, { service: newService })}
+        options={servicesByDevice[action.deviceId] || actionOptions}
+        placeholder="Select action"
+        noOptionsMessage="No actions available"
+      />
+      <StyledButton
+        variant="delete"
+        className="md:ml-auto"
+        onClick={() => onActionRemove(action.id)}
+        disabled={actionsLength === 1}
+      >
+        {getIcon("delete", "size-5")}
+      </StyledButton>
+    </Reorder.Item>
+  );
+};
+
 // Default triggers include a date and time control to give the user a starting point
 const buildDefaultTriggers = (devices) => [
   createTrigger("date", devices),
@@ -294,33 +466,53 @@ export default function AddAutomation() {
   // Keep selections valid if device list changes (e.g., availability updates)
   useEffect(() => {
     if (!devices.length) return;
-    setTriggers((prev) =>
-      prev.map((t) => {
+
+    setTriggers((prev) => {
+      let mutated = false;
+      const next = prev.map((t) => {
         if (t.type !== "device") return t;
         const exists = devices.some((d) => d.id === t.value.deviceId);
         if (exists) return t;
+        mutated = true;
         const newId = devices[0]?.id ?? "";
         return {
           ...t,
           value: { deviceId: newId, state: "on" },
         };
-      })
-    );
-    setActions((prev) =>
-      prev.map((a) => {
+      });
+      return mutated ? next : prev;
+    });
+
+    setActions((prev) => {
+      let mutated = false;
+      const next = prev.map((a) => {
         const exists = devices.some((d) => d.id === a.deviceId);
         if (exists) return a;
+        mutated = true;
         const newId = devices[0]?.id ?? "";
         return { ...a, deviceId: newId, service: "turn_on" };
-      })
-    );
+      });
+      return mutated ? next : prev;
+    });
   }, [devices]);
+
+  const triggerDeviceIds = useMemo(() => {
+    const ids = triggers
+      .filter((trigger) => trigger.type === "device")
+      .map((trigger) => trigger.value?.deviceId)
+      .filter(Boolean);
+    return Array.from(new Set(ids)).sort();
+  }, [triggers]);
+
+  const triggerDeviceIdsKey = useMemo(() => triggerDeviceIds.join("|"), [triggerDeviceIds]);
 
   // Preload states for any currently selected device triggers
   useEffect(() => {
-    const deviceIds = Array.from(new Set(triggers.filter(t => t.type === "device").map(t => t.value?.deviceId).filter(Boolean)));
-    deviceIds.forEach((id) => { void ensureStatesForDevice(id); });
-  }, [triggers, devices]);
+    if (!triggerDeviceIds.length) return;
+    triggerDeviceIds.forEach((id) => {
+      void ensureStatesForDevice(id);
+    });
+  }, [triggerDeviceIdsKey, devices]);
 
   // Fetch available services/commands for a device's state entity
   const ensureServicesForDevice = async (deviceId) => {
@@ -507,6 +699,17 @@ export default function AddAutomation() {
     });
   };
 
+  // Reorder triggers when dragged using the dedicated handle
+  const handleTriggerReorder = useCallback(
+    (nextOrder) => {
+      if (haveSameOrder(triggers, nextOrder)) return;
+      if (saveError) setSaveError("");
+      invalidateSimulation();
+      setTriggers([...nextOrder]);
+    },
+    [invalidateSimulation, saveError, triggers]
+  );
+
   // Update an action with the provided partial data
   const handleActionUpdate = (id, partial) => {
     if (saveError) setSaveError("");
@@ -533,6 +736,17 @@ export default function AddAutomation() {
       return prev;
     });
   };
+
+  // Reorder actions when dragged via their handle
+  const handleActionReorder = useCallback(
+    (nextOrder) => {
+      if (haveSameOrder(actions, nextOrder)) return;
+      if (saveError) setSaveError("");
+      invalidateSimulation();
+      setActions([...nextOrder]);
+    },
+    [actions, invalidateSimulation, saveError]
+  );
 
   // Reset the entire builder back to defaults after confirmation
   const handleReset = () => {
@@ -634,54 +848,6 @@ export default function AddAutomation() {
       </AnimatePresence>
     );
   };
-
-  // Render a single action row with device/service selectors and controls
-  const renderActionRow = (action) => (
-    <motion.div
-      key={action.id}
-      layout
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -16 }}
-      transition={{ type: "spring", stiffness: 220, damping: 20 }}
-      className="relative flex flex-col gap-4 rounded-xl border border-neutral-300 bg-white p-4 shadow dark:border-neutral-700 dark:bg-neutral-900 md:flex-row md:items-center"
-    >
-      <div className={`flex w-full items-center gap-3 ${selectContainerClass}`}>
-        <motion.div layout className="rounded-full bg-lime-100 p-3 text-lime-700 dark:bg-lime-500/20">
-          {getIcon("puzzle", "size-6")}
-        </motion.div>
-        <FancySelect
-          className="w-full"
-          value={action.deviceId}
-          onChange={async (newDeviceId) => {
-            const opts = (await ensureServicesForDevice(newDeviceId)) || actionOptions;
-            const nextService = opts[0]?.value || "turn_on";
-            handleActionUpdate(action.id, { deviceId: newDeviceId, service: nextService });
-          }}
-          options={deviceSelectOptions}
-          placeholder={deviceSelectOptions.length ? "Choose device" : "No devices available"}
-          disabled={!deviceSelectOptions.length}
-          noOptionsMessage="No devices available"
-        />
-      </div>
-      <FancySelect
-        className={selectContainerClass}
-        value={action.service}
-        onChange={(newService) => handleActionUpdate(action.id, { service: newService })}
-        options={servicesByDevice[action.deviceId] || actionOptions}
-        placeholder="Select action"
-        noOptionsMessage="No actions available"
-      />
-      <StyledButton
-        variant="delete"
-        className="md:ml-auto"
-        onClick={() => handleActionRemoval(action.id)}
-        disabled={actions.length === 1}
-      >
-        {getIcon("delete", "size-5")}
-      </StyledButton>
-    </motion.div>
-  );
 
   // Produce a readable string describing the trigger for previews and confirmations
   function formatTriggerPreview(trigger, deviceLookup) {
@@ -1079,45 +1245,26 @@ export default function AddAutomation() {
                 </p>
               </div>
 
-              <AnimatePresence initial={false}>
+              <Reorder.Group
+                axis="y"
+                values={triggers}
+                onReorder={handleTriggerReorder}
+                className="flex flex-col gap-4"
+              >
                 {triggers.map((trigger) => (
-                  <motion.div
+                  <TriggerItem
                     key={trigger.id}
-                    layout
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -16 }}
-                    transition={{ type: "spring", stiffness: 220, damping: 20 }}
-                    className="relative flex flex-col gap-4 rounded-xl border border-neutral-300 bg-white p-4 shadow dark:border-neutral-700 dark:bg-neutral-800 md:flex-row md:items-center"
-                  >
-                    <div className={`flex w-full items-center gap-3 ${selectContainerClass}`}>
-                      <div className="rounded-full bg-lime-100 p-3 text-lime-700 dark:bg-lime-500/20">
-                        {getIcon(iconByTriggerType[trigger.type], "size-6")}
-                      </div>
-                      <FancySelect
-                        className="w-full"
-                        value={trigger.type}
-                        onChange={(newType) => handleTriggerTypeChange(trigger.id, newType)}
-                        options={getTriggerOptionsFor(trigger)}
-                        placeholder="Select type"
-                      />
-                    </div>
-
-                    <motion.div layout className="flex-1">
-                      {renderTriggerInput(trigger)}
-                    </motion.div>
-
-                    <StyledButton
-                      variant="delete"
-                      className="md:ml-auto"
-                      onClick={() => handleTriggerRemoval(trigger.id)}
-                      disabled={triggers.length === 1}
-                    >
-                      {getIcon("delete", "size-5")}
-                    </StyledButton>
-                  </motion.div>
+                    trigger={trigger}
+                    iconByTriggerType={iconByTriggerType}
+                    getTriggerOptionsFor={getTriggerOptionsFor}
+                    onTriggerTypeChange={handleTriggerTypeChange}
+                    renderTriggerInput={renderTriggerInput}
+                    onRemove={handleTriggerRemoval}
+                    selectContainerClass={selectContainerClass}
+                    canDelete={triggers.length > 1}
+                  />
                 ))}
-              </AnimatePresence>
+              </Reorder.Group>
 
               <div className="flex justify-end">
                 <StyledButton
@@ -1151,7 +1298,27 @@ export default function AddAutomation() {
                 </p>
               </div>
 
-              <AnimatePresence initial={false}>{actions.map((action) => renderActionRow(action))}</AnimatePresence>
+              <Reorder.Group
+                axis="y"
+                values={actions}
+                onReorder={handleActionReorder}
+                className="flex flex-col gap-4"
+              >
+                {actions.map((action) => (
+                  <ActionItem
+                    key={action.id}
+                    action={action}
+                    deviceSelectOptions={deviceSelectOptions}
+                    ensureServicesForDevice={ensureServicesForDevice}
+                    actionOptions={actionOptions}
+                    onActionUpdate={handleActionUpdate}
+                    servicesByDevice={servicesByDevice}
+                    onActionRemove={handleActionRemoval}
+                    selectContainerClass={selectContainerClass}
+                    actionsLength={actions.length}
+                  />
+                ))}
+              </Reorder.Group>
 
               <div className="flex justify-end">
                 <StyledButton

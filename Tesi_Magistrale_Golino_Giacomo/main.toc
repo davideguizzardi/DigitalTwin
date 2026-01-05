@@ -1,0 +1,38 @@
+\babel@toc {italian}{}\relax 
+\babel@toc {italian}{}\relax 
+\contentsline {chapter}{Introduzione}{ii}{chapter*.3}%
+\contentsline {chapter}{\numberline {1}Titolo cap - 1}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Introduzione}{1}{section.1.1}%
+\contentsline {chapter}{\numberline {2}Stato dell'arte}{2}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Concetti di Base}{3}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Requisiti di una buona automazione}{4}{subsection.2.1.1}%
+\contentsline {section}{\numberline {2.2}Panoramica sulle piattaforme principali}{5}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Amazon Alexa}{5}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Google Home}{6}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Apple Casa}{7}{subsection.2.2.3}%
+\contentsline {section}{\numberline {2.3}Metodi e Applicazioni per la Creazione di Automazioni}{8}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Applicazioni per il Trigger-Action Programming}{8}{subsection.2.3.1}%
+\contentsline {subsubsection}{IFTTT}{8}{subsection.2.3.1}%
+\contentsline {subsubsection}{Home Assistant}{9}{figure.caption.5}%
+\contentsline {subsubsection}{Node-RED}{11}{figure.caption.7}%
+\contentsline {subsection}{\numberline {2.3.2}Confronto fra le tre piattaforme}{12}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Approcci nella letteratura scientifica}{13}{subsection.2.3.3}%
+\contentsline {subsubsection}{Interfacce Visuali}{14}{subsection.2.3.3}%
+\contentsline {paragraph}{Vantaggi}{14}{subsection.2.3.3}%
+\contentsline {paragraph}{Svantaggi.}{14}{subsection.2.3.3}%
+\contentsline {subsubsection}{Interfacce Conversazionali}{15}{subsection.2.3.3}%
+\contentsline {paragraph}{Vantaggi}{16}{subsection.2.3.3}%
+\contentsline {paragraph}{Svantaggi}{17}{subsection.2.3.3}%
+\contentsline {subsubsection}{Interfacce Multi-modali}{17}{subsection.2.3.3}%
+\contentsline {paragraph}{Vantaggi}{19}{figure.caption.10}%
+\contentsline {paragraph}{Svantaggi}{19}{figure.caption.10}%
+\contentsline {chapter}{\numberline {3}Architettura del sistema}{21}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Introduzione all'architettura}{21}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Digital Twin Interface}{23}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Simulation Management Module}{24}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Home Assistant Integration Module}{30}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Configuration Management Module}{33}{section.3.5}%
+\contentsline {section}{\numberline {3.6}Data Analysis Module}{34}{section.3.6}%
+\contentsline {section}{\numberline {3.7}Smart Home e Home Assistant}{37}{section.3.7}%
+\contentsline {section}{\numberline {3.8}Definizione delle automazioni da parte dell'utente}{38}{section.3.8}%
+\contentsline {chapter}{Conclusioni}{40}{chapter*.26}%

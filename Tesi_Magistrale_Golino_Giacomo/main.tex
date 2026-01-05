@@ -1,0 +1,183 @@
+\documentclass[a4paper,12pt,oneside]{book} % Formato documento: foglio a4, font size 12, solo fronte
+
+% ================================================================================
+% ENCODING & INTERNATIONALISATION
+% ================================================================================
+\usepackage[utf8]{inputenc}        % Consente di scrivere direttamente caratteri UTF-8
+\usepackage[T1]{fontenc}           % Evita problemi con accenti/virgolette
+\usepackage[italian]{babel}        % Imposta sillabazione, date e stringhe in italiano
+\usepackage{csquotes}              % Virgolette “intelligenti” e compatibilità con biblatex
+
+% ================================================================================
+% PAGE LAYOUT & SPACING
+% ================================================================================
+\usepackage[
+  lmargin=20mm,
+  rmargin=20mm,
+  tmargin=25mm,
+  bmargin=20mm
+]{geometry}                        % Margini della pagina
+\linespread{1.5}                   % Interlinea 1.5
+\setlength{\parindent}{0pt}        % Nessun rientro a inizio paragrafo
+\setlength{\parskip}{1em}          % Spazio dopo i paragrafi
+\setlength{\headheight}{15pt}      % Altezza dell’intestazione
+\addtolength{\topmargin}{-2.5pt}   % Regola fine del margine superiore
+\usepackage{fancyhdr} % Per modificare l'intestazione delle pagine
+
+% ================================================================================
+% LISTS & ENUMERATIONS
+% ================================================================================
+
+\usepackage{enumitem}              % Controllo fine su elenchi puntati/numerati
+\usepackage{siunitx}               % Opzioni extra in enumitem (es. \setitemize)
+\setitemize{noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt} % Liste compatte
+\setenumerate{noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt}
+
+% ================================================================================
+% MATHEMATICS
+% ================================================================================
+\usepackage{amsmath}               % Ambiente matematico AMS
+\usepackage{mathtools}             % Estensioni ad amsmath (es. \left\{ … \right. )
+
+% ================================================================================
+% GRAPHICS, FIGURES & FLOATS
+% ================================================================================
+\usepackage{graphicx}              % Inserimento immagini
+\usepackage{float}                 % Ambiente [H] per il posizionamento forzato
+\usepackage{pgfplots}              % Grafici vettoriali/TikZ
+\pgfplotsset{compat=1.18}          % Compatibilità PGFPlots
+\graphicspath{{images/}}           % Percorso di default per le immagini
+
+% ================================================================================
+% CAPTIONS & HYPERLINKS
+% ================================================================================
+\usepackage[table]{xcolor}         % Colori (anche per righe/colonne di tabelle)
+\usepackage{caption}               % Personalizzazione didascalie
+\usepackage[hidelinks]{hyperref}   % Collegamenti ipertestuali (senza cornici)
+\usepackage{xurl}                  % Permette il line-break negli URL lunghi
+
+% ================================================================================
+% TABLES
+% ================================================================================
+\usepackage{array}                 % Colonne avanzate (m{…}, >{\centering} ecc.)
+\usepackage{tabularx}              % Tabelle a larghezza variabile \textwidth
+\usepackage{longtable}             % Tabelle multipagina
+\usepackage{booktabs}              % Regole tipografiche \toprule \midrule \bottomrule
+\usepackage{multirow}              % Celle verticalmente unite
+\newcolumntype{C}[1]{>{\centering\arraybackslash}m{#1}} % Colonna centrata h/v
+\makeatletter
+\providecommand{\insert@pcolumn}{\insert@column} % Fix per compatibilità xcolor/array
+\makeatother
+\definecolor{lightgray}{HTML}{b0b7c2}                   % Grigio per righe alternate
+
+% ================================================================================
+% CODE LISTINGS
+% ================================================================================
+\usepackage{listings}              % Visualizzazione codice sorgente
+% --- Lingua YAML personalizzata con stile ---
+\lstdefinelanguage{yaml}{
+  morecomment=[l]{\#},
+  morestring=[b]",
+  morestring=[b]',
+  sensitive=true
+}
+\lstdefinestyle{yamlcolor}{
+  language=yaml,
+  backgroundcolor=\color{gray!10},
+  basicstyle=\ttfamily\small,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}\bfseries,
+  stringstyle=\color{teal},
+  showstringspaces=false,
+  numbers=left,
+  numbersep=5pt,
+  numberstyle=\tiny\color{gray},
+  frame=single,
+  breaklines=true,
+  captionpos=b
+}
+% Correzione caratteri speciali in listings
+\lstset{
+  literate={_}{{\_}}1
+           {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1
+           {ò}{{\`o}}1 {ù}{{\`u}}1 {é}{{\'e}}1
+}
+
+% ================================================================================
+% ALGORITHMS & PSEUDOCODE
+% ================================================================================
+\usepackage{algorithm}             % Ambiente per algoritmi float
+\usepackage{algpseudocode}         % Pseudocodice stile “algorithmicx”
+
+% ====================================================================================
+% HEADINGS, CHAPTER & TOC STYLES
+% ================================================================================
+\usepackage{titlesec}              % Personalizza titoli di sezioni/capitoli
+\titleformat{\chapter}[hang]{\normalfont\Huge\bfseries}{\thechapter.}{8pt}{\Huge\bfseries}
+\titlespacing*{\chapter}{0pt}{-40pt}{5pt}
+\titlespacing*{\section}{0pt}{0pt}{0pt}
+\titlespacing*{\subsection}{0pt}{0pt}{0pt}
+
+\usepackage[titles]{tocloft}       % Spazi nella ToC
+\setlength{\cftbeforechapskip}{6pt}
+
+% ================================================================================
+% BIBLIOGRAPHY
+% ================================================================================
+\usepackage[
+  backend=biber,
+  sorting=none,
+  style=numeric,
+  maxbibnames=99
+]{biblatex}                        % Gestione bibliografia
+\addbibresource{refs.bib}          % File con le entry BibTeX
+
+% ================================================================================
+% MISCELLANEOUS UTILITIES
+% ================================================================================
+\usepackage{comment}               % Ambienti \begin{comment} ... \end{comment}
+\usepackage{lipsum}                % Testo segnaposto \lipsum[1-2]
+
+% ================================================================================
+% END OF PACKAGE SETUP
+% ================================================================================
+
+
+
+\title{Inserire titolo}
+\author{Giacomo Golino}
+\date{Maggio 2025}
+
+\newgeometry{lmargin=3cm,rmargin=3cm,tmargin=3cm,bmargin=3cm}   
+
+\pagestyle{fancy} % Customizzazione testata e piè di pagina
+\renewcommand{\chaptermark}[1]{\markboth{#1}{#1}}
+\fancyhf{}
+\fancyhead[L]{\thechapter. \leftmark}
+\fancyfoot[C]{\thepage}
+
+\usepackage{afterpage}
+
+\newcommand\blankpage{%
+    \null
+    \thispagestyle{empty}%
+    \addtocounter{page}{-1}%
+    \newpage}
+
+\begin{document}
+
+ \input{0 - Intestazioni extra/title} %Frontespizio 
+    %Permette di cambiare i margini delle pagine
+     \hyphenpenalty=750 % Rende meno probabile lo spezzamento delle parole a capo
+    \frontmatter
+    \renewcommand\contentsname{Indice} % Indice
+    \tableofcontents
+    \input{0 - Intestazioni extra/Introduzione} % Introduzione
+    \mainmatter
+    \input{1 - Capitoli/Capitolo 1}
+    \input{1 - Capitoli/Capitolo 2 - Stato dell'arte}
+    \input{1 - Capitoli/Capitolo 3 - Architettura}
+    \backmatter
+    \input{0 - Intestazioni extra/Conclusioni}
+    \printbibliography
+\end{document}

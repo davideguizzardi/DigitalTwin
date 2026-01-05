@@ -1,0 +1,1050 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global}
+    \entry{Ur2014}{inproceedings}{}
+      \name{author}{4}{}{%
+        {{hash=6297e14dee25d2c94fa82fc1ef2bc565}{%
+           family={Ur},
+           familyi={U\bibinitperiod},
+           given={Blase\bibnamedelima Elyse},
+           giveni={B\bibinitperiod\bibinitdelim E\bibinitperiod}}}%
+        {{hash=7a6d99cd54279ccfbe499c06bc40509c}{%
+           family={Ho},
+           familyi={H\bibinitperiod},
+           given={Elyse\bibnamedelima McManus},
+           giveni={E\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=abd35baeecadd25d7ad81d2409eac1c6}{%
+           family={Ho},
+           familyi={H\bibinitperiod},
+           given={Melwyn\bibnamedelimb Pak\bibnamedelima Yong},
+           giveni={M\bibinitperiod\bibinitdelim P\bibinitperiod\bibinitdelim Y\bibinitperiod}}}%
+        {{hash=211e529e9f10ad1bfacff2284da10ea7}{%
+           family={Littman},
+           familyi={L\bibinitperiod},
+           given={Michael\bibnamedelima L.},
+           giveni={M\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York, NY, USA}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{e4ecc41f72d55074d166877bdce662ac}
+      \strng{fullhash}{cd7d58590a0401a45f2512e8da86d282}
+      \strng{bibnamehash}{cd7d58590a0401a45f2512e8da86d282}
+      \strng{authorbibnamehash}{cd7d58590a0401a45f2512e8da86d282}
+      \strng{authornamehash}{e4ecc41f72d55074d166877bdce662ac}
+      \strng{authorfullhash}{cd7d58590a0401a45f2512e8da86d282}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI '14)}
+      \field{isbn}{9781450324731}
+      \field{title}{Practical Trigger-Action Programming in the Smart Home}
+      \field{year}{2014}
+      \field{pages}{803\bibrangedash 812}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1145/2556288.2557420
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/2556288.2557420
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/2556288.2557420
+      \endverb
+    \endentry
+    \entry{Barricelli2024}{article}{}
+      \name{author}{5}{}{%
+        {{hash=d4fc699d921a6be3c5b11bfd47eb328f}{%
+           family={Barricelli},
+           familyi={B\bibinitperiod},
+           given={Barbara\bibnamedelima Rita},
+           giveni={B\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=984a2bbf66eb0e211c4b653564368aae}{%
+           family={Bondioli},
+           familyi={B\bibinitperiod},
+           given={Alessandro},
+           giveni={A\bibinitperiod}}}%
+        {{hash=bc2adcb9c2e4768a9f1bdb31a3c7aa8f}{%
+           family={Fogli},
+           familyi={F\bibinitperiod},
+           given={Daniela},
+           giveni={D\bibinitperiod}}}%
+        {{hash=c181e270dc5c9bd3fb3769f45be4ceec}{%
+           family={Iemmolo},
+           familyi={I\bibinitperiod},
+           given={Letizia},
+           giveni={L\bibinitperiod}}}%
+        {{hash=b229f98eca6cbee54888174ea23d902c}{%
+           family={Locoro},
+           familyi={L\bibinitperiod},
+           given={Angela},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Taylor \& Francis}%
+      }
+      \strng{namehash}{9dc5e830239795de1febb1225bcb55c2}
+      \strng{fullhash}{04d0518eb9426b0e0616db887179eb77}
+      \strng{bibnamehash}{04d0518eb9426b0e0616db887179eb77}
+      \strng{authorbibnamehash}{04d0518eb9426b0e0616db887179eb77}
+      \strng{authornamehash}{9dc5e830239795de1febb1225bcb55c2}
+      \strng{authorfullhash}{04d0518eb9426b0e0616db887179eb77}
+      \field{extraname}{1}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{International Journal of Human--Computer Interaction}
+      \field{number}{20}
+      \field{title}{Creating Routines for IoT Ecosystems through Conversation with Smart Speakers}
+      \field{volume}{40}
+      \field{year}{2024}
+      \field{pages}{6109\bibrangedash 6127}
+      \range{pages}{19}
+      \verb{doi}
+      \verb 10.1080/10447318.2023.2247845
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1080/10447318.2023.2247845
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1080/10447318.2023.2247845
+      \endverb
+    \endentry
+    \entry{Reisinger2023SmartHomeReq}{article}{}
+      \name{author}{4}{}{%
+        {{hash=38f7f4e0b9e43cf4eb5ed3b851f0ab52}{%
+           family={Reisinger},
+           familyi={R\bibinitperiod},
+           given={Michaela\bibnamedelima R.},
+           giveni={M\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=d031a860daabafd70c67eda85c7fe3d0}{%
+           family={Prost},
+           familyi={P\bibinitperiod},
+           given={Sebastian},
+           giveni={S\bibinitperiod}}}%
+        {{hash=3b0e973226f7efb4614f9cd3f1c54388}{%
+           family={Schrammel},
+           familyi={S\bibinitperiod},
+           given={Johann},
+           giveni={J\bibinitperiod}}}%
+        {{hash=6b1eb1c2e3b8728df378858893a7be05}{%
+           family={Fröhlich},
+           familyi={F\bibinitperiod},
+           given={Peter},
+           giveni={P\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{686e809d18c2a8c162e1d154cc97e779}
+      \strng{fullhash}{8a73a2e213b00fd0873b43ff321adb2f}
+      \strng{bibnamehash}{8a73a2e213b00fd0873b43ff321adb2f}
+      \strng{authorbibnamehash}{8a73a2e213b00fd0873b43ff321adb2f}
+      \strng{authornamehash}{686e809d18c2a8c162e1d154cc97e779}
+      \strng{authorfullhash}{8a73a2e213b00fd0873b43ff321adb2f}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Ambient Intelligence and Humanized Computing}
+      \field{title}{User requirements for the design of smart homes: dimensions and goals}
+      \field{volume}{14}
+      \field{year}{2023}
+      \field{pages}{15761\bibrangedash 15780}
+      \range{pages}{20}
+      \verb{doi}
+      \verb 10.1007/s12652-021-03651-6
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/s12652-021-03651-6
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/s12652-021-03651-6
+      \endverb
+    \endentry
+    \entry{Corno2021}{article}{}
+      \name{author}{3}{}{%
+        {{hash=e9c3bc719936b201011d6c83c436eede}{%
+           family={Corno},
+           familyi={C\bibinitperiod},
+           given={Fulvio},
+           giveni={F\bibinitperiod}}}%
+        {{hash=d49f983703f927557c3e7c681495d606}{%
+           family={De\bibnamedelima Russis},
+           familyi={D\bibinitperiod\bibinitdelim R\bibinitperiod},
+           given={Luigi},
+           giveni={L\bibinitperiod}}}%
+        {{hash=cc081477f0dbe2fdd97e7239a74babc0}{%
+           family={Monge\bibnamedelima Roffarello},
+           familyi={M\bibinitperiod\bibinitdelim R\bibinitperiod},
+           given={Alberto},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{b8a24b2ed1a416c3c4b54d01cc4a7f8d}
+      \strng{fullhash}{b8a24b2ed1a416c3c4b54d01cc4a7f8d}
+      \strng{bibnamehash}{b8a24b2ed1a416c3c4b54d01cc4a7f8d}
+      \strng{authorbibnamehash}{b8a24b2ed1a416c3c4b54d01cc4a7f8d}
+      \strng{authornamehash}{b8a24b2ed1a416c3c4b54d01cc4a7f8d}
+      \strng{authorfullhash}{b8a24b2ed1a416c3c4b54d01cc4a7f8d}
+      \field{extraname}{1}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{ACM Transactions on Information Systems}
+      \field{number}{4}
+      \field{title}{From Users' Intentions to IF-THEN Rules in the Internet of Things}
+      \field{volume}{39}
+      \field{year}{2021}
+      \field{pages}{53:1\bibrangedash 53:33}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1145/3447264
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/3447264
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/3447264
+      \endverb
+    \endentry
+    \entry{Barricelli2022MultiModal}{inproceedings}{}
+      \name{author}{4}{}{%
+        {{hash=d4fc699d921a6be3c5b11bfd47eb328f}{%
+           family={Barricelli},
+           familyi={B\bibinitperiod},
+           given={Barbara\bibnamedelima Rita},
+           giveni={B\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=bc2adcb9c2e4768a9f1bdb31a3c7aa8f}{%
+           family={Fogli},
+           familyi={F\bibinitperiod},
+           given={Daniela},
+           giveni={D\bibinitperiod}}}%
+        {{hash=c181e270dc5c9bd3fb3769f45be4ceec}{%
+           family={Iemmolo},
+           familyi={I\bibinitperiod},
+           given={Letizia},
+           giveni={L\bibinitperiod}}}%
+        {{hash=b229f98eca6cbee54888174ea23d902c}{%
+           family={Locoro},
+           familyi={L\bibinitperiod},
+           given={Angela},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{9dc5e830239795de1febb1225bcb55c2}
+      \strng{fullhash}{4938de03a98219d319fc94b3c1d66dee}
+      \strng{bibnamehash}{4938de03a98219d319fc94b3c1d66dee}
+      \strng{authorbibnamehash}{4938de03a98219d319fc94b3c1d66dee}
+      \strng{authornamehash}{9dc5e830239795de1febb1225bcb55c2}
+      \strng{authorfullhash}{4938de03a98219d319fc94b3c1d66dee}
+      \field{extraname}{2}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 2022 International Conference on Advanced Visual Interfaces (AVI '22)}
+      \field{title}{A Multi-Modal Approach to Creating Routines for Smart Speakers}
+      \field{year}{2022}
+      \field{pages}{1\bibrangedash 5}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.1145/3531073.3531168
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/3531073.3531168
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/3531073.3531168
+      \endverb
+    \endentry
+    \entry{McCall2023}{inproceedings}{}
+      \name{author}{9}{}{%
+        {{hash=40c184423790d6b5e9461122c27eb920}{%
+           family={McCall},
+           familyi={M\bibinitperiod},
+           given={McKenna},
+           giveni={M\bibinitperiod}}}%
+        {{hash=91b794b4902e1a3926f2e3a312a36208}{%
+           family={Zeng},
+           familyi={Z\bibinitperiod},
+           given={Eric},
+           giveni={E\bibinitperiod}}}%
+        {{hash=5942cdc800c06657dfc4a80e0c2ceeb2}{%
+           family={Shezan},
+           familyi={S\bibinitperiod},
+           given={Faysal\bibnamedelima Hossain},
+           giveni={F\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+        {{hash=14e21030d1c01e558f035fb78dbb0204}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={Mitchell},
+           giveni={M\bibinitperiod}}}%
+        {{hash=0fddc2a59cf81f3ad0ba2cfde598ee2a}{%
+           family={Bauer},
+           familyi={B\bibinitperiod},
+           given={Lujo},
+           giveni={L\bibinitperiod}}}%
+        {{hash=7a11c25be748c960e200f02a0c37d7c3}{%
+           family={Bichhawat},
+           familyi={B\bibinitperiod},
+           given={Abhishek},
+           giveni={A\bibinitperiod}}}%
+        {{hash=229688d62be45afb601d52ab134686e0}{%
+           family={Cobb},
+           familyi={C\bibinitperiod},
+           given={Camille},
+           giveni={C\bibinitperiod}}}%
+        {{hash=1e5c85a8a5fb7f081cc0c2634812a271}{%
+           family={Jia},
+           familyi={J\bibinitperiod},
+           given={Limin},
+           giveni={L\bibinitperiod}}}%
+        {{hash=d12eaa4bcfe35e37d08f0d3d058861fd}{%
+           family={Tian},
+           familyi={T\bibinitperiod},
+           given={Yuan},
+           giveni={Y\bibinitperiod}}}%
+      }
+      \name{editor}{2}{}{%
+        {{hash=0c69ea9b0639281be050448d772e12fc}{%
+           family={Kelley},
+           familyi={K\bibinitperiod},
+           given={Patrick\bibnamedelima G.},
+           giveni={P\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+        {{hash=2008f56893801c92e383a56385fcd3af}{%
+           family={Kapadia},
+           familyi={K\bibinitperiod},
+           given={Apu},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Anaheim, CA}%
+      }
+      \list{publisher}{1}{%
+        {USENIX Association}%
+      }
+      \strng{namehash}{a5be56c44c76645c68d77d1f5ba14421}
+      \strng{fullhash}{e74579bdafe83425ddf42993b07b6d13}
+      \strng{bibnamehash}{e74579bdafe83425ddf42993b07b6d13}
+      \strng{authorbibnamehash}{e74579bdafe83425ddf42993b07b6d13}
+      \strng{authornamehash}{a5be56c44c76645c68d77d1f5ba14421}
+      \strng{authorfullhash}{e74579bdafe83425ddf42993b07b6d13}
+      \strng{editorbibnamehash}{b48b72087a0b5b1a5673d067ea061665}
+      \strng{editornamehash}{b48b72087a0b5b1a5673d067ea061665}
+      \strng{editorfullhash}{b48b72087a0b5b1a5673d067ea061665}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the Nineteenth Symposium on Usable Privacy and Security (SOUPS 2023)}
+      \field{isbn}{978-1-939133-36-6}
+      \field{month}{8}
+      \field{title}{Towards Usable Security Analysis Tools for {Trigger-Action} Programming}
+      \field{year}{2023}
+      \field{pages}{301\bibrangedash 320}
+      \range{pages}{20}
+      \verb{urlraw}
+      \verb https://www.usenix.org/system/files/soups2023-mccall.pdf
+      \endverb
+      \verb{url}
+      \verb https://www.usenix.org/system/files/soups2023-mccall.pdf
+      \endverb
+    \endentry
+    \entry{Thomas2023}{inproceedings}{}
+      \name{author}{4}{}{%
+        {{hash=67b64f276919fd095bf27fbb49877c8b}{%
+           family={Thomas},
+           familyi={T\bibinitperiod},
+           given={Likewin},
+           giveni={L\bibinitperiod}}}%
+        {{hash=6c7b779c28313fae1d352c08bc0e23bc}{%
+           family={Manoj\bibnamedelima Kumar},
+           familyi={M\bibinitperiod\bibinitdelim K\bibinitperiod},
+           given={M.\bibnamedelimi K.},
+           giveni={M\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+        {{hash=7c114d488755c87b59b75cc1fae4f279}{%
+           family={Shiva\bibnamedelima Darshan},
+           familyi={S\bibinitperiod\bibinitdelim D\bibinitperiod},
+           given={S.\bibnamedelimi D.},
+           giveni={S\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=b94572922f6b1e735f7f7b2e271ca3b5}{%
+           family={Prashanth},
+           familyi={P\bibinitperiod},
+           given={B.\bibnamedelimi S.},
+           giveni={B\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+      }
+      \strng{namehash}{dc3b2485c7b273cdc38a4f6f848c9dd9}
+      \strng{fullhash}{b4b0419f36d46bc2b59d0c2263e18813}
+      \strng{bibnamehash}{b4b0419f36d46bc2b59d0c2263e18813}
+      \strng{authorbibnamehash}{b4b0419f36d46bc2b59d0c2263e18813}
+      \strng{authornamehash}{dc3b2485c7b273cdc38a4f6f848c9dd9}
+      \strng{authorfullhash}{b4b0419f36d46bc2b59d0c2263e18813}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Engineering Proceedings}
+      \field{title}{Towards Comprehensive Home Automation: Leveraging the {IoT}, Node-RED, and Wireless Sensor Networks for Enhanced Control and Connectivity}
+      \field{volume}{59}
+      \field{year}{2023}
+      \field{pages}{173}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.3390/engproc2023059173
+      \endverb
+    \endentry
+    \entry{Aavild2024}{inproceedings}{}
+      \name{author}{8}{}{%
+        {{hash=f105d407b41e2ad7462d11b16456ef10}{%
+           family={Aavild},
+           familyi={A\bibinitperiod},
+           given={Anders\bibnamedelima Peter},
+           giveni={A\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+        {{hash=96efa1e2097ba1e1b42fed53a29084b3}{%
+           family={de\bibnamedelima Lasson},
+           familyi={d\bibinitperiod\bibinitdelim L\bibinitperiod},
+           given={Aleksander\bibnamedelima Rosenkrantz},
+           giveni={A\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=b94dd6ef32c87d4e231523954a892928}{%
+           family={Moesgaard},
+           familyi={M\bibinitperiod},
+           given={Christian},
+           giveni={C\bibinitperiod}}}%
+        {{hash=39c657bc09863663530ff4d2d2ec0948}{%
+           family={Christensen},
+           familyi={C\bibinitperiod},
+           given={Erik},
+           giveni={E\bibinitperiod}}}%
+        {{hash=f34eee2215343558748e8080f6ea356d}{%
+           family={Moreschini},
+           familyi={M\bibinitperiod},
+           given={Sergio},
+           giveni={S\bibinitperiod}}}%
+        {{hash=9cac4a659e513e80f4c36f3056bb1efa}{%
+           family={Hastbacka},
+           familyi={H\bibinitperiod},
+           given={David},
+           giveni={D\bibinitperiod}}}%
+        {{hash=4d08ae1a3f71e9cc303d7cc0722f5186}{%
+           family={Taibi},
+           familyi={T\bibinitperiod},
+           given={Davide},
+           giveni={D\bibinitperiod}}}%
+        {{hash=6a4cb32f9ff86d4a2e63abe60294012a}{%
+           family={Albano},
+           familyi={A\bibinitperiod},
+           given={Michele},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{c250a76c79350fc4ee0e52f6188c299c}
+      \strng{fullhash}{41c5fd044d7b519238c6978077a0424e}
+      \strng{bibnamehash}{41c5fd044d7b519238c6978077a0424e}
+      \strng{authorbibnamehash}{41c5fd044d7b519238c6978077a0424e}
+      \strng{authornamehash}{c250a76c79350fc4ee0e52f6188c299c}
+      \strng{authorfullhash}{41c5fd044d7b519238c6978077a0424e}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 14th International Conference on the Internet of Things (IoT ’24)}
+      \field{title}{Distributed Home Automation with Home Assistant}
+      \field{year}{2024}
+      \field{pages}{206\bibrangedash 212}
+      \range{pages}{7}
+      \verb{doi}
+      \verb 10.1145/3703790.3703828
+      \endverb
+    \endentry
+    \entry{Desolda2017}{article}{}
+      \name{author}{3}{}{%
+        {{hash=31d94cf1c75cc043411163a15b0fd7a2}{%
+           family={Desolda},
+           familyi={D\bibinitperiod},
+           given={Giuseppe},
+           giveni={G\bibinitperiod}}}%
+        {{hash=6ba7acef9f230b2922e1571d81e91670}{%
+           family={Ardito},
+           familyi={A\bibinitperiod},
+           given={Carmelo},
+           giveni={C\bibinitperiod}}}%
+        {{hash=95d7afb84b0efda57c02e6306934cb4e}{%
+           family={Matera},
+           familyi={M\bibinitperiod},
+           given={Maristella},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{8cb914862aec01fee1231e4a83ca5266}
+      \strng{fullhash}{8cb914862aec01fee1231e4a83ca5266}
+      \strng{bibnamehash}{8cb914862aec01fee1231e4a83ca5266}
+      \strng{authorbibnamehash}{8cb914862aec01fee1231e4a83ca5266}
+      \strng{authornamehash}{8cb914862aec01fee1231e4a83ca5266}
+      \strng{authorfullhash}{8cb914862aec01fee1231e4a83ca5266}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{ACM Transactions on Computer-Human Interaction}
+      \field{number}{2}
+      \field{title}{Empowering End Users to Customize Their Smart Environments: Model, Composition Paradigms, and Domain-Specific Tools}
+      \field{volume}{24}
+      \field{year}{2017}
+      \field{pages}{12:1\bibrangedash 12:52}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1145/3057859
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/3057859
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/3057859
+      \endverb
+    \endentry
+    \entry{Coutaz2016}{article}{}
+      \name{author}{2}{}{%
+        {{hash=2d8750fea8604f6ee55610477a88807e}{%
+           family={Coutaz},
+           familyi={C\bibinitperiod},
+           given={Joëlle},
+           giveni={J\bibinitperiod}}}%
+        {{hash=315d67a61bd36a3ffdff6d74358f16e1}{%
+           family={Crowley},
+           familyi={C\bibinitperiod},
+           given={James\bibnamedelima L.},
+           giveni={J\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+      }
+      \strng{namehash}{2868112598c1cf9691ab8f4427d36892}
+      \strng{fullhash}{2868112598c1cf9691ab8f4427d36892}
+      \strng{bibnamehash}{2868112598c1cf9691ab8f4427d36892}
+      \strng{authorbibnamehash}{2868112598c1cf9691ab8f4427d36892}
+      \strng{authornamehash}{2868112598c1cf9691ab8f4427d36892}
+      \strng{authorfullhash}{2868112598c1cf9691ab8f4427d36892}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Pervasive Computing}
+      \field{number}{2}
+      \field{title}{A First-Person Experience with End-User Development for Smart Homes}
+      \field{volume}{15}
+      \field{year}{2016}
+      \field{pages}{26\bibrangedash 36}
+      \range{pages}{11}
+      \verb{doi}
+      \verb 10.1109/MPRV.2016.34
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1109/MPRV.2016.34
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1109/MPRV.2016.34
+      \endverb
+    \endentry
+    \entry{Lago2021}{article}{}
+      \name{author}{3}{}{%
+        {{hash=71184433f457c58bf855a80fb06b77b1}{%
+           family={Lago},
+           familyi={L\bibinitperiod},
+           given={André\bibnamedelima Sousa},
+           giveni={A\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=2ee5702e38badf418799c9b99485efe3}{%
+           family={Dias},
+           familyi={D\bibinitperiod},
+           given={João\bibnamedelima Pedro},
+           giveni={J\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+        {{hash=87505f37cc4b8382d0df949a526c64e5}{%
+           family={Ferreira},
+           familyi={F\bibinitperiod},
+           given={Hugo\bibnamedelima Sereno},
+           giveni={H\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{2f1c7600aff9db8e7c8a978bcb7b6213}
+      \strng{fullhash}{2f1c7600aff9db8e7c8a978bcb7b6213}
+      \strng{bibnamehash}{2f1c7600aff9db8e7c8a978bcb7b6213}
+      \strng{authorbibnamehash}{2f1c7600aff9db8e7c8a978bcb7b6213}
+      \strng{authornamehash}{2f1c7600aff9db8e7c8a978bcb7b6213}
+      \strng{authorfullhash}{2f1c7600aff9db8e7c8a978bcb7b6213}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Computational Science}
+      \field{title}{Managing non-trivial internet-of-things systems with conversational assistants: A prototype and a feasibility experiment}
+      \field{volume}{51}
+      \field{year}{2021}
+      \field{pages}{101324}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1016/j.jocs.2021.101324
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1016/j.jocs.2021.101324
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1016/j.jocs.2021.101324
+      \endverb
+    \endentry
+    \entry{Caivano2018}{article}{}
+      \name{author}{5}{}{%
+        {{hash=f1aec3a2ead5f96ab51e8647534ef100}{%
+           family={Caivano},
+           familyi={C\bibinitperiod},
+           given={Danilo},
+           giveni={D\bibinitperiod}}}%
+        {{hash=bc2adcb9c2e4768a9f1bdb31a3c7aa8f}{%
+           family={Fogli},
+           familyi={F\bibinitperiod},
+           given={Daniela},
+           giveni={D\bibinitperiod}}}%
+        {{hash=479c124b854bbad1575b41e37a6618a4}{%
+           family={Lanzilotti},
+           familyi={L\bibinitperiod},
+           given={Rosa},
+           giveni={R\bibinitperiod}}}%
+        {{hash=0364c6a114189e5090fe8c8a82dc9393}{%
+           family={Piccinno},
+           familyi={P\bibinitperiod},
+           given={Antonio},
+           giveni={A\bibinitperiod}}}%
+        {{hash=3ddae004b4c84f613588e7177dfed5fe}{%
+           family={Cassano},
+           familyi={C\bibinitperiod},
+           given={Fabio},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{ac4951c11753f1dc5dda437efb145532}
+      \strng{fullhash}{16206afcd0fab700eaa9c20f3b76388b}
+      \strng{bibnamehash}{16206afcd0fab700eaa9c20f3b76388b}
+      \strng{authorbibnamehash}{16206afcd0fab700eaa9c20f3b76388b}
+      \strng{authornamehash}{ac4951c11753f1dc5dda437efb145532}
+      \strng{authorfullhash}{16206afcd0fab700eaa9c20f3b76388b}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{The Journal of Systems \& Software}
+      \field{title}{Supporting end users to control their smart home: Design implications from a literature review and an empirical investigation}
+      \field{volume}{144}
+      \field{year}{2018}
+      \field{pages}{295\bibrangedash 313}
+      \range{pages}{19}
+      \verb{doi}
+      \verb 10.1016/j.jss.2018.06.035
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1016/j.jss.2018.06.035
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1016/j.jss.2018.06.035
+      \endverb
+    \endentry
+    \entry{Corno2020}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=e9c3bc719936b201011d6c83c436eede}{%
+           family={Corno},
+           familyi={C\bibinitperiod},
+           given={Fulvio},
+           giveni={F\bibinitperiod}}}%
+        {{hash=d49f983703f927557c3e7c681495d606}{%
+           family={De\bibnamedelima Russis},
+           familyi={D\bibinitperiod\bibinitdelim R\bibinitperiod},
+           given={Luigi},
+           giveni={L\bibinitperiod}}}%
+        {{hash=cc081477f0dbe2fdd97e7239a74babc0}{%
+           family={Monge\bibnamedelima Roffarello},
+           familyi={M\bibinitperiod\bibinitdelim R\bibinitperiod},
+           given={Alberto},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York, NY, USA}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{b8a24b2ed1a416c3c4b54d01cc4a7f8d}
+      \strng{fullhash}{b8a24b2ed1a416c3c4b54d01cc4a7f8d}
+      \strng{bibnamehash}{b8a24b2ed1a416c3c4b54d01cc4a7f8d}
+      \strng{authorbibnamehash}{b8a24b2ed1a416c3c4b54d01cc4a7f8d}
+      \strng{authornamehash}{b8a24b2ed1a416c3c4b54d01cc4a7f8d}
+      \strng{authorfullhash}{b8a24b2ed1a416c3c4b54d01cc4a7f8d}
+      \field{extraname}{2}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 5th International Conference on Internet of Things Design and Implementation (IoTDI '20)}
+      \field{title}{Loops, Inconsistencies and Redundancies in Trigger-Action Rules for Smart Environments}
+      \field{year}{2020}
+      \field{pages}{259\bibrangedash 270}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1145/3386910.3397254
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/3386910.3397254
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/3386910.3397254
+      \endverb
+    \endentry
+    \entry{Chen2021}{inproceedings}{}
+      \name{author}{4}{}{%
+        {{hash=0c475071538366636655ccf385c755e7}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Xiang},
+           giveni={X\bibinitperiod}}}%
+        {{hash=6dbc91af7e98271d90cd371872cdc8f2}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Yuncong},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=504ac35476166c48e513187adca9b339}{%
+           family={Fernandes},
+           familyi={F\bibinitperiod},
+           given={Earlence},
+           giveni={E\bibinitperiod}}}%
+        {{hash=cb5c4eb075994cb444b08b6c54872280}{%
+           family={Prakash},
+           familyi={P\bibinitperiod},
+           given={Atul},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {IEEE}%
+      }
+      \strng{namehash}{984254469a8650bea7f6b6da591072bc}
+      \strng{fullhash}{c3eb32f713e1bfb13b780c9406c8cf58}
+      \strng{bibnamehash}{c3eb32f713e1bfb13b780c9406c8cf58}
+      \strng{authorbibnamehash}{c3eb32f713e1bfb13b780c9406c8cf58}
+      \strng{authornamehash}{984254469a8650bea7f6b6da591072bc}
+      \strng{authorfullhash}{c3eb32f713e1bfb13b780c9406c8cf58}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 42nd IEEE Symposium on Security and Privacy (S\&P '21)}
+      \field{title}{Understanding Rule Preventions, Collisions, and Unexpected Chains in Trigger-Action Programming}
+      \field{year}{2021}
+      \field{pages}{1154\bibrangedash 1171}
+      \range{pages}{18}
+      \verb{doi}
+      \verb 10.1109/SP40001.2021.00091
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1109/SP40001.2021.00091
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1109/SP40001.2021.00091
+      \endverb
+    \endentry
+    \entry{Gallo2024Conversational}{article}{}
+      \name{author}{3}{}{%
+        {{hash=94f54cb59bd788dd138fb9c5621a3522}{%
+           family={Gallo},
+           familyi={G\bibinitperiod},
+           given={Simone},
+           giveni={S\bibinitperiod}}}%
+        {{hash=d46c05bcdd85b7a2f87702f6f71e8f38}{%
+           family={Paternò},
+           familyi={P\bibinitperiod},
+           given={Fabio},
+           giveni={F\bibinitperiod}}}%
+        {{hash=a5b4735be11498db0a98f1841f8a6799}{%
+           family={Malizia},
+           familyi={M\bibinitperiod},
+           given={Alessio},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{d97072211dab555eb9c6588bcdefc190}
+      \strng{fullhash}{d97072211dab555eb9c6588bcdefc190}
+      \strng{bibnamehash}{d97072211dab555eb9c6588bcdefc190}
+      \strng{authorbibnamehash}{d97072211dab555eb9c6588bcdefc190}
+      \strng{authornamehash}{d97072211dab555eb9c6588bcdefc190}
+      \strng{authorfullhash}{d97072211dab555eb9c6588bcdefc190}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Personal and Ubiquitous Computing}
+      \field{number}{5}
+      \field{title}{A Conversational Agent for Creating Automations Exploiting Large Language Models}
+      \field{volume}{28}
+      \field{year}{2024}
+      \field{pages}{931\bibrangedash 946}
+      \range{pages}{16}
+      \verb{doi}
+      \verb 10.1007/s00779-024-01825-5
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/s00779-024-01825-5
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/s00779-024-01825-5
+      \endverb
+    \endentry
+    \entry{Miller1994}{article}{}
+      \name{author}{1}{}{%
+        {{hash=52cf88006a41a8cd9aab3bcb5e428b80}{%
+           family={Miller},
+           familyi={M\bibinitperiod},
+           given={George\bibnamedelima A.},
+           giveni={G\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \strng{namehash}{52cf88006a41a8cd9aab3bcb5e428b80}
+      \strng{fullhash}{52cf88006a41a8cd9aab3bcb5e428b80}
+      \strng{bibnamehash}{52cf88006a41a8cd9aab3bcb5e428b80}
+      \strng{authorbibnamehash}{52cf88006a41a8cd9aab3bcb5e428b80}
+      \strng{authornamehash}{52cf88006a41a8cd9aab3bcb5e428b80}
+      \strng{authorfullhash}{52cf88006a41a8cd9aab3bcb5e428b80}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Psychological Review}
+      \field{number}{2}
+      \field{title}{The Magical Number Seven, Plus or Minus Two: Some Limits on Our Capacity for Processing Information}
+      \field{volume}{101}
+      \field{year}{1994}
+      \field{pages}{343\bibrangedash 352}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1037/0033-295X.101.2.343
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1037/0033-295X.101.2.343
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1037/0033-295X.101.2.343
+      \endverb
+    \endentry
+    \entry{Brooke1996}{incollection}{}
+      \name{author}{1}{}{%
+        {{hash=813064283275c281401d7a7483420c67}{%
+           family={Brooke},
+           familyi={B\bibinitperiod},
+           given={John},
+           giveni={J\bibinitperiod}}}%
+      }
+      \name{editor}{4}{}{%
+        {{hash=f4dd6dd0057b9630f3f5689c42ce3347}{%
+           family={Jordan},
+           familyi={J\bibinitperiod},
+           given={Patrick\bibnamedelima W.},
+           giveni={P\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+        {{hash=d72440e8326b04d0098a1a8e6ccab8bd}{%
+           family={Thomas},
+           familyi={T\bibinitperiod},
+           given={Bruce},
+           giveni={B\bibinitperiod}}}%
+        {{hash=d5d6227df47b81a791920b374329845f}{%
+           family={Weerdmeester},
+           familyi={W\bibinitperiod},
+           given={Bernard\bibnamedelima A.},
+           giveni={B\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=8b8a10905f0d3cfa60d8b1742260677d}{%
+           family={McClelland},
+           familyi={M\bibinitperiod},
+           given={Ian\bibnamedelima L.},
+           giveni={I\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {CRC Press}%
+      }
+      \strng{namehash}{813064283275c281401d7a7483420c67}
+      \strng{fullhash}{813064283275c281401d7a7483420c67}
+      \strng{bibnamehash}{813064283275c281401d7a7483420c67}
+      \strng{authorbibnamehash}{813064283275c281401d7a7483420c67}
+      \strng{authornamehash}{813064283275c281401d7a7483420c67}
+      \strng{authorfullhash}{813064283275c281401d7a7483420c67}
+      \strng{editorbibnamehash}{1f118ef59be4c83c1135d791c19f0daf}
+      \strng{editornamehash}{161df31cfda2ca59b22c7e189ab9aca4}
+      \strng{editorfullhash}{1f118ef59be4c83c1135d791c19f0daf}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Usability Evaluation in Industry}
+      \field{title}{{SUS}: A Quick and Dirty Usability Scale}
+      \field{year}{1996}
+      \field{pages}{189\bibrangedash 194}
+      \range{pages}{6}
+    \endentry
+    \entry{Sciuto2018}{inproceedings}{}
+      \name{author}{4}{}{%
+        {{hash=ce2bd595adb11b9a3b626fe9fa0701f8}{%
+           family={Sciuto},
+           familyi={S\bibinitperiod},
+           given={Andrea},
+           giveni={A\bibinitperiod}}}%
+        {{hash=aff22b8b6bbb06d884d15023693b572c}{%
+           family={Saini},
+           familyi={S\bibinitperiod},
+           given={Arnita},
+           giveni={A\bibinitperiod}}}%
+        {{hash=c1e75e70764d099efdaa6d2bd84cd1d6}{%
+           family={Forlizzi},
+           familyi={F\bibinitperiod},
+           given={Jodi},
+           giveni={J\bibinitperiod}}}%
+        {{hash=a02dbba0b8917170fcac7c0f836417f7}{%
+           family={Hong},
+           familyi={H\bibinitperiod},
+           given={Jason\bibnamedelima I.},
+           giveni={J\bibinitperiod\bibinitdelim I\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {ACM}%
+      }
+      \strng{namehash}{09f9563512d209103c5dfb6a7faadfc6}
+      \strng{fullhash}{204375c922ea495f8cdb8891c11f81f1}
+      \strng{bibnamehash}{204375c922ea495f8cdb8891c11f81f1}
+      \strng{authorbibnamehash}{204375c922ea495f8cdb8891c11f81f1}
+      \strng{authornamehash}{09f9563512d209103c5dfb6a7faadfc6}
+      \strng{authorfullhash}{204375c922ea495f8cdb8891c11f81f1}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 2018 Designing Interactive Systems Conference (DIS '18)}
+      \field{title}{"Hey Alexa, What's Up?": A Mixed-Methods Study of In-Home Conversational Agent Usage}
+      \field{year}{2018}
+      \field{pages}{857\bibrangedash 868}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1145/3196709.3196772
+      \endverb
+    \endentry
+    \entry{ParlAmi2019}{article}{}
+      \name{author}{6}{}{%
+        {{hash=7dc08e09cbd9d5dc53b27e0676789539}{%
+           family={Stefanidi},
+           familyi={S\bibinitperiod},
+           given={Evropi},
+           giveni={E\bibinitperiod}}}%
+        {{hash=bba66f5bb872f5d665023e3bd24c5d62}{%
+           family={Foukarakis},
+           familyi={F\bibinitperiod},
+           given={Michalis},
+           giveni={M\bibinitperiod}}}%
+        {{hash=ddf277a024abcc565c5245e4aa1980bf}{%
+           family={Arampatzis},
+           familyi={A\bibinitperiod},
+           given={Dimitrios},
+           giveni={D\bibinitperiod}}}%
+        {{hash=7072aebe3e63e50a20c8210cda8d4dea}{%
+           family={Korozi},
+           familyi={K\bibinitperiod},
+           given={Maria},
+           giveni={M\bibinitperiod}}}%
+        {{hash=4154f503c5d4ce2e7d21f192b260218e}{%
+           family={Leonidis},
+           familyi={L\bibinitperiod},
+           given={Asterios},
+           giveni={A\bibinitperiod}}}%
+        {{hash=628d99917b0ad4f6c1355294043dcffd}{%
+           family={Antona},
+           familyi={A\bibinitperiod},
+           given={Margherita},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{63d98b445a2196faef2f811f5b72a75b}
+      \strng{fullhash}{10aa25a54c9f1bf165139310d8f732c2}
+      \strng{bibnamehash}{10aa25a54c9f1bf165139310d8f732c2}
+      \strng{authorbibnamehash}{10aa25a54c9f1bf165139310d8f732c2}
+      \strng{authornamehash}{63d98b445a2196faef2f811f5b72a75b}
+      \strng{authorfullhash}{10aa25a54c9f1bf165139310d8f732c2}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Technologies}
+      \field{number}{1}
+      \field{title}{{ParlAmI}: A Multimodal Approach for Programming Intelligent Environments}
+      \field{volume}{7}
+      \field{year}{2019}
+      \field{pages}{11}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.3390/technologies7010011
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.3390/technologies7010011
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.3390/technologies7010011
+      \endverb
+    \endentry
+    \entry{guizzardi2025user}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=77facb688ea3df3aa5ec9e60c63bfef1}{%
+           family={Guizzardi},
+           familyi={G\bibinitperiod},
+           given={Davide},
+           giveni={D\bibinitperiod}}}%
+        {{hash=d4fc699d921a6be3c5b11bfd47eb328f}{%
+           family={Barricelli},
+           familyi={B\bibinitperiod},
+           given={Barbara\bibnamedelima Rita},
+           giveni={B\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=bc2adcb9c2e4768a9f1bdb31a3c7aa8f}{%
+           family={Fogli},
+           familyi={F\bibinitperiod},
+           given={Daniela},
+           giveni={D\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Brescia, Italy}%
+      }
+      \list{organization}{1}{%
+        {CEUR-WS}%
+      }
+      \strng{namehash}{b02587b1d6b44968d9b70ad2dca62dd7}
+      \strng{fullhash}{b02587b1d6b44968d9b70ad2dca62dd7}
+      \strng{bibnamehash}{b02587b1d6b44968d9b70ad2dca62dd7}
+      \strng{authorbibnamehash}{b02587b1d6b44968d9b70ad2dca62dd7}
+      \strng{authornamehash}{b02587b1d6b44968d9b70ad2dca62dd7}
+      \strng{authorfullhash}{b02587b1d6b44968d9b70ad2dca62dd7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{AXAI 2025: Workshop on Adaptive eXplainable AI}
+      \field{note}{Department of Information Engineering, University of Brescia}
+      \field{title}{A User-in-the-loop Digital Twin for Energy Consumption Prediction in Smart Homes}
+      \field{year}{2025}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
