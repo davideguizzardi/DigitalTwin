@@ -234,7 +234,7 @@ export function getConditionDescription(condition, t) {
             description = formatStateDescr(condition, t)
             break;
 
-                case "template":
+        case "template":
             description = formatTemplateDesc(condition, t)
             break;
 
@@ -269,4 +269,33 @@ export function formatServiceName(str) {
 
     // Join the words with spaces
     return words.join(" ");
+}
+
+export function formatActionData(data,t) {
+    return (<ul className="list-disc ml-5 w-full">
+        {data &&
+            Object.keys(data).map((key) => (
+                <li>
+                    <span className="font-semibold">
+                        {t(key)}
+                    </span>
+                    {": "}
+                    {JSON.stringify(data[key])}
+                </li>
+            ))
+        }
+    </ul>
+    )
+}
+
+
+export function formatAction(action) {
+    const block_class = "flex flex-row items-center gap-3 md:gap-5 bg-gray-200 rounded-md p-2 my-2 text-sm md:text-base"
+    return (<div className={block_class}>
+        {getIcon(action.domain)}
+        <div className="flex flex-col items-start">
+            {t(formatServiceName(action.service))} "{action.device_name}"
+            {formatActionData(action.data)}
+        </div>
+    </div>)
 }

@@ -105,7 +105,7 @@ export const daysOrder = [
 export const DAYS = {
     "mon": { "name": "Monday" },
     "tue": { "name": "Tuesday" },
-    "wed": { "name": "Wedsneday" },
+    "wed": { "name": "Wednesday" },
     "thu": { "name": "Thursday" },
     "fri": { "name": "Friday" },
     "sat": { "name": "Saturday" },

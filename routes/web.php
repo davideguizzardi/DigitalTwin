@@ -43,6 +43,7 @@ Route::middleware('auth')->group(function () {
             'isFirstConfiguration' => session('isFirstConfiguration', false),
         ]);
     })->name("firstConfiguration");
+    Route::get('/device_simulation', function(Request $request){ return Inertia::render("DeviceSimulation");})->name("device_simulation");
     //Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     //Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     //Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

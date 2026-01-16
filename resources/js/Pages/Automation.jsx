@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { apiFetch, getIcon } from "@/Components/Commons/Constants";
 import { Modal } from "flowbite-react";
 import { rulebot } from "@/Components/Commons/Constants";
+import AddAutomation from "./AddAutomation";
 
 export default function Automation({ id = "" }) {
     const [automationContext, setAutomationContext] = useState({})
@@ -64,7 +65,7 @@ export default function Automation({ id = "" }) {
                 {is2xlOrLarger &&
                     <div className="relative">
 
-                        <StyledButton className="absolute top-0 right-0 rounded-md" variant="secondary" onClick={() => refreshRulebot()}>
+                        <StyledButton className=" absolute top-0 right-0 rounded-md" variant="secondary" onClick={() => refreshRulebot()}>
                             {getIcon("refresh", "size-7")}
                         </StyledButton>
 
@@ -74,7 +75,7 @@ export default function Automation({ id = "" }) {
             </div>
             {!is2xlOrLarger &&
 
-            <StyledButton className="absolute bottom-0 right-0 m-5 rounded-full" onClick={() => setShowAutomationModal(true)}>
+            <StyledButton className=" absolute bottom-0 right-0 m-5 rounded-full" onClick={() => setShowAutomationModal(true)}>
                 {getIcon("plus", "size-8")}
             </StyledButton>
             }

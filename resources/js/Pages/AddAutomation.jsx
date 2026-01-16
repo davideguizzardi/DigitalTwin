@@ -1,13 +1,13 @@
 
 import { useState, useEffect} from "react";
-import { getIcon ,backend,apiFetch} from "@/Components/Commons/Constants";
+import { getIcon ,apiFetch,DAYS} from "@/Components/Commons/Constants";
 
 import { TimePicker } from "@mui/x-date-pickers";
 import { Label, TextInput, List, Select, Textarea } from "flowbite-react";
 import { ServicePopup } from "@/Components/Automation/ServicePopup";
 
 import { AutomationSimulation } from "@/Components/Automation/AutomationSimulation";
-import { formatServiceName } from "@/Components/Commons/DataFormatter";
+import { formatServiceName ,formatActionData} from "@/Components/Commons/DataFormatter";
 
 import { StyledDiv,StyledButton } from "@/Components/Commons/StyledBasedComponents";
 
@@ -16,14 +16,10 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { useLaravelReactI18n } from "laravel-react-i18n";
 
 
-//icons
-import { FaPlus } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
-import { FiSunrise, FiSunset, FiClock } from "react-icons/fi";
+
 
 export default function AddAutomation({ }) {
     const {t} = useLaravelReactI18n()
-    const DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 
     //Automations variable
     const [automationName, setAutomationName] = useState("")
@@ -34,7 +30,7 @@ export default function AddAutomation({ }) {
 
     const [selectedTrigger, setSelectedTrigger] = useState("time")
     const [sunOffset, setSunoffset] = useState(0)
-    const [daysList, setDaysList] = useState(DAYS)
+    const [daysList, setDaysList] = useState(Object.keys(DAYS))
     const [entityList, setEntityList] = useState([])
     const [deviceList, setDeviceList] = useState([])
     const [openModal, setOpenModal] = useState(false)
@@ -151,7 +147,7 @@ export default function AddAutomation({ }) {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <div className="grid grid-cols-2 gap-3 p-5">
+        <div className="grid grid-cols-1 gap-3 p-5">
             <ServicePopup open={openModal} selectedEntity={selectedEntity} entityList={entityList} closeFun={() => setOpenModal(false)} submitFun={setServiceToAdd} />
             <StyledDiv variant="primary" className="">
                 <form className="flex flex-col gap-3" onSubmit={buildAutomation}>
@@ -172,15 +168,15 @@ export default function AddAutomation({ }) {
                             <div className="flex flex-row gap-3">
                                 <StyledButton variant="primary" className={(selectedTrigger == "time" ? "bg-lime-400" : "bg-neutral-50")}
                                     onClick={() => setSelectedTrigger("time")}>
-                                    {t("time")} <FiClock className="ml-2 size-5" />
+                                    {t("time")} {getIcon("time","ml-2 size-5")}
                                 </StyledButton>
                                 <StyledButton variant="secondary" className={(selectedTrigger == "sunset" ? "bg-lime-400" : "bg-neutral-50")}
                                     onClick={() => handleSunChange("sunset", 0)}>
-                                    {t("sunset")} <FiSunset className="ml-2 size-5" />
+                                    {t("sunset")} {getIcon("sunset","ml-2 size-5")}
                                 </StyledButton>
                                 <StyledButton variant="secondary" className={(selectedTrigger == "sunrise" ? "bg-lime-400" : "bg-neutral-50")}
                                     onClick={() => handleSunChange("sunrise", 0)}>
-                                    {t("sunrise")} <FiSunrise className="ml-2 size-5" />
+                                    {t("sunrise")} {getIcon("sunrise","ml-2 size-5")}
                                 </StyledButton>
                             </div>
                         </div>
@@ -208,10 +204,10 @@ export default function AddAutomation({ }) {
                         <Label htmlFor="days" value={t("daysLabel")}/>
                         <div className="flex flex-row gap-2">
                             {
-                                DAYS.map(day => (
-                                    <StyledButton variant="secondary" className={daysList.includes(day) ? "bg-lime-400" : "bg-neutral-50"}
+                                Object.keys(DAYS).map(day => (
+                                    <StyledButton variant="secondary" className={daysList.includes(day) ? "bg-lime-400 scale-100" : "bg-neutral-50 scale-90 hover:scale-100"}
                                         onClick={() => handleDaysChange(day)}>
-                                        {day}
+                                        {t(DAYS[day].name)}
                                     </StyledButton>
                                 ))
                             }
@@ -233,7 +229,7 @@ export default function AddAutomation({ }) {
                                 <StyledButton variant="secondary" className="bg-green-200 hover:bg-green-300 "
                                     onClick={() => servicesClick(deviceList.filter(el => el.device_id == deviceIdToAdd)[0].state_entity_id)}
                                 >
-                                    <FaPlus className="size-5" />
+                                    {getIcon("plus")}
                                 </StyledButton>
                             </div>
                         </div>
@@ -246,12 +242,16 @@ export default function AddAutomation({ }) {
                                             <div className="grid grid-cols-2 rounded-md p-2">
 
                                                 <div className="flex flex-row items-center gap-10 col-span-1">
+                                                    {getIcon(action_el.service.split(".")[0])}
+                                                    <div className="flex flex-col items-start">
 
-                                                    {getIcon(action_el.service.split(".")[0])}{formatServiceName(action_el.service.split(".")[1])}{` "${getDeviceName(action_el.target.device_id)}"`}
+                                                    {t(formatServiceName(action_el.service.split(".")[1]))}{` "${getDeviceName(action_el.target.device_id)}"`}
+                                                    {formatActionData(action_el.data,t)}
+                                                    </div>
                                                 </div>
                                                 <div className="flex flex-row justify-end items-end col-span-1 ">
                                                     <StyledButton variant="delete" onClick={() => setAutomationAction(automationAction.filter((el, ind) => ind != index))}>
-                                                        <MdDelete className="size-5" />{t("delete")}
+                                                        {getIcon("delete")}
                                                     </StyledButton>
                                                 </div>
 
@@ -270,7 +270,7 @@ export default function AddAutomation({ }) {
                     </StyledButton>
                 </form>
             </StyledDiv>
-            <div className="flex flex-col gap-3">
+            {/*<div className="flex flex-col gap-3">
                 {simulateAutomationAddition &&
                     <div className="col-span-2">
                         <AutomationSimulation automation_to_simulate={JSON.stringify(automation)} />
@@ -281,7 +281,7 @@ export default function AddAutomation({ }) {
                     <Textarea id="automation" placeholder="automation" rows={30} value={JSON.stringify(automation, null, 4)} readOnly />
 
                 }
-            </div>
+            </div>*/}
         </div >
         </LocalizationProvider>
     )
