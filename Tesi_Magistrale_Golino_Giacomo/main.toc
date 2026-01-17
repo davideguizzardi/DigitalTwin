@@ -1,6 +1,6 @@
 \babel@toc {italian}{}\relax 
 \babel@toc {italian}{}\relax 
-\contentsline {chapter}{Introduzione}{ii}{chapter*.3}%
+\contentsline {chapter}{Introduzione}{iii}{chapter*.3}%
 \contentsline {chapter}{\numberline {1}Titolo cap - 1}{1}{chapter.1}%
 \contentsline {section}{\numberline {1.1}Introduzione}{1}{section.1.1}%
 \contentsline {chapter}{\numberline {2}Stato dell'arte}{2}{chapter.2}%
@@ -35,4 +35,21 @@
 \contentsline {section}{\numberline {3.6}Data Analysis Module}{34}{section.3.6}%
 \contentsline {section}{\numberline {3.7}Smart Home e Home Assistant}{37}{section.3.7}%
 \contentsline {section}{\numberline {3.8}Definizione delle automazioni da parte dell'utente}{38}{section.3.8}%
-\contentsline {chapter}{Conclusioni}{40}{chapter*.26}%
+\contentsline {chapter}{\numberline {4}Progettazione e implementazione del sistema}{40}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Requisiti e principi guida}{40}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Processo di progettazione dell'interfaccia}{41}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Casi d'uso e scenari}{41}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Prototipazione e design system}{42}{subsection.4.2.2}%
+\contentsline {section}{\numberline {4.3}Architettura applicativa front-end}{42}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Strutturazione dei componenti}{43}{subsection.4.3.1}%
+\contentsline {section}{\numberline {4.4}Integrazione con i servizi backend}{43}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Implementazione dell'interfaccia}{44}{section.4.5}%
+\contentsline {subsection}{\numberline {4.5.1}Dashboard}{44}{subsection.4.5.1}%
+\contentsline {subsection}{\numberline {4.5.2}Sezione Automations}{44}{subsection.4.5.2}%
+\contentsline {subsection}{\numberline {4.5.3}Configurazione e preferenze}{45}{subsection.4.5.3}%
+\contentsline {section}{\numberline {4.6}Implementazione del builder di automazioni}{45}{section.4.6}%
+\contentsline {subsection}{\numberline {4.6.1}Motivazioni progettuali}{45}{subsection.4.6.1}%
+\contentsline {subsection}{\numberline {4.6.2}Flusso di implementazione}{46}{subsection.4.6.2}%
+\contentsline {section}{\numberline {4.7}Strategie di verifica e iterazione}{46}{section.4.7}%
+\contentsline {section}{\numberline {4.8}Sintesi}{47}{section.4.8}%
+\contentsline {chapter}{Conclusioni}{48}{chapter*.31}%

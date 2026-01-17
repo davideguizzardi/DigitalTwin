@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.1.5)  5 JAN 2026 19:40
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.1.5)  5 JAN 2026 19:57
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1434,7 +1434,7 @@ Package biblatex Info: ... file 'main.bbl' found.
 Package biblatex Info: Reference section=0 on input line 167.
 Package biblatex Info: Reference segment=0 on input line 167.
  (./0 - Intestazioni extra/title.tex
-<images/logo.png, id=103, 165.0165pt x 68.05424pt>
+<images/logo.png, id=171, 165.0165pt x 68.05424pt>
 File: images/logo.png Graphic file (type png)
 <use images/logo.png>
 Package pdftex.def Info: images/logo.png  used on input line 4.
@@ -1445,19 +1445,19 @@ Package pdftex.def Info: images/logo.png  used on input line 4.
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./images/logo.png>]) [0
 
-] (./main.toc)
+] (./main.toc [1
+
+])
 \tf@toc=\write7
 \openout7 = `main.toc'.
 
 
-(./0 - Intestazioni extra/Introduzione.tex [1
-
-])
+(./0 - Intestazioni extra/Introduzione.tex [2])
 
 Package lipsum Warning: Unknown language 'latin'. Hyphenation patterns for
 (lipsum)                'italian' will be used instead.
 
-[2
+[3
 
 ] (./1 - Capitoli/Capitolo 1.tex
 Capitolo 1.
@@ -1485,7 +1485,7 @@ Overfull \hbox (1.56789pt too wide) in paragraph at lines 33--34
 e di ti-po \T1/cmr/m/it/12 trigger-action \T1/cmr/m/n/12 (TAP)
  []
 
-<images/Chap - 2/Trigger and actions - no background.png, id=171, 1195.46625pt 
+<images/Chap - 2/Trigger and actions - no background.png, id=262, 1195.46625pt 
 x 1164.35pt>
 File: images/Chap - 2/Trigger and actions - no background.png Graphic file (typ
 e png)
@@ -1508,21 +1508,21 @@ Underfull \hbox (badness 10000) in paragraph at lines 143--146
 
  []
 
-<images/Chap - 2/ifttt example.png, id=208, 737.00343pt x 386.19281pt>
+<images/Chap - 2/ifttt example.png, id=297, 737.00343pt x 386.19281pt>
 File: images/Chap - 2/ifttt example.png Graphic file (type png)
 <use images/Chap - 2/ifttt example.png>
 Package pdftex.def Info: images/Chap - 2/ifttt example.png  used on input line 
 149.
 (pdftex.def)             Requested size: 341.43437pt x 178.9119pt.
 [8]
-<images/Chap - 2/homeassistant_gui.png, id=218, 1017.8025pt x 496.10344pt>
+<images/Chap - 2/homeassistant_gui.png, id=308, 1017.8025pt x 496.10344pt>
 File: images/Chap - 2/homeassistant_gui.png Graphic file (type png)
 <use images/Chap - 2/homeassistant_gui.png>
 Package pdftex.def Info: images/Chap - 2/homeassistant_gui.png  used on input l
 ine 167.
 (pdftex.def)             Requested size: 426.79135pt x 208.02895pt.
  [9 <./images/Chap - 2/ifttt example.png>]
-<images/Chap - 2/homeassistant_yaml.png, id=227, 758.835pt x 298.86656pt>
+<images/Chap - 2/homeassistant_yaml.png, id=316, 758.835pt x 298.86656pt>
 File: images/Chap - 2/homeassistant_yaml.png Graphic file (type png)
 <use images/Chap - 2/homeassistant_yaml.png>
 Package pdftex.def Info: images/Chap - 2/homeassistant_yaml.png  used on input 
@@ -1534,7 +1534,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 190--192
 
  []
 
-<images/Chap - 2/rednode 2.png, id=237, 1069.9975pt x 715.67375pt>
+<images/Chap - 2/rednode 2.png, id=327, 1069.9975pt x 715.67375pt>
 File: images/Chap - 2/rednode 2.png Graphic file (type png)
 <use images/Chap - 2/rednode 2.png>
 Package pdftex.def Info: images/Chap - 2/rednode 2.png  used on input line 195.
@@ -1546,7 +1546,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 315--318
  []
 
 [16] [17]
-<images/Chap - 2/Multimodal.png, id=331, 2593.69pt x 481.8pt>
+<images/Chap - 2/Multimodal.png, id=420, 2593.69pt x 481.8pt>
 File: images/Chap - 2/Multimodal.png Graphic file (type png)
 <use images/Chap - 2/Multimodal.png>
 Package pdftex.def Info: images/Chap - 2/Multimodal.png  used on input line 354
@@ -1555,7 +1555,7 @@ Package pdftex.def Info: images/Chap - 2/Multimodal.png  used on input line 354
  [18 <./images/Chap - 2/Multimodal.png>] [19])
 (./1 - Capitoli/Capitolo 3 - Architettura.tex [20]
 Capitolo 3.
-<images/Chap - 3/architecture.png, id=356, 1426.32875pt x 1194.4625pt>
+<images/Chap - 3/architecture.png, id=446, 1426.32875pt x 1194.4625pt>
 File: images/Chap - 3/architecture.png Graphic file (type png)
 <use images/Chap - 3/architecture.png>
 Package pdftex.def Info: images/Chap - 3/architecture.png  used on input line 1
@@ -1568,7 +1568,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 87--88
 
  []
 
-<images/Chap - 3/Simulation/simulation 1.png, id=385, 232.87pt x 383.4325pt>
+<images/Chap - 3/Simulation/simulation 1.png, id=475, 232.87pt x 383.4325pt>
 File: images/Chap - 3/Simulation/simulation 1.png Graphic file (type png)
 <use images/Chap - 3/Simulation/simulation 1.png>
 Package pdftex.def Info: images/Chap - 3/Simulation/simulation 1.png  used on i
@@ -1579,7 +1579,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 98--99
 
  []
 
-<images/Chap - 3/Simulation/simulation 2.png, id=387, 249.93375pt x 390.45876pt
+<images/Chap - 3/Simulation/simulation 2.png, id=477, 249.93375pt x 390.45876pt
 >
 File: images/Chap - 3/Simulation/simulation 2.png Graphic file (type png)
 <use images/Chap - 3/Simulation/simulation 2.png>
@@ -1591,7 +1591,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 107--108
 
  []
 
-<images/Chap - 3/Simulation/simulation 3.png, id=396, 588.1975pt x 279.0425pt>
+<images/Chap - 3/Simulation/simulation 3.png, id=486, 588.1975pt x 279.0425pt>
 File: images/Chap - 3/Simulation/simulation 3.png Graphic file (type png)
 <use images/Chap - 3/Simulation/simulation 3.png>
 Package pdftex.def Info: images/Chap - 3/Simulation/simulation 3.png  used on i
@@ -1603,7 +1603,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 119--120
 
  []
 
-<images/Chap - 3//Simulation/simulation 4.png, id=405, 232.87pt x 382.42876pt>
+<images/Chap - 3//Simulation/simulation 4.png, id=496, 232.87pt x 382.42876pt>
 File: images/Chap - 3//Simulation/simulation 4.png Graphic file (type png)
 <use images/Chap - 3//Simulation/simulation 4.png>
 Package pdftex.def Info: images/Chap - 3//Simulation/simulation 4.png  used on 
@@ -1614,7 +1614,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 130--131
 
  []
 
-<images/Chap - 3//Simulation/simulation 8.png, id=415, 725.71124pt x 104.39pt>
+<images/Chap - 3//Simulation/simulation 8.png, id=505, 725.71124pt x 104.39pt>
 File: images/Chap - 3//Simulation/simulation 8.png Graphic file (type png)
 <use images/Chap - 3//Simulation/simulation 8.png>
 Package pdftex.def Info: images/Chap - 3//Simulation/simulation 8.png  used on 
@@ -1625,7 +1625,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 139--140
 
  []
 
-<images/Chap - 3//Simulation/simulation 5.png, id=417, 249.93375pt x 391.4625pt
+<images/Chap - 3//Simulation/simulation 5.png, id=507, 249.93375pt x 391.4625pt
 >
 File: images/Chap - 3//Simulation/simulation 5.png Graphic file (type png)
 <use images/Chap - 3//Simulation/simulation 5.png>
@@ -1637,7 +1637,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 148--150
 
  []
 
-<images/Chap - 3//Simulation/simulation 9.png, id=424, 725.71124pt x 91.34125pt
+<images/Chap - 3//Simulation/simulation 9.png, id=514, 725.71124pt x 91.34125pt
 >
 File: images/Chap - 3//Simulation/simulation 9.png Graphic file (type png)
 <use images/Chap - 3//Simulation/simulation 9.png>
@@ -1646,7 +1646,7 @@ input line 153.
 (pdftex.def)             Requested size: 341.43437pt x 42.97498pt.
 [29 <./images/Chap - 3//Simulation/simulation 5.png> <./images/Chap - 3//Simula
 tion/simulation 9.png>]
-<images/Chap - 3//Home Integration/home_1.png, id=432, 703.62875pt x 547.04375p
+<images/Chap - 3//Home Integration/home_1.png, id=522, 703.62875pt x 547.04375p
 t>
 File: images/Chap - 3//Home Integration/home_1.png Graphic file (type png)
 <use images/Chap - 3//Home Integration/home_1.png>
@@ -1658,7 +1658,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 180--181
 
  []
 
-<images/Chap - 3//Home Integration/home_2.png, id=439, 636.3775pt x 188.705pt>
+<images/Chap - 3//Home Integration/home_2.png, id=529, 636.3775pt x 188.705pt>
 File: images/Chap - 3//Home Integration/home_2.png Graphic file (type png)
 <use images/Chap - 3//Home Integration/home_2.png>
 Package pdftex.def Info: images/Chap - 3//Home Integration/home_2.png  used on 
@@ -1669,7 +1669,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 189--190
 
  []
 
-<images/Chap - 3//Home Integration/home_3.png, id=448, 791.95876pt x 525.965pt>
+<images/Chap - 3//Home Integration/home_3.png, id=537, 791.95876pt x 525.965pt>
 
 File: images/Chap - 3//Home Integration/home_3.png Graphic file (type png)
 <use images/Chap - 3//Home Integration/home_3.png>
@@ -1683,7 +1683,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 198--199
 
 [32 <./images/Chap - 3//Home Integration/home_2.png> <./images/Chap - 3//Home I
 ntegration/home_3.png>]
-<images/Chap - 3//Home Integration/home_4.png, id=457, 703.62875pt x 547.04375p
+<images/Chap - 3//Home Integration/home_4.png, id=547, 703.62875pt x 547.04375p
 t>
 File: images/Chap - 3//Home Integration/home_4.png Graphic file (type png)
 <use images/Chap - 3//Home Integration/home_4.png>
@@ -1695,7 +1695,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 212--213
 
  []
 
-<images/Chap - 3/Configuration/configuration_1.png, id=466, 260.975pt x 489.83p
+<images/Chap - 3/Configuration/configuration_1.png, id=555, 260.975pt x 489.83p
 t>
 File: images/Chap - 3/Configuration/configuration_1.png Graphic file (type png)
 
@@ -1708,7 +1708,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 234--235
 
  []
 
-<images/Chap - 3//Data/data_1.png, id=474, 258.9675pt x 489.83pt>
+<images/Chap - 3//Data/data_1.png, id=563, 258.9675pt x 489.83pt>
 File: images/Chap - 3//Data/data_1.png Graphic file (type png)
 <use images/Chap - 3//Data/data_1.png>
 Package pdftex.def Info: images/Chap - 3//Data/data_1.png  used on input line 2
@@ -1719,43 +1719,53 @@ Underfull \hbox (badness 10000) in paragraph at lines 251--252
 
  []
 
-<images/Chap - 3//Home/home_fis_1.png, id=491, 309.155pt x 533.995pt>
+<images/Chap - 3//Home/home_fis_1.png, id=580, 309.155pt x 533.995pt>
 File: images/Chap - 3//Home/home_fis_1.png Graphic file (type png)
 <use images/Chap - 3//Home/home_fis_1.png>
 Package pdftex.def Info: images/Chap - 3//Home/home_fis_1.png  used on input li
 ne 255.
 (pdftex.def)             Requested size: 149.37958pt x 258.02579pt.
-[37] [38 <./images/Chap - 3//Home/home_fis_1.png>]) [39]
-(./0 - Intestazioni extra/Conclusioni.tex) [40
+[37] [38 <./images/Chap - 3//Home/home_fis_1.png>])
+(./1 - Capitoli/Capitolo 4 - Progettazione e Implementazione.tex [39]
+Capitolo 4.
+
+Overfull \hbox (12.26205pt too wide) in paragraph at lines 1--1
+|[]\T1/cmr/bx/n/24.88 Progettazione e im-ple-men-ta-zio-ne del
+ []
+
+[40
+
+] [41] [42] [43] [44] [45] [46]) [47]
+(./0 - Intestazioni extra/Conclusioni.tex) [48
 
 
-] [41
+] [49
 
 ]
-Overfull \hbox (1.28123pt too wide) in paragraph at lines 183--183
+Overfull \hbox (1.28123pt too wide) in paragraph at lines 184--184
 []\T1/cmr/m/n/12 Anders Pe-ter Aa-vild, Alek-san-der Ro-sen-kran-tz de Las-son,
  Chri-stian Moe-sgaard,
  []
 
-[42] [43] [44] (./main.aux)
+[50] [51] [52] (./main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 81AEE41D622514099B220B045E3D0594;4574.
+(rerunfilecheck)             Checksum: 31CFD13BA03969013F839B9FCD2E5167;8051.
 Package logreq Info: Writing requests to 'main.run.xml'.
 \openout1 = `main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 48967 strings out of 476098
- 1108473 string characters out of 5793538
- 2035236 words of memory out of 5000000
- 70184 multiletter control sequences out of 15000+600000
+ 49038 strings out of 476098
+ 1109839 string characters out of 5793538
+ 2034777 words of memory out of 5000000
+ 70212 multiletter control sequences out of 15000+600000
  571911 words of font info for 63 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 99i,12n,107p,1249b,2028s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 99i,12n,107p,1249b,2116s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </home/giaco/.texlive2023/texmf-var/fonts/pk/ljfour/jknappen/ec/eccc1200.600
 pk> </home/giaco/.texlive2023/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1200.60
 0pk> </home/giaco/.texlive2023/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1200.6
@@ -1773,10 +1783,10 @@ ecbx2074.600pk> </home/giaco/.texlive2023/texmf-var/fonts/pk/ljfour/jknappen/ec
 /ecrm2074.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
 mr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.p
 fb>
-Output written on main.pdf (48 pages, 1697734 bytes).
+Output written on main.pdf (57 pages, 1722407 bytes).
 PDF statistics:
- 1158 PDF objects out of 1200 (max. 8388607)
- 555 compressed objects within 6 object streams
- 125 named destinations out of 1000 (max. 500000)
- 315 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1332 PDF objects out of 1440 (max. 8388607)
+ 693 compressed objects within 7 object streams
+ 165 named destinations out of 1000 (max. 500000)
+ 451 words of extra memory for PDF output out of 10000 (max. 10000000)
 

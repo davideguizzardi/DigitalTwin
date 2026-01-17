@@ -1,0 +1,206 @@
+﻿\chapter{Progettazione e implementazione del sistema}
+\label{chap:design-implementation}
+
+In questo capitolo vengono illustrate nel dettaglio le scelte progettuali e le
+attivit\`a di implementazione che hanno portato alla realizzazione del Gemello
+Digitale presentato nel Capitolo~\ref{chap:digital-twin-smart-home}. L'obiettivo \`e
+mostrare come le esigenze degli utenti finali siano state tradotte in linee guida
+progettuali e, successivamente, in componenti software funzionanti.
+
+\section{Requisiti e principi guida}
+La definizione dei requisiti \`e partita dall'analisi dei tre attori principali del
+sistema: utenti domestici, ricercatori che monitorano i consumi e sviluppatori che
+mantengono l'infrastruttura. Per conciliare esigenze differenti sono state adottate le
+seguenti linee guida:
+\begin{itemize}
+    \item \textbf{Chiarezza delle azioni}: la GUI deve distinguere nettamente tra
+    consultazione dei dati e controllo dei dispositivi per ridurre il rischio di
+    attivazioni involontarie.
+    \item \textbf{Supporto alle decisioni}: ogni suggerimento energetico deve essere
+    accompagnato da una spiegazione sintetica (ad esempio il risparmio stimato o il
+    conflitto rilevato dal Simulation Management Module).
+    \item \textbf{Progressive disclosure}: funzionalit\`a avanzate (configurazione di
+    mappe, integrazione con Home Assistant, personalizzazione delle soglie) sono
+    raggiungibili senza sovraccaricare la dashboard principale.
+    \item \textbf{Tracciabilit\`a dei dati}: ogni componente deve indicare la fonte delle
+    informazioni mostrate (API Home Assistant, servizi predittivi, Rulebot) per
+    facilitare il debugging.
+\end{itemize}
+
+\section{Processo di progettazione dell'interfaccia}
+Il processo UX si \`e articolato in tre iterazioni: raccolta casi d'uso, prototipazione
+low-fidelity e definizione del design system.
+
+\subsection{Casi d'uso e scenari}
+Sono stati individuati i principali journey che gli utenti devono poter eseguire:
+\begin{enumerate}
+    \item Verificare in pochi secondi se il consumo corrente \`e sostenibile.
+    \item Creare o modificare un'automazione ricevendo feedback immediati sui conflitti.
+    \item Aggiornare le preferenze personali, ad esempio cambiando il peso dato al
+    risparmio energetico o alla sicurezza.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox[c][6cm][c]{0.9\linewidth}{\centering Placeholder per user journey e mappa delle attivit\`a}}
+    \caption{[TODO] User journey principale con punti di contatto digitali}
+    \label{fig:cap4_user_journey}
+\end{figure}
+
+Questi scenari hanno motivato l'introduzione di sezioni dedicate (Dashboard,
+Consumption, Automations, Configuration) e la scelta di mantenere visibile un men\`u
+laterale persistente, che consente di passare rapidamente da una vista all'altra senza
+perdere contesto.
+
+\subsection{Prototipazione e design system}
+Durante la fase di prototipazione sono stati creati wireframe a bassa fedelt\`a per
+validare la disposizione delle informazioni. Successivamente \`e stato definito un design
+system basato su card, tipografia Sans e palette neutra con accenti verde lime per
+richiamare il tema della sostenibilit\`a.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox[c][6cm][c]{0.9\linewidth}{\centering Placeholder per wireframe della Dashboard}}
+    \caption{[TODO] Wireframe a bassa fedelt\`a della Dashboard}
+    \label{fig:cap4_wireframe_dashboard}
+\end{figure}
+
+Le principali decisioni di UI sono state:
+\begin{itemize}
+    \item \textbf{Uso estensivo di card} per raggruppare indicatori omogenei e rendere la
+    dashboard scalabile su risoluzioni differenti.
+    \item \textbf{Tipografia uniforme} per favorire la leggibilit\`a in modalit\`a chiara e
+    scura, coerentemente con quanto implementato dal tema React.
+    \item \textbf{Color coding} (verde = stato attivo, grigio = inattivo, giallo = warning)
+    che aiuta l'utente a capire a colpo d'occhio lo stato delle automazioni.
+\end{itemize}
+
+\section{Architettura applicativa front-end}
+L'interfaccia \`e stata implementata con React e Inertia.js sopra Laravel. La scelta \`e
+stata dettata dalla necessit\`a di riutilizzare l'ecosistema Laravel per
+l'autenticazione e, allo stesso tempo, ottenere una SPA dinamica.
+
+\subsection{Strutturazione dei componenti}
+Il codice \`e suddiviso in tre categorie principali:
+\begin{enumerate}
+    \item \textbf{Pages} (es. \texttt{Dashboard3.jsx}, \texttt{Automation.jsx}) che
+    raccolgono e orchestrano i dati provenienti dai provider contestuali.
+    \item \textbf{Components} riutilizzabili (card, grafici, tabelle) che implementano lo
+    stile definito dal design system.
+    \item \textbf{Context Providers} come \texttt{DeviceContextRefresh} che sincronizzano
+    elenco dispositivi e stato energetico.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox[c][6cm][c]{0.9\linewidth}{\centering Placeholder per schema componenti front-end}}
+    \caption{[TODO] Diagramma della gerarchia di componenti React}
+    \label{fig:cap4_componenti}
+\end{figure}
+
+Questa strutturazione consente di limitare il re-rendering: le Pages ricevono i dati
+via context e li propagano verso componenti puramente presentazionali, mentre le
+interazioni (toggle di un'automazione, caricamento di mappe) invocano helper comuni
+come \texttt{apiFetch} o \texttt{callService}.
+
+\section{Integrazione con i servizi backend}
+Per mantenere coerenti i dati tra Gemello Digitale e Home Assistant sono state
+implementate API dedicate:
+\begin{itemize}
+    \item Endpoint REST in Laravel (\texttt{/maps}, \texttt{/user}, \texttt{/automation})
+    protetti tramite Sanctum.
+    \item Web service Rulebot per la creazione conversazionale di regole, incorporato via
+    iframe ma accessibile anche tramite API per la sincronizzazione dello stato.
+\end{itemize}
+
+La scelta di mantenere un backend Laravel monolitico, anzich\'e microservizi separati,
+permette di condividere meccanismi di caching, logging e validazione dell'input. Inoltre
+facilita l'orchestrazione con il Simulation Management Module, che necessita di
+serializzare lo stesso set di dati sia verso la Digital Twin Interface sia verso Home
+Assistant.
+
+\section{Implementazione dell'interfaccia}
+In questa sezione si descrive come le linee guida sono state tradotte in codice.
+
+\subsection{Dashboard}
+La pagina \texttt{Dashboard3.jsx} combina mappe interattive (\texttt{AnimateMap2}) e
+indicatori sintetici. La sezione di destra utilizza componenti come
+\texttt{WhiteCard} per mostrare potenza istantanea, emissioni e numero di dispositivi
+attivi. L'uso di gauge semicircolari \`e stato preferito ai grafici a barre per offrire un
+feedback immediato: i test con utenti hanno evidenziato che la lettura del colore
+(verde/giallo/rosso) \`e pi\`u rapida dell'interpretazione di valori numerici.
+
+\subsection{Sezione Automations}
+Il componente \texttt{AutomationTable} elenca le automazioni utilizzando card
+espandibili e un drawer laterale. Durante la progettazione sono state valutate due
+alternative: una tabella tradizionale e una timeline. \`E stata scelta la tabella con
+filtri perch\'e permette di integrare controlli diretti (switch, pulsante delete) senza
+sovraccaricare l'utente. Il drawer mantiene visibile la lista mentre si esaminano i
+singoli dettagli, riducendo i click necessari.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox[c][6cm][c]{0.9\linewidth}{\centering Placeholder per mockup della pagina Automations}}
+    \caption{[TODO] Mockup ad alta fedelt\`a della pagina Automations}
+    \label{fig:cap4_mockup_automations}
+\end{figure}
+
+\subsection{Configurazione e preferenze}
+La pagina di configurazione riutilizza gli stessi componenti per offrire coerenza
+visiva. L'utente pu\`o caricare mappe, associare dispositivi e definire l'energy plan.
+Le preferenze personali sono rappresentate tramite carta trascinabile per rispettare il
+principio di manipolazione diretta discusso nel Capitolo~2.
+
+\section{Implementazione del builder di automazioni}
+Il builder descritto nel Capitolo~\ref{chap:digital-twin-smart-home} richiede
+un'interazione ricca: selezione di trigger, condizioni, azioni e verifica tramite
+simulazione.
+
+\subsection{Motivazioni progettuali}
+\begin{itemize}
+    \item \textbf{Editor modulare}: trigger, condizioni e azioni sono rappresentati da
+    card riordinabili (\texttt{Reorder} di Framer Motion). Ci\`o consente di aggiungere
+    facilmente nuovi tipi senza riscrivere l'interfaccia.
+    \item \textbf{Validazione in tempo reale}: i campi obbligatori vengono evidenziati non
+    appena l'utente li lascia vuoti, riducendo gli errori in fase di simulazione.
+    \item \textbf{Trasparenza della simulazione}: una volta inviato il modello al
+    Simulation Management Module, i risultati vengono integrati nella stessa vista
+    tramite componenti \texttt{ToastNotification} per non interrompere il flusso.
+\end{itemize}
+
+\subsection{Flusso di implementazione}
+\begin{enumerate}
+    \item L'utente definisce la regola nella UI; il builder genera un JSON conforme al
+    formato richiesto dal Simulation Management Module.
+    \item Il backend Laravel inoltra la richiesta al servizio di simulazione e attende la
+    risposta asincrona.
+    \item I risultati vengono mostrati nella UI e, in caso di esito positivo, trasmessi al
+    Home Assistant Integration Module per l'attuazione.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox[c][6cm][c]{0.9\linewidth}{\centering Placeholder per diagramma del flusso del builder}}
+    \caption{[TODO] Diagramma del flusso di creazione e simulazione delle automazioni}
+    \label{fig:cap4_flow_builder}
+\end{figure}
+
+\section{Strategie di verifica e iterazione}
+La verifica del sistema \`e stata organizzata su due livelli:
+\begin{itemize}
+    \item \textbf{Test funzionali} automatizzati su Laravel per garantire la correttezza
+    degli endpoint e la protezione dei dati sensibili.
+    \item \textbf{Sessioni di revisione con utenti pilota}, durante le quali sono state
+    raccolte metriche qualitative (tempo per completare un'azione, numero di errori) e
+    osservazioni sulle preferenze di visualizzazione. I feedback hanno portato, ad
+    esempio, all'introduzione del pulsante di refresh dell'iframe Rulebot e alla
+    suddivisione della dashboard in colonne per garantire la leggibilit\`a anche su
+    schermi ridotti.
+\end{itemize}
+
+\section{Sintesi}
+La progettazione del Gemello Digitale ha richiesto un equilibrio tra esigenze
+eterogenee: trasparenza verso l'utente finale, integrazione tecnica con Home Assistant e
+Rulebot e mantenibilit\`a del codice. Le scelte descritte in questo capitolo forniscono
+il contesto necessario per comprendere le funzionalit\`a che saranno approfondite nei
+capitoli successivi.

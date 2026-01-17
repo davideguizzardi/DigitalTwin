@@ -1,12 +1,12 @@
 # Fdb version 4
-["biber main"] 1767636261.63064 "main.bcf" "main.bbl" "main" 1767638456.16126 0
-  "main.bcf" 1767638455.98361 110705 d902c734f5a474ee2e83608cc922ea89 "pdflatex"
+["biber main"] 1767636261.63064 "main.bcf" "main.bbl" "main" 1767639451.59025 0
+  "main.bcf" 1767639451.41315 110705 d902c734f5a474ee2e83608cc922ea89 "pdflatex"
   "refs.bib" 1767632581.02687 12970 86945846f5b83595f571bdd91d647a6c ""
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1767638453.57441 "main.tex" "main.pdf" "main" 1767638456.16157 0
+["pdflatex"] 1767639448.92033 "main.tex" "main.pdf" "main" 1767639451.5906 0
   "/etc/texmf/web2c/texmf.cnf" 1767635583.67044 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/giaco/.texlive2023/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbi1200.600pk" 1767636257.21263 42704 276dbf30bd97dd137d2377bb58b96336 ""
   "/home/giaco/.texlive2023/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk" 1767636258.06513 31928 5bad5f23f859867dd7386949dff2c158 ""
@@ -275,6 +275,7 @@
   "1 - Capitoli/Capitolo 1.tex" 1767632581.0535 154 d93dae51c1c2366401b734afaee04691 ""
   "1 - Capitoli/Capitolo 2 - Stato dell'arte.tex" 1767634893.45332 34426 bf25d7eed0fd4c5ec424f9bf2562a1ba ""
   "1 - Capitoli/Capitolo 3 - Architettura.tex" 1767637553.27971 23820 881c887def7f528aae9ed41d86329a2f ""
+  "1 - Capitoli/Capitolo 4 - Progettazione e Implementazione.tex" 1767639367.33431 10750 f19e0b5ad107b20afaca1c7cc3503655 ""
   "images/Chap - 2/Multimodal.png" 1767632581.26766 734747 36fec2dc5b1709fdd358fb2376f784a7 ""
   "images/Chap - 2/Trigger and actions - no background.png" 1767632581.14208 195976 d7c25106f431ea25971a678774c59388 ""
   "images/Chap - 2/homeassistant_gui.png" 1767632581.21949 47043 8cab2837c5ed9e1866069e56d18d8729 ""
@@ -297,12 +298,12 @@
   "images/Chap - 3/Simulation/simulation 3.png" 1767632581.32313 18979 8c636f1d67e99599458759c97ea60940 ""
   "images/Chap - 3/architecture.png" 1767632581.29776 243473 25fd0f9d613dcb51bc6caa83b5118bb7 ""
   "images/logo.png" 1767632581.12642 21091 86657b60429a5fc25d7774c6d812ff90 ""
-  "main.aux" 1767638455.98361 17704 5f0ea7c934d27808cbabb0bf2da183e1 "pdflatex"
+  "main.aux" 1767639451.4037 21715 ddc86719963ff160918aaa4a9da7677d "pdflatex"
   "main.bbl" 1767636262.65763 41366 69306d9575c9be29f53efb4e1706ed87 "biber main"
-  "main.out" 1767638455.98361 4574 81aee41d622514099b220b045e3d0594 "pdflatex"
-  "main.run.xml" 1767638455.98361 2299 ae7d08fb93d2635ad8b3ec6b9897d088 "pdflatex"
-  "main.tex" 1767635166.01776 7847 fd2066055634b79e2d0139c1b9d2be1f ""
-  "main.toc" 1767638455.98361 2937 8327ecfe6db141c2c2e46e305885773e "pdflatex"
+  "main.out" 1767639451.4037 8051 31cfd13ba03969013f839b9fcd2e5167 "pdflatex"
+  "main.run.xml" 1767639451.41315 2299 ae7d08fb93d2635ad8b3ec6b9897d088 "pdflatex"
+  "main.tex" 1767639395.26954 7917 e42e7730a787e697ad3d582c07922dda ""
+  "main.toc" 1767639451.41315 4527 12e101396baf48e6b2b08f461cb3fa6b "pdflatex"
   (generated)
   "main.aux"
   "main.bcf"
