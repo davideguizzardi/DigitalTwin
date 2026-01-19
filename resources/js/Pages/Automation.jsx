@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { apiFetch, getIcon } from "@/Components/Commons/Constants";
 import { Modal } from "flowbite-react";
-import { rulebot } from "@/Components/Commons/Constants";
+const { protocol, hostname } = window.location;
+const rulebot = `${protocol}//${hostname}:8888`;
 import AddAutomation from "./AddAutomation";
 
 export default function Automation({ id = "" }) {
