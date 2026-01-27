@@ -7,7 +7,10 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { DeviceProviderRefresh } from "@/Components/ContextProviders/DeviceProviderRefresh";
 import Navbar from "@/Components/Commons/Navbar";
-import { apiLog,logsEvents } from "@/Components/Commons/Constants";
+import { apiLog, logsEvents } from "@/Components/Commons/Constants";
+
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 
 export const UserContext = createContext({})
 
@@ -22,10 +25,10 @@ export function UserLayout({ children }) {
                     credentials: "include"
                 });
 
-                
+
                 const response = await fetch(domain + "/api/user", {
                     method: "GET",
-                    credentials: "include", 
+                    credentials: "include",
                     headers: {
                         "X-Requested-With": "XMLHttpRequest"
                     }
@@ -57,28 +60,31 @@ export function UserLayout({ children }) {
 
     return (
         <main className="">
-            <div className="overflow-auto bg-gray-300 dark:bg-gray-700 h-screen w-screen text-gray-800">
-                <UserContext.Provider value={userState}>
-                    {children.props.isFirstConfiguration ?
-                        <div className="flex w-full justify-center">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
 
-                            <motion.div className={`h-screen justify-center w-full`}>
-                                {children}
-                            </motion.div>
-                        </div>
-                        :
-                        <DeviceProviderRefresh>
-                            <Navbar />
-                            <div className="flex w-full justify-center overflow-auto">
+                <div className="overflow-hidden bg-gray-300 dark:bg-gray-700 h-screen w-screen text-gray-800">
+                    <UserContext.Provider value={userState}>
+                        {children.props.isFirstConfiguration ?
+                            <div className="flex w-full justify-center">
 
-                                <motion.div className={`h-[calc(100vh-3.25rem)] justify-center w-full`}>
+                                <motion.div className={`h-screen justify-center w-full`}>
                                     {children}
                                 </motion.div>
                             </div>
-                        </DeviceProviderRefresh>
-                    }
-                </UserContext.Provider>
-            </div>
+                            :
+                            <DeviceProviderRefresh>
+                                <Navbar />
+                                <div className="flex w-full justify-center overflow-auto">
+
+                                    <motion.div className={`h-[calc(100vh-3.25rem)] justify-center w-full`}>
+                                        {children}
+                                    </motion.div>
+                                </div>
+                            </DeviceProviderRefresh>
+                        }
+                    </UserContext.Provider>
+                </div>
+            </LocalizationProvider>
         </main>
     )
 }

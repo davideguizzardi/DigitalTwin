@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import InputError from "@/Components/Commons/InputError";
 import { TouchKeyboard2 } from "@/Components/Commons/TouchKeyboard2";
 import { Avatar } from "flowbite-react";
-import { domain, getIcon,rulebot } from "@/Components/Commons/Constants";
+import { domain, getIcon,login_rulebot } from "@/Components/Commons/Constants";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLaravelReactI18n } from "laravel-react-i18n";
 import { PasswordInput } from "@/Components/Commons/PasswordInput";
@@ -41,29 +41,29 @@ export default function Login({ users, status, canResetPassword }) {
   const submit = async (e) => {
     e.preventDefault();
 
+    if(login_rulebot){
     try{
-
-      
-      const body = JSON.stringify({
-        email: rulebotEmail,//data.email,
-        password: rulebotPassword//data.password
-      })
-      
-      const result = await fetch(`${rulebotUrl}/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: body
-      }).then((res) => { return res.json()})
-      if (result.status === 'ok') {
-        Cookies.set(result.cookie.name,result.cookie.token,{secure:false})
-        Cookies.set("rulebot_user_id",result.user_id,{secure:false})
-      } else {
+        const body = JSON.stringify({
+          email: rulebotEmail,//data.email,
+          password: rulebotPassword//data.password
+        })
         
+        const result = await fetch(`${rulebotUrl}/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: body
+        }).then((res) => { return res.json()})
+        if (result.status === 'ok') {
+          Cookies.set(result.cookie.name,result.cookie.token,{secure:false})
+          Cookies.set("rulebot_user_id",result.user_id,{secure:false})
+        } else {
+          
+        }
+      }catch(error){
+        console.error(error)
       }
-    }catch(error){
-      console.error(error)
     }
     post(route("login"));
   };

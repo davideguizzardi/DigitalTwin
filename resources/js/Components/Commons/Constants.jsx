@@ -55,7 +55,7 @@ import {
     RxSwitch
 } from "react-icons/rx";
 
-import { BsFullscreen, BsFullscreenExit } from "react-icons/bs";
+import { BsFullscreen, BsFullscreenExit ,BsArrowCounterclockwise } from "react-icons/bs";
 
 import { PiTelevisionSimple, PiVideoCameraFill, PiDesktopTowerFill, PiForkKnife } from "react-icons/pi";
 import { TbMicrowave } from "react-icons/tb";
@@ -87,6 +87,7 @@ import { MdMeetingRoom,MdDevices  } from "react-icons/md";
 
 
 export const backend = import.meta.env.VITE_DT_API_URL || "/fastapi"
+export const login_rulebot = import.meta.env.VITE_LOGIN_RULEBOT || false
 export const domain = import.meta.env.VITE_DT_DOMAIN ||""
 export const rulebot=import.meta.env.VITE_RULEBOT_FRONTEND_URL || "http://localhost:8888"
 export const diary_link=import.meta.env.VITE_DIARY_LINK || ""
@@ -205,7 +206,8 @@ export const iconMap = {
     device:(className)=><MdDevices  className={className}/>,
     state:(className)=><MdDevices  className={className}/>,
     template:(className)=><BiCodeCurly  className={className}/>,
-    notify:(className)=><FaRegMessage className={className}/>
+    notify:(className)=><FaRegMessage className={className}/>,
+    change:(className)=><BsArrowCounterclockwise  gMessage className={className}/>,
 }
 
 export const DevicesTypes = {
