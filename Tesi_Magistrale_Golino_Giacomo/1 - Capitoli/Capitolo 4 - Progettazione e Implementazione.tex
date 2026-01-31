@@ -1,206 +1,114 @@
-﻿\chapter{Progettazione e implementazione del sistema}
+\chapter{Progettazione e implementazione dell'interfaccia utente}
 \label{chap:design-implementation}
 
-In questo capitolo vengono illustrate nel dettaglio le scelte progettuali e le
-attivit\`a di implementazione che hanno portato alla realizzazione del Gemello
-Digitale presentato nel Capitolo~\ref{chap:digital-twin-smart-home}. L'obiettivo \`e
-mostrare come le esigenze degli utenti finali siano state tradotte in linee guida
-progettuali e, successivamente, in componenti software funzionanti.
+\section{Introduzione al capitolo}
+Questo capitolo approfondisce la progettazione dell'interfaccia utente del sistema sviluppato, con l'obiettivo di mostrare come l'integrazione delle funzionalit\`a di Trigger-Action Programming (TAP) nel Gemello Digitale sia stata tradotta in un'esperienza di interazione coerente, controllabile e aderente ai requisiti discussi nei capitoli precedenti. L'interfaccia non \`e un semplice elemento di presentazione, ma il punto di accesso privilegiato per osservare lo stato della Smart Home e per definire automazioni che, dopo la fase di simulazione, vengono applicate alla componente fisica.
 
-\section{Requisiti e principi guida}
-La definizione dei requisiti \`e partita dall'analisi dei tre attori principali del
-sistema: utenti domestici, ricercatori che monitorano i consumi e sviluppatori che
-mantengono l'infrastruttura. Per conciliare esigenze differenti sono state adottate le
-seguenti linee guida:
-\begin{itemize}
-    \item \textbf{Chiarezza delle azioni}: la GUI deve distinguere nettamente tra
-    consultazione dei dati e controllo dei dispositivi per ridurre il rischio di
-    attivazioni involontarie.
-    \item \textbf{Supporto alle decisioni}: ogni suggerimento energetico deve essere
-    accompagnato da una spiegazione sintetica (ad esempio il risparmio stimato o il
-    conflitto rilevato dal Simulation Management Module).
-    \item \textbf{Progressive disclosure}: funzionalit\`a avanzate (configurazione di
-    mappe, integrazione con Home Assistant, personalizzazione delle soglie) sono
-    raggiungibili senza sovraccaricare la dashboard principale.
-    \item \textbf{Tracciabilit\`a dei dati}: ogni componente deve indicare la fonte delle
-    informazioni mostrate (API Home Assistant, servizi predittivi, Rulebot) per
-    facilitare il debugging.
-\end{itemize}
+In continuit\`a con l'architettura descritta nel Capitolo~\ref{chap:digital-twin-smart-home}, l'interfaccia svolge una funzione di mediazione tra l'utente e i moduli del sistema: rende percepibili i dati generati dal Gemello Digitale, permette di interpretare i risultati della simulazione e guida l'utente nella creazione e gestione delle regole TAP. Il capitolo si colloca quindi come ponte tra la visione concettuale e l'implementazione, motivando le scelte di design e illustrando il percorso dal prototipo all'interfaccia funzionante.
 
-\section{Processo di progettazione dell'interfaccia}
-Il processo UX si \`e articolato in tre iterazioni: raccolta casi d'uso, prototipazione
-low-fidelity e definizione del design system.
+\section{Analisi dei requisiti dell'interfaccia}
+L'analisi dei requisiti prende avvio dal contesto applicativo della Smart Home e dal paradigma TAP presentato nel Capitolo 2, nonch\'e dalla struttura modulare del Gemello Digitale descritta nel Capitolo~\ref{chap:digital-twin-smart-home}. In questo quadro, l'interfaccia deve rendere accessibile un insieme eterogeneo di funzionalit\`a, senza introdurre complessit\`a non necessarie o ambiguit\`a nella gestione delle automazioni.
 
-\subsection{Casi d'uso e scenari}
-Sono stati individuati i principali journey che gli utenti devono poter eseguire:
-\begin{enumerate}
-    \item Verificare in pochi secondi se il consumo corrente \`e sostenibile.
-    \item Creare o modificare un'automazione ricevendo feedback immediati sui conflitti.
-    \item Aggiornare le preferenze personali, ad esempio cambiando il peso dato al
-    risparmio energetico o alla sicurezza.
-\end{enumerate}
+Dal punto di vista funzionale, l'interfaccia deve consentire la consultazione dello stato del sistema, la visualizzazione dei consumi energetici e delle previsioni, la creazione e modifica di regole trigger-action, la gestione delle configurazioni dell'abitazione e delle preferenze utente, nonch\'e l'esecuzione di controlli manuali quando necessario. \`E inoltre essenziale fornire un accesso esplicito agli esiti delle simulazioni, includendo eventuali conflitti o suggerimenti, poich\'e la validazione preventiva costituisce un requisito cardine del sistema.
+
+I requisiti di usabilit\`a e chiarezza discendono dalla natura del dominio: le automazioni influenzano il comportamento della casa reale e un errore di configurazione pu\`o produrre conseguenze tangibili. Per questo motivo l'interfaccia deve privilegiare la visibilit\`a dello stato, il feedback tempestivo sulle azioni, la tracciabilit\`a delle informazioni e l'adozione di una terminologia coerente con quella introdotta nei capitoli precedenti. La prevenzione degli errori non si limita a messaggi di avviso, ma richiede una progettazione che renda evidenti le relazioni tra trigger, condizioni e azioni, riducendo l'ambiguit\`a nelle scelte dell'utente.
+
+La tipologia di utenti prevista comprende soggetti con livelli di competenza differenti: utenti domestici interessati a monitorare lo stato della casa e a configurare automazioni semplici, utenti tecnici chiamati a definire mappe e dispositivi, e profili orientati all'analisi dei consumi che richiedono viste sintetiche ma confrontabili nel tempo. La progettazione ha quindi dovuto conciliare immediatezza e profondit\`a informativa, prevedendo percorsi che consentano sia un utilizzo rapido, sia un accesso graduato ai dettagli.
+
+\section{Progettazione dell'interfaccia utente}
+\subsection{Approccio progettuale e criteri guida}
+La progettazione ha seguito un approccio user-centered, con iterazioni mirate alla definizione dei principali flussi di interazione: monitoraggio dello stato della casa, consultazione dei consumi, definizione delle regole TAP e gestione della configurazione. La coerenza con il Gemello Digitale ha richiesto che ogni entit\`a significativa nel sistema, come ambienti, dispositivi e automazioni, fosse riconoscibile nell'interfaccia con una terminologia stabile e una rappresentazione uniforme.
+
+Tra i criteri guida si \`e privilegiata la semplicit\`a operativa, intesa come riduzione del carico cognitivo e come minimizzazione dei passi necessari per completare un compito. Parallelamente, la modularit\`a dell'interfaccia \`e stata considerata essenziale per garantire l'estendibilit\`a del sistema e per permettere una separazione netta tra consultazione e azione. Tale separazione, oltre a favorire l'usabilit\`a, risponde alla necessit\`a di prevenire attivazioni non intenzionali in un contesto in cui le automazioni incidono sul mondo fisico.
+
+\subsection{Layout, navigazione e organizzazione delle informazioni}
+L'architettura informativa \`e stata organizzata in sezioni principali, accessibili tramite una navigazione persistente. La dashboard assolve il ruolo di sintesi dello stato del Gemello Digitale, mentre le sezioni dedicate a consumi, automazioni e configurazione consentono di approfondire aspetti specifici senza perdere il contesto generale. Questa scelta risponde alla necessit\`a di mantenere il controllo percettivo del sistema anche quando si accede a funzionalit\`a avanzate.
+
+L'organizzazione interna delle schermate segue una logica di progressiva rivelazione: gli indicatori essenziali sono presentati in modo immediato, mentre i dettagli vengono esposti solo quando l'utente decide di approfondire. Tale scelta \`e motivata dall'eterogeneit\`a dei dati trattati dal Gemello Digitale e dalla necessit\`a di evitare un sovraccarico informativo, specialmente per gli utenti meno esperti. La disposizione dei controlli di azione in aree dedicate, distinte dalle aree di sola consultazione, rafforza inoltre la chiarezza operativa e la prevenzione degli errori.
+
+\subsection{Rappresentazione delle regole Trigger-Action e feedback}
+L'integrazione del paradigma TAP ha richiesto una rappresentazione che rendesse esplicita la sequenza logica di trigger, condizioni e azioni. L'interfaccia \`e stata quindi progettata per guidare l'utente attraverso la composizione delle regole, assicurando che ogni passaggio sia comprensibile e verificabile. La scelta di una struttura modulare risponde alla necessit\`a di mantenere la flessibilit\`a del paradigma TAP senza introdurre ambiguit\`a nei legami tra gli elementi della regola.
+
+Un aspetto centrale riguarda la restituzione dei risultati della simulazione. Poich\'e la validazione preventiva \`e parte integrante dell'architettura, l'interfaccia deve comunicare in modo chiaro gli esiti, includendo eventuali conflitti e suggerimenti. Ci\`o richiede un sistema di feedback che distingua tra avvisi informativi e blocchi operativi, conservando la trasparenza dell'intero processo. In tal modo l'utente non percepisce la simulazione come un vincolo opaco, ma come un supporto decisionale coerente con gli obiettivi del Gemello Digitale.
+
+\section{Prototipazione tramite FIGMA}
+La prototipazione ad alta fedelt\`a \`e stata realizzata in FIGMA per validare la struttura informativa e il flusso di interazione prima dell'implementazione. Le immagini del prototipo sono disponibili nella cartella \texttt{Tesi\_Magistrale\_Golino\_Giacomo\textbackslash images\textbackslash Chap - 4} e vengono richiamate nelle figure di questa sezione per illustrare le principali schermate.
+
+\subsection{Schermate principali}
+La sezione dedicata ai consumi energetici, mostrata in Figura~\ref{fig:cap4_consumptions}, rappresenta il punto di accesso alle analisi del consumo e alle previsioni. La schermata \`e concepita per supportare il confronto tra intervalli temporali differenti e per distinguere tra consumo totale, contributo delle automazioni e stime predittive. Nel prototipo sono presenti varianti della vista che mostrano tali configurazioni, coerenti con i requisiti di supporto alle decisioni energetiche.
 
 \begin{figure}[H]
     \centering
-    \fbox{\parbox[c][6cm][c]{0.9\linewidth}{\centering Placeholder per user journey e mappa delle attivit\`a}}
-    \caption{[TODO] User journey principale con punti di contatto digitali}
-    \label{fig:cap4_user_journey}
+    \includegraphics[width=1\linewidth]{images/Chap - 4/Consumptions.png}
+    \caption{Prototipo della sezione di analisi dei consumi energetici.}
+    \label{fig:cap4_consumptions}
 \end{figure}
 
-Questi scenari hanno motivato l'introduzione di sezioni dedicate (Dashboard,
-Consumption, Automations, Configuration) e la scelta di mantenere visibile un men\`u
-laterale persistente, che consente di passare rapidamente da una vista all'altra senza
-perdere contesto.
-
-\subsection{Prototipazione e design system}
-Durante la fase di prototipazione sono stati creati wireframe a bassa fedelt\`a per
-validare la disposizione delle informazioni. Successivamente \`e stato definito un design
-system basato su card, tipografia Sans e palette neutra con accenti verde lime per
-richiamare il tema della sostenibilit\`a.
+La gestione delle automazioni (Figura~\ref{fig:cap4_automations}) esprime la componente centrale dell'integrazione TAP nel Gemello Digitale. La schermata \`e pensata per rendere visibili le regole attive, lo stato di ciascuna automazione e l'accesso ai dettagli necessari per la modifica. In questo contesto, la relazione tra trigger, condizioni e azioni \`e mantenuta esplicita per facilitare il controllo e la comprensione delle regole.
 
 \begin{figure}[H]
     \centering
-    \fbox{\parbox[c][6cm][c]{0.9\linewidth}{\centering Placeholder per wireframe della Dashboard}}
-    \caption{[TODO] Wireframe a bassa fedelt\`a della Dashboard}
-    \label{fig:cap4_wireframe_dashboard}
+    \includegraphics[width=1\linewidth]{images/Chap - 4/Automations.png}
+    \caption{Prototipo della sezione di gestione delle automazioni trigger-action.}
+    \label{fig:cap4_automations}
 \end{figure}
 
-Le principali decisioni di UI sono state:
-\begin{itemize}
-    \item \textbf{Uso estensivo di card} per raggruppare indicatori omogenei e rendere la
-    dashboard scalabile su risoluzioni differenti.
-    \item \textbf{Tipografia uniforme} per favorire la leggibilit\`a in modalit\`a chiara e
-    scura, coerentemente con quanto implementato dal tema React.
-    \item \textbf{Color coding} (verde = stato attivo, grigio = inattivo, giallo = warning)
-    che aiuta l'utente a capire a colpo d'occhio lo stato delle automazioni.
-\end{itemize}
-
-\section{Architettura applicativa front-end}
-L'interfaccia \`e stata implementata con React e Inertia.js sopra Laravel. La scelta \`e
-stata dettata dalla necessit\`a di riutilizzare l'ecosistema Laravel per
-l'autenticazione e, allo stesso tempo, ottenere una SPA dinamica.
-
-\subsection{Strutturazione dei componenti}
-Il codice \`e suddiviso in tre categorie principali:
-\begin{enumerate}
-    \item \textbf{Pages} (es. \texttt{Dashboard3.jsx}, \texttt{Automation.jsx}) che
-    raccolgono e orchestrano i dati provenienti dai provider contestuali.
-    \item \textbf{Components} riutilizzabili (card, grafici, tabelle) che implementano lo
-    stile definito dal design system.
-    \item \textbf{Context Providers} come \texttt{DeviceContextRefresh} che sincronizzano
-    elenco dispositivi e stato energetico.
-\end{enumerate}
+La configurazione dell'abitazione, illustrata in Figura~\ref{fig:cap4_house_configuration}, supporta la mappatura tra spazi fisici e rappresentazione digitale. Tale passaggio \`e essenziale per garantire che le automazioni TAP siano contestualizzate in modo coerente con la Smart Home reale, preservando la fedelt\`a del Gemello Digitale.
 
 \begin{figure}[H]
     \centering
-    \fbox{\parbox[c][6cm][c]{0.9\linewidth}{\centering Placeholder per schema componenti front-end}}
-    \caption{[TODO] Diagramma della gerarchia di componenti React}
-    \label{fig:cap4_componenti}
+    \includegraphics[width=0.95\linewidth]{images/Chap - 4/House configration_final_1.png}
+    \caption{Prototipo della configurazione dell'abitazione e dei dispositivi.}
+    \label{fig:cap4_house_configuration}
 \end{figure}
 
-Questa strutturazione consente di limitare il re-rendering: le Pages ricevono i dati
-via context e li propagano verso componenti puramente presentazionali, mentre le
-interazioni (toggle di un'automazione, caricamento di mappe) invocano helper comuni
-come \texttt{apiFetch} o \texttt{callService}.
-
-\section{Integrazione con i servizi backend}
-Per mantenere coerenti i dati tra Gemello Digitale e Home Assistant sono state
-implementate API dedicate:
-\begin{itemize}
-    \item Endpoint REST in Laravel (\texttt{/maps}, \texttt{/user}, \texttt{/automation})
-    protetti tramite Sanctum.
-    \item Web service Rulebot per la creazione conversazionale di regole, incorporato via
-    iframe ma accessibile anche tramite API per la sincronizzazione dello stato.
-\end{itemize}
-
-La scelta di mantenere un backend Laravel monolitico, anzich\'e microservizi separati,
-permette di condividere meccanismi di caching, logging e validazione dell'input. Inoltre
-facilita l'orchestrazione con il Simulation Management Module, che necessita di
-serializzare lo stesso set di dati sia verso la Digital Twin Interface sia verso Home
-Assistant.
-
-\section{Implementazione dell'interfaccia}
-In questa sezione si descrive come le linee guida sono state tradotte in codice.
-
-\subsection{Dashboard}
-La pagina \texttt{Dashboard3.jsx} combina mappe interattive (\texttt{AnimateMap2}) e
-indicatori sintetici. La sezione di destra utilizza componenti come
-\texttt{WhiteCard} per mostrare potenza istantanea, emissioni e numero di dispositivi
-attivi. L'uso di gauge semicircolari \`e stato preferito ai grafici a barre per offrire un
-feedback immediato: i test con utenti hanno evidenziato che la lettura del colore
-(verde/giallo/rosso) \`e pi\`u rapida dell'interpretazione di valori numerici.
-
-\subsection{Sezione Automations}
-Il componente \texttt{AutomationTable} elenca le automazioni utilizzando card
-espandibili e un drawer laterale. Durante la progettazione sono state valutate due
-alternative: una tabella tradizionale e una timeline. \`E stata scelta la tabella con
-filtri perch\'e permette di integrare controlli diretti (switch, pulsante delete) senza
-sovraccaricare l'utente. Il drawer mantiene visibile la lista mentre si esaminano i
-singoli dettagli, riducendo i click necessari.
+L'area profilo (Figura~\ref{fig:cap4_profile}) integra la gestione delle informazioni personali e delle preferenze dell'utente, consentendo di collegare le impostazioni individuali ai parametri utilizzati dai moduli di simulazione e analisi. Questa schermata \`e fondamentale per mantenere coerenza tra obiettivi dell'utente e comportamento del sistema.
 
 \begin{figure}[H]
     \centering
-    \fbox{\parbox[c][6cm][c]{0.9\linewidth}{\centering Placeholder per mockup della pagina Automations}}
-    \caption{[TODO] Mockup ad alta fedelt\`a della pagina Automations}
-    \label{fig:cap4_mockup_automations}
+    \includegraphics[width=0.7\linewidth]{images/Chap - 4/Profile.png}
+    \caption{Prototipo dell'area profilo e delle preferenze utente.}
+    \label{fig:cap4_profile}
 \end{figure}
 
-\subsection{Configurazione e preferenze}
-La pagina di configurazione riutilizza gli stessi componenti per offrire coerenza
-visiva. L'utente pu\`o caricare mappe, associare dispositivi e definire l'energy plan.
-Le preferenze personali sono rappresentate tramite carta trascinabile per rispettare il
-principio di manipolazione diretta discusso nel Capitolo~2.
-
-\section{Implementazione del builder di automazioni}
-Il builder descritto nel Capitolo~\ref{chap:digital-twin-smart-home} richiede
-un'interazione ricca: selezione di trigger, condizioni, azioni e verifica tramite
-simulazione.
-
-\subsection{Motivazioni progettuali}
-\begin{itemize}
-    \item \textbf{Editor modulare}: trigger, condizioni e azioni sono rappresentati da
-    card riordinabili (\texttt{Reorder} di Framer Motion). Ci\`o consente di aggiungere
-    facilmente nuovi tipi senza riscrivere l'interfaccia.
-    \item \textbf{Validazione in tempo reale}: i campi obbligatori vengono evidenziati non
-    appena l'utente li lascia vuoti, riducendo gli errori in fase di simulazione.
-    \item \textbf{Trasparenza della simulazione}: una volta inviato il modello al
-    Simulation Management Module, i risultati vengono integrati nella stessa vista
-    tramite componenti \texttt{ToastNotification} per non interrompere il flusso.
-\end{itemize}
-
-\subsection{Flusso di implementazione}
-\begin{enumerate}
-    \item L'utente definisce la regola nella UI; il builder genera un JSON conforme al
-    formato richiesto dal Simulation Management Module.
-    \item Il backend Laravel inoltra la richiesta al servizio di simulazione e attende la
-    risposta asincrona.
-    \item I risultati vengono mostrati nella UI e, in caso di esito positivo, trasmessi al
-    Home Assistant Integration Module per l'attuazione.
-\end{enumerate}
+La vista sull'impronta ecologica (Figura~\ref{fig:cap4_ecological}) fornisce una sintesi orientata alla sostenibilit\`a, utile per collegare il comportamento delle automazioni agli obiettivi energetici del sistema. La presenza di questa schermata nel prototipo rafforza la connessione tra TAP e ottimizzazione dei consumi.
 
 \begin{figure}[H]
     \centering
-    \fbox{\parbox[c][6cm][c]{0.9\linewidth}{\centering Placeholder per diagramma del flusso del builder}}
-    \caption{[TODO] Diagramma del flusso di creazione e simulazione delle automazioni}
-    \label{fig:cap4_flow_builder}
+    \includegraphics[width=0.9\linewidth]{images/Chap - 4/Ecological footprint.png}
+    \caption{Prototipo della vista di sintesi dell'impronta ecologica.}
+    \label{fig:cap4_ecological}
 \end{figure}
 
-\section{Strategie di verifica e iterazione}
-La verifica del sistema \`e stata organizzata su due livelli:
-\begin{itemize}
-    \item \textbf{Test funzionali} automatizzati su Laravel per garantire la correttezza
-    degli endpoint e la protezione dei dati sensibili.
-    \item \textbf{Sessioni di revisione con utenti pilota}, durante le quali sono state
-    raccolte metriche qualitative (tempo per completare un'azione, numero di errori) e
-    osservazioni sulle preferenze di visualizzazione. I feedback hanno portato, ad
-    esempio, all'introduzione del pulsante di refresh dell'iframe Rulebot e alla
-    suddivisione della dashboard in colonne per garantire la leggibilit\`a anche su
-    schermi ridotti.
-\end{itemize}
+\subsection{Elementi di supporto e coerenza visiva}
+Oltre alle schermate principali, il prototipo include elementi di supporto che contribuiscono alla coerenza visiva e al feedback operativo. La definizione della palette cromatica (Figura~\ref{fig:cap4_palette}) esplicita i ruoli dei colori per stati, avvisi e informazioni neutre, garantendo una leggibilit\`a uniforme tra le sezioni. L'uso di tali convenzioni \`e funzionale alla chiarezza e alla riconoscibilit\`a delle informazioni.
 
-\section{Sintesi}
-La progettazione del Gemello Digitale ha richiesto un equilibrio tra esigenze
-eterogenee: trasparenza verso l'utente finale, integrazione tecnica con Home Assistant e
-Rulebot e mantenibilit\`a del codice. Le scelte descritte in questo capitolo forniscono
-il contesto necessario per comprendere le funzionalit\`a che saranno approfondite nei
-capitoli successivi.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{images/Chap - 4/Color palette.png}
+    \caption{Palette cromatica utilizzata nel prototipo.}
+    \label{fig:cap4_palette}
+\end{figure}
+
+Il prototipo comprende inoltre esempi di notifiche contestuali per comunicare l'esito di azioni o variazioni di stato, come mostrato in Figura~\ref{fig:cap4_feedback}. Questi elementi sono rilevanti per la percezione di affidabilit\`a del sistema, in quanto informano l'utente sugli effetti delle operazioni eseguite.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{images/Chap - 4/Achievements popup.png}
+    \caption{Esempio di notifica contestuale nel prototipo.}
+    \label{fig:cap4_feedback}
+\end{figure}
+
+\section{Scelte implementative}
+La traduzione del prototipo in un'interfaccia funzionante ha richiesto decisioni che preservassero la coerenza concettuale e grafica, garantendo al contempo affidabilit\`a e manutenibilit\`a. L'adozione di un'architettura a componenti permette di riflettere la modularit\`a del design, assicurando uniformit\`a tra le sezioni e facilitando l'evoluzione futura dell'interfaccia. Tale impostazione supporta la riusabilit\`a di elementi comuni e riduce la probabilit\`a di inconsistenze visive o comportamentali.
+
+L'interfaccia deve gestire dati dinamici provenienti da moduli diversi, con aggiornamenti asincroni e potenziali ritardi. Per evitare discrepanze percettive tra stato reale e rappresentazione digitale, sono stati previsti meccanismi di aggiornamento chiari e indicatori che rendono esplicito il momento di sincronizzazione. Questo aspetto \`e particolarmente rilevante per le automazioni TAP, poich\'e l'utente deve distinguere tra una regola definita e una regola effettivamente validata dalla simulazione.
+
+Un ulteriore elemento riguarda la validazione delle regole e la prevenzione degli errori. Il flusso di definizione delle automazioni \`e stato implementato in modo guidato, con controlli che rendono evidenti i passaggi necessari e con feedback che segnalano incompletezze o conflitti prima dell'invio al modulo di simulazione. Tale scelta privilegia la sicurezza operativa rispetto alla mera rapidit\`a di configurazione, in linea con la natura critica delle automazioni in un ambiente domestico reale.
+
+Nel passaggio dal prototipo all'implementazione sono stati affrontati compromessi legati alla densit\`a informativa. Alcuni dettagli avanzati sono stati mantenuti in sezioni dedicate, cos\`i da preservare la leggibilit\`a delle viste principali. Inoltre, la coesistenza con strumenti conversazionali esterni per la creazione delle automazioni, discussa nel Capitolo~\ref{chap:digital-twin-smart-home}, ha richiesto di mantenere un percorso coerente tra le diverse modalit\`a di interazione, evitando duplicazioni non necessarie.
+
+\section{Considerazioni finali}
+La progettazione dell'interfaccia utente ha seguito un percorso coerente con i requisiti e con l'architettura del Gemello Digitale, integrando il paradigma TAP in un'interazione comprensibile e verificabile. Le scelte effettuate hanno privilegiato la trasparenza del processo di simulazione, la chiarezza terminologica e la prevenzione degli errori, bilanciando la complessit\`a del dominio con l'esigenza di usabilit\`a.
+
+Il capitolo conclusivo riprende queste scelte per discutere il sistema nel suo complesso e per sintetizzare le implicazioni progettuali e applicative emerse, fornendo un quadro finale delle opportunit\`a e delle prospettive di evoluzione.
