@@ -9,11 +9,13 @@ import {
     ChartsYAxis,
     ChartsTooltip,
     ChartsAxisHighlight,
-    ChartsReferenceLine,
-    ScatterPlot,
     useDrawingArea
 } from '@mui/x-charts';
 import dayjs from "dayjs";
+import { DeviceContextRefresh } from "@/Components/ContextProviders/DeviceProviderRefresh";
+import { useLaravelReactI18n } from "laravel-react-i18n";
+
+import { Slider } from "@mui/material";
 
 
 function OverlayMarkers({
@@ -39,7 +41,7 @@ function OverlayMarkers({
     );
 
     const sortedGroups = Object.entries(grouped)
-  .sort(([a], [b]) => Number(b) - Number(a));
+        .sort(([a], [b]) => Number(b) - Number(a));
 
     return (
         <g>
@@ -61,7 +63,6 @@ function OverlayMarkers({
                             style={{ cursor: 'pointer' }}
                             onClick={() => setOpenIndex(isOpen ? null : x)}
                         >
-                            {/* Bubble */}
                             <rect
                                 x={-16}
                                 y={-16}
@@ -73,15 +74,13 @@ function OverlayMarkers({
                                 strokeWidth={1.5}
                             />
 
-                            {/* Icon */}
                             <g transform="translate(-8, -8)">
-                                {getIcon('device')}
+                                {getIcon(sim.device_category)}
                             </g>
 
-                            {/* Text */}
                             {isOpen && (
                                 <text
-                                transform="translate(-8,-2)"
+                                    transform="translate(-8,-2)"
                                     x={20}
                                     y={6}
                                     fontSize={13}
@@ -182,20 +181,13 @@ function PowerGraph({
                     {
                         type: 'line',
                         data: normalizedData,
+                        valueFormatter: (value) => `${value.toFixed(2)} W`,
                         showMark: false,
                     },
-                    /* {
-                        type: 'scatter',
-                        data: starting_list,
-                        markerSize: 6,
-                        color: '#2563eb',
-                        valueFormatter:v=>v.label
-                    } */
 
                 ]}
             >
                 <LinePlot />
-                {/*<ScatterPlot/>*/}
                 <ChartsXAxis />
                 <ChartsYAxis />
 
@@ -231,10 +223,12 @@ export default function DeviceSimulation({ }) {
 
     const [totalSimulation, setTotalSimulation] = useState({ starting_time: null, values: [] })
 
+    const { t } = useLaravelReactI18n()
+
     const [maxThreshold, setMaxThreshold] = useState(3000)
     const [useBestSimulation, setUseBestSimulation] = useState(false)
 
-    const [houseDevices, setHouseDevices] = useState([])
+    const { deviceList = [] } = useContext(DeviceContextRefresh)
 
     const [loading, setLoading] = useState(false)
 
@@ -244,14 +238,12 @@ export default function DeviceSimulation({ }) {
             return;
         }
 
-        // 1. Find earliest start time
         const earliestSim = simulations.reduce((earliest, sim) =>
             dayjs(sim.time).isBefore(dayjs(earliest.time)) ? sim : earliest
         );
 
         const baseTime = dayjs(earliestSim.time);
 
-        // 2. Find how long the total timeline must be
         const totalLength = Math.max(
             ...simulations.map(sim => {
                 const offsetMinutes = dayjs(sim.time).diff(baseTime, 'minute');
@@ -259,10 +251,7 @@ export default function DeviceSimulation({ }) {
             })
         );
 
-        // 3. Initialize total array
         const new_total = Array(totalLength).fill(0);
-
-        // 4. Sum by time instant
         simulations.forEach(sim => {
             const offsetMinutes = dayjs(sim.time).diff(baseTime, 'minute');
 
@@ -282,20 +271,11 @@ export default function DeviceSimulation({ }) {
 
 
 
-    useEffect(() => {
-        async function getHouse() {
-            const data = await apiFetch(`/Simulation/house/casa_menicanin`);
-            if (data) {
-                setHouseDevices(data)
-            }
-        }
-        getHouse()
-    }, [])
-
-    function setSelectedSimulation(cluster, device_name, device_id, time = dayjs()) {
+    function setSelectedSimulation(cluster, device_name, device_id, device_category, time = dayjs()) {
 
         cluster["device_name"] = device_name
         cluster["device_id"] = device_id
+        cluster["device_category"] = device_category
         cluster["time"] = time
 
         const index = simulations.findIndex(a => a.device_name == device_name)
@@ -326,25 +306,25 @@ export default function DeviceSimulation({ }) {
 
 
 
-    function SimulationPickModal({ }) {
+    function SimulationPickModal({ t }) {
 
-        function FrequencyLabel({ percent }) {
+        function FrequencyLabel({ percent, t }) {
             if (percent == null) return null;
 
             let label = "";
             let className = "";
 
             if (percent >= 50) {
-                label = "Molto frequente";
+                label = t("Highly Frequently used");
                 className = "bg-lime-200 ";
             } else if (percent < 50 && percent >= 30) {
-                label = "Frequente";
+                label = t("Frequently used");
                 className = "bg-lime-200 ";
             } else if (percent > 5 && percent <= 15) {
-                label = "Rara";
+                label = t("Rarely used");
                 className = "bg-red-200 ";
             } else if (percent <= 5) {
-                label = "Molto rara";
+                label = t("Highly rarely used");
                 className = "bg-red-200";
             } else {
                 return null;
@@ -361,7 +341,7 @@ export default function DeviceSimulation({ }) {
 
         return (
             <Modal show={openModal} size="7xl" popup onClose={() => setOpenModal(false)}>
-                <Modal.Header>Seleziona la modalità da simulare</Modal.Header>
+                <Modal.Header>{t("simulation_mode_selection",{name: `${deviceSimulation.device_name}`})}</Modal.Header>
 
                 <Modal.Body className="p-0">
                     <div className="h-[60vh] flex flex-col m-4">
@@ -374,7 +354,7 @@ export default function DeviceSimulation({ }) {
                                         className="relative shadow-md bg-zinc-50 rounded-md p-2
                                             hover:cursor-pointer hover:bg-zinc-100
                                             flex flex-col items-center h-full min-h-0"
-                                        onClick={() => setSelectedSimulation(clu, deviceSimulation.device_name, deviceSimulation.device_id)}
+                                        onClick={() => setSelectedSimulation(clu, deviceSimulation.device_name, deviceSimulation.device_id, deviceSimulation.device_category)}
                                     >
                                         <div className="relative w-full font-[Inter] p-2 border border-gray-300 rounded-md 
                                         flex flex-row items-center justify-between gap-2 mt-1">
@@ -386,13 +366,13 @@ export default function DeviceSimulation({ }) {
                                                 {getIcon("time")} {Math.floor(clu.medoid.length / 60)}h {clu.medoid.length % 60}min
                                             </div>
                                             <div className="absolute bg-zinc-50 left-2 -top-3 p-1 text-xs">
-                                                Modalità
+                                                {t("Mode")}
                                             </div>
                                         </div>
                                         <div className="flex-1 min-h-0 w-full -m-6">
                                             <PowerGraph data={clu.medoid} indexes_on_x />
                                         </div>
-                                        <FrequencyLabel percent={clu.percent} />
+                                        <FrequencyLabel percent={clu.percent} t={t} />
                                     </div>
                                 ))}
                         </div>
@@ -406,66 +386,78 @@ export default function DeviceSimulation({ }) {
         )
     }
 
-    async function pullSimulation(device_id, device_name) {
+    async function pullSimulation(device_id, device_name, device_category) {
         const data = await apiFetch(`/Simulation/device/${device_id}`);
         if (data) {
             data["device_name"] = device_name
             data["device_id"] = device_id
+            data["device_category"] = device_category
+
             setDeviceSimulation(data)
+
             setOpenModal(!useBestSimulation)
-            if (useBestSimulation) {
-                setSelectedSimulation(data.clusters.sort((a, b) => b.count - a.count)[0], device_name)
-            }
         }
     }
-
-    const devices = [
-        {
-            name: "Lavatrice Daniela",
-            id: "4e036baa49c0754ad048c48666163c83"
-        },
-        {
-            name: "Pc Daniela(?)",
-            id: "83d55ab7b315ea1387442b5b4a48bbd9"
-        }
-    ]
 
 
 
     return (
+
         <div className="grid grid-cols-3 gap-2 pt-3 size-full overflow-hidden ">
-            <SimulationPickModal />
+            <SimulationPickModal t={t} />
 
             <div className="flex flex-col gap-2">
                 <div
-                    className="mx-3 px-1 py-2 bg-zinc-100 rounded-md hover:cursor-pointer mb-5 flex flex-col gap-4"
+                    className="mx-3 px-1 py-1 bg-zinc-100 rounded-md mb-5 flex flex-col gap-4"
                 >
                     <div className="font-semibold text-lg ml-1 font-[Inter]">
-                        Parametri della simulazione
+                        {t("simulation_threshold")}
                     </div>
                     <div className="flex flex-row items-center gap-10 ml-3">
-                        Massimo <TextInput value={maxThreshold} onChange={(value) => setMaxThreshold(value.target.value)} min={0} max={20000} step={100} type="number" />
+                        <Slider
+                            value={maxThreshold}
+                            min={0}
+                            max={10000}
+                            step={100}
+                            onChange={(e, newValue) => setMaxThreshold(newValue)}
+                            sx={{
+                                color: "#a3e635",
+                                width: "270px",
+                                height: "6px",
+                                "& .MuiSlider-rail": {
+                                    color: "#1F2937",
+                                    opacity: 1,
+                                },
+                            }}
+                        />
+                        <div className="flex flex-row items-center gap-2">
+                            <TextInput value={maxThreshold} onChange={(value) => setMaxThreshold(value.target.value)} min={0} max={10000} step={100} type="number" />
+                            Watts
+                        </div>
+
                     </div>
                     <div className="flex flex-row items-center gap-10 ml-3">
-                        Usa sempre la simulazione più probabilie <Checkbox checked={useBestSimulation} onChange={(e) => setUseBestSimulation(e.target.checked)} />
+
                     </div>
                 </div>
 
                 <div
-                    className="flex flex-col mx-3 bg-zinc-100 rounded-md"
+                    className="flex flex-col mx-3 bg-zinc-100 rounded-md p-1"
                 >
                     <div className="font-semibold text-lg ml-1 font-[Inter]">
-                        Dispositivi simulabili
+                        {t("Devices")}
                     </div>
 
-                    {
-                        houseDevices.map(dev => (
+                    {deviceList
+                        .filter(dev => !["sensor", "backup", "weather"].includes(dev.device_class))
+                        .map((dev, i) => (
                             <div
-                                className="ml-3 px-1 py-2 rounded-md hover:cursor-pointer hover:translate-x-2"
-                                onClick={() => { setDeviceSimulation(dev); setOpenModal(true) }}
-                            //onClick={() => pullSimulation(dev.id, dev.name)}
+                                className={`flex flex-row items-center gap-3 p-2 hover:translate-x-2 hover:cursor-pointer`}
+                                onClick={() => pullSimulation(dev.device_id, dev.name, dev.category)}
                             >
-                                {dev.device_name}
+                                {getIcon(dev.category, "size-8")}
+                                {dev.name}
+                                {/*<DeviceRecord device={dev} onClickFun={() => pullSimulation(dev.device_id, dev.name, dev.category)} />*/}
                             </div>
                         ))
                     }
@@ -480,7 +472,7 @@ export default function DeviceSimulation({ }) {
                     {simulations.map((sim, idx) => (
                         <div key={idx} className="h-[34vh] aspect-square bg-zinc-100 rounded-md flex flex-col relative gap-3 items-center">
                             <div className="flex flex-row items-center gap-2 font-[Inter] px-2">
-                                {getIcon("device")} {sim.device_name}
+                                {getIcon(sim.device_category)} {sim.device_name}
                             </div>
                             <div className="w-[83%] relative flex flex-row items-center justify-between gap-2 
                             font-[Inter] p-1 border border-gray-300 rounded-sm hover:border-black">
@@ -489,17 +481,16 @@ export default function DeviceSimulation({ }) {
                                 </div>
                                 <div
                                     className="hover:bg-zinc-200 rounded-full p-2 hover:cursor-pointer"
-                                    onClick={() => { setDeviceSimulation(houseDevices.find((d) => d.device_name == sim.device_name)); setOpenModal(true) }}
-                                //onClick={() => pullSimulation(sim.device_id, sim.device_name)}
+                                    onClick={() => pullSimulation(sim.device_id, sim.device_name, sim.device_category)}
                                 >
                                     {getIcon("change")}
                                 </div>
                                 <div className="absolute bg-zinc-100 left-2 -top-3 p-1 text-xs">
-                                    Modalità
+                                    {t("Mode")}
                                 </div>
                             </div>
                             <div className="flex flex-row items-center gap-2 font-[Inter]">
-                                <TimePicker ampm={false} size="small" label='Orario' value={sim.time} onChange={(value) => setSelectedSimulation(sim, sim.device_name, sim.device_id, value)} />
+                                <TimePicker ampm={false} size="small" label={t("Time")} value={sim.time} onChange={(value) => setSelectedSimulation(sim, sim.device_name, sim.device_id, sim.device_category, value)} />
                             </div>
                             <div className="absolute top-1 right-1 rounded-full p-1 hover:cursor-pointer hover:bg-red-400"
                                 onClick={() => removeSimulation(sim.device_id)}
@@ -521,7 +512,7 @@ export default function DeviceSimulation({ }) {
                     <div className="h-[55vh] bg-zinc-100 rounded-md my-2 flex flex-col mr-2 relative">
                         <div className=" flex flex-row items-center gap-2 mx-2 mt-2 text-lg font-[Inter]">
                             {getIcon("power")}
-                            Potenza utilizzata dall'intera abitazione
+                            {t("House power usage")}
                         </div>
                         <PowerGraph data={totalSimulation.values} simulations={simulations} starting_time={totalSimulation.starting_time} interactive={true} maxThreshold={maxThreshold} />
 
@@ -536,5 +527,6 @@ export default function DeviceSimulation({ }) {
                 }
 
             </div>
-        </div>)
+        </div>
+    )
 }

@@ -6,7 +6,7 @@ import { useLaravelReactI18n } from "laravel-react-i18n";
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import { apiLog, getIcon, logsEvents } from "../Commons/Constants";
 import { TouchKeyboard2 } from "../Commons/TouchKeyboard2";
-import { apiFetch,domain } from "../Commons/Constants";
+import { apiFetch, domain } from "../Commons/Constants";
 import ListButtons from "../Commons/ListButtons";
 import { useContext } from "react";
 import { UserContext } from "@/Layouts/UserLayout";

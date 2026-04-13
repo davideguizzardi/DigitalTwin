@@ -384,5 +384,10 @@
   "event": "Evento",
   "event_data": "Dati evento",
   "message_template": "Modello messaggio",
-  "color_temp_kelvin":"Temperatura colore (K)"
+  "color_temp_kelvin":"Temperatura colore (K)",
+  "simulation_mode_selection":"Seleziona la modalità da simulare",
+  "Mode":"Modalità",
+  "House power usage":"Potenza utilizzata dall'intera abitazione",
+  "Time":"Orario",
+  "Simulation":"Simulazione"
 }

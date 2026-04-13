@@ -381,5 +381,10 @@
     "event": "Event",
     "event_data": "Event data",
     "message_template": "Message template",
-    "color_temp_kelvin": "Color Temperature in Kelvin"
+    "color_temp_kelvin": "Color Temperature in Kelvin",
+    "simulation_mode_selection":"Select the mode you want to simulate",
+    "Mode":"Mode",
+    "House power usage":"House power usage",
+    "Time":"Time",
+    "Simulation":"Simulation"
 }

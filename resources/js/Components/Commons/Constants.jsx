@@ -48,7 +48,7 @@ import {
 } from "react-icons/fi";
 
 import {
-    GoDotFill
+    GoDotFill,GoGraph 
 } from "react-icons/go";
 
 import {
@@ -208,6 +208,7 @@ export const iconMap = {
     template:(className)=><BiCodeCurly  className={className}/>,
     notify:(className)=><FaRegMessage className={className}/>,
     change:(className)=><BsArrowCounterclockwise  gMessage className={className}/>,
+    graph:(className)=><GoGraph   gMessage className={className}/>,
 }
 
 export const DevicesTypes = {

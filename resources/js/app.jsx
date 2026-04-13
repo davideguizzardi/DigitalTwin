@@ -38,7 +38,7 @@ createInertiaApp({
     root.render(
       <LaravelReactI18nProvider
         locale={locale}
-        fallbackLocale="it"
+        fallbackLocale="en"
         files={langFiles}
       >
         <App {...props} />
