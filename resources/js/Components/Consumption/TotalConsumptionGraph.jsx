@@ -8,8 +8,13 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 dayjs.extend(customParseFormat);
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { StyledButton } from "../Commons/StyledBasedComponents";
-import { apiFetch, apiLog, logsEvents, useIsMobile } from "../Commons/Constants";
+import { logsEvents, useIsMobile } from "../Commons/Constants";
 import { UserContext } from "@/Layouts/UserLayout";
+import { consumptionService, logService } from "@/Api";
+
+
+
+
 export function TotalConsumptionGraph({ device_list }) {
   const [from, setFrom] = useState(dayjs())
   const [to, setTo] = useState(dayjs())
@@ -107,28 +112,20 @@ export function TotalConsumptionGraph({ device_list }) {
   };
 
   const fetchConsumption = async () => {
-    var url;
     const log_payload = JSON.stringify({
       start_timestamp: from.format("DD-MM-YYYY"),
       end_timestamp: to.format("DD-MM-YYYY"),
       group: group,
       device: deviceName
     })
-    if (deviceName == t("Entire House")) {
-      url = `/consumption/total?` +
-        `start_timestamp=${encodeURIComponent(from.format("YYYY-MM-DD"))}` +
-        `&end_timestamp=${encodeURIComponent(to.format("YYYY-MM-DD"))}` +
-        `&group=${group}`
+    const start = from.format("YYYY-MM-DD");
+    const end = to.format("YYYY-MM-DD");
 
-    }
-    else {
-      url = `/consumption/device?device_id=${deviceId}` +
-        `&start_timestamp=${encodeURIComponent(from.format("YYYY-MM-DD"))}` +
-        `&end_timestamp=${encodeURIComponent(to.format("YYYY-MM-DD"))}` +
-        `&group=${group}`
-    }
-
-    const response = await apiFetch(url);
+    const response = await (
+      deviceName === t("Entire House")
+        ? consumptionService.getTotal(start, end, group)
+        : consumptionService.getByDevices(deviceId, start, end, group)
+    );
     if (response) {
       const data = response
       data.sort((a, b) => dayjs(a.date, 'DD-MM-YYYY').toDate() - dayjs(b.date, 'DD-MM-YYYY').toDate());
@@ -139,7 +136,13 @@ export function TotalConsumptionGraph({ device_list }) {
       }
       setDataset(data)
       if (user)
-        apiLog(user.username, logsEvents.CONSUMPTION_TOTAL, deviceName, log_payload)
+        logService.add([{
+          actor: user.username,
+          event: logsEvents.CONSUMPTION_TOTAL,
+          target: deviceName,
+          payload: log_payload,
+        }]);
+
     }
     setLoading(false)
   }
@@ -239,7 +242,7 @@ export function TotalConsumptionGraph({ device_list }) {
               yAxis={[{ valueFormatter: valueFormatter, tickLabelStyle: { fontSize: isMobile ? 10 : 13 } }]}
               series={[{ dataKey: "energy_consumption", color: '#a3e635', valueFormatter }]}
               borderRadius={4}
-              margin={{ right: 20,left: isMobile?60:90}}
+              margin={{ right: 20, left: isMobile ? 60 : 90 }}
               height={heightGraph}
               sx={sxGraph}
             />

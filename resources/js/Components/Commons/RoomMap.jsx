@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Stage, Layer, Line, Text, Image as KonvaImage, Label, Tag } from "react-konva";
 import useImage from "use-image";
-import { apiFetch } from "./Constants";
-import { restrictToWindowEdges } from "@dnd-kit/modifiers";
+import { roomService } from "@/Api";
+
 
 export default function RoomMap({ image_url, floor, height_percent = 80 }) {
     const [image] = useImage(image_url);
-    const [rooms,setRooms]=useState([])
+    const [rooms, setRooms] = useState([])
     const [innerRooms, setInnerRooms] = useState([]);
     const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
 
     useEffect(() => {
+        console.log(image_url)
         const fetchData = async () => {
-            const data = await apiFetch(`/room/${floor}`);
+            const data = await roomService.getByFloor(floor);
 
             if (data && data.length > 0) {
                 setRooms(data);
@@ -24,14 +25,14 @@ export default function RoomMap({ image_url, floor, height_percent = 80 }) {
 
     useEffect(() => {
         if (!image || !image.width || !image.height) return;
-        
+
         const aspectRatio = image.width / image.height;
-        let targetHeight = window.innerHeight * (height_percent/100);
+        let targetHeight = window.innerHeight * (height_percent / 100);
         let targetWidth = targetHeight * aspectRatio;
 
-        if(targetWidth>window.innerWidth*0.5){
-            targetWidth=window.innerWidth*0.5
-            targetHeight=targetWidth / aspectRatio
+        if (targetWidth > window.innerWidth * 0.5) {
+            targetWidth = window.innerWidth * 0.5
+            targetHeight = targetWidth / aspectRatio
         }
 
         setStageSize({ width: targetWidth, height: targetHeight });

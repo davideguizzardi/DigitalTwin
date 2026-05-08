@@ -2,7 +2,8 @@ import { useState, useEffect } from "react"
 import { TouchKeyboard2 } from "../Commons/TouchKeyboard2"
 import { getIcon } from "../Commons/Constants"
 import { motion } from "framer-motion"
-import { apiFetch } from "../Commons/Constants"
+import { homeAssistantService } from "@/Api"
+import { deviceService } from "@/Api"
 import { useLaravelReactI18n } from "laravel-react-i18n"
 
 import { StyledButton } from "../Commons/StyledBasedComponents"
@@ -50,7 +51,7 @@ export default function ConfigurationHomeAssistant({ endSection }) {
     }
 
     const fetchHAConfiguration = async () => {
-        const data = await apiFetch("/homeassistant")
+        const data = await homeAssistantService.getConfig()
         if (data) {
             setServerUrl(data.server_url)
             setToken(data.token)
@@ -59,16 +60,16 @@ export default function ConfigurationHomeAssistant({ endSection }) {
 
     const testConnection = async () => {
         setTestResult("DOING")
-        const data = await apiFetch("/homeassistant")
-        const update = await apiFetch("/homeassistant", "PUT", { token: token, server_url: serverUrl })
+        const data = await homeAssistantService.getConfig()
+        const update = await homeAssistantService.setConfig(token, serverUrl)
         let result = "FAIL"
         if (update) {
-            const dev = await apiFetch("/device?get_only_names=false")
+            const dev = await deviceService.getAll(false)
             if (dev) {
                 result = "SUCCESS"
             }
             else {
-                await apiFetch("/homeassistant", "PUT", { token: data.token, server_url: data.server_url })
+                await homeAssistantService.setConfig(data.token, data.server_url)
             }
         }
         setTimeout(function () {
@@ -153,7 +154,7 @@ export default function ConfigurationHomeAssistant({ endSection }) {
 
             {testResult == "SUCCESS" &&
                 <div className='absolute bottom-0 right-0 w-fit flex py-5 justify-end px-2'>
-                    <StyledButton className="size-min" onClick={()=>endSection()} >{t("Next")}{getIcon("arrow_right")}</StyledButton>
+                    <StyledButton className="size-min" onClick={() => endSection()} >{t("Next")}{getIcon("arrow_right")}</StyledButton>
                 </div>
 
             }

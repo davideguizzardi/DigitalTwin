@@ -3,7 +3,7 @@ import {
     FaLeaf, FaDoorOpen, FaFan, FaCalendar, FaRobot,
     FaWindowMaximize, FaBell, FaCamera, FaIceCream, FaShieldAlt, FaTint, FaLock,
     FaUnlock, FaWindowClose, FaEye, FaEyeSlash, FaCheck,
-    FaInfoCircle,FaSave, FaRunning
+    FaInfoCircle, FaSave, FaRunning
 } from "react-icons/fa";
 
 
@@ -13,13 +13,13 @@ import {
     FaCirclePlay, FaLightbulb, FaHouse,
     FaArrowRight,
     FaArrowLeft,
-    FaPlus,FaPencil,
-    FaRegMessage 
+    FaPlus, FaPencil,
+    FaRegMessage
 } from "react-icons/fa6";
 
 // Other icon libraries
 import {
-    CiCircleQuestion, CiSpeaker, CiClock1, CiSearch, CiWarning,CiZoomIn,CiZoomOut
+    CiCircleQuestion, CiSpeaker, CiClock1, CiSearch, CiWarning, CiZoomIn, CiZoomOut
 } from "react-icons/ci";
 
 import {
@@ -36,7 +36,7 @@ import {
 } from "react-icons/md";
 
 import {
-    TbCircuitSwitchOpen,TbRulerMeasure
+    TbCircuitSwitchOpen, TbRulerMeasure
 } from "react-icons/tb";
 
 import {
@@ -48,21 +48,21 @@ import {
 } from "react-icons/fi";
 
 import {
-    GoDotFill,GoGraph 
+    GoDotFill, GoGraph
 } from "react-icons/go";
 
 import {
     RxSwitch
 } from "react-icons/rx";
 
-import { BsFullscreen, BsFullscreenExit ,BsArrowCounterclockwise } from "react-icons/bs";
+import { BsFullscreen, BsFullscreenExit, BsArrowCounterclockwise } from "react-icons/bs";
 
 import { PiTelevisionSimple, PiVideoCameraFill, PiDesktopTowerFill, PiForkKnife } from "react-icons/pi";
 import { TbMicrowave } from "react-icons/tb";
-import { BiSolidWasher, BiSolidFridge,BiError, BiCodeCurly } from "react-icons/bi";
-import { LuBlinds,LuPower,LuPowerOff} from "react-icons/lu";
+import { BiSolidWasher, BiSolidFridge, BiError, BiCodeCurly } from "react-icons/bi";
+import { LuBlinds, LuPower, LuPowerOff } from "react-icons/lu";
 import { TbAirConditioning } from "react-icons/tb";
-import { MdSensorWindow,MdDelete } from "react-icons/md";
+import { MdSensorWindow, MdDelete } from "react-icons/md";
 import { IoWater } from "react-icons/io5";
 import { IoExtensionPuzzleSharp } from "react-icons/io5";
 import {
@@ -72,7 +72,7 @@ import {
     SpeakerWaveIcon,
     SpeakerXMarkIcon,
     PlayCircleIcon,
-  } from "@heroicons/react/24/outline";
+} from "@heroicons/react/24/outline";
 
 import { IoRefresh } from "react-icons/io5";
 
@@ -82,15 +82,15 @@ import { IoIosColorPalette } from "react-icons/io";
 import { MdFileUpload } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import { SiHomeassistant } from "react-icons/si";
-import { MdMeetingRoom,MdDevices  } from "react-icons/md";
+import { MdMeetingRoom, MdDevices } from "react-icons/md";
 
 
 
-export const backend = import.meta.env.VITE_DT_API_URL || "/fastapi"
+export const backend = import.meta.env.VITE_DT_API_URL || "http://192.168.1.118:8000"
 export const login_rulebot = import.meta.env.VITE_LOGIN_RULEBOT || false
-export const domain = import.meta.env.VITE_DT_DOMAIN ||""
-export const rulebot=import.meta.env.VITE_RULEBOT_FRONTEND_URL || "http://localhost:8888"
-export const diary_link=import.meta.env.VITE_DIARY_LINK || ""
+export const domain = import.meta.env.VITE_DT_DOMAIN || ""
+export const rulebot = import.meta.env.VITE_RULEBOT_FRONTEND_URL || "http://localhost:8888"
+export const diary_link = import.meta.env.VITE_DIARY_LINK || ""
 
 export const daysOrder = [
     "mon",
@@ -174,41 +174,41 @@ export const iconMap = {
             <RiHomeLine className={className} />
             <FaLightbulb className={`size-5 absolute inset-0 m-auto`} />
         </div>,
-    arrow_right:(className) => <FaArrowRight className={className} />,
-    arrow_left:(className) => <FaArrowLeft className={className} />,
-    plus:(className) => <FaPlus className={className} />,
-    power_on:(className) => <LuPower className={className} />,
-    power_off:(className) => <LuPowerOff className={className} />,
-    error:(className) => <BiError className={className} />,
-    close:(className) => <IoMdClose className={className} />,
-    brightness: (className) => <MdBrightness6 className={className} />, 
+    arrow_right: (className) => <FaArrowRight className={className} />,
+    arrow_left: (className) => <FaArrowLeft className={className} />,
+    plus: (className) => <FaPlus className={className} />,
+    power_on: (className) => <LuPower className={className} />,
+    power_off: (className) => <LuPowerOff className={className} />,
+    error: (className) => <BiError className={className} />,
+    close: (className) => <IoMdClose className={className} />,
+    brightness: (className) => <MdBrightness6 className={className} />,
     color: (className) => <IoIosColorPalette className={className} />,
-    backward:(className)=> <BackwardIcon className={className}/>,
-    forward:(className)=> <ForwardIcon className={className}/>,
-    pause:(className)=> <PauseCircleIcon className={className}/>,
-    volume_max:(className)=> <SpeakerWaveIcon className={className}/>,
-    volume_min:(className)=> <SpeakerXMarkIcon className={className}/>,
-    play_media:(className)=> <PlayCircleIcon className={className}/>,
-    upload:(className)=> <MdFileUpload className={className}/>,
-    homeassistant:(className)=><SiHomeassistant className={className}/>,
-    delete:(className)=><MdDelete className={className}/>,
-    room:(className)=><MdMeetingRoom className={className}/>,
-    zoomin:(className)=><CiZoomIn className={className}/>,
-    zoomout:(className)=><CiZoomOut className={className}/>,
-    save: (className)=><FaSave className={className}/>,
-    motion: (className)=><FaRunning className={className}/>,
+    backward: (className) => <BackwardIcon className={className} />,
+    forward: (className) => <ForwardIcon className={className} />,
+    pause: (className) => <PauseCircleIcon className={className} />,
+    volume_max: (className) => <SpeakerWaveIcon className={className} />,
+    volume_min: (className) => <SpeakerXMarkIcon className={className} />,
+    play_media: (className) => <PlayCircleIcon className={className} />,
+    upload: (className) => <MdFileUpload className={className} />,
+    homeassistant: (className) => <SiHomeassistant className={className} />,
+    delete: (className) => <MdDelete className={className} />,
+    room: (className) => <MdMeetingRoom className={className} />,
+    zoomin: (className) => <CiZoomIn className={className} />,
+    zoomout: (className) => <CiZoomOut className={className} />,
+    save: (className) => <FaSave className={className} />,
+    motion: (className) => <FaRunning className={className} />,
     problem: (className) => <CiWarning className={className} />,
-    edit:(className)=><FaPencil className={className}/>,
-    fullscreen:(className)=><BsFullscreen className={className}/>,
-    fullscreen_exit:(className)=><BsFullscreenExit className={className}/>,
-    refresh:(className)=><IoRefresh className={className}/>,
-    numeric_state:(className)=><TbRulerMeasure className={className}/>,
-    device:(className)=><MdDevices  className={className}/>,
-    state:(className)=><MdDevices  className={className}/>,
-    template:(className)=><BiCodeCurly  className={className}/>,
-    notify:(className)=><FaRegMessage className={className}/>,
-    change:(className)=><BsArrowCounterclockwise  gMessage className={className}/>,
-    graph:(className)=><GoGraph   gMessage className={className}/>,
+    edit: (className) => <FaPencil className={className} />,
+    fullscreen: (className) => <BsFullscreen className={className} />,
+    fullscreen_exit: (className) => <BsFullscreenExit className={className} />,
+    refresh: (className) => <IoRefresh className={className} />,
+    numeric_state: (className) => <TbRulerMeasure className={className} />,
+    device: (className) => <MdDevices className={className} />,
+    state: (className) => <MdDevices className={className} />,
+    template: (className) => <BiCodeCurly className={className} />,
+    notify: (className) => <FaRegMessage className={className} />,
+    change: (className) => <BsArrowCounterclockwise gMessage className={className} />,
+    graph: (className) => <GoGraph gMessage className={className} />,
 }
 
 export const DevicesTypes = {
@@ -235,12 +235,12 @@ export const DevicesTypes = {
     washing_machine: { color: "bg-indigo-400" },
     induction_stove: { color: "bg-gray-500" },
     desktop: { color: "bg-blue-300" },
-    motion: {color:"bg-blue-300" }
+    motion: { color: "bg-blue-300" }
 };
 
 
-export function getDeviceIcon(key, classname = "size-9",active=true) {
-    const colorclass = active && key in DevicesTypes? DevicesTypes[key].color : "bg-gray-400"
+export function getDeviceIcon(key, classname = "size-9", active = true) {
+    const colorclass = active && key in DevicesTypes ? DevicesTypes[key].color : "bg-gray-400"
     return <div className={`rounded-full p-2 ${colorclass}`}>
         {getIcon(key, classname)}
     </div>
@@ -261,7 +261,7 @@ export function getIcon(key, className = "size-5") {
 
 
 
-export const callService = async (entity_id, service, data,user="No user") => {
+export const callService = async (entity_id, service, data, user = "No user") => {
     let body = {}
     body["entity_id"] = entity_id
     body["service"] = service
@@ -282,6 +282,7 @@ export const callService = async (entity_id, service, data,user="No user") => {
         return {}
     }
 }
+
 export const apiFetch = async (url, method = "GET", body = null) => {
     try {
         const response = await fetch(`${backend}${url}`, {
@@ -303,7 +304,7 @@ export const apiFetch = async (url, method = "GET", body = null) => {
     }
 };
 
-export const apiLog= async(log_actor,log_event,log_target="",log_payload="{}")=>{
+export const apiLog = async (log_actor, log_event, log_target = "", log_payload = "{}") => {
     let body = {}
     body["actor"] = log_actor
     body["event"] = log_event
@@ -328,24 +329,24 @@ export const apiLog= async(log_actor,log_event,log_target="",log_payload="{}")=>
 export const kgCO2e_kWh = 0.270; // Italy grid emissions: 0.270 kg CO2e per kWh in 2024
 
 export const logsEvents = {
-    LOGOUT:"Logout",
-    LOGIN:"Login",
-    CONSUMPTION_TOTAL:"Consumption:Total",
-    CONSUMPTION_COMPARISON:"Consumption:Comparison",
-    CONSUMPTION_PREDICTION:"Consumption:Prediction",
-    PAGE:"Page",
-    SERVICE:"Service:",
-    USER_PREFERENCES_ADD:"User:Preferences:Add",
-    USER_PRIVACY_ADD:"User:Privacy:Add",
-    CONFIGURATION_ADD:"Configuration:Add",
-    CONFIGURATION_ENERGY_ADD:"Configuration:Energy:Add",
-    CONFIGURATION_ENERGY_DELETE:"Configuration:Energy:Delete",
-    CONFIGURATION_DEVICE:"Configuration:Device",
-    CONFIGURATION_MAP_ADD:"Configuration:Map:Add",
-    CONFIGURATION_MAP_DELETE:"Configuration:Map:Delete",
-    CONFIGURATION_ROOM_ADD:"Configuration:Room:Add",
-    CONFIGURATION_ROOM_DELETE:"Configuration:Room:Delete",
-    CONFIGURATION_ROOM_RENAME:"Configuration:Room:Rename",
+    LOGOUT: "Logout",
+    LOGIN: "Login",
+    CONSUMPTION_TOTAL: "Consumption:Total",
+    CONSUMPTION_COMPARISON: "Consumption:Comparison",
+    CONSUMPTION_PREDICTION: "Consumption:Prediction",
+    PAGE: "Page",
+    SERVICE: "Service:",
+    USER_PREFERENCES_ADD: "User:Preferences:Add",
+    USER_PRIVACY_ADD: "User:Privacy:Add",
+    CONFIGURATION_ADD: "Configuration:Add",
+    CONFIGURATION_ENERGY_ADD: "Configuration:Energy:Add",
+    CONFIGURATION_ENERGY_DELETE: "Configuration:Energy:Delete",
+    CONFIGURATION_DEVICE: "Configuration:Device",
+    CONFIGURATION_MAP_ADD: "Configuration:Map:Add",
+    CONFIGURATION_MAP_DELETE: "Configuration:Map:Delete",
+    CONFIGURATION_ROOM_ADD: "Configuration:Room:Add",
+    CONFIGURATION_ROOM_DELETE: "Configuration:Room:Delete",
+    CONFIGURATION_ROOM_RENAME: "Configuration:Room:Rename",
 };
 
 export const removeType = ["device_tracker", "update", "sun", "weather", "forecast"]
@@ -353,27 +354,27 @@ export const removeType = ["device_tracker", "update", "sun", "weather", "foreca
 import { useState, useEffect } from "react";
 
 export function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768); // Tailwind "md"
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
+    useEffect(() => {
+        const check = () => setIsMobile(window.innerWidth < 768); // Tailwind "md"
+        check();
+        window.addEventListener("resize", check);
+        return () => window.removeEventListener("resize", check);
+    }, []);
 
-  return isMobile;
+    return isMobile;
 }
 
 
-export const THEME={
-    background_primary:"bg-zinc-50 dark:bg-gray-800",
-    bg_accent:"bg-lime-400 dark:bg-lime-600",
-    bg_accent_darker:"bg-green-800",
-    bg_danger:"bg-red-400",
-    bg_danger_darker:"bg-red-500",
-    text:"text-gray-900 dark:slate-50",
-    text_accent:"text-lime-400",
-    text_danger:"text-red-400",
-    text_warning:"text-yellow-400"
+export const THEME = {
+    background_primary: "bg-zinc-50 dark:bg-gray-800",
+    bg_accent: "bg-lime-400 dark:bg-lime-600",
+    bg_accent_darker: "bg-green-800",
+    bg_danger: "bg-red-400",
+    bg_danger_darker: "bg-red-500",
+    text: "text-gray-900 dark:slate-50",
+    text_accent: "text-lime-400",
+    text_danger: "text-red-400",
+    text_warning: "text-yellow-400"
 }

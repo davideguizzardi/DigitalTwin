@@ -5,13 +5,15 @@ import ListAppliances from "@/Components/ConfigurationMap/ListAppliances"
 import DroppableLayer from "@/Components/ConfigurationMap/DroppableLayer";
 import { Modal } from "flowbite-react";
 import { useSwipeable } from "react-swipeable";
-import { apiFetch, apiLog, backend, logsEvents ,domain} from "../Commons/Constants";
+import { backend, logsEvents } from "../Commons/Constants";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { DeviceContext } from "../ContextProviders/DeviceProvider";
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import { getIcon } from "../Commons/Constants";
 import RoomMap from "../Commons/RoomMap";
 import { UserContext } from "@/Layouts/UserLayout";
+
+import { mapService, logService } from "@/Api";
 
 export default function ConfigurationAppliance({ editMode, endSection, backSection, isInitialConfiguration }) {
     const { deviceList, setDeviceList } = useContext(DeviceContext);
@@ -159,15 +161,15 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
     }
 
     const deleteAppl = async (appl) => {
-        const response = await fetch(`${backend}/map/entity/${appl}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
+        const response = await mapService.deleteEntity(appl)
         console.log(response)
         if (user)
-            apiLog(user.username, logsEvents.CONFIGURATION_MAP_DELETE, appl, "{}")
+            await logService.add([{
+                actor: user.username,
+                event: logsEvents.CONFIGURATION_MAP_DELETE,
+                target: appl,
+                payload: "",
+            }]);
     }
 
     const deleteUnconfAppl = async () => {
@@ -186,15 +188,14 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
                 floor: e.floor
             }
         })
-        const response = await fetch(backend + "/map", {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ data: data })
-        })
+        const response = await mapService.addEntities(data)
         if (user)
-            apiLog(user.username, logsEvents.CONFIGURATION_MAP_ADD, "", JSON.stringify(data))
+            await logService.add([{
+                actor: user.username,
+                event: logsEvents.CONFIGURATION_MAP_ADD,
+                target: "",
+                payload: JSON.stringify(data),
+            }]);
     }
 
     const saveCallback = () => {
@@ -208,23 +209,12 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
     }
 
     const fetchMap = async () => {
-        await fetch(domain + "/sanctum/csrf-cookie", {
-            method: "GET",
-            credentials: "include"
-        });
-        const apiRoute = route('map.index')
-        const response = await fetch(apiRoute, {
-            method: "GET",
-            credentials: "include",
-            headers: {
-                "X-Requested-With": "XMLHttpRequest"
-            }
-        });
-        response.json().then((result) => {
-            const fetched_maps = result.maps.sort((a, b) => a.floor - b.floor)
+        const response = await mapService.getAllFiles()
+        if (response) {
+            const fetched_maps = response.sort((a, b) => a.floor - b.floor)
             setMaps([...fetched_maps])
             setFloor(fetched_maps[0].floor)
-        })
+        }
 
     }
 
@@ -293,7 +283,7 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
                                             initial="initial" animate="animate" exit="exit"
                                             key={maps[indexImg].url}
                                         >
-                                            <RoomMap image_url={maps[indexImg].url} floor={maps[indexImg].floor} height_percent={70} />
+                                            <RoomMap image_url={`${backend}/${maps[indexImg].url}`} floor={maps[indexImg].floor} height_percent={70} />
                                             <DroppableLayer isEditMode={editMode} dragConstraints={configRef}
                                                 listAppliancesPos={refApplOnfFloor.current} index={floor}
                                                 addAppl={addApplOnFloor} removeAppl={removeApplOnFloor}

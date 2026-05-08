@@ -19,14 +19,16 @@ import SortableItem from './SortableItem';
 import { useContext } from 'react';
 import { UserContext } from '@/Layouts/UserLayout';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { apiFetch, apiLog, logsEvents } from '../Commons/Constants';
+import { logsEvents } from '../Commons/Constants';
+
+import { userService, logService } from '@/Api';
 
 export default function Preferences({ }) {
     const user = useContext(UserContext)
     const [items, setItems] = useState([])
     const colors = ["#d9f99d", "#bef264", "#84cc16", "#4d7c0f"]
-    
-    const {t} = useLaravelReactI18n()
+
+    const { t } = useLaravelReactI18n()
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -41,16 +43,23 @@ export default function Preferences({ }) {
             const newIndex = items.indexOf(over.id)
             const updateState = arrayMove(items, oldIndex, newIndex)
             setItems(updateState)
-            const response=apiFetch("/user/preferences","PUT",{data:[{user_id:user.username,preferences:updateState}]})
-            apiLog(user.username,logsEvents.USER_PREFERENCES_ADD,user.username,JSON.stringify({user_id:user.username,preferences:updateState}))
+            const response = userService.addPreferences([{ user_id: user.username, preferences: updateState }])
+
+            logService.add([{
+                actor: user.username,
+                event: logsEvents.USER_PREFERENCES_ADD,
+                target: user.username,
+                payload: JSON.stringify({ user_id: user.username, preferences: updateState }),
+            }]);
+
         }
     }
 
     const fetchItems = async () => {
         if (!user.username) return null
-        const response = await apiFetch(`/user/preferences/${user.username}`)
-        if (Object.keys(response).length>0) {
-                setItems(response.preferences)     
+        const response = await userService.getPreferencesByUser(user.username)
+        if (Object.keys(response).length > 0) {
+            setItems(response.preferences)
         } else {
             setItems(["Health", "Security", "Entertainment", "Study"])
         }

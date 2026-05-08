@@ -6,7 +6,7 @@ import { StyledDiv } from "../Commons/StyledBasedComponents";
 
 import { DAYS } from "../Commons/DataFormatter";
 
-import { apiFetch, backend } from "../Commons/Constants";
+import { automationService } from "@/Api";
 
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -21,10 +21,10 @@ import { useLaravelReactI18n } from "laravel-react-i18n";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const THRESHOLD=2300
+const THRESHOLD = 2300
 
 export function AutomationSimulation({ automation_to_simulate }) {
-  const {t}=useLaravelReactI18n()
+  const { t } = useLaravelReactI18n()
   const [updatedStateMatrix, setUpdatedStateMatrix] = useState({})
   const [automationToAdd, setAutomationToAdd] = useState("")
   const [powerMatrix, setPowerMatrix] = useState([])
@@ -52,7 +52,7 @@ export function AutomationSimulation({ automation_to_simulate }) {
     let body = {}
     body["automation"] = JSON.parse(automationToAdd)
 
-    const response = await apiFetch(`${"/automation/simulate"}`,"POST",JSON.stringify(body));
+    const response = await automationService.simulate(automationToAdd, true)
     if (response) {
       const updated_matrix = response
       setUpdatedStateMatrix(updated_matrix["state_matrix"])
@@ -106,7 +106,7 @@ export function AutomationSimulation({ automation_to_simulate }) {
           energyConsumption={energyConsumption}
 
 
-        /> 
+        />
       </div>
       {
         conflictsList.length > 0 &&

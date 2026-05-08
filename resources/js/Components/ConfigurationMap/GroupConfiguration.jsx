@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { Table } from "flowbite-react";
-import { apiFetch, getIcon } from "../Commons/Constants";
+import { getIcon } from "../Commons/Constants";
+import { groupService } from "@/Api";
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import { useLaravelReactI18n } from "laravel-react-i18n";
 import { CreateGroupModal } from "../Commons/CreateGroupModal";
@@ -12,14 +13,14 @@ export function GroupConfiguration({ }) {
     const { t } = useLaravelReactI18n()
 
     const fetchGroup = async () => {
-        const data = await apiFetch("/group");
+        const data = await groupService.getAll()
         if (data && data.length > 0) {
             setGroups(data);
         }
     };
 
     const handleGroupDeletion = async (group_id) => {
-        const response = await apiFetch(`/group/${group_id}`, "DELETE")
+        const response = await groupService.remove(group_id)
         if (response) {
             fetchGroup()
         }

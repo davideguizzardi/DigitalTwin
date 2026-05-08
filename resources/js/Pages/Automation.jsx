@@ -2,8 +2,10 @@ import { AutomationTable } from "@/Components/Automation/AutomationTable";
 import { StyledButton } from "@/Components/Commons/StyledBasedComponents";
 import { useState } from "react";
 import { useEffect } from "react";
-import { apiFetch, getIcon } from "@/Components/Commons/Constants";
+import { getIcon } from "@/Components/Commons/Constants";
 import { Modal } from "flowbite-react";
+import { automationService } from "@/Api";
+
 const { protocol, hostname } = window.location;
 const rulebot = `${protocol}//${hostname}:8888`;
 import AddAutomation from "./AddAutomation";
@@ -31,7 +33,7 @@ export default function Automation({ id = "" }) {
     }, [])
 
     const fetchAutomationContext = async () => {
-        const response = await apiFetch("/automation?get_suggestions=true")
+        const response = await automationService.getAll(true)
         if (response) {
             setAutomationContext(response)
         }
@@ -76,9 +78,9 @@ export default function Automation({ id = "" }) {
             </div>
             {!is2xlOrLarger &&
 
-            <StyledButton className=" absolute bottom-0 right-0 m-5 rounded-full" onClick={() => setShowAutomationModal(true)}>
-                {getIcon("plus", "size-8")}
-            </StyledButton>
+                <StyledButton className=" absolute bottom-0 right-0 m-5 rounded-full" onClick={() => setShowAutomationModal(true)}>
+                    {getIcon("plus", "size-8")}
+                </StyledButton>
             }
             {/*<a href={route("automation.add")}>
                 <StyledButton className="absolute bottom-0 right-0 m-5 rounded-full bg">

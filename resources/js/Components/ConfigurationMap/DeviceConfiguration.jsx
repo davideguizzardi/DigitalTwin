@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
-import { Table, TextInput, } from "flowbite-react"
-import { apiFetch, apiLog, getIcon, logsEvents } from "../Commons/Constants";
+import { Table } from "flowbite-react"
+import { getIcon, logsEvents } from "../Commons/Constants";
 import { DeviceContext } from "../ContextProviders/DeviceProvider";
 import { TouchKeyboard2 } from "../Commons/TouchKeyboard2";
 import { DevicesTypes } from "../Commons/Constants";
@@ -10,6 +10,7 @@ import { StyledButton } from "../Commons/StyledBasedComponents";
 import { useLaravelReactI18n } from "laravel-react-i18n";
 import { backend } from "../Commons/Constants";
 import { UserContext } from "@/Layouts/UserLayout";
+import { deviceConfigService, logService } from "@/Api";
 
 export function IconSelector({ default_icon, onIconChange, open, toggleDropdown, t }) {
     const iconOptions = Object.keys(DevicesTypes)
@@ -59,7 +60,7 @@ export function DeviceConfiguration({ backSection, endSection, isInitialConfigur
     const { deviceList, setDeviceList } = useContext(DeviceContext);
     const [openIndex, setOpenIndex] = useState(-1)
     const { t } = useLaravelReactI18n()
-    const user=useContext(UserContext)
+    const user = useContext(UserContext)
 
 
 
@@ -87,18 +88,24 @@ export function DeviceConfiguration({ backSection, endSection, isInitialConfigur
     };
 
     const handleConfigurationSubmit = async () => {
+        const device_config = deviceList.map(({ device_id, name, category, show }) => ({
+            device_id,
+            name,
+            category,
+            show: show ? 1 : 0,
+        }))
         const body = {
-            data: deviceList.map(({ device_id, name, category, show }) => ({
-                device_id,
-                name,
-                category,
-                show: show ? 1 : 0, 
-            }))
+            data: device_config
         }
-        const response = await apiFetch("/device_configuration","PUT",body)
+        const response = await deviceConfigService.addDevices(device_config)
         if (response) {
-            if(user)
-                apiLog(user.username,logsEvents.CONFIGURATION_DEVICE,"",JSON.stringify(body))
+            if (user)
+                await logService.add([{
+                    actor: user.username,
+                    event: logsEvents.CONFIGURATION_DEVICE,
+                    target: "",
+                    payload: JSON.stringify(body),
+                }]);
             endSection()
         } else {
             alert(t("Some error occurred"))

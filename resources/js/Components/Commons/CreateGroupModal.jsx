@@ -3,7 +3,7 @@ import { Modal } from "flowbite-react";
 import { useLaravelReactI18n } from "laravel-react-i18n";
 import { StyledButton } from "./StyledBasedComponents";
 import { TouchKeyboard2 } from "./TouchKeyboard2";
-import { apiFetch } from "./Constants";
+import { groupService } from '@/Api';
 
 export function CreateGroupModal({ show, setShow, handleRoomCreation, group = null }) {
   const [groupName, setGroupName] = useState('');
@@ -23,23 +23,24 @@ export function CreateGroupModal({ show, setShow, handleRoomCreation, group = nu
     setShow(false);
   };
 
-  const handleSubmit = async () => {
+
+const handleSubmit = async () => {
     if (group) {
-      // Update mode
-      const response = await apiFetch(`/group/${group.id}`, "PATCH", { new_name: groupName });
-      if (response) {
-        setGroupName('');
-        handleRoomCreation();
-      }
+        // Update mode
+        const response = await groupService.rename(group.id, groupName);
+        if (response) {
+            setGroupName('');
+            handleRoomCreation();
+        }
     } else {
-      // Create mode
-      const response = await apiFetch("/group", "PUT", { data: [{ name: groupName }] });
-      if (response) {
-        setGroupName('');
-        handleRoomCreation();
-      }
+        // Create mode
+        const response = await groupService.addGroups([{ name: groupName }]);
+        if (response) {
+            setGroupName('');
+            handleRoomCreation();
+        }
     }
-  };
+};
 
   return (
     <Modal size={"xl"} show={show} onClose={handleCancel} popup>

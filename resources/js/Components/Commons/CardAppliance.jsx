@@ -64,6 +64,7 @@ export default function CardAppliance({ appliancePos, setClickedDevice }) {
         <motion.div
             className={`absolute rounded-full bg-gray-200`}
             style={{
+                position: "absolute",
                 top: appliancePos.top + "%",
                 left: appliancePos.left + "%",
             }}
@@ -82,7 +83,7 @@ export default function CardAppliance({ appliancePos, setClickedDevice }) {
                 {openName && false && //TODO:remove this
                     appliancePos.name
                 }
-                {appliancePos.state == "unavailable" &&
+                {false && appliancePos.state == "unavailable" &&
                     getIcon("error", "size-5 absolute top-0 left-0 rounded-full bg-red-500 animate-pulse")
                 }
             </div>

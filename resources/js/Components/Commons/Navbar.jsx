@@ -1,15 +1,13 @@
-import { getIcon } from "@/Components/Commons/Constants";
+import { backend, getIcon } from "@/Components/Commons/Constants";
 import { UserContext } from "@/Layouts/UserLayout";
-import { Avatar, Dropdown, DropdownDivider, Modal, Tooltip } from "flowbite-react";
+import { Avatar, Dropdown, Modal, Tooltip } from "flowbite-react";
 import { useContext, useState } from "react";
 import { useLaravelReactI18n } from "laravel-react-i18n";
 import { FaUser } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
-import { domain } from "@/Components/Commons/Constants";
-import { router } from "@inertiajs/react";
 import { DeviceContextRefresh } from "../ContextProviders/DeviceProviderRefresh";
-import { apiLog, logsEvents } from "@/Components/Commons/Constants";
-import { Link } from "@inertiajs/react";
+import { logsEvents } from "@/Components/Commons/Constants";
+import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
 import { StyledButton } from "./StyledBasedComponents";
 import { BsFullscreen, BsFullscreenExit } from "react-icons/bs";
@@ -17,18 +15,20 @@ import { ImQuill } from "react-icons/im";
 import { diary_link } from "@/Components/Commons/Constants";
 import DiaryCheck from "./DiaryCheck";
 
+import { authService, logService } from "@/Api";
+
 function NavLink({ connectedUser, routeName, isActive, children, className = '' }) {
     const user = useContext(UserContext);
 
     const handleLog = async () => {
         try {
             if (connectedUser) {
-                await apiLog(
-                    connectedUser.username,
-                    logsEvents.PAGE,
-                    routeName,
-                    ""
-                )
+                await logService.add([{
+                    actor: connectedUser.username,
+                    event: logsEvents.PAGE,
+                    target: routeName,
+                    payload: "",
+                }]);
             }
         } catch (e) {
             console.error("Failed to log page view", e);
@@ -37,7 +37,7 @@ function NavLink({ connectedUser, routeName, isActive, children, className = '' 
 
     return (
         <Link
-            href={route(routeName)}
+            to={(routeName)}
             onClick={handleLog}
             preserveScroll
             preserveState
@@ -66,10 +66,16 @@ export default function Navbar() {
     const submit = (e) => {
         e.preventDefault();
         if (user && Object.keys(user).length > 0) {
-            apiLog(user.username, logsEvents.LOGOUT);
+            logService.add([{
+                actor: user.username,
+                event: logsEvents.LOGOUT,
+                target: "",
+                payload: "",
+            }]);
         }
+        authService.logout()
         Cookies.remove("auth-token");
-        router.post("/logout");
+        //router.post("/logout");
     };
 
     const toggleFullscreen = () => {
@@ -114,7 +120,7 @@ export default function Navbar() {
                 </Modal.Body>
             </Modal>
             <div></div>
-            <div className="col-span-3 grid grid-cols-4 gap-1 items-center">
+            <div className="col-span-3 grid grid-cols-5 gap-1 items-center">
                 <NavLink connectedUser={user} routeName="home" isActive={currentPage === "home"} className={linkStyle}>
                     {getIcon("home", "size-8 md:size-5")} <span className="hidden md:flex">Home</span>
                 </NavLink>
@@ -124,9 +130,9 @@ export default function Navbar() {
                 <NavLink connectedUser={user} routeName="automation" isActive={currentPage === "automation"} className={linkStyle}>
                     {getIcon("puzzle", "size-8 md:size-5")} <span className="hidden md:flex">{t("Automations")}</span>
                 </NavLink>
-                {/*<NavLink connectedUser={user} routeName="simulation" isActive={currentPage === "simulation"} className={`${linkStyle} hidden md:flex`}>
+                {<NavLink connectedUser={user} routeName="simulation" isActive={currentPage === "simulation"} className={`${linkStyle} hidden md:flex`}>
                     {getIcon("graph", "size-5")} <span className="hidden md:flex">{t("Simulation")}</span>
-                </NavLink>*/}
+                </NavLink>}
                 <NavLink connectedUser={user} routeName="configuration" isActive={currentPage === "configuration"} className={`${linkStyle} hidden md:flex`}>
                     {getIcon("gear", "size-5")} <span className="hidden md:flex">{t("Configuration")}</span>
                 </NavLink>
@@ -167,9 +173,9 @@ export default function Navbar() {
                     label={
                         <Avatar
                             size="md"
-                            placeholderInitials={user.email ? user.email.charAt(0).toUpperCase() + user.email.charAt(1) : ""}
+                            placeholderInitials={user.username ? user.username.charAt(0).toUpperCase() + user.username.charAt(1) : ""}
                             alt="User settings"
-                            img={user.url_photo && domain + "/" + user.url_photo}
+                            img={user.url_photo && backend + "/" + user.url_photo}
                             rounded
                         />
                     }
@@ -181,7 +187,7 @@ export default function Navbar() {
                         <span className="block truncate text-lg font-medium">{user.email}</span>
                     </Dropdown.Header>
 
-                    <Dropdown.Item as={Link} href={route("userarea.get")} icon={FaUser}>
+                    <Dropdown.Item as={Link} to={"/userarea"} icon={FaUser}>
                         <span className="text-lg">{t("Account")}</span>
                     </Dropdown.Item>
 

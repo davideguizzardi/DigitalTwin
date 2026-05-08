@@ -4,34 +4,34 @@ import ListButtons from "./ListButtons"
 import CardAppliance from "./CardAppliance"
 import { useSwipeable } from "react-swipeable"
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { domain } from "./Constants"
+import { backend } from "./Constants"
 import ControlPopup from "../ControlAppliance/ControlPopup"
 import RoomMap from "./RoomMap"
 
-export default function AnimateMap2({ maps, appliances ,rooms=[]}) {
-    const [openDevice,setOpenDevice]=useState({})
+export default function AnimateMap2({ maps, appliances, rooms = [] }) {
+    const [openDevice, setOpenDevice] = useState({})
     const [indexImg, setIndexImg] = useState(0)
     const [previousIndex, setPreviousIndex] = useState(0)
     const offset = 100
-    const {t} = useLaravelReactI18n()
-    const floorAbove = () =>{
-        if(indexImg <= maps.length - 1 && indexImg > 0 ){
+    const { t } = useLaravelReactI18n()
+    const floorAbove = () => {
+        if (indexImg <= maps.length - 1 && indexImg > 0) {
             animate("div.floor",
                 { y: offset },
                 { duration: 0.25 }
             )
             setPreviousIndex(indexImg)
             setIndexImg(indexImg - 1)
-        }else if(indexImg==0){
-            animate("div.floor", 
-                { y: [0, offset, 0]},
-                { duration: 0.50}
+        } else if (indexImg == 0) {
+            animate("div.floor",
+                { y: [0, offset, 0] },
+                { duration: 0.50 }
             )
         }
 
     }
 
-    const floorBelow = () =>{
+    const floorBelow = () => {
         if (indexImg < maps.length - 1 && indexImg >= 0) {
             animate("div.floor",
                 { y: -offset },
@@ -39,10 +39,10 @@ export default function AnimateMap2({ maps, appliances ,rooms=[]}) {
             )
             setPreviousIndex(indexImg)
             setIndexImg(indexImg + 1)
-        }else if(indexImg == maps.length-1){
-            animate("div.floor", 
-                { y: [0, -offset, 0]},
-                { duration: 0.50}
+        } else if (indexImg == maps.length - 1) {
+            animate("div.floor",
+                { y: [0, -offset, 0] },
+                { duration: 0.50 }
             )
         }
     }
@@ -52,7 +52,7 @@ export default function AnimateMap2({ maps, appliances ,rooms=[]}) {
         onSwipedUp: () => floorBelow()
     })
 
-    const floorBtn = maps.sort((a,b)=>a.floor - b.floor).map((element, index) => {
+    const floorBtn = maps.sort((a, b) => a.floor - b.floor).map((element, index) => {
         return {
             callback: () => {
                 if (indexImg != index) {
@@ -93,7 +93,7 @@ export default function AnimateMap2({ maps, appliances ,rooms=[]}) {
 
     return (
         <div className="flex size-full items-center justify-center">
-            <ControlPopup openDevice={openDevice}/>
+            <ControlPopup openDevice={openDevice} />
             <div {...handlerSwipe}>
 
                 <AnimatePresence>
@@ -102,7 +102,7 @@ export default function AnimateMap2({ maps, appliances ,rooms=[]}) {
                         id={"floor" + maps[indexImg].url} key={maps[indexImg].url}
                         variants={variants} initial="initial" animate="animate" exit="exit"
                     >
-                        <RoomMap image_url={domain + "/" + maps[indexImg].url} floor={maps[indexImg].floor} height_percent={80}/>
+                        <RoomMap image_url={backend + "/" + maps[indexImg].url} floor={maps[indexImg].floor} height_percent={80} />
                         {appliances.filter((e) => e.floor == maps[indexImg].floor).map((e) => (<CardAppliance key={e.id} appliancePos={e} setClickedDevice={setOpenDevice} />))}
                     </motion.div>
                 </AnimatePresence>

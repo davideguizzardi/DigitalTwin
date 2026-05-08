@@ -5,8 +5,9 @@ import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useLaravelReactI18n } from "laravel-react-i18n";
 import { StyledButton } from "../Commons/StyledBasedComponents";
-import { apiFetch, apiLog, logsEvents, useIsMobile } from "../Commons/Constants";
+import { logsEvents, useIsMobile } from "../Commons/Constants";
 import { UserContext } from "@/Layouts/UserLayout";
+import { consumptionService, logService } from "@/Api";
 
 export function ConsumptionComparisonGraph({ device_list }) {
   const [date1, setDate1] = useState(dayjs());
@@ -93,7 +94,6 @@ export function ConsumptionComparisonGraph({ device_list }) {
   }
 
   const fetchConsumption = async () => {
-    let url1, url2;
     let endDate1 = date1;
     let endDate2 = date2;
 
@@ -102,16 +102,22 @@ export function ConsumptionComparisonGraph({ device_list }) {
       endDate2 = date2.endOf("month");
     }
 
-    if (deviceName == t("Entire House")) {
-      url1 = `/consumption/total?start_timestamp=${encodeURIComponent(date1.format("YYYY-MM-DD"))}&end_timestamp=${encodeURIComponent(endDate1.format("YYYY-MM-DD"))}&group=${group}`;
-      url2 = `/consumption/total?start_timestamp=${encodeURIComponent(date2.format("YYYY-MM-DD"))}&end_timestamp=${encodeURIComponent(endDate2.format("YYYY-MM-DD"))}&group=${group}`;
-    } else {
-      url1 = `/consumption/device?device_id=${deviceId}&start_timestamp=${encodeURIComponent(date1.format("YYYY-MM-DD"))}&end_timestamp=${encodeURIComponent(endDate1.format("YYYY-MM-DD"))}&group=${group}`;
-      url2 = `/consumption/device?device_id=${deviceId}&start_timestamp=${encodeURIComponent(date2.format("YYYY-MM-DD"))}&end_timestamp=${encodeURIComponent(endDate2.format("YYYY-MM-DD"))}&group=${group}`;
-    }
+    const start1 = date1.format("YYYY-MM-DD");
+    const end1 = endDate1.format("YYYY-MM-DD");
+    const start2 = date2.format("YYYY-MM-DD");
+    const end2 = endDate2.format("YYYY-MM-DD");
 
-    const response1 = await apiFetch(url1);
-    const response2 = await apiFetch(url2);
+    const [response1, response2] = await Promise.all(
+      deviceName === t("Entire House")
+        ? [
+          consumptionService.getTotal(start1, end1, group),
+          consumptionService.getTotal(start2, end2, group),
+        ]
+        : [
+          consumptionService.getByDevices(deviceId, start1, end1, group),
+          consumptionService.getByDevices(deviceId, start2, end2, group),
+        ]
+    );
 
     if (response1 && response2) {
       const concatDataset = response1.concat(response2);
@@ -124,7 +130,13 @@ export function ConsumptionComparisonGraph({ device_list }) {
         group,
         device: deviceName,
       });
-      if (user) apiLog(user.username, logsEvents.CONSUMPTION_COMPARISON, deviceName, log_payload);
+      if (user)
+        logService.add([{
+          actor: user.username,
+          event: logsEvents.CONSUMPTION_COMPARISON,
+          target: deviceName,
+          payload: log_payload,
+        }]);
     }
     setLoading(false);
   };
@@ -215,7 +227,7 @@ export function ConsumptionComparisonGraph({ device_list }) {
             yAxis={[{ valueFormatter: valueFormatter, tickLabelStyle: { fontSize: isMobile ? 10 : 13 } }]}
             series={[{ dataKey: "energy_consumption", valueFormatter }]}
             borderRadius={4}
-            margin={{ right: 20, left:70}}
+            margin={{ right: 20, left: 70 }}
             height={heightGraph}
             sx={sxGraph}
           />

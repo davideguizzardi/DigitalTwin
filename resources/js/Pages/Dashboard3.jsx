@@ -8,9 +8,9 @@ import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 import { DeviceContextRefresh } from "@/Components/ContextProviders/DeviceProviderRefresh";
 import WhiteCard from "@/Components/Commons/WhiteCard";
-import { apiFetch, useIsMobile } from "@/Components/Commons/Constants";
+import { useIsMobile } from "@/Components/Commons/Constants";
 import dayjs from "dayjs";
-import { domain } from "@/Components/Commons/Constants";
+import { roomService, consumptionService, mapService } from "@/Api";
 
 import { UserContext } from "@/Layouts/UserLayout";
 
@@ -67,9 +67,10 @@ function PowerConsumptionGauge({ powerUsage = 0, maxPower = 3000 }) {
 
 
 
-const Dashboard3 = ({ maps, token }) => {
+const Dashboard3 = () => {
     const [appliances, setAppliance] = useState([]);
     const [rooms, setRooms] = useState([])
+    const [maps, setMaps] = useState([] = [])
 
     const [pastConsumption, setPastConsumption] = useState(0)
     const [totalPower, setTotalPower] = useState(0)
@@ -83,9 +84,10 @@ const Dashboard3 = ({ maps, token }) => {
     const { deviceList = [], fetchDevices } = useContext(DeviceContextRefresh);
     const { t } = useLaravelReactI18n();
 
+
     useEffect(() => {
         const fetchData = async () => {
-            const data = await apiFetch("/room");
+            const data = await roomService.getAll();
 
             if (data && data.length > 0) {
                 setRooms(data);
@@ -100,12 +102,12 @@ const Dashboard3 = ({ maps, token }) => {
             await fetchDevices();
             const end = dayjs();
             const start = end.add(-1, "month");
-            const url = `/consumption/total?` +
-                `start_timestamp=${encodeURIComponent(start.format("YYYY-MM-DD"))}` +
-                `&end_timestamp=${encodeURIComponent(end.format("YYYY-MM-DD"))}` +
-                `&group=total&minutes=60`;
 
-            const resp = await apiFetch(url, "GET", null);
+            const resp = await consumptionService.getTotal(
+                start.format("YYYY-MM-DD"),
+                end.format("YYYY-MM-DD"),
+                "total"
+            );;
             if (resp) {
                 setPastConsumption(
                     resp[0].energy_consumption_unit === "Wh"
@@ -113,30 +115,15 @@ const Dashboard3 = ({ maps, token }) => {
                         : resp[0].energy_consumption
                 );
             }
+
+            const resp_map = await mapService.getAllFiles()
+            if (resp_map) {
+                //const maps_enhanced = resp_map.map(el => ({ ...el, url: `http://rasp-cogno:8000${el.url}` }))
+                setMaps(resp_map)
+            }
         }
         fetchData();
     }, []);
-
-/*     useEffect(() => {//TODO:remove this if not necessary
-        const fetchUser = async () => {
-            await fetch(`${domain}/sanctum/csrf-cookie`, {
-                credentials: 'include'
-            });
-            const response = await fetch(domain + "/api/user", {
-                method: "GET",
-                credentials: "include",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest"
-                }
-            })
-            if (response.ok) {
-                const result = await response.json()
-                //apiLog(result.user.username, logsEvents.LOGIN, "", "")
-                //setUser(result.user.username)
-            }
-        }
-        fetchUser()
-    }, []); */
 
     useEffect(() => {
         const updateState = deviceList
@@ -182,19 +169,10 @@ const Dashboard3 = ({ maps, token }) => {
         if (!isMobile) {
             orderedSections["Home"] = (
                 <div className="flex-col gap-2 size-full">
-                    {maps.length > 0 ? (
+                    {maps.length > 0 &&
                         <AnimateMap2 maps={maps} appliances={appliances} rooms={rooms} />
-                    ) : (
-                        <div className="size-full flex justify-center items-center">
-                            <p className="text-center dark:text-white">
-                                {t("No map has been uploaded yet")}, <br />
-                                {t("you can add your house's map clicking")}
-                                <a style={{ color: "blue" }} href={route("configuration")}>
-                                    {t("here")}
-                                </a>
-                            </p>
-                        </div>
-                    )}
+                    }
+
                 </div>
             );
         }

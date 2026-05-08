@@ -1,25 +1,25 @@
 
-import { useState, useEffect} from "react";
-import { getIcon ,apiFetch,DAYS} from "@/Components/Commons/Constants";
+import { useState, useEffect } from "react";
+import { getIcon, DAYS } from "@/Components/Commons/Constants";
 
 import { TimePicker } from "@mui/x-date-pickers";
 import { Label, TextInput, List, Select, Textarea } from "flowbite-react";
 import { ServicePopup } from "@/Components/Automation/ServicePopup";
 
 import { AutomationSimulation } from "@/Components/Automation/AutomationSimulation";
-import { formatServiceName ,formatActionData} from "@/Components/Commons/DataFormatter";
+import { formatServiceName, formatActionData } from "@/Components/Commons/DataFormatter";
 
-import { StyledDiv,StyledButton } from "@/Components/Commons/StyledBasedComponents";
+import { StyledDiv, StyledButton } from "@/Components/Commons/StyledBasedComponents";
 
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { useLaravelReactI18n } from "laravel-react-i18n";
 
-
+import { entityService, deviceService } from "@/Api";
 
 
 export default function AddAutomation({ }) {
-    const {t} = useLaravelReactI18n()
+    const { t } = useLaravelReactI18n()
 
     //Automations variable
     const [automationName, setAutomationName] = useState("")
@@ -66,7 +66,7 @@ export default function AddAutomation({ }) {
 
         if (!automationAction || automationAction.length === 0) {
             alert(t("actionRequired"));
-            return; 
+            return;
         }
         let automation = {}
         automation["id"] = Math.floor(1000000000000 + Math.random() * 9000000000000) //produce a random 13 digit int
@@ -133,10 +133,10 @@ export default function AddAutomation({ }) {
         }
     }, [servicesToAdd])
 
-    useEffect( async () => {
-        var data = await apiFetch("/entity")
+    useEffect(async () => {
+        var data = await entityService.getAll()
         setEntityList(data)
-        data = await apiFetch("/device?skip_services=true")
+        data = await deviceService.getAll(true)
         setDeviceList(data)
     }, [])
 
@@ -147,130 +147,130 @@ export default function AddAutomation({ }) {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <div className="grid grid-cols-1 gap-3 p-5">
-            <ServicePopup open={openModal} selectedEntity={selectedEntity} entityList={entityList} closeFun={() => setOpenModal(false)} submitFun={setServiceToAdd} />
-            <StyledDiv variant="primary" className="">
-                <form className="flex flex-col gap-3" onSubmit={buildAutomation}>
-                    <h1 className="font-[Inter] font-light text-xl">{t("creationTitle")}</h1>
-                    <div className="block">
-                        <Label htmlFor="name" value={t("nameLabel")} />
-                        <TextInput id="name" type="text" placeholder={t("namePlaceholder")}
-                            onKeyUp={(value) => setAutomationName(value.target.value)} required />
-                    </div>
-                    <div className="block">
-                        <Label htmlFor="description" value={t("descriptionLabel")}/>
-                        <Textarea id="description" type="text" placeholder={t("descriptionPlaceholder")}
-                            onKeyUp={(value) => setAutomationDescription(value.target.value)} rows={4} />
-                    </div>
-                    <div className="flex flex-row gap-3 items-center">
+            <div className="grid grid-cols-1 gap-3 p-5">
+                <ServicePopup open={openModal} selectedEntity={selectedEntity} entityList={entityList} closeFun={() => setOpenModal(false)} submitFun={setServiceToAdd} />
+                <StyledDiv variant="primary" className="">
+                    <form className="flex flex-col gap-3" onSubmit={buildAutomation}>
+                        <h1 className="font-[Inter] font-light text-xl">{t("creationTitle")}</h1>
                         <div className="block">
-                            <Label htmlFor="trigger" value={t("triggerLabel")}/>
-                            <div className="flex flex-row gap-3">
-                                <StyledButton variant="primary" className={(selectedTrigger == "time" ? "bg-lime-400" : "bg-neutral-50")}
-                                    onClick={() => setSelectedTrigger("time")}>
-                                    {t("time")} {getIcon("time","ml-2 size-5")}
-                                </StyledButton>
-                                <StyledButton variant="secondary" className={(selectedTrigger == "sunset" ? "bg-lime-400" : "bg-neutral-50")}
-                                    onClick={() => handleSunChange("sunset", 0)}>
-                                    {t("sunset")} {getIcon("sunset","ml-2 size-5")}
-                                </StyledButton>
-                                <StyledButton variant="secondary" className={(selectedTrigger == "sunrise" ? "bg-lime-400" : "bg-neutral-50")}
-                                    onClick={() => handleSunChange("sunrise", 0)}>
-                                    {t("sunrise")} {getIcon("sunrise","ml-2 size-5")}
-                                </StyledButton>
-                            </div>
+                            <Label htmlFor="name" value={t("nameLabel")} />
+                            <TextInput id="name" type="text" placeholder={t("namePlaceholder")}
+                                onKeyUp={(value) => setAutomationName(value.target.value)} required />
                         </div>
                         <div className="block">
-                            <Label htmlFor="trigger" value={selectedTrigger == "time" ? t("atLabel"): t("offsetLabel")} />
-                            <div>
-
-                                {selectedTrigger == "time" &&
-                                    <TimePicker ampm={false} size="small" onChange={(value) => handleTimeChange(value)}
-                                        sx={{ ".css-nxo287-MuiInputBase-input-MuiOutlinedInput-input": { height: "0.9rem" } }}
-                                    />
-                                }
-                                {(selectedTrigger == "sunset" || selectedTrigger == "sunrise") &&
-                                    <TextInput id="offset" type="number" min={-5 * 3600} max={5 * 3600} placeholder="0"
-                                        onChange={(value) => {
-                                            setSunoffset(value.target.value);
-                                            handleSunChange(selectedTrigger, value.target.value)
-                                        }} />
-                                }
-                            </div>
+                            <Label htmlFor="description" value={t("descriptionLabel")} />
+                            <Textarea id="description" type="text" placeholder={t("descriptionPlaceholder")}
+                                onKeyUp={(value) => setAutomationDescription(value.target.value)} rows={4} />
                         </div>
-
-                    </div>
-                    <div className="block">
-                        <Label htmlFor="days" value={t("daysLabel")}/>
-                        <div className="flex flex-row gap-2">
-                            {
-                                Object.keys(DAYS).map(day => (
-                                    <StyledButton variant="secondary" className={daysList.includes(day) ? "bg-lime-400 scale-100" : "bg-neutral-50 scale-90 hover:scale-100"}
-                                        onClick={() => handleDaysChange(day)}>
-                                        {t(DAYS[day].name)}
+                        <div className="flex flex-row gap-3 items-center">
+                            <div className="block">
+                                <Label htmlFor="trigger" value={t("triggerLabel")} />
+                                <div className="flex flex-row gap-3">
+                                    <StyledButton variant="primary" className={(selectedTrigger == "time" ? "bg-lime-400" : "bg-neutral-50")}
+                                        onClick={() => setSelectedTrigger("time")}>
+                                        {t("time")} {getIcon("time", "ml-2 size-5")}
                                     </StyledButton>
-                                ))
-                            }
-                        </div>
-                    </div>
-                    <div className="flex flex-col gap-5 mt-10">
-                        <div className="block">
-
-                            <Label htmlFor="newaction" value={t("addActionLabel")} />
-                            <div className="flex flex-row gap-2">
-
-                                <Select onChange={(sel) => setDeviceIdToAdd(sel.target.value)}>
-                                    {
-                                        deviceList.map(dev => (
-                                            <option value={dev.device_id} key={dev.device_id}>{dev.name_by_user ? dev.name_by_user : dev.name}</option>
-                                        ))
-                                    }
-                                </Select>
-                                <StyledButton variant="secondary" className="bg-green-200 hover:bg-green-300 "
-                                    onClick={() => servicesClick(deviceList.filter(el => el.device_id == deviceIdToAdd)[0].state_entity_id)}
-                                >
-                                    {getIcon("plus")}
-                                </StyledButton>
+                                    <StyledButton variant="secondary" className={(selectedTrigger == "sunset" ? "bg-lime-400" : "bg-neutral-50")}
+                                        onClick={() => handleSunChange("sunset", 0)}>
+                                        {t("sunset")} {getIcon("sunset", "ml-2 size-5")}
+                                    </StyledButton>
+                                    <StyledButton variant="secondary" className={(selectedTrigger == "sunrise" ? "bg-lime-400" : "bg-neutral-50")}
+                                        onClick={() => handleSunChange("sunrise", 0)}>
+                                        {t("sunrise")} {getIcon("sunrise", "ml-2 size-5")}
+                                    </StyledButton>
+                                </div>
                             </div>
+                            <div className="block">
+                                <Label htmlFor="trigger" value={selectedTrigger == "time" ? t("atLabel") : t("offsetLabel")} />
+                                <div>
+
+                                    {selectedTrigger == "time" &&
+                                        <TimePicker ampm={false} size="small" onChange={(value) => handleTimeChange(value)}
+                                            sx={{ ".css-nxo287-MuiInputBase-input-MuiOutlinedInput-input": { height: "0.9rem" } }}
+                                        />
+                                    }
+                                    {(selectedTrigger == "sunset" || selectedTrigger == "sunrise") &&
+                                        <TextInput id="offset" type="number" min={-5 * 3600} max={5 * 3600} placeholder="0"
+                                            onChange={(value) => {
+                                                setSunoffset(value.target.value);
+                                                handleSunChange(selectedTrigger, value.target.value)
+                                            }} />
+                                    }
+                                </div>
+                            </div>
+
                         </div>
                         <div className="block">
-                            <Label htmlFor="actions" value={t("actionsLabel")} />
-                            <List unstyled className="divide-y divide-gray-300 text-gray-800">
+                            <Label htmlFor="days" value={t("daysLabel")} />
+                            <div className="flex flex-row gap-2">
                                 {
-                                    automationAction.map((action_el, index) => (
-                                        <List.Item key={action_el.target.device_id} >
-                                            <div className="grid grid-cols-2 rounded-md p-2">
-
-                                                <div className="flex flex-row items-center gap-10 col-span-1">
-                                                    {getIcon(action_el.service.split(".")[0])}
-                                                    <div className="flex flex-col items-start">
-
-                                                    {t(formatServiceName(action_el.service.split(".")[1]))}{` "${getDeviceName(action_el.target.device_id)}"`}
-                                                    {formatActionData(action_el.data,t)}
-                                                    </div>
-                                                </div>
-                                                <div className="flex flex-row justify-end items-end col-span-1 ">
-                                                    <StyledButton variant="delete" onClick={() => setAutomationAction(automationAction.filter((el, ind) => ind != index))}>
-                                                        {getIcon("delete")}
-                                                    </StyledButton>
-                                                </div>
-
-
-                                            </div>
-                                        </List.Item>
+                                    Object.keys(DAYS).map(day => (
+                                        <StyledButton variant="secondary" className={daysList.includes(day) ? "bg-lime-400 scale-100" : "bg-neutral-50 scale-90 hover:scale-100"}
+                                            onClick={() => handleDaysChange(day)}>
+                                            {t(DAYS[day].name)}
+                                        </StyledButton>
                                     ))
                                 }
-                            </List>
+                            </div>
                         </div>
-                    </div>
-                    <StyledButton type="submit" variant={"primary"}
-                        onClick={(ev) => buildAutomation(ev)}
-                    >
-                        {t("buildAutomationButton")}
-                    </StyledButton>
-                </form>
-            </StyledDiv>
-            {/*<div className="flex flex-col gap-3">
+                        <div className="flex flex-col gap-5 mt-10">
+                            <div className="block">
+
+                                <Label htmlFor="newaction" value={t("addActionLabel")} />
+                                <div className="flex flex-row gap-2">
+
+                                    <Select onChange={(sel) => setDeviceIdToAdd(sel.target.value)}>
+                                        {
+                                            deviceList.map(dev => (
+                                                <option value={dev.device_id} key={dev.device_id}>{dev.name_by_user ? dev.name_by_user : dev.name}</option>
+                                            ))
+                                        }
+                                    </Select>
+                                    <StyledButton variant="secondary" className="bg-green-200 hover:bg-green-300 "
+                                        onClick={() => servicesClick(deviceList.filter(el => el.device_id == deviceIdToAdd)[0].state_entity_id)}
+                                    >
+                                        {getIcon("plus")}
+                                    </StyledButton>
+                                </div>
+                            </div>
+                            <div className="block">
+                                <Label htmlFor="actions" value={t("actionsLabel")} />
+                                <List unstyled className="divide-y divide-gray-300 text-gray-800">
+                                    {
+                                        automationAction.map((action_el, index) => (
+                                            <List.Item key={action_el.target.device_id} >
+                                                <div className="grid grid-cols-2 rounded-md p-2">
+
+                                                    <div className="flex flex-row items-center gap-10 col-span-1">
+                                                        {getIcon(action_el.service.split(".")[0])}
+                                                        <div className="flex flex-col items-start">
+
+                                                            {t(formatServiceName(action_el.service.split(".")[1]))}{` "${getDeviceName(action_el.target.device_id)}"`}
+                                                            {formatActionData(action_el.data, t)}
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex flex-row justify-end items-end col-span-1 ">
+                                                        <StyledButton variant="delete" onClick={() => setAutomationAction(automationAction.filter((el, ind) => ind != index))}>
+                                                            {getIcon("delete")}
+                                                        </StyledButton>
+                                                    </div>
+
+
+                                                </div>
+                                            </List.Item>
+                                        ))
+                                    }
+                                </List>
+                            </div>
+                        </div>
+                        <StyledButton type="submit" variant={"primary"}
+                            onClick={(ev) => buildAutomation(ev)}
+                        >
+                            {t("buildAutomationButton")}
+                        </StyledButton>
+                    </form>
+                </StyledDiv>
+                {/*<div className="flex flex-col gap-3">
                 {simulateAutomationAddition &&
                     <div className="col-span-2">
                         <AutomationSimulation automation_to_simulate={JSON.stringify(automation)} />
@@ -282,7 +282,7 @@ export default function AddAutomation({ }) {
 
                 }
             </div>*/}
-        </div >
+            </div >
         </LocalizationProvider>
     )
 }

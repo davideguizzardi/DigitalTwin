@@ -1,7 +1,7 @@
 import { TimePicker } from "@mui/x-date-pickers";
-import { useContext, useState, useEffect, useMemo } from "react"
-import { apiFetch, getIcon } from "@/Components/Commons/Constants"
-import { Checkbox, Modal, Spinner, TextInput } from "flowbite-react"
+import { useContext, useState, useEffect } from "react"
+import { getIcon } from "@/Components/Commons/Constants"
+import { Button, Modal, Spinner, TextInput } from "flowbite-react"
 import {
     ResponsiveChartContainer,
     LinePlot,
@@ -14,8 +14,13 @@ import {
 import dayjs from "dayjs";
 import { DeviceContextRefresh } from "@/Components/ContextProviders/DeviceProviderRefresh";
 import { useLaravelReactI18n } from "laravel-react-i18n";
+import { StyledButton } from "@/Components/Commons/StyledBasedComponents";
 
 import { Slider } from "@mui/material";
+
+import { simulationService, virtualService } from "@/Api";
+
+const COST_FACTOR = 0.4
 
 
 function OverlayMarkers({
@@ -105,6 +110,7 @@ function PowerGraph({
     indexes_on_x = false,
     interactive = false,
     maxThreshold = 30000,
+    className = "",
 }) {
     const isSinglePoint = data.length === 1;
 
@@ -163,7 +169,7 @@ function PowerGraph({
     }
 
     return (
-        <div className="w-full h-full">
+        <div className={`size-full ${className}`}>
             <ResponsiveChartContainer
                 xAxis={[indexes_on_x ? index_axis : time_axis]}
                 yAxis={[
@@ -212,25 +218,296 @@ function PowerGraph({
     );
 }
 
+function SimulationPickModal({ device_id, device_name, addSimulationFun, t }) {
+    const [selectedCluster, setSelectedCluster] = useState(null)
+    const [step, setStep] = useState(0)
+    const [editMode, setEditMode] = useState(false)
+    const [newDuration, setNewDuration] = useState(1)
+    const [clusterTime, setClusterTime] = useState(dayjs())
+    const [openModal, setOpenModal] = useState(false)
+    const [deviceSimulation, setDeviceSimulation] = useState(null)
+
+    function resetModal() {
+        setOpenModal(false)
+        setSelectedCluster(null)
+        setStep(0)
+        setEditMode(null)
+        setDeviceSimulation(null)
+    }
+
+    async function setSelectedSimulation(cluster, device_name, device_id, device_category, time = dayjs()) {
+        cluster["device_name"] = device_name
+        cluster["device_id"] = device_id
+        cluster["device_category"] = device_category
+        cluster["time"] = time
+        await setSelectedCluster(cluster)
+    }
+
+    function updateClusterTime(new_time) {
+        setSelectedCluster(old => ({ ...old, time: new_time }))
+    }
+
+
+    useEffect(() => {
+        const pullSimulation = async (device_id, device_name) => {
+            const data = await simulationService.getByDevice(device_id)
+            if (data) {
+                data["device_name"] = device_name
+                data["device_id"] = device_id
+
+                setDeviceSimulation(data)
+                setOpenModal(true)
+            }
+        }
+
+        if (device_id && device_name) {
+            pullSimulation(device_id, device_name)
+        }
+    }, [device_name])
+
+
+    async function resampleMedoidDuration() {
+        const new_medoid = await simulationService.resampleDeviceMode(selectedCluster.device_id, selectedCluster.id, newDuration)
+        if (new_medoid) {
+            setSelectedCluster(old => ({ ...old, medoid: new_medoid }))
+        }
+    }
+
+    function FrequencyLabel({ percent, t }) {
+        if (percent == null) return null;
+
+        let label = "";
+        let className = "";
+
+        if (percent >= 50) {
+            label = t("Highly Frequently used");
+            className = "bg-lime-200 ";
+        } else if (percent < 50 && percent >= 30) {
+            label = t("Frequently used");
+            className = "bg-lime-200 ";
+        } else if (percent > 5 && percent <= 15) {
+            label = t("Rarely used");
+            className = "bg-red-200 ";
+        } else if (percent <= 5) {
+            label = t("Highly rarely used");
+            className = "bg-red-200";
+        } else {
+            return null;
+        }
+
+        return (
+            <div className={`absolute rounded-md p-1 -top-2 right-1 ${className}`}>
+                {label}
+            </div>
+        );
+    }
+
+
+
+    return (
+        <Modal show={openModal} size="7xl" popup onClose={() => resetModal()}>
+            <Modal.Header>{t("simulation_mode_selection", { name: `${deviceSimulation && deviceSimulation.device_name}` })}</Modal.Header>
+
+            <Modal.Body className="p-0 flex flex-col">
+                {deviceSimulation &&
+                    <div className="h-[60vh] flex flex-col m-4">
+                        {step == 0 &&
+                            <div className={`grid ${deviceSimulation.clusters.length > 3 ? "grid-cols-3" : "grid-cols-2"} auto-rows-fr gap-4 flex-1 min-h-0 `}>
+                                {deviceSimulation.clusters
+                                    .sort((a, b) => b.count - a.count)
+                                    .map(clu => (
+                                        <div
+                                            key={clu.id}
+                                            className={`relative shadow-md bg-zinc-50 rounded-md p-2
+                                            hover:cursor-pointer hover:ring-2 hover:ring-lime-200 
+                                            flex flex-col items-center h-full min-h-0
+                                            ${selectedCluster && clu.id == selectedCluster.id && "border-4 border-lime-300"}
+                                            `}
+                                            onClick={() => {
+                                                setStep(1);
+                                                setNewDuration(clu.medoid.length);
+                                                setSelectedSimulation(clu, deviceSimulation.device_name, deviceSimulation.device_id, deviceSimulation.device_category, clusterTime);
+                                            }}
+                                        >
+                                            <div className="relative w-full font-[Inter] p-2 border border-gray-300 rounded-md 
+                                        flex flex-row items-center justify-between gap-2 mt-1">
+
+                                                <div className="pl-2">
+                                                    {clu.id}
+                                                </div>
+                                                <div className="flex items-center gap-4">
+                                                    <div className="rounded-lg flex flex-row items-center p-2">
+                                                        {getIcon("time")} {Math.floor(clu.medoid.length / 60)}h {clu.medoid.length % 60}min
+                                                    </div>
+                                                    <div className="rounded-lg flex flex-row items-center p-2">
+                                                        {getIcon("energy")}
+                                                        {clu.medoid.map(v => v / 60).reduce((sum, v) => sum + v, 0).toFixed(2)} Wh
+                                                    </div>
+                                                </div>
+                                                <div className="absolute bg-zinc-50 left-2 -top-3 p-1 text-xs">
+                                                    {t("Mode")}
+                                                </div>
+                                            </div>
+                                            <div className="flex-1 min-h-0 w-full -m-6">
+                                                <PowerGraph data={clu.medoid} indexes_on_x />
+                                            </div>
+                                            <FrequencyLabel percent={clu.percent} t={t} />
+                                        </div>
+                                    ))}
+                            </div>
+
+                        }
+
+                        {step == 1 &&
+                            <>
+                                <div className={`grid grid-cols-2 auto-rows-fr gap-4 flex-1 min-h-0 rounded-md`}>
+                                    <div className="flex flex-col gap-4 rounded-md">
+                                        <div className="flex flex-row gap-5 text-xl font-semibold border-b-2 border-gray-400">
+                                            <label>{t("Mode")}</label>
+                                            {selectedCluster.id}
+                                        </div>
+
+                                        <div className="flex flex-row gap-5 items-center">
+                                            <label>{t("Time")}</label>
+                                            {editMode ?
+
+                                                <TimePicker
+                                                    ampm={false}
+                                                    size="small"
+                                                    value={selectedCluster.time}
+                                                    onChange={(value) => updateClusterTime(value)
+
+                                                    } />
+                                                :
+                                                <>
+                                                    {clusterTime.format("HH:mm")}
+                                                </>
+                                            }
+                                        </div>
+
+                                        <div className="flex flex-row gap-5 items-center">
+                                            <label>{t("Duration")}</label>
+                                            {editMode ?
+                                                <>
+                                                    <TextInput
+                                                        value={newDuration}
+                                                        onChange={(value) => setNewDuration(value.target.value)}
+                                                        type="number"
+                                                        min={1}
+                                                        max={600}
+                                                    /> min
+
+                                                </>
+
+                                                :
+                                                <>
+                                                    {selectedCluster.medoid.length} min
+
+                                                </>
+                                            }
+                                        </div>
+
+                                        <div className="w-full items-end flex justify-end border-b-2 border-gray-400 pb-2">
+
+                                            {editMode ?
+                                                <StyledButton variant="secondary" onClick={() => { resampleMedoidDuration(); setEditMode(false) }}>
+                                                    {getIcon("save")}
+                                                    {t("Save")}
+                                                </StyledButton>
+                                                :
+                                                <StyledButton variant="secondary" onClick={() => setEditMode(true)}>
+                                                    {getIcon("edit")}
+                                                    {t("Change")}
+                                                </StyledButton>
+                                            }
+
+
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-10 text-lg">
+                                            <div className="flex flex-col rounded-lg bg-gray-50 p-3 shadow-md text-end">
+                                                <div className="flex flex-row gap-2 items-center w-full">
+                                                    {getIcon("energy")}
+                                                    <label>{t("Consumption")}</label>
+                                                </div>
+                                                {selectedCluster.medoid.map(v => v / 60).reduce((sum, v) => sum + v, 0).toFixed(2)} Wh
+                                            </div>
+
+                                            <div className="flex flex-col rounded-lg bg-gray-50 p-3 shadow-md text-end">
+                                                <div className="flex flex-row gap-2 items-center w-full">
+                                                    {getIcon("money")}
+                                                    <label>{t("Cost")}</label>
+                                                </div>
+                                                {(selectedCluster.medoid.map(v => v / (60 * 1000)).reduce((sum, v) => sum + v, 0) * COST_FACTOR).toFixed(2)} €
+
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+                                    <PowerGraph className=" shadown-m  rounded-md" data={selectedCluster.medoid} indexes_on_x />
+                                </div>
+
+                                <div className="flex flex-row justify-between">
+                                    <StyledButton variant="secondary" onClick={() => setStep(0)}>
+                                        {t("Back")}
+                                    </StyledButton>
+                                    <StyledButton variant="primary"
+                                        onClick={() => { addSimulationFun(selectedCluster); resetModal() }}>
+                                        Simulate
+                                    </StyledButton>
+                                </div>
+
+
+
+                            </>
+                        }
+                    </div>
+                }
+            </Modal.Body>
+
+            <Modal.Footer />
+        </Modal>
+
+
+    )
+}
+
 
 
 
 
 export default function DeviceSimulation({ }) {
     const [simulations, setSimulations] = useState([])
-    const [openModal, setOpenModal] = useState(false)
-    const [deviceSimulation, setDeviceSimulation] = useState({ clusters: [] })
 
     const [totalSimulation, setTotalSimulation] = useState({ starting_time: null, values: [] })
 
     const { t } = useLaravelReactI18n()
 
     const [maxThreshold, setMaxThreshold] = useState(3000)
-    const [useBestSimulation, setUseBestSimulation] = useState(false)
 
-    const { deviceList = [] } = useContext(DeviceContextRefresh)
+    const [deviceList, setDeviceList] = useState([] = [])
 
     const [loading, setLoading] = useState(false)
+
+    const [openedDeviceId, setOpenedDeviceId] = useState(null)
+    const [openedDeviceName, setOpenedDeviceName] = useState(null)
+
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await virtualService.getDevicesByHome("casa_menicanin")
+
+            if (data) {
+                setDeviceList(data);
+            }
+        };
+
+        fetchData();
+    }, []);
+
 
     useEffect(() => {
         if (simulations.length === 0) {
@@ -271,14 +548,29 @@ export default function DeviceSimulation({ }) {
 
 
 
-    function setSelectedSimulation(cluster, device_name, device_id, device_category, time = dayjs()) {
 
+
+    function simulateSelectedSimulation(selectedCluster) {
+
+        const index = simulations.findIndex(a => a.device_name == selectedCluster["device_name"])
+        if (index == -1) {
+            setSimulations([...simulations, selectedCluster]);
+        }
+        else {
+            const updated = [...simulations];
+            updated[index] = selectedCluster;
+            setSimulations(updated);
+        }
+        setOpenedDeviceId(null)
+        setOpenedDeviceName(null)
+    }
+
+    function simulateUpdatedCluster(cluster, device_name, device_id, device_category, time = dayjs()) {
         cluster["device_name"] = device_name
         cluster["device_id"] = device_id
         cluster["device_category"] = device_category
         cluster["time"] = time
-
-        const index = simulations.findIndex(a => a.device_name == device_name)
+        const index = simulations.findIndex(a => a.device_name == cluster["device_name"])
         if (index == -1) {
             setSimulations([...simulations, cluster]);
         }
@@ -287,12 +579,8 @@ export default function DeviceSimulation({ }) {
             updated[index] = cluster;
             setSimulations(updated);
         }
-        setDeviceSimulation({ clusters: [] })
 
-        const medoid = cluster.medoid
-        setOpenModal(false)
     }
-
 
     function removeSimulation(device_id) {
         const index = simulations.findIndex(s => s.device_id == device_id);
@@ -306,105 +594,16 @@ export default function DeviceSimulation({ }) {
 
 
 
-    function SimulationPickModal({ t }) {
-
-        function FrequencyLabel({ percent, t }) {
-            if (percent == null) return null;
-
-            let label = "";
-            let className = "";
-
-            if (percent >= 50) {
-                label = t("Highly Frequently used");
-                className = "bg-lime-200 ";
-            } else if (percent < 50 && percent >= 30) {
-                label = t("Frequently used");
-                className = "bg-lime-200 ";
-            } else if (percent > 5 && percent <= 15) {
-                label = t("Rarely used");
-                className = "bg-red-200 ";
-            } else if (percent <= 5) {
-                label = t("Highly rarely used");
-                className = "bg-red-200";
-            } else {
-                return null;
-            }
-
-            return (
-                <div className={`absolute rounded-md p-1 -top-2 right-1 ${className}`}>
-                    {label}
-                </div>
-            );
-        }
 
 
 
-        return (
-            <Modal show={openModal} size="7xl" popup onClose={() => setOpenModal(false)}>
-                <Modal.Header>{t("simulation_mode_selection",{name: `${deviceSimulation.device_name}`})}</Modal.Header>
-
-                <Modal.Body className="p-0">
-                    <div className="h-[60vh] flex flex-col m-4">
-                        <div className={`grid ${deviceSimulation.clusters.length > 3 ? "grid-cols-3" : "grid-cols-2"} auto-rows-fr gap-4 flex-1 min-h-0 `}>
-                            {deviceSimulation.clusters
-                                .sort((a, b) => b.count - a.count)
-                                .map(clu => (
-                                    <div
-                                        key={clu.id}
-                                        className="relative shadow-md bg-zinc-50 rounded-md p-2
-                                            hover:cursor-pointer hover:bg-zinc-100
-                                            flex flex-col items-center h-full min-h-0"
-                                        onClick={() => setSelectedSimulation(clu, deviceSimulation.device_name, deviceSimulation.device_id, deviceSimulation.device_category)}
-                                    >
-                                        <div className="relative w-full font-[Inter] p-2 border border-gray-300 rounded-md 
-                                        flex flex-row items-center justify-between gap-2 mt-1">
-
-                                            <div className="pl-2">
-                                                {clu.id}
-                                            </div>
-                                            <div className="rounded-lg flex flex-row items-center p-2">
-                                                {getIcon("time")} {Math.floor(clu.medoid.length / 60)}h {clu.medoid.length % 60}min
-                                            </div>
-                                            <div className="absolute bg-zinc-50 left-2 -top-3 p-1 text-xs">
-                                                {t("Mode")}
-                                            </div>
-                                        </div>
-                                        <div className="flex-1 min-h-0 w-full -m-6">
-                                            <PowerGraph data={clu.medoid} indexes_on_x />
-                                        </div>
-                                        <FrequencyLabel percent={clu.percent} t={t} />
-                                    </div>
-                                ))}
-                        </div>
-                    </div>
-                </Modal.Body>
-
-                <Modal.Footer />
-            </Modal>
-
-
-        )
-    }
-
-    async function pullSimulation(device_id, device_name, device_category) {
-        const data = await apiFetch(`/Simulation/device/${device_id}`);
-        if (data) {
-            data["device_name"] = device_name
-            data["device_id"] = device_id
-            data["device_category"] = device_category
-
-            setDeviceSimulation(data)
-
-            setOpenModal(!useBestSimulation)
-        }
-    }
 
 
 
     return (
 
         <div className="grid grid-cols-3 gap-2 pt-3 size-full overflow-hidden ">
-            <SimulationPickModal t={t} />
+            <SimulationPickModal t={t} device_id={openedDeviceId} device_name={openedDeviceName} addSimulationFun={simulateSelectedSimulation} />
 
             <div className="flex flex-col gap-2">
                 <div
@@ -449,11 +648,11 @@ export default function DeviceSimulation({ }) {
                     </div>
 
                     {deviceList
-                        .filter(dev => !["sensor", "backup", "weather"].includes(dev.device_class))
+                        .filter(dev => !["sensor", "backup", "weather", "device_tracker"].includes(dev.device_class))
                         .map((dev, i) => (
                             <div
                                 className={`flex flex-row items-center gap-3 p-2 hover:translate-x-2 hover:cursor-pointer`}
-                                onClick={() => pullSimulation(dev.device_id, dev.name, dev.category)}
+                                onClick={() => { setOpenedDeviceId(dev.device_id); setOpenedDeviceName(dev.name) }}
                             >
                                 {getIcon(dev.category, "size-8")}
                                 {dev.name}
@@ -490,7 +689,15 @@ export default function DeviceSimulation({ }) {
                                 </div>
                             </div>
                             <div className="flex flex-row items-center gap-2 font-[Inter]">
-                                <TimePicker ampm={false} size="small" label={t("Time")} value={sim.time} onChange={(value) => setSelectedSimulation(sim, sim.device_name, sim.device_id, sim.device_category, value)} />
+                                <TimePicker
+                                    ampm={false}
+                                    size="small"
+                                    label={t("Time")}
+                                    value={sim.time}
+                                    onChange={(value) =>
+                                        simulateUpdatedCluster(sim, sim.device_name, sim.device_id, sim.device_category, value)
+
+                                    } />
                             </div>
                             <div className="absolute top-1 right-1 rounded-full p-1 hover:cursor-pointer hover:bg-red-400"
                                 onClick={() => removeSimulation(sim.device_id)}
@@ -510,6 +717,15 @@ export default function DeviceSimulation({ }) {
                 {totalSimulation.values.length > 0 &&
 
                     <div className="h-[55vh] bg-zinc-100 rounded-md my-2 flex flex-col mr-2 relative">
+                        <div className="bg-red-100 rounded-md absolute top-0 right-0 flex flex-row items-center p-2 gap-4">
+                            <div className="flex flex-row items-center gap-1">
+                                {getIcon("energy")}
+                                {totalSimulation.values.map(v => v / 60).reduce((sum, v) => sum + v, 0).toFixed(2)} Wh
+                            </div>
+                            <div className="flex flex-row items-center gap-1">
+                                {(totalSimulation.values.map(v => v / (60 * 1000)).reduce((sum, v) => sum + v, 0) * COST_FACTOR).toFixed(2)} €
+                            </div>
+                        </div>
                         <div className=" flex flex-row items-center gap-2 mx-2 mt-2 text-lg font-[Inter]">
                             {getIcon("power")}
                             {t("House power usage")}

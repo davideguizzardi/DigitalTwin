@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { apiFetch, apiLog, logsEvents } from "../Commons/Constants";
+import { logsEvents } from "../Commons/Constants";
 import { FaPencil } from "react-icons/fa6"
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { StyledButton } from "../Commons/StyledBasedComponents";
@@ -9,6 +9,9 @@ import { Label } from "flowbite-react";
 import { useContext } from "react";
 import { UserContext } from "@/Layouts/UserLayout";
 import { NumericKeyboard } from "../Commons/NumericKeyboard";
+
+import { configurationService, calendarService, logService } from "@/Api";
+
 
 export default function ConfigurationEnergy({ endSection, backSection, isInitialConfiguration = true }) {
     const templateSWH1 = Array.from(Array(7).keys()).map(() => Array(24).fill(0))
@@ -68,7 +71,7 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
     const setInputValue = (e, index) => {
         const tempPower = [...powerPrice.map((el, i) => {
             if (index == i)
-                return "0."+e.target.value
+                return "0." + e.target.value
             else
                 return el
         })]
@@ -213,34 +216,45 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
             }
         })
 
-        apiFetch("/configuration", "PUT", { data: dataConf })
+        configurationService.addValues(dataConf)
         if (user)
-            apiLog(user.username, logsEvents.CONFIGURATION_ADD, "", JSON.stringify(dataConf))
+            await logService.add([{
+                actor: user.username,
+                event: logsEvents.CONFIGURATION_ADD,
+                target: "",
+                payload: JSON.stringify(dataConf),
+            }]);
+
         if (timeSlots < 3) {
-            const response = await apiFetch("/configuration/cost_slot_3", "DELETE")
+            const response = await configurationService.deleteByKey("cost_slot_3")
             const result = response
             console.log(result)
             if (timeSlots < 2) {
                 console.log(timeSlots)
-                const response = await apiFetch("/configuration/cost_slot_2", "DELETE")
+                const response = await configurationService.deleteByKey("cost_slot_2")
                 const result2 = response
                 console.log(result2)
             }
         }
         const dataCalendar = slotWeekHour.map((day) => day.map((hour) => hour))
         //before to save delete old calendar
-        const deleteCalendar = await apiFetch("/calendar", "DELETE")
+        const deleteCalendar = await calendarService.clear()
         if (deleteCalendar) {
-            const responseCalendar = await apiFetch("/calendar", "PUT", { data: dataCalendar })
+            const responseCalendar = await calendarService.set(dataCalendar)
             if (user)
-                apiLog(user.username, logsEvents.CONFIGURATION_ENERGY_ADD, "", JSON.stringify(dataCalendar))
+                await logService.add([{
+                    actor: user.username,
+                    event: logsEvents.CONFIGURATION_ENERGY_ADD,
+                    target: "",
+                    payload: JSON.stringify(dataCalendar),
+                }]);
         }
         endSection()
     }
 
     useEffect(() => {
         const getConfiguration = async () => {
-            const result = await apiFetch("/configuration")
+            const result = await configurationService.getAll()
             let updatePrice = []
             result.forEach((conf) => {
                 if (conf.key == "energy_slots_number") {
@@ -260,7 +274,7 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
             setPowerPrice([...updatePrice])
         }
         const getCalendar = async () => {
-            const result = await apiFetch("/calendar")
+            const result = await calendarService.getAll()
             if (result && result.data.length > 0) {
                 setSlotWeekHour([...result.data])
             }
@@ -279,17 +293,17 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
                         <Label htmlFor="maximum_capacity" className=" dark:text-white 2xl:text-lg text-md">{t("Maximum capacity")}</Label>
                         <div className="flex flex-row gap-2 items-center">
                             <NumericKeyboard id="maximum_capacity" className=" dark:text-white dark:bg-neutral-700" type="number"
-                               inputValue={powerCapacity} value={powerCapacity} min="0" max="100000" step="100" onChange={e => setPowerCapacity(e.target.value)} required />
+                                inputValue={powerCapacity} value={powerCapacity} min="0" max="100000" step="100" onChange={e => setPowerCapacity(e.target.value)} required />
                             <p className="text-lg dark:text-white">W</p>
                         </div>
                     </div>
                     <div className="flex flex-row gap-2 items-center">
                         <Label htmlFor="slots_number" className="2xl:text-lg text-md dark:text-white">{t("Number of slot")}</Label>
-                        {["1","2","3"].map(el=>(
-                            <StyledButton 
-                            variant={timeSlots==el?"primary":"secondary"} 
-                            className="rounded-full"
-                            onClick={()=>updateTimeSlots(el)}
+                        {["1", "2", "3"].map(el => (
+                            <StyledButton
+                                variant={timeSlots == el ? "primary" : "secondary"}
+                                className="rounded-full"
+                                onClick={() => updateTimeSlots(el)}
                             >
                                 {el}
                             </StyledButton>
@@ -309,7 +323,7 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
                                             </Label>
                                             <div className="flex flex-row gap-2 items-center">
                                                 0.
-                                                <NumericKeyboard inputValue={element.split(".")[1]}  className=" dark:text-white dark:bg-neutral-700" type="number" value={element.split(".")[1]} min="00001" max="99999" step="1"
+                                                <NumericKeyboard inputValue={element.split(".")[1]} className=" dark:text-white dark:bg-neutral-700" type="number" value={element.split(".")[1]} min="00001" max="99999" step="1"
                                                     onChange={(e) => setInputValue(e, index)}
                                                 />
                                                 <p className="text-xl dark:text-white">€/kWh</p>

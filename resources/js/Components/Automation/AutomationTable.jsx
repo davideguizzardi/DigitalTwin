@@ -3,10 +3,10 @@ import { List, TextInput, Tooltip, Pagination, Drawer, DrawerHeader, DrawerItems
 import { CiSearch } from "react-icons/ci";
 import { Switch } from "@mui/material";
 import { AutomationDetails } from "./AutomationDetails";
-import { callService, getIcon, rulebot, apiFetch } from "@/Components/Commons/Constants";
+import { getIcon, } from "@/Components/Commons/Constants";
 import { StyledButton } from "@/Components/Commons/StyledBasedComponents";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import Cookies from "js-cookie";
+import { automationService, serviceService } from "@/Api";
 import ToastNotification from "../Commons/ToastNotification";
 
 export function AutomationTable({ automation_context, openId = "", automationRefreshFun = () => { } }) {
@@ -15,8 +15,8 @@ export function AutomationTable({ automation_context, openId = "", automationRef
     const [searchQuery, setSearchQuery] = useState("");
     const [currentDay, setCurrentDay] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const [showToast,setShowToast]=useState(false)
-    const [toastType,setToastType]=useState("success")
+    const [showToast, setShowToast] = useState(false)
+    const [toastType, setToastType] = useState("success")
     const [is2xlOrLarger, setIs2xlOrLarger] = useState(false)
     const itemsPerPage = 5;
 
@@ -37,7 +37,7 @@ export function AutomationTable({ automation_context, openId = "", automationRef
 
     const handleAutomationDelete = async (automation_id) => {
 
-        const data = await apiFetch(`/automation/${automation_id}`, "DELETE");
+        const data = await automationService.remove(automation_id);
         if (data) {
             setShowToast(true)
             setToastType("success")
@@ -49,20 +49,20 @@ export function AutomationTable({ automation_context, openId = "", automationRef
         // TODO: Handle toast and refresh list
     };
 
-    const handleSwitchChange = async (event, entity_id,automation_id) => {
+    const handleSwitchChange = async (event, entity_id, automation_id) => {
         const checked = event.target.checked;
         let service = checked ? "turn_on" : "turn_off";
-        const resp = await callService(entity_id, service, {});
+        const resp = await serviceService.call(entity_id, service, {});
         if (Object.keys(resp).length <= 0) {
             alert(t("Some error occurred while trying to change automation status, retry later..."));
         }
-        else{
-            const response=apiFetch("/rulebot/automation/state","PUT",{automation_id:automation_id,state:checked? "on":"off"})
+        else {
+            const response = automationService.updateState(automation_id, checked ? "on" : "off")
         }
     };
 
     const handleTriggerButtonPress = async (entity_id) => {
-        await callService(entity_id, "trigger", {});
+        await serviceService.call(entity_id, "trigger", {});
     };
 
     useEffect(() => {
@@ -104,7 +104,7 @@ export function AutomationTable({ automation_context, openId = "", automationRef
             <div className="flex flex-col gap-2 h-fit">
                 <div className="bg-zinc-50 text-gray-800 rounded-md p-2 text-center">
                     <span className="text-lg font-semibold uppercase">
-                    {t("Automations")}
+                        {t("Automations")}
                     </span>
                 </div>
                 <div>
@@ -145,7 +145,7 @@ export function AutomationTable({ automation_context, openId = "", automationRef
                                         </StyledButton>
                                         <Switch
                                             defaultChecked={automation.state === "on"}
-                                            onChange={(event) => handleSwitchChange(event, automation.entity_id,automation.id)}
+                                            onChange={(event) => handleSwitchChange(event, automation.entity_id, automation.id)}
                                             sx={{
                                                 "& .MuiSwitch-switchBase.Mui-checked": {
                                                     color: "#a3e635",
@@ -177,14 +177,14 @@ export function AutomationTable({ automation_context, openId = "", automationRef
             </div>
 
             {is2xlOrLarger &&
-            
 
-            <Drawer className="w-[50vw] z-[200]" open={Object.keys(openAutomation).length > 0} onClose={() => setOpenAutomation({})} position="left">
-                 <DrawerHeader title="" titleIcon={() => <></>} />
-                <DrawerItems>
-                    <AutomationDetails automation_in={openAutomation} />
-                </DrawerItems>
-            </Drawer>
+
+                <Drawer className="w-[50vw] z-[200]" open={Object.keys(openAutomation).length > 0} onClose={() => setOpenAutomation({})} position="left">
+                    <DrawerHeader title="" titleIcon={() => <></>} />
+                    <DrawerItems>
+                        <AutomationDetails automation_in={openAutomation} />
+                    </DrawerItems>
+                </Drawer>
             }
         </div>
     );

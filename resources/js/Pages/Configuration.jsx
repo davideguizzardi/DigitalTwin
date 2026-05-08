@@ -3,15 +3,13 @@ import RoutineConfiguration from '@/Components/ConfigurationMap/RoutineConfigura
 import { DeviceProvider } from '@/Components/ContextProviders/DeviceProvider';
 
 
-const Configuration = ({ maps }) => {
-    const mapsLength = maps.length
+const Configuration = () => {
     return (
         <DeviceProvider>
 
             <div className='size-full flex min-w-fit min-h-fit p-3'>
                 {
-                    mapsLength > 0 ?
-                        <RoutineConfiguration /> : <FirstConfiguration />
+                    <RoutineConfiguration />
                 }
             </div>
         </DeviceProvider>

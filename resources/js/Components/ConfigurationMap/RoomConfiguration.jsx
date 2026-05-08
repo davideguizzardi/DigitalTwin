@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Stage, Layer, Line, Text, Image, Circle, Label, Tag } from "react-konva";
-import { Table, Modal } from "flowbite-react";
+import { Modal } from "flowbite-react";
 import useImage from "use-image";
 import { useLaravelReactI18n } from "laravel-react-i18n";
 import { StyledButton } from "../Commons/StyledBasedComponents";
-import { apiLog, getIcon, logsEvents } from "../Commons/Constants";
+import { getIcon, logsEvents } from "../Commons/Constants";
 import { TouchKeyboard2 } from "../Commons/TouchKeyboard2";
-import { apiFetch, domain } from "../Commons/Constants";
+import { backend } from "../Commons/Constants";
+import { roomService, logService, mapService } from "@/Api";
 import ListButtons from "../Commons/ListButtons";
 import { useContext } from "react";
 import { UserContext } from "@/Layouts/UserLayout";
@@ -21,7 +22,7 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
   const currentFloor = maps[currentIndex]?.floor;
 
 
-  const [image] = useImage(`${domain}/${maps[currentIndex]?.url}`);
+  const [image] = useImage(`${backend}/${maps[currentIndex]?.url}`);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [frameWidth, setFrameWidth] = useState(0);
   const [frameHeight, setFrameHeight] = useState(0);
@@ -108,20 +109,8 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
 
 
   const fetchMap = async () => {
-    await fetch(domain + "/sanctum/csrf-cookie", {
-      method: "GET",
-      credentials: "include"
-    });
-    const apiRoute = route('map.index')
-    const response = await fetch(apiRoute, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "X-Requested-With": "XMLHttpRequest"
-      }
-    });
-    const result = await response.json();
-    setMaps(result.maps);
+    const response = await mapService.getAllFiles()
+    setMaps(response);
     setCurrentIndex(0);
   };
 
@@ -148,7 +137,7 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
     setFrameHeight(targetHeight);
 
     const fetchData = async () => {
-      const data = await apiFetch("/room");
+      const data = await roomService.getAll()
       if (data && data.length > 0) {
         data.forEach(room => {
           const rawPoints = JSON.parse(room.points);
@@ -174,27 +163,35 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
   }));
 
   const handleConfigurationSubmit = async () => {
+
+    const room_config = rooms.map(({ name, floor, points }) => {
+      const percentPoints = points.map((value, index) =>
+        index % 2 === 0
+          ? (value / frameWidth) * 100
+          : (value / frameHeight) * 100
+      );
+      return {
+        name,
+        floor,
+        points: JSON.stringify(percentPoints),
+      };
+    })
     const body = {
-      data: rooms.map(({ name, floor, points }) => {
-        const percentPoints = points.map((value, index) =>
-          index % 2 === 0
-            ? (value / frameWidth) * 100
-            : (value / frameHeight) * 100
-        );
-        return {
-          name,
-          floor,
-          points: JSON.stringify(percentPoints),
-        };
-      }),
+      data: room_config,
     };
 
     try {
-      const response = await apiFetch("/room", "PUT", body)
+      const response = await roomService.addRooms(room_config)
 
       if (response) {
         if (user)
-          apiLog(user.username, logsEvents.CONFIGURATION_ROOM_ADD, "", JSON.stringify(body))
+          await logService.add([{
+            actor: user.username,
+            event: logsEvents.CONFIGURATION_ROOM_ADD,
+            target: "",
+            payload: JSON.stringify(body),
+          }]);
+
         endSection()
       } else {
         alert(t("Some error occurred"));
@@ -206,10 +203,16 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
   };
 
   const removeRoom = (deleted_room) => {
-    apiFetch(`/room/${deleted_room.name}`, "DELETE").then(() => {
+    roomService.remove(deleted_room.name).then(() => {
       setRooms(prevRooms => prevRooms.filter(room => room.name !== deleted_room.name));
       if (user)
-        apiLog(user.username, logsEvents.CONFIGURATION_ROOM_DELETE, deleted_room.name, "{}")
+        logService.add([{
+          actor: user.username,
+          event: logsEvents.CONFIGURATION_ROOM_DELETE,
+          target: deleted_room.name,
+          payload: "",
+        }]);
+
     });
     resetEditRoom()
   };
@@ -285,10 +288,16 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
   }
 
   const handleNameChange = async () => {
-    const response = await apiFetch(`/room/${selectedRoom.name}`, "PATCH", { new_name: newRoomName })
+    const response = await roomService.rename(selectedRoom.name, newRoomName)
     if (response) {
       if (user)
-        apiLog(user.username, logsEvents.CONFIGURATION_ROOM_RENAME, selectedRoom.name, JSON.stringify({ new_name: newRoomName }))
+        logService.add([{
+          actor: user.username,
+          event: logsEvents.CONFIGURATION_ROOM_RENAME,
+          target: selectedRoom.name,
+          payload: JSON.stringify({ new_name: newRoomName }),
+        }]);
+
 
       setRooms(prevRooms =>
         prevRooms.map(room =>

@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Spinner, Button, Select, Label } from "flowbite-react";
+import { Spinner } from "flowbite-react";
 import { BarChart } from '@mui/x-charts/BarChart';
 import { useLaravelReactI18n } from "laravel-react-i18n";
-import { apiFetch, apiLog, logsEvents, useIsMobile } from "../Commons/Constants";
+import { logsEvents, useIsMobile } from "../Commons/Constants";
 import { useContext } from "react";
 import { UserContext } from "@/Layouts/UserLayout";
+import { logService, predictionService } from "@/Api";
 
 export function ConsumptionPredictionGraph({ url_in, future_steps, graphHeight = 0 }) {
   const [dataset, setDataset] = useState([])
   const [loading, setLoading] = useState(false)
   const [colorPast, setColorPast] = useState('#a3e635')
   const [colorFuture, setColorFuture] = useState('#65A30D')
-  const heightGraph = graphHeight > 0 ? graphHeight : (useIsMobile() ? 500 :window.innerHeight *0.7)
+  const heightGraph = graphHeight > 0 ? graphHeight : (useIsMobile() ? 500 : window.innerHeight * 0.7)
   const { t } = useLaravelReactI18n()
 
   const user = useContext(UserContext)
@@ -21,19 +22,24 @@ export function ConsumptionPredictionGraph({ url_in, future_steps, graphHeight =
 
 
   const fetchConsumption = async () => {
-    let url_cache = `${url_in}/cache`
-    const cache = await apiFetch(url_cache)
+    const cache = await predictionService.getCachedRecursive()
     if (cache) {
       setDataset(cache.data)
     }
     setLoading(true)
-    const response = await apiFetch(url_in)
+    const response = await predictionService.getCachedRecursive()
     if (response) {
       setDataset(response.data)
     }
     setLoading(false)
     if (user)
-        apiLog(user.username, logsEvents.CONSUMPTION_PREDICTION, "Entire House", "{}")
+      logService.add([{
+        actor: user.username,
+        event: logsEvents.CONSUMPTION_PREDICTION,
+        target: "Entire House",
+        payload: "",
+      }]);
+
   }
 
 
@@ -79,22 +85,22 @@ export function ConsumptionPredictionGraph({ url_in, future_steps, graphHeight =
                   },
                 },
               ]}
-              yAxis={[{ valueFormatter: valueFormatter,tickLabelStyle: { fontSize: useIsMobile()?10:13 }}]}
+              yAxis={[{ valueFormatter: valueFormatter, tickLabelStyle: { fontSize: useIsMobile() ? 10 : 13 } }]}
               series={[
                 { dataKey: "energy_consumption", valueFormatter }
               ]}
               borderRadius={4}
-              margin={{right:20,top:80}}
+              margin={{ right: 20, top: 80 }}
               height={heightGraph}
             />
           </div>
         </>
       }
       {loading &&
-      <div className="flex flex-row items-center gap-2 justify-center">
-        <Spinner className="fill-lime-400" aria-label="Loading" size="xl" />
-        <div className="text-xl">
-        {t("Updating data...")}
+        <div className="flex flex-row items-center gap-2 justify-center">
+          <Spinner className="fill-lime-400" aria-label="Loading" size="xl" />
+          <div className="text-xl">
+            {t("Updating data...")}
           </div>
         </div>
       }

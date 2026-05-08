@@ -2,7 +2,9 @@ import { UserContext } from "@/Layouts/UserLayout";
 import { Checkbox } from "flowbite-react";
 import { useState, useEffect, useContext } from "react";
 import { useLaravelReactI18n } from "laravel-react-i18n";
-import { apiFetch, apiLog, logsEvents } from "../Commons/Constants";
+import { logsEvents } from "../Commons/Constants";
+
+import { userService, logService } from "@/Api";
 
 export default function PermissionPrivacy() {
   const { t } = useLaravelReactI18n();
@@ -14,7 +16,7 @@ export default function PermissionPrivacy() {
 
   const fetchPrivacy = async () => {
     if (!user.username) return;
-    const response = await apiFetch(`/user/privacy/${user.username}`);
+    const response = await userService.getPrivacyByUser(user.username);
     if (response) {
       setPrivacy({
         privacy_disclosure: response.data_disclosure,
@@ -30,24 +32,25 @@ export default function PermissionPrivacy() {
   const handlePrivacyChange = async (key, value) => {
     const updatedPrivacy = { ...privacy, [key]: value };
     setPrivacy(updatedPrivacy);
-    await apiFetch("/user/privacy", "PUT", {
-      data: [
-        {
-          user_id: user.username,
-          data_collection: updatedPrivacy.privacy_collection,
-          data_disclosure: updatedPrivacy.privacy_disclosure,
-        },
-      ],
-    });
-    apiLog(
-      user.username,
-      logsEvents.USER_PRIVACY_ADD,
-      user.username,
-      JSON.stringify(updatedPrivacy)
-    );
+    await userService.addPrivacy([
+      {
+        user_id: user.username,
+        data_collection: updatedPrivacy.privacy_collection,
+        data_disclosure: updatedPrivacy.privacy_disclosure,
+      },
+    ])
+
+    logService.add([{
+      actor: user.username,
+      event: logsEvents.USER_PRIVACY_ADD,
+      target: user.username,
+      payload: JSON.stringify(updatedPrivacy),
+    }]);
+
+
   };
 
-  
+
   const privacyOptions = [
     {
       key: "privacy_collection",

@@ -1,9 +1,8 @@
 import { LightPopup } from "./LightPopup"
 import { MediaPlayerControl } from "./MediaPlayerPopup"
-import { DropdownDivider, DropdownItem, Modal, ModalFooter } from "flowbite-react"
+import { DropdownDivider, DropdownItem, Modal } from "flowbite-react"
 import { useState, useEffect, useContext } from "react"
-import { getIcon, backend, apiFetch, DevicesTypes, getDeviceIcon } from "../Commons/Constants"
-import { callService } from "../Commons/Constants"
+import { getIcon, DevicesTypes } from "../Commons/Constants"
 import { UserContext } from "@/Layouts/UserLayout"
 import ToastNotification from "../Commons/ToastNotification"
 import { SwitchToggle } from "./SwitchToggle"
@@ -12,6 +11,9 @@ import { StyledButton } from "../Commons/StyledBasedComponents"
 import { TouchKeyboard2 } from "../Commons/TouchKeyboard2"
 import { Dropdown } from "flowbite-react"
 import { CreateGroupModal } from "../Commons/CreateGroupModal"
+
+import { deviceGroupService, automationService, deviceService, groupService, deviceConfigService } from "@/Api"
+import { Link } from "react-router-dom"
 
 
 
@@ -80,7 +82,7 @@ export default function ControlPopup({ openDevice }) {
   const [showGroupAdd, setShowGroupAdd] = useState(false)
 
   const fetchGroupContext = async () => {
-    const response = await apiFetch(`/device-group/device/${openDevice.device_id}`)
+    const response = await deviceGroupService.getGroupsForDevice(openDevice.device_id)
     if (response) {
       setDeviceGroups(response)
     }
@@ -88,7 +90,7 @@ export default function ControlPopup({ openDevice }) {
 
   useEffect(() => {
     const fetchAutomationContext = async () => {
-      const response = await apiFetch("/automation?get_suggestions=false")
+      const response = await automationService.getAll(false)
       if (response) {
         const devAutomations = response.filter(a => a.action.some(action => action.device_id == openDevice.device_id))
         setDeviceAutomations(devAutomations)
@@ -109,14 +111,15 @@ export default function ControlPopup({ openDevice }) {
   const refreshDevice = async () => {
     const id = openDevice.device_id;
     await new Promise(resolve => setTimeout(resolve, 1000));
-    const updated_dev = await apiFetch(`/device/${id}`);
+
+    const updated_dev = await deviceService.getById(id)
     if (updated_dev) {
       setDevice(updated_dev);
     }
   };
 
   const fetchGroups = async () => {
-    const response = await apiFetch("/group");
+    const response = await groupService.getAll();
     if (response) {
       setGroupsList(response);
     }
@@ -128,7 +131,7 @@ export default function ControlPopup({ openDevice }) {
   }
 
   const handleDeviceGroupAddition = async (group_id) => {
-    const response = await apiFetch("/device-group", "PUT", { data: [{ device_id: openDevice.device_id, group_id: group_id }] })
+    const response = await deviceGroupService.addMappings([{ device_id: openDevice.device_id, group_id: group_id }])
     if (response) {
       //TODO:ADD log
       fetchGroupContext()
@@ -136,7 +139,7 @@ export default function ControlPopup({ openDevice }) {
   }
 
   const deleteDeviceGroup = async (group_id) => {
-    const response = await apiFetch(`/device-group/${openDevice.device_id}/${group_id}`, "DELETE")
+    const response = await deviceGroupService.removeMapping(openDevice.device_id, group_id)
     if (response) {
       //TODO:ADD log
       fetchGroupContext()
@@ -151,15 +154,16 @@ export default function ControlPopup({ openDevice }) {
   }, [editMode]);
 
   const handleConfigurationSubmit = async () => {
+    const device_configuration = [{
+      device_id: device.device_id,
+      name: device.name,
+      category: device.category,
+      show: device.show ? 1 : 0,
+    }]
     const body = {
-      data: [{
-        device_id: device.device_id,
-        name: device.name,
-        category: device.category,
-        show: device.show ? 1 : 0,
-      }]
+      data: device_configuration
     }
-    const response = await apiFetch("/device_configuration", "PUT", body)
+    const response = await deviceConfigService.addDevices(device_configuration)
     if (response) {
       setEditMode(false)
       if (user)
@@ -369,9 +373,9 @@ export default function ControlPopup({ openDevice }) {
                       <span className="font-light font-[Inter]">{t("Automations")}:{" "}
                         {deviceAutomations.map((automation, index) => (
                           <span key={automation.id}>
-                            <a className="underline text-blue-500" href={route("automation", { id: automation.id })}>
+                            <Link className="underline text-blue-500" to={`/automation/${automation.id}`}>
                               {automation.name}
-                            </a>
+                            </Link>
                             {index < deviceAutomations.length - 1 ? ", " : "."}
                           </span>
                         ))}

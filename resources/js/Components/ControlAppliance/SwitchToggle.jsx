@@ -1,9 +1,10 @@
 import { useState, useEffect, useContext } from "react";
-import { callService, getIcon, apiFetch, backend } from "../Commons/Constants";
-import { ConsumptionPredictionGraph } from "../Consumption/ConsumptionPredictionGraph";
+import { getIcon } from "../Commons/Constants";
 import { ConsumptionPredictionGraphPower } from "../Consumption/ConsumptionPredictionGraphPower";
 import { useLaravelReactI18n } from "laravel-react-i18n";
 import { DeviceContextRefresh } from "../ContextProviders/DeviceProviderRefresh";
+
+import { serviceService } from "@/Api";
 
 
 function ActiveDevicesDropdown({ }) {
@@ -137,7 +138,7 @@ export function SwitchToggle({ state, stateId, devId, user, setErrorFun = {}, re
 
   const handleClick = async () => {
     const service = isOn ? "turn_off" : "turn_on"
-    const ret = await callService(stateId, service, {}, user)
+    const ret = await serviceService.call(stateId, service, {}, user)
     setIsOn(!isOn)
     refreshDevice()
   }

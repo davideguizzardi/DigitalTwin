@@ -1,90 +1,85 @@
-import { domain } from "@/Components/Commons/Constants";
-import Sidebar from "@/Components/Sidebar/Sidebar"
+import { domain, logsEvents } from "@/Components/Commons/Constants";
+import Sidebar from "@/Components/Sidebar/Sidebar";
 import { motion } from "framer-motion";
-import Cookies from "js-cookie";
-import { createContext } from "react";
-import { useState } from "react";
-import { useEffect } from "react";
+import { createContext, useState, useEffect } from "react";
+import { Outlet, useLocation } from "react-router-dom";
 import { DeviceProviderRefresh } from "@/Components/ContextProviders/DeviceProviderRefresh";
 import Navbar from "@/Components/Commons/Navbar";
-import { apiLog, logsEvents } from "@/Components/Commons/Constants";
-
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
-export const UserContext = createContext({})
+import { authService, logService } from "@/Api";
 
-export function UserLayout({ children }) {
-    const [userState, setUserState] = useState({})
-    const [dark, isDark] = useState(false)
+export const UserContext = createContext({});
+
+// Route che non mostrano Navbar/Sidebar (layout a schermo intero)
+const FULLSCREEN_ROUTES = ["/first-configuration"];
+
+export function UserLayout() {
+    const [userState, setUserState] = useState({});
+    const location = useLocation();
+
+
+    const isFullscreenRoute = FULLSCREEN_ROUTES.includes(location.pathname);
+
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                await fetch(domain + "/sanctum/csrf-cookie", {
-                    method: "GET",
-                    credentials: "include"
-                });
+                const result = await authService.me();
+                setUserState(result);
 
-
-                const response = await fetch(domain + "/api/user", {
-                    method: "GET",
-                    credentials: "include",
-                    headers: {
-                        "X-Requested-With": "XMLHttpRequest"
-                    }
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    setUserState({ ...result.user });
-                    apiLog(result.user.username, logsEvents.LOGIN, "", "")
-                } else {
-                    console.error("User fetch failed with status", response.status);
-                }
+                logService.add([{
+                    actor: result.email,
+                    event: logsEvents.LOGIN,
+                    target: "",
+                    payload: "",
+                }]);
             } catch (error) {
                 console.error("User fetch error:", error);
+                // il 401 viene già gestito da api.js → redirect a /login
             }
         };
 
+        //fetchUser();
 
-        fetchUser();
+        // Leggi l'utente selezionato al login
+        const savedUser = localStorage.getItem('dt_selected_user');
+        const selectedUser = savedUser ? JSON.parse(savedUser) : null;
+        setUserState(selectedUser)
 
+        // Dark mode
         const darkMode = localStorage.getItem("darkMode");
         if (darkMode === "true") {
             document.documentElement.classList.add("dark");
-        } else {
-            //document.documentElement.classList.remove("dark");
         }
     }, []);
 
-
     return (
-        <main className="">
+        <main>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-
                 <div className="overflow-hidden bg-gray-300 dark:bg-gray-700 h-screen w-screen text-gray-800">
                     <UserContext.Provider value={userState}>
-                        {children.props.isFirstConfiguration ?
+                        {isFullscreenRoute ? (
+                            // Layout senza Navbar (es. /first-configuration)
                             <div className="flex w-full justify-center">
-
-                                <motion.div className={`h-screen justify-center w-full`}>
-                                    {children}
+                                <motion.div className="h-screen justify-center w-full">
+                                    <Outlet />
                                 </motion.div>
                             </div>
-                            :
+                        ) : (
+                            // Layout normale con Navbar
                             <DeviceProviderRefresh>
                                 <Navbar />
                                 <div className="flex w-full justify-center overflow-auto">
-
-                                    <motion.div className={`h-[calc(100vh-3.25rem)] justify-center w-full`}>
-                                        {children}
+                                    <motion.div className="h-[calc(100vh-3.25rem)] justify-center w-full">
+                                        <Outlet />
                                     </motion.div>
                                 </div>
                             </DeviceProviderRefresh>
-                        }
+                        )}
                     </UserContext.Provider>
                 </div>
             </LocalizationProvider>
         </main>
-    )
+    );
 }
