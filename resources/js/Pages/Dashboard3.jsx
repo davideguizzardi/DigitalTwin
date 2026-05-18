@@ -108,9 +108,9 @@ const Dashboard3 = () => {
                 end.format("YYYY-MM-DD"),
                 "total"
             );;
-            if (resp) {
+            if (resp && resp.length > 0) {
                 setPastConsumption(
-                    resp[0].energy_consumption_unit === "Wh"
+                    resp[0].energy_consumption_unit && resp[0].energy_consumption_unit === "Wh"
                         ? resp[0].energy_consumption / 1000
                         : resp[0].energy_consumption
                 );

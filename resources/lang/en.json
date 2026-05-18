@@ -383,11 +383,20 @@
     "simulation_mode_selection": "Select the mode you want to simulate for \":name\"",
     "Mode": "Mode",
     "House power usage": "House power usage",
-    "Time": "Time",
+    "Starting time": "Starting time",
+    "Ending time": "Ending time",
     "Simulation": "Simulation",
     "Highly Frequently used": "Highly Frequently used",
     "Frequently used": "Frequently used",
     "Rarely used": "Rarely used",
     "Highly rarely used": "Highly rarely used",
-    "simulation_threshold":"Excessive consumption threshold"
+    "simulation_threshold": "Excessive consumption threshold",
+    "Duration": "Duration (minutes)",
+    "Change": "Change",
+    "Cost": "Cost",
+    "Overall consumption": "Overall consumption",
+    "Overall cost": "Overall cost",
+    "Simulate": "Simulate",
+    "Excessive_consumption_warning": "Excessive consumption warning",
+    "Excessive_consumption_description": "The overall power consumption exceeds the maximum allowed in the following time ranges: "
 }

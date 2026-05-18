@@ -1,7 +1,7 @@
 import { TimePicker } from "@mui/x-date-pickers";
-import { useContext, useState, useEffect } from "react"
+import { useContext, useState, useEffect, useMemo } from "react"
 import { getIcon } from "@/Components/Commons/Constants"
-import { Button, Modal, Spinner, TextInput } from "flowbite-react"
+import { Button, Modal, Spinner, TextInput, Tooltip } from "flowbite-react"
 import {
     ResponsiveChartContainer,
     LinePlot,
@@ -19,8 +19,10 @@ import { StyledButton } from "@/Components/Commons/StyledBasedComponents";
 import { Slider } from "@mui/material";
 
 import { simulationService, virtualService } from "@/Api";
+import { MdOutlineTimer } from "react-icons/md";
 
 const COST_FACTOR = 0.4
+const LOADING_TIME = 500
 
 
 function OverlayMarkers({
@@ -218,20 +220,20 @@ function PowerGraph({
     );
 }
 
-function SimulationPickModal({ device_id, device_name, addSimulationFun, t }) {
+function SimulationPickModal({ device_id, device_name, addSimulationFun, onCloseFun, t }) {
     const [selectedCluster, setSelectedCluster] = useState(null)
     const [step, setStep] = useState(0)
-    const [editMode, setEditMode] = useState(false)
     const [newDuration, setNewDuration] = useState(1)
     const [clusterTime, setClusterTime] = useState(dayjs())
     const [openModal, setOpenModal] = useState(false)
     const [deviceSimulation, setDeviceSimulation] = useState(null)
 
+    const [loading, setLoading] = useState(false)
+
     function resetModal() {
         setOpenModal(false)
         setSelectedCluster(null)
         setStep(0)
-        setEditMode(null)
         setDeviceSimulation(null)
     }
 
@@ -265,9 +267,14 @@ function SimulationPickModal({ device_id, device_name, addSimulationFun, t }) {
         }
     }, [device_name])
 
+    const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-    async function resampleMedoidDuration() {
-        const new_medoid = await simulationService.resampleDeviceMode(selectedCluster.device_id, selectedCluster.id, newDuration)
+    async function resampleMedoidDuration(duration) {
+        setNewDuration(duration)
+        setLoading(true)
+        await wait(LOADING_TIME);
+        setLoading(false)
+        const new_medoid = await simulationService.resampleDeviceMode(selectedCluster.device_id, selectedCluster.id, duration)
         if (new_medoid) {
             setSelectedCluster(old => ({ ...old, medoid: new_medoid }))
         }
@@ -305,10 +312,11 @@ function SimulationPickModal({ device_id, device_name, addSimulationFun, t }) {
 
 
     return (
-        <Modal show={openModal} size="7xl" popup onClose={() => resetModal()}>
+        <Modal show={openModal} size="7xl" popup onClose={() => { resetModal(); onCloseFun() }}>
             <Modal.Header>{t("simulation_mode_selection", { name: `${deviceSimulation && deviceSimulation.device_name}` })}</Modal.Header>
 
-            <Modal.Body className="p-0 flex flex-col">
+            <Modal.Body className="p-0 flex flex-col relative">
+
                 {deviceSimulation &&
                     <div className="h-[60vh] flex flex-col m-4">
                         {step == 0 &&
@@ -362,69 +370,58 @@ function SimulationPickModal({ device_id, device_name, addSimulationFun, t }) {
                             <>
                                 <div className={`grid grid-cols-2 auto-rows-fr gap-4 flex-1 min-h-0 rounded-md`}>
                                     <div className="flex flex-col gap-4 rounded-md">
-                                        <div className="flex flex-row gap-5 text-xl font-semibold border-b-2 border-gray-400">
+                                        <div className="flex flex-row gap-5 text-xl font-semibold border-b-2 border-gray-700">
                                             <label>{t("Mode")}</label>
                                             {selectedCluster.id}
                                         </div>
 
-                                        <div className="flex flex-row gap-5 items-center">
-                                            <label>{t("Time")}</label>
-                                            {editMode ?
 
+                                        <div className="grid grid-cols-2 grid-flow-row items-center gap-2">
+
+
+
+                                            <label>{t("Starting time")}</label>
+                                            <TimePicker
+                                                ampm={false}
+                                                size="small"
+                                                value={selectedCluster.time}
+                                                onChange={(value) => updateClusterTime(value)
+
+                                                } />
+
+
+
+                                            <label>{t("Duration")}</label>
+                                            <TextInput
+                                                className="w-full"
+                                                style={{ "background": "white", "borderWidth": "1px" }}
+                                                sizing="lg"
+                                                value={newDuration}
+                                                onChange={(value) => { resampleMedoidDuration(value.target.value); }}
+                                                type="number"
+                                                rightIcon={MdOutlineTimer}
+                                                min={1}
+                                                max={600}
+                                            />
+
+
+
+                                            <label>{t("Ending time")}</label>
+                                            <>
                                                 <TimePicker
                                                     ampm={false}
                                                     size="small"
-                                                    value={selectedCluster.time}
+                                                    value={(selectedCluster.time.add(newDuration, "m"))}
                                                     onChange={(value) => updateClusterTime(value)
 
-                                                    } />
-                                                :
-                                                <>
-                                                    {clusterTime.format("HH:mm")}
-                                                </>
-                                            }
-                                        </div>
+                                                    } readOnly />
 
-                                        <div className="flex flex-row gap-5 items-center">
-                                            <label>{t("Duration")}</label>
-                                            {editMode ?
-                                                <>
-                                                    <TextInput
-                                                        value={newDuration}
-                                                        onChange={(value) => setNewDuration(value.target.value)}
-                                                        type="number"
-                                                        min={1}
-                                                        max={600}
-                                                    /> min
-
-                                                </>
-
-                                                :
-                                                <>
-                                                    {selectedCluster.medoid.length} min
-
-                                                </>
-                                            }
-                                        </div>
-
-                                        <div className="w-full items-end flex justify-end border-b-2 border-gray-400 pb-2">
-
-                                            {editMode ?
-                                                <StyledButton variant="secondary" onClick={() => { resampleMedoidDuration(); setEditMode(false) }}>
-                                                    {getIcon("save")}
-                                                    {t("Save")}
-                                                </StyledButton>
-                                                :
-                                                <StyledButton variant="secondary" onClick={() => setEditMode(true)}>
-                                                    {getIcon("edit")}
-                                                    {t("Change")}
-                                                </StyledButton>
-                                            }
-
+                                            </>
 
                                         </div>
 
-                                        <div className="grid grid-cols-2 gap-10 text-lg">
+
+                                        <div className="grid grid-cols-2 gap-10 text-lg mt-10">
                                             <div className="flex flex-col rounded-lg bg-gray-50 p-3 shadow-md text-end">
                                                 <div className="flex flex-row gap-2 items-center w-full">
                                                     {getIcon("energy")}
@@ -455,7 +452,7 @@ function SimulationPickModal({ device_id, device_name, addSimulationFun, t }) {
                                     </StyledButton>
                                     <StyledButton variant="primary"
                                         onClick={() => { addSimulationFun(selectedCluster); resetModal() }}>
-                                        Simulate
+                                        {t("Simulate")}
                                     </StyledButton>
                                 </div>
 
@@ -463,6 +460,12 @@ function SimulationPickModal({ device_id, device_name, addSimulationFun, t }) {
 
                             </>
                         }
+                    </div>
+                }
+
+                {loading &&
+                    <div className="absolute size-full bg-slate-900/40 top-0 items-center flex justify-center z-100" >
+                        <Spinner size={"xl"} color="success" />
                     </div>
                 }
             </Modal.Body>
@@ -485,7 +488,7 @@ export default function DeviceSimulation({ }) {
 
     const { t } = useLaravelReactI18n()
 
-    const [maxThreshold, setMaxThreshold] = useState(3000)
+    const [maxThreshold, setMaxThreshold] = useState(1000)
 
     const [deviceList, setDeviceList] = useState([] = [])
 
@@ -493,6 +496,12 @@ export default function DeviceSimulation({ }) {
 
     const [openedDeviceId, setOpenedDeviceId] = useState(null)
     const [openedDeviceName, setOpenedDeviceName] = useState(null)
+
+    const [warningList, setWarningList] = useState([])
+
+
+    const overallConsumption = useMemo(() => totalSimulation.values.map(v => v / 60).reduce((sum, v) => sum + v, 0).toFixed(2))
+    const overallCost = useMemo(() => (totalSimulation.values.map(v => v / (60 * 1000)).reduce((sum, v) => sum + v, 0) * COST_FACTOR).toFixed(2))
 
 
 
@@ -538,10 +547,28 @@ export default function DeviceSimulation({ }) {
         });
         setLoading(true)
 
+        let warnings = []
+        let current_warning_start = null
+
+        for (let i = 0; i < new_total.length; i++) {
+            if (new_total[i] > maxThreshold) {
+                if (!current_warning_start) {
+                    current_warning_start = i
+                }
+            }
+            else {
+                if (current_warning_start) {
+                    warnings.push(`${baseTime.add(current_warning_start, "m").format("HH:mm")}-${baseTime.add(i, "m").format("HH:mm")}`)
+                    current_warning_start = null
+                }
+            }
+        }
+        setWarningList(warnings)
+
         setTimeout(function () {
             setTotalSimulation({ starting_time: baseTime, values: new_total });
             setLoading(false)
-        }, 1000);
+        }, LOADING_TIME);
     }, [simulations]);
 
 
@@ -551,6 +578,12 @@ export default function DeviceSimulation({ }) {
 
 
     function simulateSelectedSimulation(selectedCluster) {
+
+        const dev = deviceList.filter(a => a.device_id == selectedCluster["device_id"])
+        let new_simulation = selectedCluster
+        if (dev.length == 1) {
+            new_simulation.device_category = dev[0].category
+        }
 
         const index = simulations.findIndex(a => a.device_name == selectedCluster["device_name"])
         if (index == -1) {
@@ -593,7 +626,10 @@ export default function DeviceSimulation({ }) {
 
 
 
-
+    function resetOpenedDevice() {
+        setOpenedDeviceId(null)
+        setOpenedDeviceName(null)
+    }
 
 
 
@@ -603,42 +639,44 @@ export default function DeviceSimulation({ }) {
     return (
 
         <div className="grid grid-cols-3 gap-2 pt-3 size-full overflow-hidden ">
-            <SimulationPickModal t={t} device_id={openedDeviceId} device_name={openedDeviceName} addSimulationFun={simulateSelectedSimulation} />
+            <SimulationPickModal t={t} device_id={openedDeviceId} device_name={openedDeviceName} addSimulationFun={simulateSelectedSimulation} onCloseFun={resetOpenedDevice} />
 
             <div className="flex flex-col gap-2">
-                <div
-                    className="mx-3 px-1 py-1 bg-zinc-100 rounded-md mb-5 flex flex-col gap-4"
-                >
-                    <div className="font-semibold text-lg ml-1 font-[Inter]">
-                        {t("simulation_threshold")}
-                    </div>
-                    <div className="flex flex-row items-center gap-10 ml-3">
-                        <Slider
-                            value={maxThreshold}
-                            min={0}
-                            max={10000}
-                            step={100}
-                            onChange={(e, newValue) => setMaxThreshold(newValue)}
-                            sx={{
-                                color: "#a3e635",
-                                width: "270px",
-                                height: "6px",
-                                "& .MuiSlider-rail": {
-                                    color: "#1F2937",
-                                    opacity: 1,
-                                },
-                            }}
-                        />
-                        <div className="flex flex-row items-center gap-2">
-                            <TextInput value={maxThreshold} onChange={(value) => setMaxThreshold(value.target.value)} min={0} max={10000} step={100} type="number" />
-                            Watts
+                {false &&
+                    <div
+                        className="mx-3 px-1 py-1 bg-zinc-100 rounded-md mb-5 flex flex-col gap-4"
+                    >
+                        <div className="font-semibold text-lg ml-1 font-[Inter]">
+                            {t("simulation_threshold")}
                         </div>
+                        <div className="flex flex-row items-center gap-10 ml-3">
+                            <Slider
+                                value={maxThreshold}
+                                min={0}
+                                max={10000}
+                                step={100}
+                                onChange={(e, newValue) => setMaxThreshold(newValue)}
+                                sx={{
+                                    color: "#a3e635",
+                                    width: "270px",
+                                    height: "6px",
+                                    "& .MuiSlider-rail": {
+                                        color: "#1F2937",
+                                        opacity: 1,
+                                    },
+                                }}
+                            />
+                            <div className="flex flex-row items-center gap-2">
+                                <TextInput value={maxThreshold} onChange={(value) => setMaxThreshold(value.target.value)} min={0} max={10000} step={100} type="number" />
+                                Watts
+                            </div>
 
-                    </div>
-                    <div className="flex flex-row items-center gap-10 ml-3">
+                        </div>
+                        <div className="flex flex-row items-center gap-10 ml-3">
 
+                        </div>
                     </div>
-                </div>
+                }
 
                 <div
                     className="flex flex-col mx-3 bg-zinc-100 rounded-md p-1"
@@ -680,7 +718,7 @@ export default function DeviceSimulation({ }) {
                                 </div>
                                 <div
                                     className="hover:bg-zinc-200 rounded-full p-2 hover:cursor-pointer"
-                                    onClick={() => pullSimulation(sim.device_id, sim.device_name, sim.device_category)}
+                                    onClick={() => { setOpenedDeviceId(sim.device_id); setOpenedDeviceName(sim.device_name) }}
                                 >
                                     {getIcon("change")}
                                 </div>
@@ -717,20 +755,37 @@ export default function DeviceSimulation({ }) {
                 {totalSimulation.values.length > 0 &&
 
                     <div className="h-[55vh] bg-zinc-100 rounded-md my-2 flex flex-col mr-2 relative">
-                        <div className="bg-red-100 rounded-md absolute top-0 right-0 flex flex-row items-center p-2 gap-4">
-                            <div className="flex flex-row items-center gap-1">
+                        <div className="rounded-md  flex flex-row items-center p-2 gap-4 text-lg">
+                            <div className=" flex flex-row items-center gap-1 font-[Inter]">
+                                {getIcon("power")}
+                                {t("House power usage")}
+                            </div>
+                            <div className="flex flex-row items-center gap-1 ml-10">
                                 {getIcon("energy")}
-                                {totalSimulation.values.map(v => v / 60).reduce((sum, v) => sum + v, 0).toFixed(2)} Wh
+                                <Tooltip content={t("Overall consumption")} placement="bottom">
+                                    {overallConsumption > 1000 ? `${(overallConsumption / 1000).toFixed(2)} kWh` : `${overallConsumption} Wh`}                                </Tooltip>
                             </div>
-                            <div className="flex flex-row items-center gap-1">
-                                {(totalSimulation.values.map(v => v / (60 * 1000)).reduce((sum, v) => sum + v, 0) * COST_FACTOR).toFixed(2)} €
+                            <div className="flex flex-row items-center gap-1 ml-5">
+                                {getIcon("money")}
+                                <Tooltip content={t("Overall cost")} placement="bottom">
+                                    {overallCost} €
+                                </Tooltip>
                             </div>
-                        </div>
-                        <div className=" flex flex-row items-center gap-2 mx-2 mt-2 text-lg font-[Inter]">
-                            {getIcon("power")}
-                            {t("House power usage")}
                         </div>
                         <PowerGraph data={totalSimulation.values} simulations={simulations} starting_time={totalSimulation.starting_time} interactive={true} maxThreshold={maxThreshold} />
+
+                        {warningList.length > 0 &&
+                            <div className="absolute top-3 right-3 p-2 bg-red-200 rounded-md flex flex-col items-start w-[30%]">
+                                <div className="flex gap-2 items-center">
+                                    {getIcon("warning", "size-7")}
+                                    <span className="font-semibold">
+
+                                        {t("Excessive_consumption_warning")}
+                                    </span>
+                                </div>
+                                {t("Excessive_consumption_description")} {warningList.join(",")}
+                            </div>
+                        }
 
                         {loading &&
 

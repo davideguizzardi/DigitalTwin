@@ -386,11 +386,20 @@
   "simulation_mode_selection": "Seleziona la modalità da simulare per il dispositivo \":name\"",
   "Mode": "Modalità",
   "House power usage": "Potenza utilizzata dall'intera abitazione",
-  "Time": "Orario",
+  "Starting time": "Orario di inizio",
+  "Ending time": "Orario di fine",
   "Simulation": "Simulazione",
   "Highly Frequently used": "Molto frequente",
   "Frequently used": "Frequente",
   "Rarely used": "Rara",
   "Highly rarely used": "Molto rara",
-  "simulation_threshold": "Soglia consumo eccessivo"
+  "simulation_threshold": "Soglia consumo eccessivo",
+  "Duration": "Durata (minuti)",
+  "Change": "Cambia",
+  "Cost": "Costo",
+  "Overall consumption": "Consumo totale",
+  "Overall cost": "Costo totale",
+  "Simulate": "Simula",
+  "Excessive_consumption_warning": "Avviso consumo eccessivo",
+  "Excessive_consumption_description": "La potenza stimata dal sistema supera il massimo consentito nelle fasce orarie:"
 }
