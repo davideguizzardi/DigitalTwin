@@ -23,4 +23,22 @@ reset_docker.sh
 
 
 
-docker-compose.yml 
+docker-compose.yml
+homeassistant/config/
+
+# Local import/backup artifacts
+.tmp_ha_backup_inspect/
+Materiale_non_progetto/Home Assistant/*.tar
+*Zone.Identifier
+
+# LaTeX build artifacts generated while updating the thesis
+Materiale_non_progetto/Tesi_Magistrale/**/*.aux
+Materiale_non_progetto/Tesi_Magistrale/**/*.bcf
+Materiale_non_progetto/Tesi_Magistrale/**/*.bbl
+Materiale_non_progetto/Tesi_Magistrale/**/*.blg
+Materiale_non_progetto/Tesi_Magistrale/**/*.fdb_latexmk
+Materiale_non_progetto/Tesi_Magistrale/**/*.fls
+Materiale_non_progetto/Tesi_Magistrale/**/*.log
+Materiale_non_progetto/Tesi_Magistrale/**/*.out
+Materiale_non_progetto/Tesi_Magistrale/**/*.run.xml
+Materiale_non_progetto/Tesi_Magistrale/**/*.toc

@@ -16,6 +16,7 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { ChevronDownIcon, Bars3Icon } from "@heroicons/react/20/solid";
 // Import animation utilities from Framer Motion for smooth UI transitions
 import { AnimatePresence, motion, Reorder, useDragControls } from "framer-motion";
+import { useLaravelReactI18n } from "laravel-react-i18n";
 
 // Import shared helpers for icons and API calls
 import { getIcon, apiFetch } from "@/Components/Commons/Constants";
@@ -96,7 +97,7 @@ const FancySelect = ({
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 -translate-y-1"
           >
-            <Listbox.Options className="automation-select-options absolute left-0 z-30 w-full origin-top">
+            <Listbox.Options className="automation-select-options absolute left-0 z-30 min-w-full origin-top">
               {displayOptions.map((option) => (
                 <Listbox.Option
                   key={`${option.value}`}
@@ -112,8 +113,8 @@ const FancySelect = ({
                   }
                 >
                   {({ selected, disabled: optionDisabled }) => (
-                    <div className="flex w-full items-center justify-between gap-2">
-                      <span className="truncate">{option.label}</span>
+                    <div className="flex w-full items-start justify-between gap-2">
+                      <span className="min-w-0 flex-1 whitespace-normal break-words text-left">{option.label}</span>
                       {selected && !optionDisabled && (
                         <span className="text-sky-500 dark:text-sky-300">
                           {getIcon("check", "size-4")}
@@ -142,10 +143,126 @@ const iconByTriggerType = {
 const actionServiceLabels = {
   turn_on: "Turn on",
   turn_off: "Turn off",
+  toggle: "Toggle",
+  start: "Start",
+  pause: "Pause",
+  stop: "Stop",
+  return_to_base: "Return to base",
+  clean_spot: "Clean spot",
+  locate: "Locate",
+  set_fan_speed: "Set fan speed",
+  send_command: "Send command",
 };
 
 // Helper used for generating stable ids for triggers/actions
 const createId = () => Math.random().toString(36).slice(2, 9);
+
+const COMMANDABLE_ENTITY_DOMAINS = new Set([
+  "button",
+  "climate",
+  "cover",
+  "fan",
+  "humidifier",
+  "input_boolean",
+  "light",
+  "lock",
+  "media_player",
+  "number",
+  "scene",
+  "script",
+  "select",
+  "siren",
+  "switch",
+  "vacuum",
+]);
+
+const ROBOT_SCRIPT_ENTITY_PATTERN = /^script\.qrevo_(.+)_(aspira|lava|entrambi)$/;
+const ROBOT_ACTION_MODES = ["aspira", "lava", "entrambi"];
+
+const parseRobotScriptEntity = (entityId = "") => {
+  const match = entityId.match(ROBOT_SCRIPT_ENTITY_PATTERN);
+  if (!match) return null;
+  return {
+    room: match[1],
+    mode: match[2],
+    entityId,
+  };
+};
+
+const isRobotScriptEntity = (entityId = "") => Boolean(parseRobotScriptEntity(entityId));
+
+const isRobotTarget = (target) => {
+  if (!target) return false;
+  const targetText = [
+    target.name,
+    target.stateEntityId,
+    ...(target.entities || []).map((entity) => entity?.entity_id || entity?.id),
+  ].filter(Boolean).join(" ").toLowerCase();
+  return targetText.includes("qrevo") || targetText.includes("robot");
+};
+
+const formatRobotRoomName = (room = "") =>
+  room
+    .split("_")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+
+const normalizeActionData = (data) => {
+  if (!data || typeof data !== "object") return {};
+  return Object.keys(data)
+    .sort()
+    .reduce((acc, key) => {
+      if (data[key] !== undefined && data[key] !== null && data[key] !== "") {
+        acc[key] = data[key];
+      }
+      return acc;
+    }, {});
+};
+
+const makeActionDataKey = (data) => {
+  const normalized = normalizeActionData(data);
+  return Object.keys(normalized).length ? encodeURIComponent(JSON.stringify(normalized)) : "";
+};
+
+const parseActionDataKey = (dataKey) => {
+  if (!dataKey) return {};
+  try {
+    return JSON.parse(decodeURIComponent(dataKey));
+  } catch {
+    return {};
+  }
+};
+
+const makeActionValue = (entityId, service, data = {}) => {
+  const dataKey = makeActionDataKey(data);
+  const base = `${entityId || ""}::${service || ""}`;
+  return dataKey ? `${base}::${dataKey}` : base;
+};
+
+const parseActionValue = (value) => {
+  const [entityId, service, dataKey] = `${value || ""}`.split("::");
+  return {
+    entityId,
+    service,
+    data: parseActionDataKey(dataKey),
+  };
+};
+
+const getEntityName = (entity) =>
+  entity?.attributes?.friendly_name ||
+  entity?.name ||
+  entity?.entity_id?.split(".").slice(1).join(".").replaceAll("_", " ") ||
+  entity?.entity_id ||
+  "Entity";
+
+const getEntityIdsForTarget = (target) => {
+  const ids = [
+    target?.stateEntityId,
+    ...(target?.entities || []).map((entity) => entity?.entity_id || entity?.id),
+  ].filter(Boolean);
+  return Array.from(new Set(ids));
+};
 
 // Build an initial trigger for the chosen type, defaulting to the first device if needed
 const createTrigger = (type = "date", devices = []) => ({
@@ -163,7 +280,11 @@ const createTrigger = (type = "date", devices = []) => ({
 const createAction = (devices = []) => ({
   id: createId(),
   deviceId: devices[0]?.id ?? "",
+  entityId: devices[0]?.stateEntityId ?? "",
   service: "turn_on",
+  data: {},
+  robotMode: "aspira",
+  robotRooms: [],
 });
 
 // Utility to check if two ordered lists of items share the same id sequence
@@ -188,6 +309,7 @@ const TriggerItem = ({
   onRemove,
   selectContainerClass,
   canDelete,
+  t,
 }) => {
   const dragControls = useDragControls();
 
@@ -211,9 +333,9 @@ const TriggerItem = ({
         scale: 0.99,
         boxShadow: "0 24px 55px rgba(15, 23, 42, 0.18)",
       }}
-      className="relative flex flex-col gap-4 rounded-xl border border-neutral-300 bg-white p-4 shadow dark:border-neutral-700 dark:bg-neutral-800 md:flex-row md:items-center"
+      className="relative grid gap-4 rounded-xl border border-neutral-300 bg-white p-4 shadow dark:border-neutral-700 dark:bg-neutral-800 xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:items-center"
     >
-      <div className={`flex w-full items-center gap-3 ${selectContainerClass}`}>
+      <div className="flex min-w-0 items-center gap-3">
         <button
           type="button"
           aria-label="Reorder condition"
@@ -229,21 +351,21 @@ const TriggerItem = ({
           {getIcon(iconByTriggerType[trigger.type], "size-6")}
         </div>
         <FancySelect
-          className="w-full"
+          className="min-w-0 flex-1 xl:w-56 xl:flex-none"
           value={trigger.type}
           onChange={(newType) => onTriggerTypeChange(trigger.id, newType)}
           options={getTriggerOptionsFor(trigger)}
-          placeholder="Select type"
+          placeholder={t("Select type")}
         />
       </div>
 
-      <motion.div layout className="flex-1">
+      <motion.div layout className="min-w-0">
         {renderTriggerInput(trigger)}
       </motion.div>
 
       <StyledButton
         variant="delete"
-        className="md:ml-auto"
+        className="justify-self-end"
         onClick={() => onRemove(trigger.id)}
         disabled={!canDelete}
       >
@@ -257,6 +379,8 @@ const TriggerItem = ({
 const ActionItem = ({
   action,
   deviceSelectOptions,
+  robotTargetIds,
+  robotRoomActions,
   ensureServicesForDevice,
   actionOptions,
   onActionUpdate,
@@ -264,8 +388,24 @@ const ActionItem = ({
   onActionRemove,
   selectContainerClass,
   actionsLength,
+  t,
 }) => {
   const dragControls = useDragControls();
+  const isRobotAction = robotTargetIds.has(action.deviceId);
+  const robotModeOptions = ROBOT_ACTION_MODES.map((mode) => ({
+    value: mode,
+    label: t(mode),
+  }));
+  const selectedActionValue = makeActionValue(action.entityId, action.service, action.data);
+  const currentActionOptions =
+    servicesByDevice[action.deviceId] ||
+    actionOptions.map((option) => ({
+      ...option,
+      value: makeActionValue(action.entityId, option.value, option.data),
+      entityId: action.entityId,
+      service: option.value,
+      data: option.data || {},
+    }));
 
   return (
     <Reorder.Item
@@ -287,9 +427,9 @@ const ActionItem = ({
         scale: 0.99,
         boxShadow: "0 24px 55px rgba(15, 23, 42, 0.18)",
       }}
-      className="relative flex flex-col gap-4 rounded-xl border border-neutral-300 bg-white p-4 shadow dark:border-neutral-700 dark:bg-neutral-900 md:flex-row md:items-center"
+      className="relative grid gap-4 rounded-xl border border-neutral-300 bg-white p-4 shadow dark:border-neutral-700 dark:bg-neutral-900 xl:grid-cols-[minmax(14rem,20rem)_minmax(0,1fr)_auto] xl:items-start"
     >
-      <div className={`flex w-full items-center gap-3 ${selectContainerClass}`}>
+      <div className="flex min-w-0 items-center gap-3">
         <button
           type="button"
           aria-label="Reorder action"
@@ -305,30 +445,97 @@ const ActionItem = ({
           {getIcon("puzzle", "size-6")}
         </motion.div>
         <FancySelect
-          className="w-full"
+          className="min-w-0 flex-1"
           value={action.deviceId}
           onChange={async (newDeviceId) => {
-            const opts = (await ensureServicesForDevice(newDeviceId)) || actionOptions;
-            const nextService = opts[0]?.value || "turn_on";
-            onActionUpdate(action.id, { deviceId: newDeviceId, service: nextService });
+            if (robotTargetIds.has(newDeviceId)) {
+              onActionUpdate(action.id, {
+                deviceId: newDeviceId,
+                entityId: "",
+                service: "",
+                data: {},
+                robotMode: action.robotMode || "aspira",
+                robotRooms: [],
+              });
+              return;
+            }
+            const opts = (await ensureServicesForDevice(newDeviceId)) || currentActionOptions;
+            const nextOption = opts.find((option) => !option.disabled) || opts[0];
+            const parsed = parseActionValue(nextOption?.value);
+            onActionUpdate(action.id, {
+              deviceId: newDeviceId,
+              entityId: nextOption?.entityId || parsed.entityId,
+              service: nextOption?.service || parsed.service || "turn_on",
+              data: nextOption?.data || parsed.data || {},
+              robotRooms: [],
+            });
           }}
           options={deviceSelectOptions}
-          placeholder={deviceSelectOptions.length ? "Choose device" : "No devices available"}
+          placeholder={deviceSelectOptions.length ? t("Choose device") : t("No devices available")}
           disabled={!deviceSelectOptions.length}
-          noOptionsMessage="No devices available"
+          noOptionsMessage={t("No devices available")}
         />
       </div>
-      <FancySelect
-        className={selectContainerClass}
-        value={action.service}
-        onChange={(newService) => onActionUpdate(action.id, { service: newService })}
-        options={servicesByDevice[action.deviceId] || actionOptions}
-        placeholder="Select action"
-        noOptionsMessage="No actions available"
-      />
+      {isRobotAction ? (
+        <div className="flex min-w-0 flex-col gap-3">
+          <FancySelect
+            className="w-full xl:max-w-72"
+            value={action.robotMode || "aspira"}
+            onChange={(mode) => onActionUpdate(action.id, { robotMode: mode })}
+            options={robotModeOptions}
+            placeholder={t("Select robot action")}
+          />
+          <div className="flex min-w-0 flex-wrap gap-2">
+            {robotRoomActions.map((roomAction) => {
+              const selected = (action.robotRooms || []).includes(roomAction.room);
+              return (
+                <button
+                  key={roomAction.room}
+                  type="button"
+                  onClick={() => {
+                    const currentRooms = action.robotRooms || [];
+                    const nextRooms = selected
+                      ? currentRooms.filter((room) => room !== roomAction.room)
+                      : [...currentRooms, roomAction.room];
+                    onActionUpdate(action.id, { robotRooms: nextRooms });
+                  }}
+                  className={classNames(
+                    "rounded-lg border px-3 py-2 text-sm font-medium leading-tight transition focus:outline-none focus:ring-2 focus:ring-sky-300",
+                    selected
+                      ? "border-lime-400 bg-lime-100 text-lime-800 dark:border-lime-500 dark:bg-lime-500/20 dark:text-lime-100"
+                      : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 dark:border-neutral-700 dark:bg-neutral-900 dark:text-gray-200"
+                  )}
+                >
+                  {roomAction.label}
+                </button>
+              );
+            })}
+          </div>
+          {!robotRoomActions.length && (
+            <p className="text-sm text-red-500">{t("No robot rooms available")}</p>
+          )}
+        </div>
+      ) : (
+        <FancySelect
+          className="min-w-0"
+          value={selectedActionValue}
+          onChange={(newService) => {
+            const option = currentActionOptions.find((opt) => opt.value === newService);
+            const parsed = parseActionValue(newService);
+            onActionUpdate(action.id, {
+              entityId: option?.entityId || parsed.entityId,
+              service: option?.service || parsed.service,
+              data: option?.data || parsed.data || {},
+            });
+          }}
+          options={currentActionOptions}
+          placeholder={t("Select action")}
+          noOptionsMessage={t("No actions available")}
+        />
+      )}
       <StyledButton
         variant="delete"
-        className="md:ml-auto"
+        className="justify-self-end"
         onClick={() => onActionRemove(action.id)}
         disabled={actionsLength === 1}
       >
@@ -350,27 +557,96 @@ const buildDefaultActions = (devices) => [createAction(devices)];
 const DEFAULT_AUTOMATION_NAME = "New automation";
 
 export default function AddAutomation() {
+  const { t } = useLaravelReactI18n();
   // Grab the list of devices from the refreshable context
   const { deviceList = [] } = useContext(DeviceContextRefresh);
+  const [entityList, setEntityList] = useState([]);
 
-  // Build a connected devices list with extra metadata useful for state/commands
+  // Build a configured device list with extra metadata useful for state/commands.
   const devices = useMemo(
     () =>
       deviceList
         .filter((d) => d?.show) // only visible/configured devices
-        .filter((d) => (d?.state || "")?.toLowerCase() !== "unavailable") // only connected/available devices
         .map((device) => ({
           id: device.device_id,
           name: device.name || device.device_id,
           deviceClass: device.device_class,
           stateEntityId: device.state_entity_id,
+          entities: device.list_of_entities || [],
         }))
         .sort((a, b) => a.name.localeCompare(b.name)),
     [deviceList]
   );
 
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchEntities = async () => {
+      const response = await apiFetch("/entity?skip_services=true");
+      if (!cancelled && Array.isArray(response)) {
+        setEntityList(response);
+      }
+    };
+
+    fetchEntities();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const robotRoomActions = useMemo(() => {
+    const byRoom = new Map();
+    entityList.forEach((entity) => {
+      const parsed = parseRobotScriptEntity(entity?.entity_id || "");
+      if (!parsed) return;
+      if (!byRoom.has(parsed.room)) {
+        byRoom.set(parsed.room, { room: parsed.room, label: formatRobotRoomName(parsed.room), scripts: {} });
+      }
+      byRoom.get(parsed.room).scripts[parsed.mode] = parsed.entityId;
+    });
+    return Array.from(byRoom.values())
+      .filter((roomAction) => ROBOT_ACTION_MODES.every((mode) => roomAction.scripts[mode]))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [entityList]);
+
+  const actionTargets = useMemo(() => {
+    const deviceEntityIds = new Set(
+      devices.flatMap((device) => getEntityIdsForTarget(device))
+    );
+
+    const deviceTargets = devices.map((device) => ({
+      ...device,
+      kind: "device",
+    }));
+
+    const entityTargets = entityList
+      .filter((entity) => {
+        const entityId = entity?.entity_id || "";
+        const domain = entityId.split(".")[0];
+        if (!COMMANDABLE_ENTITY_DOMAINS.has(domain)) return false;
+        if (isRobotScriptEntity(entityId)) return false;
+        return !deviceEntityIds.has(entityId) || domain === "script" || domain === "scene";
+      })
+      .map((entity) => ({
+        id: `entity:${entity.entity_id}`,
+        name: getEntityName(entity),
+        deviceClass: entity.entity_id.split(".")[0],
+        stateEntityId: entity.entity_id,
+        entities: [entity],
+        kind: "entity",
+      }));
+
+    const byId = new Map();
+    [...deviceTargets, ...entityTargets].forEach((target) => {
+      if (target.id && !byId.has(target.id)) byId.set(target.id, target);
+    });
+
+    return Array.from(byId.values()).sort((a, b) => a.name.localeCompare(b.name));
+  }, [devices, entityList]);
+
   // Core builder state: automation name, trigger/action arrays and async flags
-  const [automationName, setAutomationName] = useState(DEFAULT_AUTOMATION_NAME);
+  const [automationName, setAutomationName] = useState(() => t(DEFAULT_AUTOMATION_NAME));
   const [triggers, setTriggers] = useState(() => buildDefaultTriggers(devices));
   const [actions, setActions] = useState(() => buildDefaultActions(devices));
   const [isSaving, setIsSaving] = useState(false);
@@ -384,6 +660,16 @@ export default function AddAutomation() {
   const deviceSelectOptions = useMemo(
     () => devices.map((device) => ({ value: device.id, label: device.name })),
     [devices]
+  );
+
+  const actionTargetSelectOptions = useMemo(
+    () => actionTargets.map((target) => ({ value: target.id, label: target.name })),
+    [actionTargets]
+  );
+
+  const robotTargetIds = useMemo(
+    () => new Set(actionTargets.filter(isRobotTarget).map((target) => target.id)),
+    [actionTargets]
   );
 
   // Ref keeps track of the current toast dismissal timeout
@@ -444,21 +730,21 @@ export default function AddAutomation() {
       case "switch":
       case "siren":
         return [
-          { value: "on", label: "is on" },
-          { value: "off", label: "is off" },
+          { value: "on", label: t("is on") },
+          { value: "off", label: t("is off") },
         ];
       case "media_player":
         return [
-          { value: "playing", label: "is playing" },
-          { value: "paused", label: "is paused" },
-          { value: "idle", label: "is idle" },
-          { value: "on", label: "is on" },
-          { value: "off", label: "is off" },
+          { value: "playing", label: t("is playing") },
+          { value: "paused", label: t("is paused") },
+          { value: "idle", label: t("is idle") },
+          { value: "on", label: t("is on") },
+          { value: "off", label: t("is off") },
         ];
       default:
         return [
-          { value: "on", label: "is on" },
-          { value: "off", label: "is off" },
+          { value: "on", label: t("is on") },
+          { value: "off", label: t("is off") },
         ];
     }
   };
@@ -484,17 +770,26 @@ export default function AddAutomation() {
     });
 
     setActions((prev) => {
+      if (!actionTargets.length) return prev;
       let mutated = false;
       const next = prev.map((a) => {
-        const exists = devices.some((d) => d.id === a.deviceId);
+        const exists = actionTargets.some((target) => target.id === a.deviceId);
         if (exists) return a;
         mutated = true;
-        const newId = devices[0]?.id ?? "";
-        return { ...a, deviceId: newId, service: "turn_on" };
+        const nextTarget = actionTargets[0];
+        return {
+          ...a,
+          deviceId: nextTarget?.id ?? "",
+          entityId: nextTarget?.stateEntityId ?? "",
+          service: robotTargetIds.has(nextTarget?.id) ? "" : "turn_on",
+          data: {},
+          robotMode: "aspira",
+          robotRooms: [],
+        };
       });
       return mutated ? next : prev;
     });
-  }, [devices]);
+  }, [devices, actionTargets, robotTargetIds]);
 
   const triggerDeviceIds = useMemo(() => {
     const ids = triggers
@@ -514,27 +809,96 @@ export default function AddAutomation() {
     });
   }, [triggerDeviceIdsKey, devices]);
 
-  // Fetch available services/commands for a device's state entity
+  // Fetch available services/commands for every entity linked to the selected action target.
   const ensureServicesForDevice = async (deviceId) => {
     if (!deviceId) return null;
     if (servicesByDevice[deviceId]) return servicesByDevice[deviceId]; // already loaded
-    const dev = devices.find((d) => d.id === deviceId);
-    if (!dev?.stateEntityId) return;
-    const entity = await apiFetch(`/entity/${dev.stateEntityId}`);
-    let options = [
-      { value: "turn_on", label: "Turn on" },
-      { value: "turn_off", label: "Turn off" },
-    ];
-    if (entity && entity.services && typeof entity.services === "object") {
-      const keys = Object.keys(entity.services);
-      if (keys.length) {
-        options = keys
-          .sort()
-          .map((key) => ({ value: key, label: entity.services[key]?.name || key.replaceAll("_", " ") }));
+    const target = actionTargets.find((d) => d.id === deviceId);
+    const entityIds = getEntityIdsForTarget(target);
+    if (!entityIds.length) return;
+
+    const options = [];
+
+    for (const entityId of entityIds) {
+      const entity = await apiFetch(`/entity/${entityId}`);
+      const entityName = getEntityName(entity) || target?.name || entityId;
+      const services = entity?.services || {};
+      const domain = entityId.split(".")[0];
+      const keys = Object.keys(services).sort();
+
+      keys.forEach((key) => {
+        const fields = services[key]?.fields || {};
+        const requiresData = Object.values(fields).some((field) => field?.required);
+        const label = t(services[key]?.name || actionServiceLabels[key] || key.replaceAll("_", " "));
+        if (domain === "vacuum" && key === "set_fan_speed") {
+          const speeds = Array.isArray(entity?.attributes?.fan_speed_list)
+            ? entity.attributes.fan_speed_list
+            : [];
+          speeds.forEach((speed) => {
+            const data = { fan_speed: speed };
+            options.push({
+              value: makeActionValue(entityId, key, data),
+              label: `${entityName} - ${label}: ${speed}`,
+              entityId,
+              service: key,
+              domain,
+              data,
+            });
+          });
+          if (speeds.length) return;
+        }
+
+        if (requiresData) {
+          options.push({
+            value: makeActionValue(entityId, key),
+            label: `${entityName} - ${label} (${t("requires additional data")})`,
+            entityId,
+            service: key,
+            domain,
+            data: {},
+            disabled: true,
+          });
+          return;
+        }
+
+        options.push({
+          value: makeActionValue(entityId, key),
+          label: `${entityName} - ${label}`,
+          entityId,
+          service: key,
+          domain,
+          data: {},
+        });
+      });
+
+      if (!keys.length && ["light", "switch", "script", "automation"].includes(domain)) {
+        options.push(
+          {
+            value: makeActionValue(entityId, "turn_on"),
+            label: `${entityName} - ${t("Turn on")}`,
+            entityId,
+            service: "turn_on",
+            domain,
+            data: {},
+          },
+          {
+            value: makeActionValue(entityId, "turn_off"),
+            label: `${entityName} - ${t("Turn off")}`,
+            entityId,
+            service: "turn_off",
+            domain,
+            data: {},
+          }
+        );
       }
     }
-    setServicesByDevice((prev) => ({ ...prev, [deviceId]: options }));
-    return options;
+
+    const deduped = Array.from(
+      new Map(options.map((option) => [option.value, option])).values()
+    );
+
+    setServicesByDevice((prev) => ({ ...prev, [deviceId]: deduped }));
+    return deduped;
   };
 
   // Build trigger state options from an entity's services/attributes
@@ -544,22 +908,22 @@ export default function AddAutomation() {
       if (!options.some((o) => o.value === value)) options.push({ value, label });
     };
     if (!entity) return [
-      { value: "on", label: "is on" },
-      { value: "off", label: "is off" },
+      { value: "on", label: t("is on") },
+      { value: "off", label: t("is off") },
     ];
     const services = entity.services || {};
     const entityId = entity.entity_id || "";
     const domain = entityId.split(".")[0];
-    if ("turn_on" in services) add("on", "is on");
-    if ("turn_off" in services) add("off", "is off");
+    if ("turn_on" in services) add("on", t("is on"));
+    if ("turn_off" in services) add("off", t("is off"));
     if (domain === "media_player") {
-      if ("media_play" in services) add("playing", "is playing");
-      if ("media_pause" in services) add("paused", "is paused");
-      if ("media_stop" in services) add("idle", "is idle");
+      if ("media_play" in services) add("playing", t("is playing"));
+      if ("media_pause" in services) add("paused", t("is paused"));
+      if ("media_stop" in services) add("idle", t("is idle"));
     }
     if (!options.length) {
-      add("on", "is on");
-      add("off", "is off");
+      add("on", t("is on"));
+      add("off", t("is off"));
     }
     return options;
   };
@@ -571,8 +935,8 @@ export default function AddAutomation() {
     const dev = devices.find((d) => d.id === deviceId);
     if (!dev?.stateEntityId) {
       const fallback = [
-        { value: "on", label: "is on" },
-        { value: "off", label: "is off" },
+        { value: "on", label: t("is on") },
+        { value: "off", label: t("is off") },
       ];
       setStatesByDevice((prev) => ({ ...prev, [deviceId]: fallback }));
       return fallback;
@@ -603,9 +967,9 @@ export default function AddAutomation() {
   ) => {
     setConfirmState({
       open: true,
-      title: options?.title ?? "Are you sure?",
+      title: options?.title ?? t("Are you sure?"),
       message,
-      confirmLabel: options?.confirmLabel ?? "Confirm",
+      confirmLabel: options?.confirmLabel ?? t("Confirm"),
       variant: options?.variant ?? "danger",
       icon: options?.icon ?? "alert",
       onConfirm: action,
@@ -621,21 +985,24 @@ export default function AddAutomation() {
 
   // Quick lookup helper to translate device ids to readable names
   const deviceNameLookup = useMemo(() => {
-    const map = new Map(devices.map((device) => [device.id, device.name]));
+    const map = new Map([
+      ...devices.map((device) => [device.id, device.name]),
+      ...actionTargets.map((target) => [target.id, target.name]),
+    ]);
     return (id) => map.get(id);
-  }, [devices]);
+  }, [devices, actionTargets]);
 
   // Trigger types visually shown in the condition builder
   const triggerOptions = [
-    { value: "date", label: "Date" },
-    { value: "time", label: "Hour" },
-    { value: "device", label: "Device state" },
+    { value: "date", label: t("Date") },
+    { value: "time", label: t("Hour") },
+    { value: "device", label: t("Device state") },
   ];
 
   // Fallback action options until we fetch device-specific services
   const actionOptions = [
-    { value: "turn_on", label: "Turn on" },
-    { value: "turn_off", label: "Turn off" },
+    { value: "turn_on", label: t("Turn on") },
+    { value: "turn_off", label: t("Turn off") },
   ];
 
   // Shared MUI styling tweaks for date/time pickers
@@ -650,7 +1017,7 @@ export default function AddAutomation() {
   };
 
   // CSS helper applied to several select wrappers for consistent widths
-  const selectContainerClass = "w-full md:max-w-[18rem]";
+  const selectContainerClass = "min-w-0";
 
   // Trigger update helper ensures we centralise error resets and simulation invalidations
   const updateTrigger = (id, partial) => {
@@ -687,12 +1054,12 @@ export default function AddAutomation() {
       if (prev.length === 1) return prev;
 
       const target = prev.find((t) => t.id === id);
-      const label = target ? formatTriggerPreview(target, deviceNameLookup) : "this condition";
+      const label = target ? formatTriggerPreview(target, deviceNameLookup) : t("this condition");
 
       requestConfirmation(
         `You are about to remove “${label}”. This cannot be undone.`,
         () => setTriggers((p) => p.filter((t) => t.id !== id)),
-        { title: "Remove condition", confirmLabel: "Yes, remove", variant: "danger", icon: "delete" }
+        { title: t("Remove condition"), confirmLabel: t("Yes, remove"), variant: "danger", icon: "delete" }
       );
 
       return prev;
@@ -725,12 +1092,12 @@ export default function AddAutomation() {
       if (prev.length === 1) return prev;
 
       const target = prev.find((a) => a.id === id);
-      const label = target ? formatActionPreview(target, deviceNameLookup) : "this action";
+      const label = target ? formatActionPreview(target, deviceNameLookup) : t("this action");
 
       requestConfirmation(
         `You are about to remove “${label}”. This cannot be undone.`,
         () => setActions((p) => p.filter((a) => a.id !== id)),
-        { title: "Remove action", confirmLabel: "Yes, remove", variant: "danger", icon: "delete" }
+        { title: t("Remove action"), confirmLabel: t("Yes, remove"), variant: "danger", icon: "delete" }
       );
 
       return prev;
@@ -753,15 +1120,15 @@ export default function AddAutomation() {
     if (saveError) setSaveError("");
     invalidateSimulation();
     requestConfirmation(
-      "All conditions and actions will be reset to defaults.",
+      t("All conditions and actions will be reset to defaults."),
       () => {
         setTriggers(buildDefaultTriggers(devices));
-        setActions(buildDefaultActions(devices));
-        setAutomationName(DEFAULT_AUTOMATION_NAME);
+        setActions(buildDefaultActions(actionTargets));
+        setAutomationName(t(DEFAULT_AUTOMATION_NAME));
         setSimulationResult(null);
         setIsSimulating(false);
       },
-      { title: "Reset builder", confirmLabel: "Yes, reset", variant: "danger", icon: "refresh" }
+      { title: t("Reset builder"), confirmLabel: t("Yes, reset"), variant: "danger", icon: "refresh" }
     );
   };
 
@@ -810,15 +1177,15 @@ export default function AddAutomation() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 6 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
-            className="flex flex-col gap-3 md:flex-row md:items-center"
+            className="grid min-w-0 gap-3 md:grid-cols-2 2xl:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)]"
           >
             <FancySelect
-              className={selectContainerClass}
+              className="min-w-0"
               value={trigger.value.deviceId}
               onChange={async (newDeviceId) => {
                 const opts = (await ensureStatesForDevice(newDeviceId)) || [
-                  { value: "on", label: "is on" },
-                  { value: "off", label: "is off" },
+                  { value: "on", label: t("is on") },
+                  { value: "off", label: t("is off") },
                 ];
                 const defaultState = opts[0]?.value || "on";
                 updateTrigger(trigger.id, {
@@ -826,12 +1193,12 @@ export default function AddAutomation() {
                 });
               }}
               options={deviceSelectOptions}
-              placeholder={deviceSelectOptions.length ? "Select a device" : "No devices available"}
+              placeholder={deviceSelectOptions.length ? t("Select a device") : t("No devices available")}
               disabled={!deviceSelectOptions.length}
-              noOptionsMessage="No devices available"
+              noOptionsMessage={t("No devices available")}
             />
             <FancySelect
-              className={selectContainerClass}
+              className="min-w-0"
               value={trigger.value.state}
               onChange={(newState) =>
                 updateTrigger(trigger.id, {
@@ -839,9 +1206,9 @@ export default function AddAutomation() {
                 })
               }
               options={statesByDevice[trigger.value.deviceId] || []}
-              placeholder={statesByDevice[trigger.value.deviceId] ? "Select a state" : "Loading states..."}
+              placeholder={statesByDevice[trigger.value.deviceId] ? t("Select a state") : t("Loading states...")}
               disabled={!statesByDevice[trigger.value.deviceId]}
-              noOptionsMessage="No states available"
+              noOptionsMessage={t("No states available")}
             />
           </motion.div>
         )}
@@ -852,12 +1219,12 @@ export default function AddAutomation() {
   // Produce a readable string describing the trigger for previews and confirmations
   function formatTriggerPreview(trigger, deviceLookup) {
     if (trigger.type === "date") {
-      return "On " + trigger.value.format("DD MMM YYYY");
+      return t("On :date", { date: trigger.value.format("DD MMM YYYY") });
     }
     if (trigger.type === "time") {
-      return "At " + trigger.value.format("HH:mm");
+      return t("At :time", { time: trigger.value.format("HH:mm") });
     }
-    const deviceName = deviceLookup(trigger.value.deviceId) || "Device";
+    const deviceName = deviceLookup(trigger.value.deviceId) || t("Device");
     const opts = statesByDevice[trigger.value.deviceId] || [];
     const labelMap = new Map(opts.map((o) => [o.value, o.label.replace(/^is\s+/i, "")]));
     const stateLabel = labelMap.get(trigger.value.state) || trigger.value.state;
@@ -866,14 +1233,24 @@ export default function AddAutomation() {
 
   // Produce a readable string describing an action in the preview list
   function formatActionPreview(action, deviceLookup) {
-    const deviceName = deviceLookup(action.deviceId) || "Device";
-    const verb = actionServiceLabels[action.service] ?? action.service.replaceAll("_", " ");
+    const deviceName = deviceLookup(action.deviceId) || t("Device");
+    if (robotTargetIds.has(action.deviceId)) {
+      const modeLabel = t(action.robotMode || "aspira");
+      const roomLabels = (action.robotRooms || []).map(formatRobotRoomName).join(", ");
+      return roomLabels
+        ? `${deviceName} - ${modeLabel}: ${roomLabels}`
+        : `${deviceName} - ${modeLabel}: ${t("Select at least one room")}`;
+    }
+    const selectedOption = (servicesByDevice[action.deviceId] || []).find(
+      (option) => option.value === makeActionValue(action.entityId, action.service, action.data)
+    );
+    const verb = selectedOption?.label || t(actionServiceLabels[action.service] ?? action.service.replaceAll("_", " "));
     return verb + " " + deviceName;
   }
 
   // Turn API suggestions into readable bullet points
   const describeSuggestion = (suggestion) => {
-    if (!suggestion || typeof suggestion !== "object") return "Suggestion available.";
+    if (!suggestion || typeof suggestion !== "object") return t("Suggestion available.");
     switch (suggestion.suggestion_type) {
       case "better_activation": {
         const time = suggestion.new_activation_time?.slice(0, 5) ?? "";
@@ -881,41 +1258,44 @@ export default function AddAutomation() {
           ? `${suggestion.monthly_saved_money.toFixed(2)} €`
           : null;
         return saved
-          ? `Try moving the activation to ${time} to save about ${saved} per month.`
-          : `Try moving the activation to ${time}.`;
+          ? t("Try moving the activation to :time to save about :saved per month.", { time, saved })
+          : t("Try moving the activation to :time.", { time });
       }
       case "conflict_time_change": {
         const times = Array.isArray(suggestion.new_activation_time)
           ? suggestion.new_activation_time.join(" or ")
           : suggestion.new_activation_time;
-        return `Move the activation to ${times} to resolve the conflict.`;
+        return t("Move the activation to :times to resolve the conflict.", { times });
       }
       case "conflict_deactivate_automations": {
         const list = Array.isArray(suggestion.automations_list)
           ? suggestion.automations_list.join(", ")
-          : "other automations";
-        return `Consider disabling the following automations: ${list}.`;
+          : t("other automations");
+        return t("Consider disabling the following automations: :list.", { list });
       }
       case "conflict_split_automation":
-        return "Consider splitting the automation into multiple actions.";
+        return t("Consider splitting the automation into multiple actions.");
       default:
-        return suggestion.description || "Additional suggestion available.";
+        return suggestion.description || t("Additional suggestion available.");
     }
   };
 
   // Convert conflict payloads from the simulator into a concise description
   const describeConflict = (conflict) => {
-    if (!conflict || typeof conflict !== "object") return "Conflict detected.";
+    if (!conflict || typeof conflict !== "object") return t("Conflict detected.");
     if (conflict.type === "Excessive energy consumption") {
       const days = Array.isArray(conflict.days) ? conflict.days.join(", ") : "";
-      return `Excessive energy consumption above ${conflict.threshold} W between ${conflict.start} and ${conflict.end}${
-        days ? ` (${days})` : ""
-      }.`;
+      return t("Excessive energy consumption above :threshold W between :start and :end:days.", {
+        threshold: conflict.threshold,
+        start: conflict.start,
+        end: conflict.end,
+        days: days ? ` (${days})` : "",
+      });
     }
     if (conflict.type === "Not feasible automation") {
-      return `Automation not feasible with the current limit (${conflict.threshold}).`;
+      return t("Automation not feasible with the current limit (:threshold).", { threshold: conflict.threshold });
     }
-    return conflict.description || conflict.message || conflict.type || "Conflict detected.";
+    return conflict.description || conflict.message || conflict.type || t("Conflict detected.");
   };
 
   // Map the UI model to the payload expected by the automation API.
@@ -923,7 +1303,7 @@ export default function AddAutomation() {
     const errors = [];
     const alias = automationName.trim();
     if (!alias) {
-      errors.push("Inserisci un nome per l'automazione.");
+      errors.push(t("Enter an automation name."));
     }
 
     const triggerPayload = [];
@@ -933,7 +1313,7 @@ export default function AddAutomation() {
       if (trigger.type === "time") {
         const timeValue = dayjs(trigger.value);
         if (!timeValue.isValid()) {
-          errors.push("Orario del trigger non valido.");
+          errors.push(t("Invalid trigger time."));
           return;
         }
         triggerPayload.push({ platform: "time", at: timeValue.format("HH:mm:ss") });
@@ -941,12 +1321,12 @@ export default function AddAutomation() {
         const deviceId = trigger.value.deviceId;
         const targetState = trigger.value.state;
         if (!deviceId) {
-          errors.push("Seleziona un dispositivo per tutte le condizioni dispositivo.");
+          errors.push(t("Select a device for every device condition."));
           return;
         }
         const device = devices.find((d) => d.id === deviceId);
         if (!device?.stateEntityId) {
-          errors.push("Il dispositivo selezionato non ha un'entità controllabile.");
+          errors.push(t("The selected device has no controllable entity."));
           return;
         }
         triggerPayload.push({
@@ -957,7 +1337,7 @@ export default function AddAutomation() {
       } else if (trigger.type === "date") {
         const dateValue = dayjs(trigger.value);
         if (!dateValue.isValid()) {
-          errors.push("Data del trigger non valida.");
+          errors.push(t("Invalid trigger date."));
           return;
         }
         dateFilters.push(dateValue.format("YYYY-MM-DD"));
@@ -965,7 +1345,7 @@ export default function AddAutomation() {
     });
 
     if (!triggerPayload.length) {
-      errors.push("Aggiungi almeno un trigger temporale o di stato.");
+      errors.push(t("Add at least one time or state trigger."));
     }
 
     // Prevent contradictory states for the same device within the triggers list.
@@ -978,34 +1358,64 @@ export default function AddAutomation() {
         if (!deviceId) return;
         if (deviceStateMap.has(deviceId) && deviceStateMap.get(deviceId) !== desiredState) {
           // Same device appears with conflicting states; block creation.
-          errors.push("Il medesimo dispositivo ha stati in conflitto nelle condizioni.");
+          errors.push(t("The same device has conflicting states in the conditions."));
         }
         deviceStateMap.set(deviceId, desiredState);
       });
 
     const actionPayload = actions.reduce((acc, action) => {
       if (!action.deviceId) {
-        errors.push("Seleziona un dispositivo per ogni azione.");
+        errors.push(t("Select a device for every action."));
         return acc;
       }
-      const device = devices.find((d) => d.id === action.deviceId);
-      const entityId = device?.stateEntityId;
+      const actionTarget = actionTargets.find((d) => d.id === action.deviceId);
+      if (robotTargetIds.has(action.deviceId)) {
+        const mode = action.robotMode || "aspira";
+        const rooms = action.robotRooms || [];
+        if (!ROBOT_ACTION_MODES.includes(mode)) {
+          errors.push(t("Select a robot action."));
+          return acc;
+        }
+        if (!rooms.length) {
+          errors.push(t("Select at least one room for the robot."));
+          return acc;
+        }
+        rooms.forEach((room) => {
+          const roomAction = robotRoomActions.find((item) => item.room === room);
+          const scriptEntityId = roomAction?.scripts?.[mode];
+          if (!scriptEntityId) {
+            errors.push(t("Unable to find the robot script for :room.", { room: formatRobotRoomName(room) }));
+            return;
+          }
+          acc.push({
+            service: "script.turn_on",
+            target: { entity_id: scriptEntityId },
+            data: {},
+          });
+        });
+        return acc;
+      }
+      const entityId = action.entityId || actionTarget?.stateEntityId;
       const domain = entityId ? entityId.split(".")[0] : null;
       if (!entityId || !domain) {
-        errors.push("Impossibile determinare l'entità per una delle azioni.");
+        errors.push(t("Unable to determine the entity for one of the actions."));
+        return acc;
+      }
+      if (!action.service) {
+        errors.push(t("Select an action for every action row."));
         return acc;
       }
       const target = { entity_id: entityId };
       acc.push({
         service: `${domain}.${action.service}`,
         target,
-        data: {},
+        data: normalizeActionData(action.data),
       });
       return acc;
     }, []);
 
     if (!actionPayload.length) {
-      errors.push("Aggiungi almeno un'azione valida.");
+      errors.push(t("Add at least one valid action."));
     }
 
     const conditions = [];
@@ -1057,45 +1467,44 @@ export default function AddAutomation() {
     try {
       const response = await apiFetch("/automation", "POST", { automation });
       if (!response) {
-        throw new Error("Impossibile salvare l'automazione.");
+        throw new Error(t("Unable to save the automation."));
       }
 
-      let success = false;
-      let message = "";
+      let success = true;
+      let message = t("Automation saved successfully.");
+      const raw = Array.isArray(response) ? response[1] : response;
+      let payload = raw;
 
-      if (Array.isArray(response) && response.length >= 2) {
-        const raw = response[1];
-        let payload;
-        if (typeof raw === "string") {
-          try {
-            payload = JSON.parse(raw);
-          } catch (err) {
-            payload = { message: raw };
-          }
-        } else {
-          payload = raw;
+      if (typeof raw === "string") {
+        try {
+          payload = JSON.parse(raw);
+        } catch (err) {
+          payload = { message: raw };
         }
+      }
 
-        if (payload?.result === "ok") {
-          success = true;
-          message = "Automazione salvata con successo.";
-        } else {
-          message = payload?.message || "Salvataggio non riuscito.";
-        }
+      if (payload?.result && payload.result !== "ok") {
+        success = false;
+        message = payload?.message || t("Save failed.");
+      }
+
+      if (payload?.status && !["ok", "success"].includes(payload.status)) {
+        success = false;
+        message = payload?.message || t("Save failed.");
       }
 
       if (!success) {
-        throw new Error(message || "Salvataggio non riuscito.");
+        throw new Error(message || t("Save failed."));
       }
 
-      showToast("success", "Automazione salvata con successo.");
+      showToast("success", t("Automation saved successfully."));
       setTimeout(() => {
         if (typeof route === "function") {
           window.location.href = route("automation");
         }
       }, 900);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Salvataggio non riuscito.";
+      const message = error instanceof Error ? error.message : t("Save failed.");
       setSaveError(message);
       showToast("error", message);
     } finally {
@@ -1120,7 +1529,7 @@ export default function AddAutomation() {
     try {
       const response = await apiFetch("/automation/simulate", "POST", { automation });
       if (!response) {
-        throw new Error("Simulation failed.");
+        throw new Error(t("Simulation failed."));
       }
 
       const suggestions = Array.isArray(response.suggestions) ? response.suggestions : [];
@@ -1140,13 +1549,13 @@ export default function AddAutomation() {
       });
 
       const message = conflicts.length
-        ? "Simulation complete: conflicts detected."
+        ? t("Simulation complete: conflicts detected.")
         : suggestions.length
-        ? "Simulation complete with optimisation tips."
-        : "Simulation complete with no reported issues.";
+        ? t("Simulation complete with optimisation tips.")
+        : t("Simulation complete with no reported issues.");
       showToast(conflicts.length ? "error" : "success", message);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Simulation failed.";
+      const message = error instanceof Error ? error.message : t("Simulation failed.");
       setSimulationResult(null);
       showToast("error", message);
     } finally {
@@ -1161,8 +1570,14 @@ export default function AddAutomation() {
     return false;
   });
 
-  // Ensure at least one action has a real device before enabling save/simulate
-  const hasValidAction = actions.some((action) => Boolean(action.deviceId));
+  // Ensure at least one action is executable before enabling save/simulate
+  const hasValidAction = actions.some((action) => {
+    if (!action.deviceId) return false;
+    if (robotTargetIds.has(action.deviceId)) {
+      return Boolean(action.robotMode && (action.robotRooms || []).length);
+    }
+    return Boolean(action.entityId && action.service);
+  });
 
   // Final guard that drives primary CTA availability
   const canSave = automationName.trim().length > 0 && hasExecutableTrigger && hasValidAction;
@@ -1185,7 +1600,7 @@ export default function AddAutomation() {
         transition={{ duration: 0.4, ease: "easeOut" }}
         className="min-h-screen w-full bg-gray-200 px-4 py-6 dark:bg-neutral-800"
       >
-        <div className="mx-auto grid w-full max-w-[1200px] gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.55fr)]">
+        <div className="mx-auto grid w-full max-w-[1280px] gap-6 2xl:grid-cols-[minmax(0,1fr)_minmax(340px,0.52fr)]">
           {/* Left column groups the configuration flow (header, triggers, actions) */}
           <motion.section
             layout
@@ -1204,9 +1619,9 @@ export default function AddAutomation() {
                   {getIcon("puzzle", "size-7")}
                 </motion.div>
                 <div>
-                  <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">Create a new automation</h1>
+                  <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">{t("Create a new automation")}</h1>
                   <p className="text-base text-gray-600 dark:text-gray-300">
-                    Choose when the automation should run and what it should do.
+                    {t("Choose when the automation should run and what it should do.")}
                   </p>
                 </div>
               </div>
@@ -1215,7 +1630,7 @@ export default function AddAutomation() {
                   className="block text-sm font-medium text-gray-600 dark:text-gray-300"
                   htmlFor="automation-name"
                 >
-                  Automation name
+                  {t("Automation name")}
                 </label>
                 <input
                   id="automation-name"
@@ -1227,7 +1642,7 @@ export default function AddAutomation() {
                   invalidateSimulation();
                   setAutomationName(event.target.value);
                 }}
-                  placeholder="Name your automation"
+                  placeholder={t("Name your automation")}
                   className="mt-1 w-full rounded-xl border border-slate-200 bg-white/95 px-3 py-2 text-base font-medium text-slate-900 shadow-sm transition duration-150 ease-out focus:border-sky-400 focus:outline-none focus:ring-4 focus:ring-sky-200 dark:border-neutral-700 dark:bg-neutral-900 dark:text-gray-100 dark:focus:border-sky-400 dark:focus:ring-sky-500/30"
                 />
               </div>
@@ -1239,9 +1654,9 @@ export default function AddAutomation() {
               className="flex flex-col gap-4 rounded-xl bg-white p-6 shadow dark:bg-neutral-900"
             >
               <div>
-                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">When</h2>
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">{t("When")}</h2>
                 <p className="text-sm text-gray-500 dark:text-gray-300">
-                  Select the conditions that trigger your automation.
+                  {t("Select the conditions that trigger your automation.")}
                 </p>
               </div>
 
@@ -1262,6 +1677,7 @@ export default function AddAutomation() {
                     onRemove={handleTriggerRemoval}
                     selectContainerClass={selectContainerClass}
                     canDelete={triggers.length > 1}
+                    t={t}
                   />
                 ))}
               </Reorder.Group>
@@ -1281,7 +1697,7 @@ export default function AddAutomation() {
                   className="flex items-center gap-2"
                 >
                   {getIcon("plus", "size-5")}
-                  Add condition
+                  {t("Add condition")}
                 </StyledButton>
               </div>
             </motion.section>
@@ -1292,9 +1708,9 @@ export default function AddAutomation() {
               className="flex flex-col gap-4 rounded-xl bg-white p-6 shadow dark:bg-neutral-900"
             >
               <div>
-                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Then</h2>
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">{t("Then")}</h2>
                 <p className="text-sm text-gray-500 dark:text-gray-300">
-                  Pick the actions that will run when all conditions are met.
+                  {t("Pick the actions that will run when all conditions are met.")}
                 </p>
               </div>
 
@@ -1308,7 +1724,9 @@ export default function AddAutomation() {
                   <ActionItem
                     key={action.id}
                     action={action}
-                    deviceSelectOptions={deviceSelectOptions}
+                    deviceSelectOptions={actionTargetSelectOptions}
+                    robotTargetIds={robotTargetIds}
+                    robotRoomActions={robotRoomActions}
                     ensureServicesForDevice={ensureServicesForDevice}
                     actionOptions={actionOptions}
                     onActionUpdate={handleActionUpdate}
@@ -1316,6 +1734,7 @@ export default function AddAutomation() {
                     onActionRemove={handleActionRemoval}
                     selectContainerClass={selectContainerClass}
                     actionsLength={actions.length}
+                    t={t}
                   />
                 ))}
               </Reorder.Group>
@@ -1325,12 +1744,12 @@ export default function AddAutomation() {
                   onClick={() => {
                     if (saveError) setSaveError("");
                     invalidateSimulation();
-                    setActions((prev) => [...prev, createAction(devices)]);
+                    setActions((prev) => [...prev, createAction(actionTargets)]);
                   }}
                   className="flex items-center gap-2"
                 >
                   {getIcon("plus", "size-5")}
-                  Add action
+                  {t("Add action")}
                 </StyledButton>
               </div>
             </motion.section>
@@ -1349,9 +1768,9 @@ export default function AddAutomation() {
                 {getIcon("info", "size-6")}
               </div>
               <div>
-                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Automation preview</h2>
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">{t("Automation preview")}</h2>
                 <p className="text-sm text-gray-500 dark:text-gray-300">
-                  This card updates live as you tweak conditions and actions.
+                  {t("This card updates live as you tweak conditions and actions.")}
                 </p>
               </div>
             </div>
@@ -1359,7 +1778,7 @@ export default function AddAutomation() {
             <div className="flex flex-col gap-4">
               <div>
                 <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                  When
+                  {t("When")}
                 </h3>
                 <motion.ul layout className="mt-2 space-y-2">
                   <AnimatePresence initial={false}>
@@ -1383,7 +1802,7 @@ export default function AddAutomation() {
 
               <div>
                 <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                  Then
+                  {t("Then")}
                 </h3>
                 <motion.ul layout className="mt-2 space-y-2">
                   <AnimatePresence initial={false}>
@@ -1412,17 +1831,17 @@ export default function AddAutomation() {
               >
                 <div className="flex items-center gap-2">
                   <span className="text-sky-500">{getIcon("info", "size-5")}</span>
-                  <p className="text-sm font-semibold uppercase tracking-wide">Simulation feedback</p>
+                  <p className="text-sm font-semibold uppercase tracking-wide">{t("Simulation feedback")}</p>
                 </div>
                 {isSimulating ? (
-                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">Running simulation...</p>
+                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{t("Running simulation...")}</p>
                 ) : simulationResult ? (
                   <div className="mt-3 space-y-3">
                     {simulationResult.conflicts?.length ? (
                       <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-200">
                         <p className="flex items-center gap-2 font-semibold">
                           <span>{getIcon("warning", "size-5")}</span>
-                          Detected conflicts
+                          {t("Detected conflicts")}
                         </p>
                         <ul className="mt-2 space-y-1">
                           {simulationResult.conflicts.map((conflict, index) => (
@@ -1437,9 +1856,9 @@ export default function AddAutomation() {
                       <div className="rounded-lg border border-lime-200 bg-lime-50 p-3 text-sm text-lime-700 dark:border-lime-500/40 dark:bg-lime-500/10 dark:text-lime-200">
                         <p className="flex items-center gap-2 font-semibold">
                           <span>{getIcon("check", "size-5")}</span>
-                          No conflicts detected
+                          {t("No conflicts detected")}
                         </p>
-                        <p className="mt-1 text-sm">The model did not report blocking issues.</p>
+                        <p className="mt-1 text-sm">{t("The model did not report blocking issues.")}</p>
                       </div>
                     )}
 
@@ -1447,7 +1866,7 @@ export default function AddAutomation() {
                       <div className="rounded-lg border border-sky-200 bg-sky-50 p-3 text-sm text-sky-700 dark:border-sky-500/40 dark:bg-sky-500/10 dark:text-sky-200">
                         <p className="flex items-center gap-2 font-semibold">
                           <span>{getIcon("light", "size-5")}</span>
-                          Model suggestions
+                          {t("Model suggestions")}
                         </p>
                         <ul className="mt-2 space-y-1">
                           {simulationResult.suggestions.map((suggestion, index) => (
@@ -1464,35 +1883,35 @@ export default function AddAutomation() {
                       <div className="grid gap-2 rounded-lg border border-slate-200 bg-white/80 p-3 text-xs text-gray-600 dark:border-neutral-700 dark:bg-neutral-900/80 dark:text-gray-300 sm:grid-cols-2">
                         {simulationResult.stats.energyConsumption != null && (
                           <span>
-                            Estimated energy: {typeof simulationResult.stats.energyConsumption === "number"
+                            {t("Estimated energy")}: {typeof simulationResult.stats.energyConsumption === "number"
                               ? simulationResult.stats.energyConsumption.toFixed(2)
                               : simulationResult.stats.energyConsumption} kWh
                           </span>
                         )}
                         {simulationResult.stats.averagePower != null && (
                           <span>
-                            Average power: {typeof simulationResult.stats.averagePower === "number"
+                            {t("Average power")}: {typeof simulationResult.stats.averagePower === "number"
                               ? simulationResult.stats.averagePower.toFixed(2)
                               : simulationResult.stats.averagePower} W
                           </span>
                         )}
                         {simulationResult.stats.minCost != null && (
                           <span>
-                            Minimum cost per run: {typeof simulationResult.stats.minCost === "number"
+                            {t("Minimum cost per run")}: {typeof simulationResult.stats.minCost === "number"
                               ? simulationResult.stats.minCost.toFixed(3)
                               : simulationResult.stats.minCost} €
                           </span>
                         )}
                         {simulationResult.stats.maxCost != null && (
                           <span>
-                            Maximum cost per run: {typeof simulationResult.stats.maxCost === "number"
+                            {t("Maximum cost per run")}: {typeof simulationResult.stats.maxCost === "number"
                               ? simulationResult.stats.maxCost.toFixed(3)
                               : simulationResult.stats.maxCost} €
                           </span>
                         )}
                         {simulationResult.stats.monthlyCost != null && (
                           <span>
-                            Estimated monthly cost: {typeof simulationResult.stats.monthlyCost === "number"
+                            {t("Estimated monthly cost")}: {typeof simulationResult.stats.monthlyCost === "number"
                               ? simulationResult.stats.monthlyCost.toFixed(2)
                               : simulationResult.stats.monthlyCost} €
                           </span>
@@ -1502,7 +1921,7 @@ export default function AddAutomation() {
                   </div>
                 ) : (
                   <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                    Run the simulation to preview potential issues and optimisation tips.
+                    {t("Run the simulation to preview potential issues and optimisation tips.")}
                   </p>
                 )}
               </motion.div>
@@ -1517,7 +1936,7 @@ export default function AddAutomation() {
                   className="flex items-center gap-2 rounded-lg bg-red-400 px-5 py-2 text-sm font-semibold text-black shadow transition hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
                 >
                   {getIcon("refresh", "size-5 text-red-700")}
-                  Reset
+                  {t("Reset")}
                 </button>
                 <button
                   type="button"
@@ -1530,7 +1949,7 @@ export default function AddAutomation() {
                   }`}
                 >
                   {getIcon("play", "size-5 text-amber-700")}
-                  {isSimulating ? "Simulating..." : "Simulate"}
+                  {isSimulating ? t("Simulating...") : t("Simulate")}
                 </button>
                 <button
                   type="button"
@@ -1543,7 +1962,7 @@ export default function AddAutomation() {
                   }`}
                 >
                   {getIcon("save", "size-5 text-lime-700")}
-                  {isSaving ? "Saving..." : "Save"}
+                  {isSaving ? t("Saving...") : t("Save")}
                 </button>
               </motion.div>
               {saveError && (
@@ -1609,7 +2028,7 @@ export default function AddAutomation() {
                       onClick={() => resolveConfirmation(false)}
                       className="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-gray-800 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-neutral-300 dark:border-neutral-600 dark:text-gray-100 dark:hover:bg-neutral-800"
                     >
-                      Cancel
+                      {t("Cancel")}
                     </button>
                     <button
                       type="button"
@@ -1620,7 +2039,7 @@ export default function AddAutomation() {
                           : "rounded-lg bg-amber-400 px-4 py-2 text-sm font-semibold text-gray-900 shadow transition hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
                       }
                     >
-                      {confirmState.confirmLabel}
+                    {t(confirmState.confirmLabel)}
                     </button>
                   </div>
                 </div>

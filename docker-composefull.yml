@@ -64,7 +64,8 @@ services:
     container_name: homeassistant
     image: "ghcr.io/home-assistant/home-assistant:stable"
     volumes:
-      - 'sail-vol:/config'
+      - './homeassistant/config:/config'
+      - './Materiale_non_progetto/Home Assistant:/config/backups'
       - '/etc/localtime:/etc/localtime:ro'
       - '/run/dbus:/run/dbus:ro'
     privileged: true
@@ -72,7 +73,9 @@ services:
       - '8123:8123'
       - '5683:5683'
     networks:
-      - sail
+      sail:
+        aliases:
+          - homeassistant.local
     restart: always
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8123"]
@@ -93,7 +96,7 @@ services:
       homeassistant:
         condition: service_healthy  # Ensures FastAPI starts after Home Assistant is ready
     volumes:
-      - dt_shared_data:/app  # Shared volume for file access
+      - dt_shared_data:/app/data  # Shared volume for API data files
     environment:
       - CONFIGURATION_PATH=/app/data/configuration.txt
       - TZ=Europe/Berlin  # Set timezone
@@ -106,7 +109,7 @@ services:
     depends_on:
       - dt-api
     volumes:
-      - dt_shared_data:/app  # Shared volume for file access
+      - dt_shared_data:/app/data  # Shared volume for API data files
     environment:
       - CONFIGURATION_PATH=/app/data/configuration.txt
       - TZ=Europe/Berlin  # Set timezone

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { List, TextInput, Tooltip, Pagination, Drawer, DrawerHeader, DrawerItems } from "flowbite-react";
+import { List, TextInput, Tooltip, Pagination, Drawer, DrawerHeader, DrawerItems, Modal } from "flowbite-react";
 import { CiSearch } from "react-icons/ci";
 import { Switch } from "@mui/material";
 import { AutomationDetails } from "./AutomationDetails";
@@ -17,6 +17,9 @@ export function AutomationTable({ automation_context, openId = "", automationRef
     const [currentPage, setCurrentPage] = useState(1);
     const [showToast,setShowToast]=useState(false)
     const [toastType,setToastType]=useState("success")
+    const [toastMessage, setToastMessage] = useState("")
+    const [automationToDelete, setAutomationToDelete] = useState(null)
+    const [isDeleting, setIsDeleting] = useState(false)
     const [is2xlOrLarger, setIs2xlOrLarger] = useState(false)
     const itemsPerPage = 5;
 
@@ -35,18 +38,37 @@ export function AutomationTable({ automation_context, openId = "", automationRef
         return () => window.removeEventListener("resize", checkScreenSize)
     }, [])
 
-    const handleAutomationDelete = async (automation_id) => {
+    const requestAutomationDelete = (automation) => {
+        setAutomationToDelete(automation)
+    }
 
-        const data = await apiFetch(`/automation/${automation_id}`, "DELETE");
-        if (data) {
-            setShowToast(true)
-            setToastType("success")
-            automationRefreshFun()
-        } else {
+    const handleAutomationDelete = async () => {
+        if (!automationToDelete || isDeleting) return;
+        setIsDeleting(true)
+
+        try {
+            const data = await apiFetch(`/automation/${automationToDelete.id}`, "DELETE");
+            if (data) {
+                setToastMessage(t("Automation deleted successfully."))
+                setToastType("info")
+                setShowToast(true)
+                setAutomationToDelete(null)
+                automationRefreshFun()
+                if (openAutomation?.id === automationToDelete.id) {
+                    setOpenAutomation({})
+                }
+            } else {
+                setToastMessage(t("Deletion failed."))
+                setShowToast(true)
+                setToastType("error")
+            }
+        } catch (error) {
+            setToastMessage(t("Deletion failed."))
             setShowToast(true)
             setToastType("error")
+        } finally {
+            setIsDeleting(false)
         }
-        // TODO: Handle toast and refresh list
     };
 
     const handleSwitchChange = async (event, entity_id,automation_id) => {
@@ -96,11 +118,47 @@ export function AutomationTable({ automation_context, openId = "", automationRef
     return (
         <div className="grid grid-cols-2 2xl:grid-cols-1 2xl:grid-rows-2 gap-5">
             <ToastNotification
-                message={t("Configuration saved successfully")}
+                message={toastMessage}
                 isVisible={showToast}
                 onClose={() => setShowToast(false)}
                 type={toastType}
             />
+            <Modal show={Boolean(automationToDelete)} popup dismissable={!isDeleting} onClose={() => !isDeleting && setAutomationToDelete(null)}>
+                <Modal.Header />
+                <Modal.Body>
+                    <div className="flex flex-col items-center gap-4 text-center">
+                        <div className="rounded-full bg-red-100 p-3 text-red-500">
+                            {getIcon("delete", "size-8")}
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                                {t("Delete automation?")}
+                            </h3>
+                            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                                {t("You are about to delete :name. This action cannot be undone.", {
+                                    name: automationToDelete?.name || t("this automation")
+                                })}
+                            </p>
+                        </div>
+                        <div className="flex justify-center gap-3">
+                            <StyledButton
+                                variant="secondary"
+                                disabled={isDeleting}
+                                onClick={() => setAutomationToDelete(null)}
+                            >
+                                {t("Cancel")}
+                            </StyledButton>
+                            <StyledButton
+                                variant="delete"
+                                disabled={isDeleting}
+                                onClick={handleAutomationDelete}
+                            >
+                                {isDeleting ? t("Deleting...") : t("Yes, delete")}
+                            </StyledButton>
+                        </div>
+                    </div>
+                </Modal.Body>
+            </Modal>
             <div className="flex flex-col gap-2 h-fit">
                 <div className="bg-zinc-50 text-gray-800 rounded-md p-2 text-center">
                     <span className="text-lg font-semibold uppercase">
@@ -140,7 +198,7 @@ export function AutomationTable({ automation_context, openId = "", automationRef
                                         )}
                                     </div>
                                     <div className="flex justify-end col-span-2">
-                                        <StyledButton variant="secondary" onClick={() => handleAutomationDelete(automation.id)}>
+                                        <StyledButton variant="secondary" onClick={() => requestAutomationDelete(automation)}>
                                             {getIcon("delete")}
                                         </StyledButton>
                                         <Switch

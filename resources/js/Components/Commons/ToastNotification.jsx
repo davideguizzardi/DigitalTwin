@@ -8,7 +8,7 @@ export default function ToastNotification({
     isVisible,
     onClose,
     duration = 3000,
-    type = "success" // "success" or "error"
+    type = "success" // "success", "info", or "error"
 }) {
     const [progress, setProgress] = useState(100);
     const [shouldRender, setShouldRender] = useState(false);
@@ -55,6 +55,12 @@ export default function ToastNotification({
             text: "text-lime-500",
             progress: "bg-lime-400",
             icon: getIcon("check")
+        },
+        info: {
+            bg: "bg-sky-100",
+            text: "text-sky-500",
+            progress: "bg-sky-400",
+            icon: getIcon("info")
         },
         error: {
             bg: "bg-red-100",

@@ -11,7 +11,7 @@ const Configuration = ({ maps }) => {
             <div className='size-full flex min-w-fit min-h-fit p-3'>
                 {
                     mapsLength > 0 ?
-                        <RoutineConfiguration /> : <FirstConfiguration />
+                        <RoutineConfiguration maps={maps} /> : <FirstConfiguration maps={maps} />
                 }
             </div>
         </DeviceProvider>

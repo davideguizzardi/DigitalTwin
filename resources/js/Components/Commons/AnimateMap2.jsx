@@ -4,7 +4,6 @@ import ListButtons from "./ListButtons"
 import CardAppliance from "./CardAppliance"
 import { useSwipeable } from "react-swipeable"
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { domain } from "./Constants"
 import ControlPopup from "../ControlAppliance/ControlPopup"
 import RoomMap from "./RoomMap"
 
@@ -94,15 +93,15 @@ export default function AnimateMap2({ maps, appliances ,rooms=[]}) {
     return (
         <div className="flex size-full items-center justify-center">
             <ControlPopup openDevice={openDevice}/>
-            <div {...handlerSwipe}>
+            <div className="w-full min-h-[80vh]" {...handlerSwipe}>
 
                 <AnimatePresence>
 
-                    <motion.div className="floor flex w-full h-min relative"
+                    <motion.div className="floor flex w-full min-h-[80vh] relative justify-center items-center"
                         id={"floor" + maps[indexImg].url} key={maps[indexImg].url}
                         variants={variants} initial="initial" animate="animate" exit="exit"
                     >
-                        <RoomMap image_url={domain + "/" + maps[indexImg].url} floor={maps[indexImg].floor} height_percent={80}/>
+                        <RoomMap image_url={`/${maps[indexImg].url}`} floor={maps[indexImg].floor} height_percent={80}/>
                         {appliances.filter((e) => e.floor == maps[indexImg].floor).map((e) => (<CardAppliance key={e.id} appliancePos={e} setClickedDevice={setOpenDevice} />))}
                     </motion.div>
                 </AnimatePresence>

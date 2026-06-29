@@ -6,6 +6,14 @@
 *.md diff=markdown
 *.php diff=php
 
+*.gif binary
+*.jpg binary
+*.jpeg binary
+*.pdf binary
+*.png binary
+*.sqlite binary
+*.zip binary
+
 /.github export-ignore
 CHANGELOG.md export-ignore
 .styleci.yml export-ignore

@@ -18,13 +18,13 @@ import { getIcon } from "../Commons/Constants";
 import RoomMap from "../Commons/RoomMap";
 import { UserContext } from "@/Layouts/UserLayout";
 
-export default function ConfigurationAppliance({ editMode, endSection, backSection, isInitialConfiguration }) {
+export default function ConfigurationAppliance({ maps: initialMaps = [], editMode, endSection, backSection, isInitialConfiguration }) {
     const { deviceList, setDeviceList } = useContext(DeviceContext);
     const configRef = useRef()
     const refApplOnfFloor = useRef()
     const refUnconfAppl = useRef()
     const [applOnFloor, setApplOnFloor] = useState([])
-    const [maps, setMaps] = useState([])
+    const [maps, setMaps] = useState(initialMaps)
     refApplOnfFloor.current = applOnFloor
     const [unconfAppl, setUnconfAppl] = useState([])
     const [floor, setFloor] = useState()
@@ -213,6 +213,13 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
     }
 
     const fetchMap = async () => {
+        if (initialMaps.length > 0) {
+            const fetched_maps = [...initialMaps].sort((a, b) => a.floor - b.floor)
+            setMaps([...fetched_maps])
+            setFloor(fetched_maps[0].floor)
+            return
+        }
+
         await fetch(domain + "/sanctum/csrf-cookie", {
             method: "GET",
             credentials: "include"
@@ -225,11 +232,11 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
                 "X-Requested-With": "XMLHttpRequest"
             }
         });
-        response.json().then((result) => {
-            const fetched_maps = result.maps.sort((a, b) => a.floor - b.floor)
-            setMaps([...fetched_maps])
-            setFloor(fetched_maps[0].floor)
-        })
+        if (!response.ok || !response.headers.get("content-type")?.includes("application/json")) return;
+        const result = await response.json();
+        const fetched_maps = (result.maps || []).sort((a, b) => a.floor - b.floor)
+        setMaps([...fetched_maps])
+        if (fetched_maps.length > 0) setFloor(fetched_maps[0].floor)
 
     }
 
@@ -251,13 +258,18 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
 
     useEffect(() => {
         fetchMap()
-        fetchApplOnFloor();
         refApplOnfFloor.current = applOnFloor
     }, []);
 
     useEffect(() => {
+        if (first && deviceList.length > 0) {
+            fetchApplOnFloor();
+        }
+    }, [deviceList]);
+
+    useEffect(() => {
         fetchUnconfAppl()
-    }, [applOnFloor])
+    }, [applOnFloor, deviceList])
 
 
 
@@ -289,16 +301,16 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
                     </Modal.Body>
                 </Modal>
                 <div className="flex w-full">
-                    <div className="w-3/5 h-full flex justify-center items-center">
-                        <div className="relative flex justify-center items-center shadow">
-                            <div {...handlerSwipe}>
+                    <div className="w-3/5 min-h-[70vh] flex justify-center items-center">
+                        <div className="relative flex w-full min-h-[70vh] justify-center items-center shadow">
+                            <div className="w-full" {...handlerSwipe}>
                                 <AnimatePresence>
                                     {maps[indexImg] &&
-                                        <motion.div className="floor flex w-full h-min" variants={variants}
+                                        <motion.div className="floor relative flex w-full min-h-[70vh] justify-center items-center" variants={variants}
                                             initial="initial" animate="animate" exit="exit"
                                             key={maps[indexImg].url}
                                         >
-                                            <RoomMap image_url={maps[indexImg].url} floor={maps[indexImg].floor} height_percent={70} />
+                                            <RoomMap image_url={`/${maps[indexImg].url}`} floor={maps[indexImg].floor} height_percent={70} />
                                             <DroppableLayer isEditMode={editMode} dragConstraints={configRef}
                                                 listAppliancesPos={refApplOnfFloor.current} index={floor}
                                                 addAppl={addApplOnFloor} removeAppl={removeApplOnFloor}

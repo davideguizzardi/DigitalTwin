@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Stage, Layer, Line, Text, Image as KonvaImage, Label, Tag } from "react-konva";
-import useImage from "use-image";
+import React, { useEffect, useRef, useState } from "react";
+import { Stage, Layer, Line, Text, Label, Tag } from "react-konva";
 import { apiFetch } from "./Constants";
-import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 
 export default function RoomMap({ image_url, floor, height_percent = 80 }) {
-    const [image] = useImage(image_url);
+    const imageRef = useRef(null);
     const [rooms,setRooms]=useState([])
     const [innerRooms, setInnerRooms] = useState([]);
     const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
@@ -22,17 +20,12 @@ export default function RoomMap({ image_url, floor, height_percent = 80 }) {
         fetchData();
     }, []);
 
-    useEffect(() => {
-        if (!image || !image.width || !image.height) return;
-        
-        const aspectRatio = image.width / image.height;
-        let targetHeight = window.innerHeight * (height_percent/100);
-        let targetWidth = targetHeight * aspectRatio;
+    const updateStage = () => {
+        const rect = imageRef.current?.getBoundingClientRect();
+        if (!rect?.width || !rect?.height) return;
 
-        if(targetWidth>window.innerWidth*0.5){
-            targetWidth=window.innerWidth*0.5
-            targetHeight=targetWidth / aspectRatio
-        }
+        const targetWidth = rect.width;
+        const targetHeight = rect.height;
 
         setStageSize({ width: targetWidth, height: targetHeight });
 
@@ -52,31 +45,41 @@ export default function RoomMap({ image_url, floor, height_percent = 80 }) {
         });
 
         setInnerRooms(data);
-    }, [rooms, image]);
+    }
+
+    useEffect(() => {
+        updateStage();
+        window.addEventListener("resize", updateStage);
+        return () => window.removeEventListener("resize", updateStage);
+    }, [rooms, image_url, height_percent]);
 
     return (
-        <div className="w-full relative flex items-center justify-center" style={{ height: `${height_percent}vh` }}>
-            <Stage className="" width={stageSize.width} height={stageSize.height}>
-                <Layer>
-                    {image && (
-                        <KonvaImage
-                            image={image}
-                            width={stageSize.width}
-                            height={stageSize.height}
-                        />
-                    )}
-
-                    {innerRooms.map((room, idx) => (
-                        <React.Fragment key={idx}>
-                            <Line points={room.points} stroke="red" strokeWidth={3} closed />
-                            <Label x={room.points[0]} y={room.points[1]}>
-                                <Tag fill="red" cornerRadius={4} />
-                                <Text text={room.name} fontSize={16} fill="white" padding={5} />
-                            </Label>
-                        </React.Fragment>
-                    ))}
-                </Layer>
-            </Stage>
+        <div className="relative flex items-center justify-center" style={{ minHeight: `${height_percent}vh` }}>
+            <div className="relative inline-block max-w-full">
+                <img
+                    ref={imageRef}
+                    src={image_url}
+                    alt={`Floor ${floor}`}
+                    className="block h-auto max-w-full object-contain"
+                    style={{ maxHeight: `${height_percent}vh` }}
+                    onLoad={updateStage}
+                />
+                {stageSize.width > 0 && stageSize.height > 0 && (
+                    <Stage className="absolute inset-0" width={stageSize.width} height={stageSize.height}>
+                        <Layer>
+                            {innerRooms.map((room, idx) => (
+                                <React.Fragment key={idx}>
+                                    <Line points={room.points} stroke="red" strokeWidth={3} closed />
+                                    <Label x={room.points[0]} y={room.points[1]}>
+                                        <Tag fill="red" cornerRadius={4} />
+                                        <Text text={room.name} fontSize={16} fill="white" padding={5} />
+                                    </Label>
+                                </React.Fragment>
+                            ))}
+                        </Layer>
+                    </Stage>
+                )}
+            </div>
         </div>
     );
 }

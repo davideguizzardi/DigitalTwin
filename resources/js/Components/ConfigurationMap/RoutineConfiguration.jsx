@@ -25,7 +25,7 @@ import { GroupConfiguration } from "./GroupConfiguration";
 
 
 
-export default function RoutineConfiguration() {
+export default function RoutineConfiguration({ maps = [] }) {
     const [section, setSection] = useState(0)
     const [showToast, setShowToast] = useState(false)
 
@@ -41,10 +41,10 @@ export default function RoutineConfiguration() {
                 <DeviceConfiguration isInitialConfiguration={false} endSection={endSection} />
             ),
         "Configure Appliance":
-            (<ConfigurationAppliance isInitialConfiguration={false} editMode={true} endSection={endSection} />),
+            (<ConfigurationAppliance maps={maps} isInitialConfiguration={false} editMode={true} endSection={endSection} />),
         "Configure rooms":
             (
-                <RoomConfiguration isInitialConfiguration={false} endSection={endSection} />
+                <RoomConfiguration maps={maps} isInitialConfiguration={false} endSection={endSection} />
             ),
         "Configure groups":
             (
@@ -113,7 +113,7 @@ export default function RoutineConfiguration() {
                 onClose={() => setShowToast(false)}
             />
 
-            <TabLayout sections={sections} />
+            <TabLayout sections={sections} initialTab={1} />
         </div>
     )
 }

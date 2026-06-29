@@ -15,13 +15,13 @@ import { Slider } from "@mui/material";
 window.Konva.hitOnDragEnabled = true;
 
 
-const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = true }) => {
-  const [maps, setMaps] = useState([]);
+const RoomConfiguration = ({ maps: initialMaps = [], backSection, endSection, isInitialConfiguration = true }) => {
+  const [maps, setMaps] = useState(initialMaps);
   const [currentIndex, setCurrentIndex] = useState(0);
   const currentFloor = maps[currentIndex]?.floor;
 
 
-  const [image] = useImage(`${domain}/${maps[currentIndex]?.url}`);
+  const [image] = useImage(maps[currentIndex]?.url ? `/${maps[currentIndex].url}` : undefined);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [frameWidth, setFrameWidth] = useState(0);
   const [frameHeight, setFrameHeight] = useState(0);
@@ -108,6 +108,12 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
 
 
   const fetchMap = async () => {
+    if (initialMaps.length > 0) {
+      setMaps([...initialMaps].sort((a, b) => a.floor - b.floor));
+      setCurrentIndex(0);
+      return;
+    }
+
     await fetch(domain + "/sanctum/csrf-cookie", {
       method: "GET",
       credentials: "include"
@@ -120,8 +126,9 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
         "X-Requested-With": "XMLHttpRequest"
       }
     });
+    if (!response.ok || !response.headers.get("content-type")?.includes("application/json")) return;
     const result = await response.json();
-    setMaps(result.maps);
+    setMaps((result.maps || []).sort((a, b) => a.floor - b.floor));
     setCurrentIndex(0);
   };
 

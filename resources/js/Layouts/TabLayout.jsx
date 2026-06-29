@@ -5,11 +5,11 @@ import { useState } from "react"
 import { useSwipeable } from "react-swipeable"
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 
-export default function TabLayout({ sections }) {
+export default function TabLayout({ sections, initialTab = 0 }) {
     const titles = Object.keys(sections)
     const sizeSection = titles.length
-    const [tab, setTab] = useState(0)
-    const [previousTab, setPreviousTab] = useState(0)
+    const [tab, setTab] = useState(initialTab)
+    const [previousTab, setPreviousTab] = useState(initialTab)
     const { t } = useLaravelReactI18n()
 
     const offset = 1900

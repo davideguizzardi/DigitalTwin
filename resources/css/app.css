@@ -12,11 +12,14 @@
   }
 
   .automation-select-options {
-    @apply mt-2 max-h-64 w-full overflow-x-hidden overflow-y-auto rounded-xl border border-slate-200 bg-white/95 p-2 shadow-2xl backdrop-blur-lg dark:border-neutral-700 dark:bg-neutral-900/95;
+    @apply mt-2 max-h-64 overflow-x-hidden overflow-y-auto rounded-xl border border-slate-200 bg-white/95 p-2 shadow-2xl backdrop-blur-lg dark:border-neutral-700 dark:bg-neutral-900/95;
+    min-width: 100%;
+    width: max-content;
+    max-width: min(42rem, calc(100vw - 2rem));
   }
 
   .automation-select-option {
-    @apply flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition duration-100 ease-out hover:bg-sky-100/70 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-sky-500/20 dark:hover:text-sky-100;
+    @apply flex w-full cursor-pointer items-start justify-between gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition duration-100 ease-out hover:bg-sky-100/70 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-sky-500/20 dark:hover:text-sky-100;
   }
 
   .automation-select-option-active {
