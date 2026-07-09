@@ -65,6 +65,23 @@ Download [Digital Twin API](https://github.com/davideguizzardi/Digital-Twin-API)
 
 ### Start Application
 
+Avvio rapido completo, dalla cartella del progetto:
+
+Windows PowerShell:
+
+```powershell
+.\start.ps1
+```
+
+Linux/macOS:
+
+```sh
+chmod +x ./start.sh
+./start.sh
+```
+
+Gli script usano automaticamente `docker-composefull.yml` se presente, altrimenti `docker-compose.yml`, e stampano gli URL locali di frontend, API, Home Assistant e Mailpit.
+
 **1. Start Backend:**
 
 Start the Laravel backend server using Sail in detached mode
