@@ -59,16 +59,16 @@ export default function ConfigurationHomeAssistant({ endSection }) {
 
     const testConnection = async () => {
         setTestResult("DOING")
-        const data = await apiFetch("/homeassistant")
-        const update = await apiFetch("/homeassistant", "PUT", { token: token, server_url: serverUrl })
+        const withTimeout = (request) => Promise.race([
+            request,
+            new Promise((resolve) => setTimeout(() => resolve(null), 10000)),
+        ])
+        const update = await withTimeout(apiFetch("/homeassistant", "PUT", { token, server_address: serverUrl }))
         let result = "FAIL"
-        if (update) {
-            const dev = await apiFetch("/device?get_only_names=false")
+        if (update?.success) {
+            const dev = await withTimeout(apiFetch("/device?get_only_names=false"))
             if (dev) {
                 result = "SUCCESS"
-            }
-            else {
-                await apiFetch("/homeassistant", "PUT", { token: data.token, server_url: data.server_url })
             }
         }
         setTimeout(function () {
