@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Getting MiKTeX</title>
+    
+    
+        <link rel="stylesheet" href="/css/MiKTeXorg.min.css?v=aV27AIW5a71kc_PA_BoC_BvVJK26cDQUK2z5btu235A" />
+        <link rel="stylesheet" href="/lib/datatables.net-bs4/css/dataTables.bootstrap4.min.css?v=ztPjgaG8n3bcMdIldOQIejiusYMjfpwcY62pCZ3UEWs" />
+        <link rel="stylesheet" href="/lib/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css?v=MRgxLFi7YW_KsPn1w8yIG43dERulfAnU0-NeWvTu4rY" />
+    
+    
+</head>
+<body style="margin-top: 80px; margin-bottom: 80px;">
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="/"><img src="/images/miktex2022.svg" width="30" height="30" alt="MiKTeX"></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div id="navbarSupportedContent" class="navbar-collapse collapse">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item"><a class="nav-link" href="/download">DOWNLOAD</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownDocs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">DOCS</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownDocs">
+                                <a class="dropdown-item" href="/docs">Articles</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPackages" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">PACKAGES</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownPackages">
+                                <a class="dropdown-item" href="/packages">Browse</a>
+                                <a class="dropdown-item" href="/repositories">Repositories</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="/pkg">Packaging</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownHelp" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">HELP</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownHelp">
+                                <a class="dropdown-item" href="/faq">FAQ</a>
+                                <a class="dropdown-item" href="/support">Support</a>
+                            </div>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="/giveback">GIVEBACK</a></li>
+                    </ul>
+                    
+<ul class="navbar-nav">
+        
+</ul>
+
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main">
+            
+
+    <div id="cookieConsent" class="alert alert-info alert-dismissible fade show" role="alert">
+        This website uses cookies to personalize content and ads. <a href="/privacy">Learn More</a>
+        <button type="button" class="accept-policy close" data-dismiss="alert" aria-label="Close" data-cookie-string=".AspNet.Consent=yes; expires=Tue, 19 Jan 2027 08:04:58 GMT; path=/; secure; samesite=none">
+            <span aria-hidden="true">Accept</span>
+        </button>
+    </div>
+    <script>
+        (function () {
+            var button = document.querySelector("#cookieConsent button[data-cookie-string]");
+            button.addEventListener("click", function (event) {
+                document.cookie = button.dataset.cookieString;
+            }, false);
+        })();
+    </script>
+
+            
+
+
+
+<h1 class="display-4">Getting MiKTeX</h1>
+
+<div class="row">
+    <div class="col-sm-6">
+        <p class="lead">MiKTeX is available for selected operating systems.</p>
+        <p>Please check the <a href="/kb/prerequisites">prerequisites</a> in order to find out whether your system is supported.</p>
+        <p>If your system is not (yet) supported: it is not too difficult to <a href="/sources">build MiKTeX</a>.</p>
+    </div>
+    <div class="col-sm-6 mb-3">
+        
+    
+    
+        <div>
+            <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <!-- Responsive -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-4672682363977476"
+                 data-ad-slot="1138030906"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+    
+
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#win"><i class="fab fa-fw fa-windows"></i> Windows</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#mac"><i class="fab fa-fw fa-apple"></i> Mac</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#unx"><i class="fab fa-fw fa-linux"></i> Linux</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#dok"><i class="fab fa-fw fa-docker"></i> Docker</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#all">All downloads</a></li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <div class="tab-content">
+            <div id="win" class="tab-pane fade show active">
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs">
+                            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#basic">Installer</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#portable">Portable Edition</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#setuputility">Command-line installer</a></li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div id="basic" class="tab-pane fade show active">
+                                <p class="card-text">
+                                    To install a basic TeX/LaTeX system on Windows, download and run this installer.
+                                </p>
+                                <p class="card-text">
+                                    Please read the <a href="/howto/install-miktex">tutorial</a>,
+                                    if you want step-by-step guidance.
+                                </p>
+                                
+<div class="container">
+        <div class="row">
+            <div class="col-sm-3 col-md-2">Date:</div>
+            <div class="col-sm-9 col-md-10">12/31/2025</div>
+        </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">File name:</div>
+        <div class="col-sm-9 col-md-10">basic-miktex-25.12-x64.exe</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">Size:</div>
+        <div class="col-sm-9 col-md-10">
+            141.98 MB
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">SHA-256:</div>
+        <div class="col-sm-9 col-md-10">14b42dd9f4b4a7813a8bfd69c8f99316c2888cc4ee26f631f397e163d85d6c62</div>
+    </div>
+    <div class="row mt-3">
+        <div class="offset-sm-3 col-sm-9 offset-md-2 col-md-10">
+            <a class="btn btn-primary" role="button" href='/download/ctan/systems/win32/miktex/setup/windows-x64/basic-miktex-25.12-x64.exe'><i class="fa fa-download"></i> Download</a>
+        </div>
+    </div>
+</div>
+
+                            </div>
+                            <div id="portable" class="tab-pane fade">
+                                <p class="card-text">
+                                    The portable edition allows you to run MiKTeX from a portable storage device.
+                                </p>
+                                <p class="card-text">
+                                    Please read the <a href="/howto/portable-edition">tutorial</a>,
+                                    if you want step-by-step guidance.
+                                </p>
+                                <p class="card-text">
+                                    Please note that there is no separate installer. Just download the standard installer and rename it to <code>miktex-portable.exe</code>.
+                                </p>
+                            </div>
+                            <div id="setuputility" class="tab-pane fade">
+                                <p class="card-text">
+                                    If you want to install MiKTeX on many client computers, then you should use the MiKTeX
+                                    Setup Utility to deploy MiKTeX in your organization. You can read the
+                                    <a href="/howto/deploy-miktex">deployment tutorial</a>,
+                                    if you want step-by-step guidance.
+                                </p>
+                                
+<div class="container">
+        <div class="row">
+            <div class="col-sm-3 col-md-2">Date:</div>
+            <div class="col-sm-9 col-md-10">04/17/2023</div>
+        </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">File name:</div>
+        <div class="col-sm-9 col-md-10">miktexsetup-5.5.0&#x2B;1763023-x64.zip</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">Size:</div>
+        <div class="col-sm-9 col-md-10">
+            2.6 MB
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">SHA-256:</div>
+        <div class="col-sm-9 col-md-10">0571e90f6d94353089b4f189fd82a532f9fe559a388c7e7f1102b14b3c1ae27d</div>
+    </div>
+    <div class="row mt-3">
+        <div class="offset-sm-3 col-sm-9 offset-md-2 col-md-10">
+            <a class="btn btn-primary" role="button" href='/download/ctan/systems/win32/miktex/setup/windows-x64/miktexsetup-5.5.0&#x2B;1763023-x64.zip'><i class="fa fa-download"></i> Download</a>
+        </div>
+    </div>
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="mac" class="tab-pane fade">
+                <p class="card-text">
+                    To set up a TeX/LaTeX system on macOS, download and open this disk image. Then drag the MiKTeX icon onto the Applications folder.
+                </p>
+                <p class="card-text">
+                    Please read the <a href="/howto/install-miktex-mac">tutorial</a>,
+                    if you want step-by-step guidance.
+                </p>
+                
+<div class="container">
+        <div class="row">
+            <div class="col-sm-3 col-md-2">Date:</div>
+            <div class="col-sm-9 col-md-10">02/01/2022</div>
+        </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">File name:</div>
+        <div class="col-sm-9 col-md-10">miktex-22.1-darwin-x86_64.dmg</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">Size:</div>
+        <div class="col-sm-9 col-md-10">
+            60.63 MB
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">SHA-256:</div>
+        <div class="col-sm-9 col-md-10">a5b531a60fc51c1f01c1af46bf859863c6974ef8d71213e476642acb788a4e4f</div>
+    </div>
+    <div class="row mt-3">
+        <div class="offset-sm-3 col-sm-9 offset-md-2 col-md-10">
+            <a class="btn btn-primary" role="button" href='/download/ctan/systems/win32/miktex/setup/darwin-x86_64/miktex-22.1-darwin-x86_64.dmg'><i class="fa fa-download"></i> Download</a>
+        </div>
+    </div>
+</div>
+
+            </div>
+            <div id="unx" class="tab-pane fade">
+                <p class="card-text">
+                    MiKTeX is available for selected Linux distributions.
+                </p>
+                <p class="card-text">
+                    Installing MiKTeX on Linux involves these steps:
+                    <ol type="a">
+                        <li>
+                            Register the GPG key with which MiKTeX installation packages and metadata is signed.
+                            The key ID is: <code>D6BC243565B2087BC3F897C9277A7293F59E4889</code>
+                        </li>
+                        <li>Register the installation source which contains the MiKTeX installation package. The installation source depends on the Linux distribution version.</li>
+                        <li>Use the package management system to install MiKTeX.</li>
+                        <li>Finish the setup.</li>
+                        <li>Upgrade your TeX distribution. This is an optional step.</li>
+                    </ol>
+                </p>
+                <p class="card-text">
+                    Please click a tab to get instructions for your Linux distribution:
+                </p>
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs">
+                            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#ubuntu"><img src="/images/Logo-ubuntu_cof-orange-hex.svg" height="20" />&nbsp;Ubuntu</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#mint"><img src="/images/Logo_Linux_Mint.png" height="20" />&nbsp;Mint</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#debian"><img src="/images/Openlogo-debianV2.svg" height="20" />&nbsp;Debian</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#fedora"><img src="/images/Fedora_logo.svg" height="20" />&nbsp;Fedora</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#rockylinux"><img src="/images/rocky-linux/branding/logo/src/icon-primary.svg" height="20" />&nbsp;Rocky Linux</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#opensuse"><img src="/images/openSUSE/artwork/Logo/buttons/button-filled-colour.svg" height="20" />&nbsp;openSUSE</a></li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div id="ubuntu" class="tab-pane fade show active">
+                                <h4>a. Register GPG key</h4>
+                                <pre>curl -fsSL https://miktex.org/download/key | sudo gpg --dearmor -o /usr/share/keyrings/miktex.gpg</pre>
+                                <h4>b. Register installation source</h4>
+                                <h5>Ubuntu 24.04 LTS (Noble Numbat):</h5>
+                                <pre>echo "deb [signed-by=/usr/share/keyrings/miktex.gpg] https://miktex.org/download/ubuntu noble universe" | sudo tee /etc/apt/sources.list.d/miktex.list</pre>
+                                <h5>Ubuntu 22.04 LTS (Jammy Jellyfish):</h5>
+                                <pre>echo "deb [signed-by=/usr/share/keyrings/miktex.gpg] https://miktex.org/download/ubuntu jammy universe" | sudo tee /etc/apt/sources.list.d/miktex.list</pre>
+                                <h4>c. Install MiKTeX</h4>
+                                <pre>sudo apt-get update
+sudo apt-get install miktex</pre>
+                            </div>
+                            <div id="mint" class="tab-pane fade">
+                                <h4>a. Register GPG key</h4>
+                                <pre>curl -fsSL https://miktex.org/download/key | sudo gpg --dearmor -o /usr/share/keyrings/miktex.gpg</pre>
+                                <h4>b. Register installation source</h4>
+                                <h5>Linux Mint 22:</h5>
+                                <pre>echo "deb [signed-by=/usr/share/keyrings/miktex.gpg] https://miktex.org/download/ubuntu noble universe" | sudo tee /etc/apt/sources.list.d/miktex.list</pre>
+                                <h5>Linux Mint 21:</h5>
+                                <pre>echo "deb [signed-by=/usr/share/keyrings/miktex.gpg] https://miktex.org/download/ubuntu jammy universe" | sudo tee /etc/apt/sources.list.d/miktex.list</pre>
+                                <h4>c. Install MiKTeX</h4>
+                                <pre>sudo apt-get update
+sudo apt-get install miktex</pre>
+                            </div>
+                            <div id="debian" class="tab-pane fade">
+                                <h4>a. Register GPG key</h4>
+                                <pre>curl -fsSL https://miktex.org/download/key | sudo gpg --dearmor -o /usr/share/keyrings/miktex.gpg</pre>
+                                <h4>b. Register installation source</h4>
+                                <h5>Debian 12 (Bookworm):</h5>
+                                <pre>echo "deb [signed-by=/usr/share/keyrings/miktex.gpg] https://miktex.org/download/debian bookworm universe" | sudo tee /etc/apt/sources.list.d/miktex.list</pre>
+                                <h5>Debian 11 (Bullseye):</h5>
+                                <pre>echo "deb [signed-by=/usr/share/keyrings/miktex.gpg] https://miktex.org/download/debian bullseye universe" | sudo tee /etc/apt/sources.list.d/miktex.list</pre>
+                                <h4>c. Install MiKTeX</h4>
+                                <pre>sudo apt-get update
+sudo apt-get install miktex</pre>
+                            </div>
+                            <div id="fedora" class="tab-pane fade">
+                                <h4>a. Register GPG key</h4>
+                                <pre>sudo rpm --import "https://miktex.org/download/key"</pre>
+                                <h4>b. Register installation source</h4>
+                                <h5>Fedora 43:</h5>
+                                <pre>sudo curl -L -o /etc/yum.repos.d/miktex.repo https://miktex.org/download/fedora/43/miktex.repo</pre>
+                                <h5>Fedora 42:</h5>
+                                <pre>sudo curl -L -o /etc/yum.repos.d/miktex.repo https://miktex.org/download/fedora/42/miktex.repo</pre>
+                                <h4>c. Install MiKTeX</h4>
+                                <pre>sudo dnf update
+sudo dnf install miktex</pre>
+                            </div>
+                            <div id="rockylinux" class="tab-pane fade">
+                                <h4>a. Register GPG key</h4>
+                                <pre>sudo rpm --import https://miktex.org/download/key</pre>
+                                <h4>b. Register installation source</h4>
+                                <h5>Rocky Linux 10:</h5>
+                                <pre>sudo curl -L -o /etc/yum.repos.d/miktex.repo https://miktex.org/download/rockylinux/10/miktex.repo</pre>
+                                <h5>Rocky Linux 9:</h5>
+                                <pre>sudo curl -L -o /etc/yum.repos.d/miktex.repo https://miktex.org/download/rockylinux/9/miktex.repo</pre>
+                                <h4>c. Install MiKTeX</h4>
+                                <pre>sudo dnf update
+sudo dnf install miktex</pre>
+                            </div>
+                            <div id="opensuse" class="tab-pane fade">
+                                <h4>a. Register GPG key</h4>
+                                <pre>sudo rpm --import https://miktex.org/download/key</pre>
+                                <h4>b. Register installation source</h4>
+                                <h5>openSUSE Leap 15:</h5>
+                                <pre>sudo curl -L -o /etc/zypp/repos.d/miktex.repo https://miktex.org/download/opensuse/15/miktex.repo</pre>
+                                <h4>c. Install MiKTeX</h4>
+                                <pre>sudo zypper update
+sudo zypper install miktex</pre>
+                            </div>
+                        </div>
+                        <h4>d. Finish the setup</h4>
+                        <p class="card-text">Before you can use MiKTeX, you have to finish the setup. You can use MiKTeX Console or, if you prefer the command line, <code>miktexsetup</code>.</p>
+                        <b class="card-text">Start MiKTeX Console to finish the setup</b>
+                        <p class="card-text">Search&amp;click the <code>MiKTeX Console</code> icon to start MiKTeX Console:</p>
+                        <p class="card-text"><img src="/img/unx-finish-setup.png?width=600" alt="Image Text" /></p>
+                        <p class="card-text">Now is the time to make a decision:</p>
+                        <p class="card-text">Do you want to set up a private (for you only) TeX installation, or do you want to set up a shared (system-wide) TeX installation?</p>
+                        <p class="card-text">You probably want to choose the first option.</p>
+                        <p class="card-text">The second option makes sense if you are the administrator of a multi-user system. If this is the case and if you expect that some of your users would like to work with MiKTeX, then you should install MiKTeX system-wide.</p>
+                        <p class="card-text">Click one of the two buttons if you have made your decision.</p>
+                        <b class="card-text">Run <code>miktexsetup</code> to finish the setup</b>
+                        <p class="card-text">Run</p>
+<pre><code>miktexsetup finish
+</code></pre>
+                        <p class="card-text">to finish with a private (for you only) TeX installation. Executables like <code>lualatex</code> will be installed in <code>~/bin</code>.</p>
+                        <p class="card-text">Run</p>
+<pre><code>sudo miktexsetup --shared=yes finish
+</code></pre>
+                        <p class="card-text">to finish with a shafred (system-wide) TeX installation. Executables like <code>lualatex</code> will be installed in <code>/usr/local/bin</code>.</p>
+                        <p class="card-text">You also may want to enable automatic package installation:</p>
+<pre><code>initexmf --set-config-value [MPM]AutoInstall=1
+</code></pre>
+                        <p class="card-text">Or, if you have a shared installation:</p>
+<pre><code>sudo initexmf --admin --set-config-value [MPM]AutoInstall=1
+</code></pre>
+                        <h4>e. Upgrade</h4>
+                        <p class="card-text">If you have just installed MiKTeX, then you have the option to upgrade your installation to a standard TeX system. Just click the <code>Upgrade</code> button. Please be aware that this starts a ~200MB download.</p>
+                        <p class="card-text">Alternatively, you can turn on the auto-install feature and let MiKTeX install missing packages on-the-fly. This will help you to keep your TeX installation as minimal as possible (<a href="/kb/just-enough-tex">“Just enough TeX”</a>).</p>
+                        <h4>See also</h4>
+                        <p class="card-text">FAQ: <a href="/faq/miktex-and-texlive">Is it possible to install MiKTeX and TeX Live side-by-side?</a></p>
+                    </div>
+                </div>
+            </div>
+            <div id="dok" class="tab-pane fade">
+                <h2>Docker image</h2>
+                <p class="card-text">The Docker image allows you to run MiKTeX on any computer that supports Docker.</p>
+                <p class="card-text">Provided that your main input file is located in the current working directory, you can run <code>pdflatex</code> as follows:</p>
+                <pre>docker run -ti -v miktex:/var/lib/miktex -v `pwd`:/miktex/work -e MIKTEX_UID=`id -u` miktex/miktex:essential pdflatex main.tex</pre>
+                <p class="card-text">
+                    Please read the <a href="/howto/miktex-docker">tutorial</a>,
+                    if you want step-by-step guidance.
+                </p>
+            </div>
+            <div id="all" class="tab-pane fade">
+                <div id="accordion">
+                    <div class="card">
+                        <div id='heading804' class="card-header">
+                            <button class="btn btn-link" data-toggle="collapse" data-target='#collapse804' aria-expanded="false" aria-controls='collapse804'>
+                                Basic Installer
+                                <i class="fab fa-windows"></i>
+64-bit                            </button>
+                        </div>
+                        <div id='collapse804' class="collapse" aria-labelledby='heading804' data-parent="#accordion">
+                            <div class="card-body">
+                                <p>To install a basic TeX/LaTeX system on Windows, download and run this installer.</p>
+                                
+<div class="container">
+        <div class="row">
+            <div class="col-sm-3 col-md-2">Date:</div>
+            <div class="col-sm-9 col-md-10">12/31/2025</div>
+        </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">File name:</div>
+        <div class="col-sm-9 col-md-10">basic-miktex-25.12-x64.exe</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">Size:</div>
+        <div class="col-sm-9 col-md-10">
+            141.98 MB
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">SHA-256:</div>
+        <div class="col-sm-9 col-md-10">14b42dd9f4b4a7813a8bfd69c8f99316c2888cc4ee26f631f397e163d85d6c62</div>
+    </div>
+    <div class="row mt-3">
+        <div class="offset-sm-3 col-sm-9 offset-md-2 col-md-10">
+            <a class="btn btn-primary" role="button" href='/download/ctan/systems/win32/miktex/setup/windows-x64/basic-miktex-25.12-x64.exe'><i class="fa fa-download"></i> Download</a>
+        </div>
+    </div>
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div id='heading745' class="card-header">
+                            <button class="btn btn-link" data-toggle="collapse" data-target='#collapse745' aria-expanded="false" aria-controls='collapse745'>
+                                Net Installer
+                                <i class="fab fa-windows"></i>
+64-bit                            </button>
+                        </div>
+                        <div id='collapse745' class="collapse" aria-labelledby='heading745' data-parent="#accordion">
+                            <div class="card-body">
+                                <p>This installer allows you download all packages and install a complete TeX/LaTeX system on Windows.</p>
+                                
+<div class="container">
+        <div class="row">
+            <div class="col-sm-3 col-md-2">Date:</div>
+            <div class="col-sm-9 col-md-10">10/06/2023</div>
+        </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">File name:</div>
+        <div class="col-sm-9 col-md-10">setup-5.6.1&#x2B;3f4a6a7-x64.exe</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">Size:</div>
+        <div class="col-sm-9 col-md-10">
+            24.53 MB
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">SHA-256:</div>
+        <div class="col-sm-9 col-md-10">038023c7dba0cd5f48f50b21ae8ccff27b5f9d376bbfe162cf9187f2b6212c2e</div>
+    </div>
+    <div class="row mt-3">
+        <div class="offset-sm-3 col-sm-9 offset-md-2 col-md-10">
+            <a class="btn btn-primary" role="button" href='/download/ctan/systems/win32/miktex/setup/windows-x64/setup-5.6.1&#x2B;3f4a6a7-x64.exe'><i class="fa fa-download"></i> Download</a>
+        </div>
+    </div>
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div id='heading700' class="card-header">
+                            <button class="btn btn-link" data-toggle="collapse" data-target='#collapse700' aria-expanded="false" aria-controls='collapse700'>
+                                MiKTeX Setup Utility
+                                <i class="fab fa-windows"></i>
+64-bit                            </button>
+                        </div>
+                        <div id='collapse700' class="collapse" aria-labelledby='heading700' data-parent="#accordion">
+                            <div class="card-body">
+                                <p>The MiKTeX Setup Utility is used to download, install and uninstall MiKTeX using the command line.&#xD;&#xA;It is suitable for unattended setup tasks and can be regarded as the command line counterpart of the MiKTeX Setup Wizard.</p>
+                                
+<div class="container">
+        <div class="row">
+            <div class="col-sm-3 col-md-2">Date:</div>
+            <div class="col-sm-9 col-md-10">04/17/2023</div>
+        </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">File name:</div>
+        <div class="col-sm-9 col-md-10">miktexsetup-5.5.0&#x2B;1763023-x64.zip</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">Size:</div>
+        <div class="col-sm-9 col-md-10">
+            2.6 MB
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">SHA-256:</div>
+        <div class="col-sm-9 col-md-10">0571e90f6d94353089b4f189fd82a532f9fe559a388c7e7f1102b14b3c1ae27d</div>
+    </div>
+    <div class="row mt-3">
+        <div class="offset-sm-3 col-sm-9 offset-md-2 col-md-10">
+            <a class="btn btn-primary" role="button" href='/download/ctan/systems/win32/miktex/setup/windows-x64/miktexsetup-5.5.0&#x2B;1763023-x64.zip'><i class="fa fa-download"></i> Download</a>
+        </div>
+    </div>
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div id='heading648' class="card-header">
+                            <button class="btn btn-link" data-toggle="collapse" data-target='#collapse648' aria-expanded="false" aria-controls='collapse648'>
+                                Drag&#x27;n&#x27;Drop installer
+                                <i class="fab fa-apple"></i>
+64-bit                            </button>
+                        </div>
+                        <div id='collapse648' class="collapse" aria-labelledby='heading648' data-parent="#accordion">
+                            <div class="card-body">
+                                <p>To set up a TeX/LaTeX system on macOS, download and open this disk image. Then drag the MiKTeX icon onto the Applications folder.</p>
+                                
+<div class="container">
+        <div class="row">
+            <div class="col-sm-3 col-md-2">Date:</div>
+            <div class="col-sm-9 col-md-10">02/01/2022</div>
+        </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">File name:</div>
+        <div class="col-sm-9 col-md-10">miktex-22.1-darwin-x86_64.dmg</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">Size:</div>
+        <div class="col-sm-9 col-md-10">
+            60.63 MB
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">SHA-256:</div>
+        <div class="col-sm-9 col-md-10">a5b531a60fc51c1f01c1af46bf859863c6974ef8d71213e476642acb788a4e4f</div>
+    </div>
+    <div class="row mt-3">
+        <div class="offset-sm-3 col-sm-9 offset-md-2 col-md-10">
+            <a class="btn btn-primary" role="button" href='/download/ctan/systems/win32/miktex/setup/darwin-x86_64/miktex-22.1-darwin-x86_64.dmg'><i class="fa fa-download"></i> Download</a>
+        </div>
+    </div>
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div id='heading805' class="card-header">
+                            <button class="btn btn-link" data-toggle="collapse" data-target='#collapse805' aria-expanded="false" aria-controls='collapse805'>
+                                MiKTeX Source Code
+                            </button>
+                        </div>
+                        <div id='collapse805' class="collapse" aria-labelledby='heading805' data-parent="#accordion">
+                            <div class="card-body">
+                                <p>Download MiKTeX source code if you want to incorporate MiKTeX into your own software product.</p>
+                                
+<div class="container">
+        <div class="row">
+            <div class="col-sm-3 col-md-2">Date:</div>
+            <div class="col-sm-9 col-md-10">12/31/2025</div>
+        </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">File name:</div>
+        <div class="col-sm-9 col-md-10">miktex-25.12.tar.xz</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">Size:</div>
+        <div class="col-sm-9 col-md-10">
+            28.22 MB
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-2">SHA-256:</div>
+        <div class="col-sm-9 col-md-10">7d5d47fb6ac3953371a18c18fa5af87f73867129ed99c00b2c7daae7a1a6131a</div>
+    </div>
+    <div class="row mt-3">
+        <div class="offset-sm-3 col-sm-9 offset-md-2 col-md-10">
+            <a class="btn btn-primary" role="button" href='/download/ctan/systems/win32/miktex/source/miktex-25.12.tar.xz'><i class="fa fa-download"></i> Download</a>
+        </div>
+    </div>
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+        </main>
+    </div>
+    <footer>
+        <nav class="navbar navbar-expand-sm navbar-light bg-light fixed-bottom">
+            <div class="container">
+                <span class="navbar-text">&copy; 2025 Christian Schenk</span>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent2" aria-controls="navbarSupportedContent2"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div id="navbarSupportedContent2" class="navbar-collapse collapse">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item"><a class="nav-link" href="/copying">License</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/privacy">Privacy Policy</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/datenschutzerklaerung">Datenschutzerklärung</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/widerrufsbelehrung">Widerrufsbelehrung</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/impressum">Impressum</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </footer>
+    
+    
+        <script src="/lib/jquery/jquery.min.js?v=o88AwQnZB-VDvE9tvIXrMQaPlFFSUTR-nldQm1LuPXQ"></script>
+        <script src="/lib/bootstrap/js/bootstrap.min.js?v=QjIXq_h3XOotww-h_j4cXiTcNZqA8cN60pqGCUv-gdE"></script>
+        <script src="/js/MiKTeXorg.min.js?v=3A1XecezJQiQfG940gV-KhPe9rPJLScvQNKR9mmWcWg"></script>
+        <script defer src="/js/fontawesome.min.js"></script>
+        <script defer src="/js/packs/brands.min.js"></script>
+        <script defer src="/js/packs/solid.min.js"></script>
+    
+    
+</body>
+</html>
