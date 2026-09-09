@@ -73,8 +73,13 @@ export default function CardAppliance({ appliancePos, setClickedDevice }) {
             onHoverStart={() => setOpenName(true)} 
             onHoverEnd={() => setOpenName(false)}
         >
-            <div className={`flex flex-row gap-1 items-center scale-[${getScale(appliancePos)}]`}
-                style={{ cursor: "pointer", zIndex: "20" }}
+            <div className="flex flex-row gap-1 items-center"
+                style={{
+                    cursor: "pointer",
+                    zIndex: "20",
+                    transform: `scale(${getScale(appliancePos)})`,
+                    transformOrigin: "center",
+                }}
                 onClick={() => setClickedDevice(appliancePos)}
             >
 

@@ -198,8 +198,7 @@ export const iconMap = {
     edit:(className)=><FaPencil className={className}/>,
     fullscreen:(className)=><BsFullscreen className={className}/>,
     fullscreen_exit:(className)=><BsFullscreenExit className={className}/>,
-    refresh:(className)=><IoRefresh className={className}/>,
-    puzzle:(className)=><IoExtensionPuzzleSharp className={className}/>
+    refresh:(className)=><IoRefresh className={className}/>
 }
 
 export const DevicesTypes = {
