@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   laravel.test:
     build:
@@ -22,6 +20,7 @@ services:
       TZ: Europe/Berlin  # Set timezone
     volumes:
       - '.:/var/www/html'
+      - 'sail-node-modules:/var/www/html/node_modules'
     networks:
       - sail
     depends_on:
@@ -120,6 +119,8 @@ networks:
 
 volumes:
   sail-vol:
+    driver: local
+  sail-node-modules:
     driver: local
   dt_shared_data:  # Shared volume between fastapi-api and fastapi-periodic
     driver: local

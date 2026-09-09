@@ -25,6 +25,7 @@ reset_docker.sh
 
 docker-compose.yml
 homeassistant/config/
+/lang/php_*.json
 
 # Local import/backup artifacts
 .tmp_ha_backup_inspect/

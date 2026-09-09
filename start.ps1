@@ -85,6 +85,11 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
+& docker compose -f $composeFile exec -T laravel.test sh -lc "if [ ! -x node_modules/.bin/vite ]; then npm ci; fi; if ! pgrep -f 'node.*vite' > /dev/null; then nohup npm run dev -- --host 0.0.0.0 > /tmp/vite.log 2>&1 & fi"
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+}
+
 Write-Host ""
 Write-Host "Progetto avviato:"
 Write-Host "  Frontend:       http://localhost:$appPort"
