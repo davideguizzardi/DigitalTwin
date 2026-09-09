@@ -2,116 +2,339 @@
 \label{chap:design-implementation}
 
 \section{Introduzione al capitolo}
-Questo capitolo approfondisce la progettazione dell'interfaccia utente del sistema sviluppato, con l'obiettivo di mostrare come l'integrazione delle funzionalit\`a di Trigger-Action Programming (TAP) nel Gemello Digitale sia stata tradotta in un'esperienza di interazione coerente, controllabile e aderente ai requisiti discussi nei capitoli precedenti. L'interfaccia non \`e un semplice elemento di presentazione, ma il punto di accesso privilegiato per osservare lo stato della Smart Home e per definire automazioni che, dopo la fase di simulazione, vengono applicate alla componente fisica.
+Nel Capitolo~\ref{chap:digital-twin-smart-home} è stata descritta l'architettura complessiva del sistema e, in particolare, è stato evidenziato come la \textit{Digital Twin Interface} rappresenti il punto di contatto principale tra utente e Smart Home.
 
-In continuit\`a con l'architettura descritta nel Capitolo~\ref{chap:digital-twin-smart-home}, l'interfaccia svolge una funzione di mediazione tra l'utente e i moduli del sistema: rende percepibili i dati generati dal Gemello Digitale, permette di interpretare i risultati della simulazione e guida l'utente nella creazione e gestione delle regole TAP. Il capitolo si colloca quindi come ponte tra la visione concettuale e l'implementazione, motivando le scelte di design e illustrando il percorso dal prototipo all'interfaccia funzionante.
+In questo capitolo viene descritto il lavoro di progettazione e sviluppo dell'interfaccia utente, partendo prima dal sistema di partenza e poi arrivando alle modifiche implementate durante questa tesi.
 
-\section{Analisi dei requisiti dell'interfaccia}
-L'analisi dei requisiti prende avvio dal contesto applicativo della Smart Home e dal paradigma TAP presentato nel Capitolo 2, nonch\'e dalla struttura modulare del Gemello Digitale descritta nel Capitolo~\ref{chap:digital-twin-smart-home}. In questo quadro, l'interfaccia deve rendere accessibile un insieme eterogeneo di funzionalit\`a, senza introdurre complessit\`a non necessarie o ambiguit\`a nella gestione delle automazioni.
+Le immagini presenti nella cartella \texttt{images/Chap - 4} rappresentano il sistema iniziale, mentre le immagini presenti in \texttt{images/Chap - 4/GOLINO} mostrano il mio sviluppo, incentrato soprattutto sulla creazione diretta delle automazioni TAP all'interno dell'interfaccia.
 
-Dal punto di vista funzionale, l'interfaccia deve consentire la consultazione dello stato del sistema, la visualizzazione dei consumi energetici e delle previsioni, la creazione e modifica di regole trigger-action, la gestione delle configurazioni dell'abitazione e delle preferenze utente, nonch\'e l'esecuzione di controlli manuali quando necessario. \`E inoltre essenziale fornire un accesso esplicito agli esiti delle simulazioni, includendo eventuali conflitti o suggerimenti, poich\'e la validazione preventiva costituisce un requisito cardine del sistema.
+\section{Analisi del sistema di partenza}
+\subsection{Panoramica generale dell'interfaccia}
+Il sistema di partenza presenta una struttura generale coerente con quanto descritto nei capitoli precedenti: menu laterale persistente, sezioni principali ben separate e utilizzo della stessa identità visiva in tutte le schermate.
 
-I requisiti di usabilit\`a e chiarezza discendono dalla natura del dominio: le automazioni influenzano il comportamento della casa reale e un errore di configurazione pu\`o produrre conseguenze tangibili. Per questo motivo l'interfaccia deve privilegiare la visibilit\`a dello stato, il feedback tempestivo sulle azioni, la tracciabilit\`a delle informazioni e l'adozione di una terminologia coerente con quella introdotta nei capitoli precedenti. La prevenzione degli errori non si limita a messaggi di avviso, ma richiede una progettazione che renda evidenti le relazioni tra trigger, condizioni e azioni, riducendo l'ambiguit\`a nelle scelte dell'utente.
+In particolare, le viste principali sono:
+\begin{itemize}
+    \item sezione \textbf{Consumption} per la visualizzazione dei consumi;
+    \item sezione \textbf{Automations} per consultare e attivare/disattivare le routine;
+    \item sezione \textbf{Configuration} per la configurazione iniziale e successiva della casa;
+    \item area \textbf{Profile} per preferenze utente, consensi privacy e dati personali.
+\end{itemize}
 
-La tipologia di utenti prevista comprende soggetti con livelli di competenza differenti: utenti domestici interessati a monitorare lo stato della casa e a configurare automazioni semplici, utenti tecnici chiamati a definire mappe e dispositivi, e profili orientati all'analisi dei consumi che richiedono viste sintetiche ma confrontabili nel tempo. La progettazione ha quindi dovuto conciliare immediatezza e profondit\`a informativa, prevedendo percorsi che consentano sia un utilizzo rapido, sia un accesso graduato ai dettagli.
-
-\section{Progettazione dell'interfaccia utente}
-\subsection{Approccio progettuale e criteri guida}
-La progettazione ha seguito un approccio user-centered, con iterazioni mirate alla definizione dei principali flussi di interazione: monitoraggio dello stato della casa, consultazione dei consumi, definizione delle regole TAP e gestione della configurazione. La coerenza con il Gemello Digitale ha richiesto che ogni entit\`a significativa nel sistema, come ambienti, dispositivi e automazioni, fosse riconoscibile nell'interfaccia con una terminologia stabile e una rappresentazione uniforme.
-
-Tra i criteri guida si \`e privilegiata la semplicit\`a operativa, intesa come riduzione del carico cognitivo e come minimizzazione dei passi necessari per completare un compito. Parallelamente, la modularit\`a dell'interfaccia \`e stata considerata essenziale per garantire l'estendibilit\`a del sistema e per permettere una separazione netta tra consultazione e azione. Tale separazione, oltre a favorire l'usabilit\`a, risponde alla necessit\`a di prevenire attivazioni non intenzionali in un contesto in cui le automazioni incidono sul mondo fisico.
-
-\subsection{Layout, navigazione e organizzazione delle informazioni}
-L'architettura informativa \`e stata organizzata in sezioni principali, accessibili tramite una navigazione persistente. La dashboard assolve il ruolo di sintesi dello stato del Gemello Digitale, mentre le sezioni dedicate a consumi, automazioni e configurazione consentono di approfondire aspetti specifici senza perdere il contesto generale. Questa scelta risponde alla necessit\`a di mantenere il controllo percettivo del sistema anche quando si accede a funzionalit\`a avanzate.
-
-L'organizzazione interna delle schermate segue una logica di progressiva rivelazione: gli indicatori essenziali sono presentati in modo immediato, mentre i dettagli vengono esposti solo quando l'utente decide di approfondire. Tale scelta \`e motivata dall'eterogeneit\`a dei dati trattati dal Gemello Digitale e dalla necessit\`a di evitare un sovraccarico informativo, specialmente per gli utenti meno esperti. La disposizione dei controlli di azione in aree dedicate, distinte dalle aree di sola consultazione, rafforza inoltre la chiarezza operativa e la prevenzione degli errori.
-
-\subsection{Rappresentazione delle regole Trigger-Action e feedback}
-L'integrazione del paradigma TAP ha richiesto una rappresentazione che rendesse esplicita la sequenza logica di trigger, condizioni e azioni. L'interfaccia \`e stata quindi progettata per guidare l'utente attraverso la composizione delle regole, assicurando che ogni passaggio sia comprensibile e verificabile. La scelta di una struttura modulare risponde alla necessit\`a di mantenere la flessibilit\`a del paradigma TAP senza introdurre ambiguit\`a nei legami tra gli elementi della regola.
-
-Un aspetto centrale riguarda la restituzione dei risultati della simulazione. Poich\'e la validazione preventiva \`e parte integrante dell'architettura, l'interfaccia deve comunicare in modo chiaro gli esiti, includendo eventuali conflitti e suggerimenti. Ci\`o richiede un sistema di feedback che distingua tra avvisi informativi e blocchi operativi, conservando la trasparenza dell'intero processo. In tal modo l'utente non percepisce la simulazione come un vincolo opaco, ma come un supporto decisionale coerente con gli obiettivi del Gemello Digitale.
-
-\section{Prototipazione tramite FIGMA}
-La prototipazione ad alta fedelt\`a \`e stata realizzata in FIGMA per validare la struttura informativa e il flusso di interazione prima dell'implementazione. Le immagini del prototipo sono disponibili nella cartella \texttt{Tesi\_Magistrale\_Golino\_Giacomo\textbackslash images\textbackslash Chap - 4} e vengono richiamate nelle figure di questa sezione per illustrare le principali schermate.
-
-\subsection{Schermate principali}
-La sezione dedicata ai consumi energetici, mostrata in Figura~\ref{fig:cap4_consumptions}, rappresenta il punto di accesso alle analisi del consumo e alle previsioni. La schermata \`e concepita per supportare il confronto tra intervalli temporali differenti e per distinguere tra consumo totale, contributo delle automazioni e stime predittive. Nel prototipo sono presenti varianti della vista che mostrano tali configurazioni, coerenti con i requisiti di supporto alle decisioni energetiche.
+Una vista complessiva della sezione consumi è mostrata in (fig.~\ref{fig:cap4_base_consumptions_overview}).
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{images/Chap - 4/Consumptions.png}
-    \caption{Prototipo della sezione di analisi dei consumi energetici.}
-    \label{fig:cap4_consumptions}
+    \caption{Sistema di partenza: vista generale della sezione consumi}
+    \label{fig:cap4_base_consumptions_overview}
 \end{figure}
 
-La gestione delle automazioni (Figura~\ref{fig:cap4_automations}) esprime la componente centrale dell'integrazione TAP nel Gemello Digitale. La schermata \`e pensata per rendere visibili le regole attive, lo stato di ciascuna automazione e l'accesso ai dettagli necessari per la modifica. In questo contesto, la relazione tra trigger, condizioni e azioni \`e mantenuta esplicita per facilitare il controllo e la comprensione delle regole.
+La schermata delle automazioni, riportata in (fig.~\ref{fig:cap4_base_automations}), consente la gestione delle routine già presenti, la consultazione dello stato e la visualizzazione di suggerimenti energetici.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{images/Chap - 4/Automations.png}
-    \caption{Prototipo della sezione di gestione delle automazioni trigger-action.}
-    \label{fig:cap4_automations}
+    \caption{Sistema di partenza: sezione automazioni}
+    \label{fig:cap4_base_automations}
 \end{figure}
 
-La configurazione dell'abitazione, illustrata in Figura~\ref{fig:cap4_house_configuration}, supporta la mappatura tra spazi fisici e rappresentazione digitale. Tale passaggio \`e essenziale per garantire che le automazioni TAP siano contestualizzate in modo coerente con la Smart Home reale, preservando la fedelt\`a del Gemello Digitale.
+La parte destra della sezione automazioni mostra il dettaglio della routine selezionata, con blocchi \textit{When}, \textit{and if}, \textit{Do} e i suggerimenti green. Un esempio focalizzato di questo blocco è riportato in (fig.~\ref{fig:cap4_base_automation_detail}).
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\linewidth]{images/Chap - 4/House configration_final_1.png}
-    \caption{Prototipo della configurazione dell'abitazione e dei dispositivi.}
-    \label{fig:cap4_house_configuration}
+    \includegraphics[width=0.6\linewidth]{images/Chap - 4/Frame 2610521.png}
+    \caption{Sistema di partenza: dettaglio di una automazione con suggerimenti}
+    \label{fig:cap4_base_automation_detail}
 \end{figure}
 
-L'area profilo (Figura~\ref{fig:cap4_profile}) integra la gestione delle informazioni personali e delle preferenze dell'utente, consentendo di collegare le impostazioni individuali ai parametri utilizzati dai moduli di simulazione e analisi. Questa schermata \`e fondamentale per mantenere coerenza tra obiettivi dell'utente e comportamento del sistema.
+\subsection{Analisi della sezione consumi}
+La sezione consumi nel sistema di partenza è una delle parti più complete dell'interfaccia. L'utente può cambiare \textit{timespan} (giorno, settimana, anno), scegliere modalità diverse (consumo totale, per dispositivo, per automazione, predizione, ecc.) e alternare il tipo di grafico.
+
+Una vista giornaliera del consumo totale corrente è mostrata in (fig.~\ref{fig:cap4_base_total_day_current}), mentre in (fig.~\ref{fig:cap4_base_total_day_past}) è visibile lo stesso grafico su una data passata.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{images/Chap - 4/Profile.png}
-    \caption{Prototipo dell'area profilo e delle preferenze utente.}
-    \label{fig:cap4_profile}
+    \includegraphics[width=0.95\linewidth]{images/Chap - 4/Timespan=Day, Mode=Total energy, Graph=Bar, Date=Current.png}
+    \caption{Sistema di partenza: consumo totale giornaliero (data corrente)}
+    \label{fig:cap4_base_total_day_current}
 \end{figure}
-
-La vista sull'impronta ecologica (Figura~\ref{fig:cap4_ecological}) fornisce una sintesi orientata alla sostenibilit\`a, utile per collegare il comportamento delle automazioni agli obiettivi energetici del sistema. La presenza di questa schermata nel prototipo rafforza la connessione tra TAP e ottimizzazione dei consumi.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{images/Chap - 4/Ecological footprint.png}
-    \caption{Prototipo della vista di sintesi dell'impronta ecologica.}
-    \label{fig:cap4_ecological}
+    \includegraphics[width=0.95\linewidth]{images/Chap - 4/Timespan=Day, Mode=Total energy, Graph=Bar, Date=Past.png}
+    \caption{Sistema di partenza: consumo totale giornaliero (data passata)}
+    \label{fig:cap4_base_total_day_past}
 \end{figure}
 
-\subsection{Elementi di supporto e coerenza visiva}
-Oltre alle schermate principali, il prototipo include elementi di supporto che contribuiscono alla coerenza visiva e al feedback operativo. La definizione della palette cromatica (Figura~\ref{fig:cap4_palette}) esplicita i ruoli dei colori per stati, avvisi e informazioni neutre, garantendo una leggibilit\`a uniforme tra le sezioni. L'uso di tali convenzioni \`e funzionale alla chiarezza e alla riconoscibilit\`a delle informazioni.
+Lo stesso approccio è presente anche per l'intervallo settimanale. In (fig.~\ref{fig:cap4_base_total_week_current}) è mostrata la settimana corrente, mentre in (fig.~\ref{fig:cap4_base_total_week_past}) una settimana passata.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{images/Chap - 4/Color palette.png}
-    \caption{Palette cromatica utilizzata nel prototipo.}
-    \label{fig:cap4_palette}
+    \includegraphics[width=0.95\linewidth]{images/Chap - 4/Timespan=Week, Mode=Total energy, Graph=Bar, Date=Current.png}
+    \caption{Sistema di partenza: consumo totale settimanale (corrente)}
+    \label{fig:cap4_base_total_week_current}
 \end{figure}
-
-Il prototipo comprende inoltre esempi di notifiche contestuali per comunicare l'esito di azioni o variazioni di stato, come mostrato in Figura~\ref{fig:cap4_feedback}. Questi elementi sono rilevanti per la percezione di affidabilit\`a del sistema, in quanto informano l'utente sugli effetti delle operazioni eseguite.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{images/Chap - 4/Achievements popup.png}
-    \caption{Esempio di notifica contestuale nel prototipo.}
-    \label{fig:cap4_feedback}
+    \includegraphics[width=0.95\linewidth]{images/Chap - 4/Timespan=Week, Mode=Total energy, Graph=Bar, Date=Past.png}
+    \caption{Sistema di partenza: consumo totale settimanale (passato)}
+    \label{fig:cap4_base_total_week_past}
 \end{figure}
 
-\section{Scelte implementative}
-La traduzione del prototipo in un'interfaccia funzionante ha richiesto decisioni che preservassero la coerenza concettuale e grafica, garantendo al contempo affidabilit\`a e manutenibilit\`a. L'adozione di un'architettura a componenti permette di riflettere la modularit\`a del design, assicurando uniformit\`a tra le sezioni e facilitando l'evoluzione futura dell'interfaccia. Tale impostazione supporta la riusabilit\`a di elementi comuni e riduce la probabilit\`a di inconsistenze visive o comportamentali.
+Per la scala annuale, il sistema permette di confrontare anni differenti, come mostrato in (fig.~\ref{fig:cap4_base_total_year_current}) e (fig.~\ref{fig:cap4_base_total_year_past}).
 
-L'interfaccia deve gestire dati dinamici provenienti da moduli diversi, con aggiornamenti asincroni e potenziali ritardi. Per evitare discrepanze percettive tra stato reale e rappresentazione digitale, sono stati previsti meccanismi di aggiornamento chiari e indicatori che rendono esplicito il momento di sincronizzazione. Questo aspetto \`e particolarmente rilevante per le automazioni TAP, poich\'e l'utente deve distinguere tra una regola definita e una regola effettivamente validata dalla simulazione.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{images/Chap - 4/Timespan=Year, Mode=Total energy, Graph=Bar, Date=Current.png}
+    \caption{Sistema di partenza: consumo totale annuale (anno corrente)}
+    \label{fig:cap4_base_total_year_current}
+\end{figure}
 
-Un ulteriore elemento riguarda la validazione delle regole e la prevenzione degli errori. Il flusso di definizione delle automazioni \`e stato implementato in modo guidato, con controlli che rendono evidenti i passaggi necessari e con feedback che segnalano incompletezze o conflitti prima dell'invio al modulo di simulazione. Tale scelta privilegia la sicurezza operativa rispetto alla mera rapidit\`a di configurazione, in linea con la natura critica delle automazioni in un ambiente domestico reale.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{images/Chap - 4/Timespan=Year, Mode=Total energy, Graph=Bar, Date=Past.png}
+    \caption{Sistema di partenza: consumo totale annuale (anno passato)}
+    \label{fig:cap4_base_total_year_past}
+\end{figure}
 
-Nel passaggio dal prototipo all'implementazione sono stati affrontati compromessi legati alla densit\`a informativa. Alcuni dettagli avanzati sono stati mantenuti in sezioni dedicate, cos\`i da preservare la leggibilit\`a delle viste principali. Inoltre, la coesistenza con strumenti conversazionali esterni per la creazione delle automazioni, discussa nel Capitolo~\ref{chap:digital-twin-smart-home}, ha richiesto di mantenere un percorso coerente tra le diverse modalit\`a di interazione, evitando duplicazioni non necessarie.
+La parte predittiva è mostrata sia in versione barre-linea (fig.~\ref{fig:cap4_base_pred_day_line}) sia in versione settimanale con confronto tra consumo reale e predetto (fig.~\ref{fig:cap4_base_pred_week}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{images/Chap - 4/Timespan=Day, Mode=Predicted energy, Graph=Bar-Line, Date=Current.png}
+    \caption{Sistema di partenza: consumo predetto giornaliero (barre + linea)}
+    \label{fig:cap4_base_pred_day_line}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{images/Chap - 4/Timespan=Week, Mode=Predicted energy, Graph=Bar, Date=Current.png}
+    \caption{Sistema di partenza: consumo predetto settimanale}
+    \label{fig:cap4_base_pred_week}
+\end{figure}
+
+Oltre al consumo totale, il sistema permette anche analisi per dispositivo e per automazione, sia a barre sia a torta, come riportato in (fig.~\ref{fig:cap4_base_device_bar}), (fig.~\ref{fig:cap4_base_device_pie}), (fig.~\ref{fig:cap4_base_automation_bar}) e (fig.~\ref{fig:cap4_base_automation_pie}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{images/Chap - 4/Timespan=Day, Mode=Appliance energy, Graph=Bar, Date=Past.png}
+    \caption{Sistema di partenza: consumo per dispositivo (barre)}
+    \label{fig:cap4_base_device_bar}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{images/Chap - 4/Timespan=Day, Mode=Appliance energy, Graph=Pie, Date=Past.png}
+    \caption{Sistema di partenza: consumo per dispositivo (torta)}
+    \label{fig:cap4_base_device_pie}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{images/Chap - 4/Timespan=Day, Mode=Automation energy, Graph=Bar, Date=Past.png}
+    \caption{Sistema di partenza: consumo per automazione (barre)}
+    \label{fig:cap4_base_automation_bar}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{images/Chap - 4/Timespan=Day, Mode=Automation energy, Graph=Pie, Date=Past.png}
+    \caption{Sistema di partenza: consumo per automazione (torta)}
+    \label{fig:cap4_base_automation_pie}
+\end{figure}
+
+Infine, è presente anche una vista settimanale per persona (fig.~\ref{fig:cap4_base_person_week}), utile quando nella casa sono presenti più utenti.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{images/Chap - 4/Timespan=Week, Mode=Person energy, Graph=Bar, Date=Past.png}
+    \caption{Sistema di partenza: consumo energetico per persona}
+    \label{fig:cap4_base_person_week}
+\end{figure}
+
+\subsection{Configurazione iniziale della casa}
+Una parte importante del sistema di partenza è il \textit{wizard} di configurazione iniziale, attraverso il quale l'utente imposta planimetria, dispositivi e piano energetico.
+
+Il primo step richiede il caricamento della planimetria (fig.~\ref{fig:cap4_base_config_step0}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{images/Chap - 4/House configration_0.png}
+    \caption{Sistema di partenza: step iniziale con caricamento planimetria}
+    \label{fig:cap4_base_config_step0}
+\end{figure}
+
+Una volta caricata la mappa, è possibile aggiungere/rimuovere piani e salvare la configurazione del piano corrente (fig.~\ref{fig:cap4_base_config_step2}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{images/Chap - 4/House configration_2.png}
+    \caption{Sistema di partenza: planimetria caricata e gestione dei piani}
+    \label{fig:cap4_base_config_step2}
+\end{figure}
+
+Successivamente si passa allo step dedicato al posizionamento dei dispositivi sulla mappa della casa, con drag-and-drop delle appliance (fig.~\ref{fig:cap4_base_config_step4}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{images/Chap - 4/House configration_4.png}
+    \caption{Sistema di partenza: configurazione e posizionamento delle appliance}
+    \label{fig:cap4_base_config_step4}
+\end{figure}
+
+Il terzo step riguarda il piano energetico, con numero di fasce, costo per fascia e potenza massima disponibile (fig.~\ref{fig:cap4_base_config_step7}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{images/Chap - 4/House configration_7.png}
+    \caption{Sistema di partenza: configurazione del piano energetico iniziale}
+    \label{fig:cap4_base_config_step7}
+\end{figure}
+
+Al termine del processo viene mostrata una conferma di configurazione completata (fig.~\ref{fig:cap4_base_config_done}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{images/Chap - 4/House configration_8.png}
+    \caption{Sistema di partenza: conferma completamento configurazione iniziale}
+    \label{fig:cap4_base_config_done}
+\end{figure}
+
+Dopo la fase iniziale, l'utente può tornare nella configurazione ordinaria della casa e modificare in qualsiasi momento appliance e piano energetico (fig.~\ref{fig:cap4_base_config_final1} e fig.~\ref{fig:cap4_base_config_final2}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{images/Chap - 4/House configration_final_1.png}
+    \caption{Sistema di partenza: pagina di configurazione appliance}
+    \label{fig:cap4_base_config_final1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{images/Chap - 4/House configration_final_2.png}
+    \caption{Sistema di partenza: pagina di configurazione piano energetico}
+    \label{fig:cap4_base_config_final2}
+\end{figure}
+
+\subsection{Profilo utente, sostenibilità e componenti di supporto}
+Nel sistema di partenza l'area profilo integra più funzionalità: dati anagrafici, preferenze personali, consensi privacy e sintesi dell'impronta ecologica. Una vista completa è riportata in (fig.~\ref{fig:cap4_base_profile}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{images/Chap - 4/Profile.png}
+    \caption{Sistema di partenza: area profilo con preferenze e privacy}
+    \label{fig:cap4_base_profile}
+\end{figure}
+
+La vista specifica sull'impronta ecologica è mostrata in (fig.~\ref{fig:cap4_base_eco}), dove viene confrontato il profilo utente rispetto alla media e vengono proposti suggerimenti operativi.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/Chap - 4/Ecological footprint.png}
+    \caption{Sistema di partenza: dashboard dell'impronta ecologica}
+    \label{fig:cap4_base_eco}
+\end{figure}
+
+Sono presenti anche componenti di \textit{engagement}, come il pop-up dedicato ad achievement e challenge (fig.~\ref{fig:cap4_base_achievements}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/Chap - 4/Achievements popup.png}
+    \caption{Sistema di partenza: pop-up achievements e challenge}
+    \label{fig:cap4_base_achievements}
+\end{figure}
+
+Per la gestione account sono disponibili modali dedicate al cambio password (fig.~\ref{fig:cap4_base_change_password}), cambio immagine profilo (fig.~\ref{fig:cap4_base_change_image}) e reset password (fig.~\ref{fig:cap4_base_reset_password}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\linewidth]{images/Chap - 4/Change password popup.png}
+    \caption{Sistema di partenza: modale cambio password}
+    \label{fig:cap4_base_change_password}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\linewidth]{images/Chap - 4/Profile image popup_1.png}
+    \caption{Sistema di partenza: modale cambio immagine profilo}
+    \label{fig:cap4_base_change_image}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{images/Chap - 4/Password reset.png}
+    \caption{Sistema di partenza: schermata di reset password}
+    \label{fig:cap4_base_reset_password}
+\end{figure}
+
+Inoltre il sistema integra schermate di supporto predittivo direttamente su singolo dispositivo, come nel caso dell'aria condizionata e della lavatrice mostrati in (fig.~\ref{fig:cap4_base_prediction_cotton}) e (fig.~\ref{fig:cap4_base_prediction_express}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{images/Chap - 4/Step=Prediction, Mode=Cotton.png}
+    \caption{Sistema di partenza: schermata predittiva su dispositivo (esempio 1)}
+    \label{fig:cap4_base_prediction_cotton}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{images/Chap - 4/Step=Prediction, Mode=Expres.png}
+    \caption{Sistema di partenza: schermata predittiva su dispositivo (esempio 2)}
+    \label{fig:cap4_base_prediction_express}
+\end{figure}
+
+Infine, la palette colori definita nel prototipo iniziale è riportata in (fig.~\ref{fig:cap4_base_palette}), con distinzione tra colori testuali, colori di superficie e colori di accento.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/Chap - 4/Color palette.png}
+    \caption{Sistema di partenza: palette grafica utilizzata}
+    \label{fig:cap4_base_palette}
+\end{figure}
+
+\section{Limiti osservati nel sistema di partenza}
+Dall'analisi complessiva emerge che il sistema di partenza è ricco nelle funzioni di monitoraggio e configurazione, ma presenta un limite importante nella parte TAP: l'utente può soprattutto visualizzare e gestire automazioni già presenti, mentre non ha ancora un flusso completo e guidato per creare una nuova automazione da zero dentro la stessa interfaccia.
+
+Questo punto è coerente con quanto discusso nel Capitolo~\ref{chap:digital-twin-smart-home}, dove la creazione delle automazioni era ancora fortemente legata a strumenti esterni o a processi separati rispetto alla GUI principale del Gemello Digitale.
+
+\section{Il mio sviluppo: integrazione del builder TAP nella GUI}
+Per superare il limite precedente, ho progettato una nuova sezione di creazione automazioni direttamente all'interno della pagina \textit{Automations}. Le schermate del mio sviluppo sono riportate nelle immagini presenti in \texttt{images/Chap - 4/GOLINO}.
+
+La prima schermata (fig.~\ref{fig:cap4_golino_builder_top}) mostra la struttura generale del builder: nella parte centrale è presente il form per definire le condizioni di attivazione (\textit{When}) e nella parte destra il riepilogo in linguaggio naturale della regola che si sta creando.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{images/Chap - 4/GOLINO/figma - UI Golino.png}
+    \caption{Mio sviluppo: nuova interfaccia per la creazione di automazioni (parte alta)}
+    \label{fig:cap4_golino_builder_top}
+\end{figure}
+
+La seconda schermata (fig.~\ref{fig:cap4_golino_builder_bottom}) completa il flusso introducendo la sezione \textit{Then}, quindi le azioni da eseguire quando le condizioni sono soddisfatte.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{images/Chap - 4/GOLINO/figma -UI Golino 2.png}
+    \caption{Mio sviluppo: nuova interfaccia per la creazione di automazioni (parte bassa)}
+    \label{fig:cap4_golino_builder_bottom}
+\end{figure}
+
+Nel dettaglio, gli elementi principali introdotti sono:
+\begin{itemize}
+    \item \textbf{Builder guidato a blocchi}: l'utente può aggiungere condizioni e azioni in sequenza, con pulsanti dedicati (\textit{Add condition}, \textit{Add action}).
+    \item \textbf{Riepilogo immediato della regola}: il pannello laterale aggiorna in modo chiaro la logica \textit{WHEN/THEN}, riducendo ambiguità.
+    \item \textbf{Controlli operativi espliciti}: i pulsanti \textit{Reset}, \textit{Simulate} e \textit{Save} rendono esplicito il passaggio tra modifica, validazione e salvataggio.
+    \item \textbf{Coerenza visiva con il sistema esistente}: ho mantenuto palette, componenti e navigazione già presenti, così da non creare una rottura nell'esperienza utente.
+\end{itemize}
+
+Il pulsante \textit{Simulate} è stato pensato in coerenza con l'architettura del Capitolo~\ref{chap:digital-twin-smart-home}: prima di rendere effettiva l'automazione, la regola può essere validata dal \textit{Simulation Management Module}, mantenendo quindi la logica di prevenzione conflitti ed eccessi di consumo.
+
+In questo modo il flusso TAP viene portato dentro la \textit{Digital Twin Interface} in maniera più completa: l'utente non si limita più a vedere automazioni esistenti, ma può creare regole nuove, verificarle e poi salvarle mantenendo un unico percorso d'uso.
 
 \section{Aggiornamento implementativo dell'integrazione con la Smart Home}
-La versione finale dell'interfaccia \`e stata aggiornata per operare direttamente sui dati provenienti dall'istanza reale di Home Assistant utilizzata nel caso di studio. A partire dal backup dell'abitazione intelligente, il sistema importa dispositivi, entit\`a e automazioni esistenti, rendendoli disponibili nel Gemello Digitale attraverso le API di integrazione. Questo aggiornamento consente di superare una logica puramente dimostrativa e di lavorare su un insieme di dispositivi effettivamente configurati, mantenendo la sincronizzazione tra rappresentazione digitale e stato della Smart Home.
+La versione finale dell'interfaccia è stata aggiornata per operare direttamente sui dati provenienti dall'istanza reale di Home Assistant utilizzata nel caso di studio. A partire dal backup dell'abitazione intelligente, il sistema importa dispositivi, entità e automazioni esistenti, rendendoli disponibili nel Gemello Digitale attraverso le API di integrazione.
 
-Un primo intervento ha riguardato la configurazione della planimetria e dei dispositivi. La mappa del primo piano \`e stata caricata come immagine di riferimento e viene utilizzata nella sezione di configurazione per collocare gli oggetti domestici nello spazio fisico. La Figura~\ref{fig:cap4_impl_configuration_map} mostra la schermata implementata: sulla sinistra \`e visibile la planimetria dell'abitazione, mentre sulla destra \`e presente la lista dei dispositivi estratti dall'integrazione Home Assistant. Questa organizzazione permette di associare le entit\`a software alla loro posizione nello spazio domestico, rafforzando la coerenza del Gemello Digitale.
+Un primo intervento ha riguardato la configurazione della planimetria e dei dispositivi. La mappa del primo piano viene utilizzata nella sezione di configurazione per collocare gli oggetti domestici nello spazio fisico; la lista laterale rende disponibili i dispositivi estratti dall'integrazione Home Assistant.
 
 \begin{figure}[H]
     \centering
@@ -120,22 +343,22 @@ Un primo intervento ha riguardato la configurazione della planimetria e dei disp
     \label{fig:cap4_impl_configuration_map}
 \end{figure}
 
-Il secondo intervento ha riguardato la creazione e gestione delle automazioni. La pagina di aggiunta delle regole TAP \`e stata resa bilingue, con etichette e messaggi in italiano o in inglese in base alla lingua selezionata dall'utente. Il salvataggio di una nuova automazione ora produce una configurazione compatibile con Home Assistant e, dopo la creazione, la regola risulta visibile nella pagina di elenco delle automazioni. Anche la cancellazione \`e stata resa pi\`u sicura: prima dell'eliminazione viene richiesta una conferma esplicita e, in caso di esito positivo, il sistema restituisce un messaggio informativo non ambiguo.
+Il secondo intervento ha riguardato la creazione e gestione delle automazioni. La pagina di aggiunta delle regole TAP è bilingue; il salvataggio produce una configurazione compatibile con Home Assistant e la regola è poi visibile nella pagina di elenco. Anche la cancellazione richiede una conferma esplicita e restituisce un messaggio informativo non ambiguo.
 
-Particolare attenzione \`e stata dedicata al robot aspirapolvere. L'esposizione diretta degli script Home Assistant avrebbe obbligato l'utente a scegliere comandi tecnici come \texttt{script.qrevo\_soggiorno\_aspira}. Per ridurre il carico cognitivo, l'interfaccia aggrega tali script in un controllo orientato al dominio: l'utente sceglie prima il dispositivo \emph{Qrevo Curv 2 Pro}, poi il tipo di intervento, tra \emph{Aspira}, \emph{Lava} e \emph{Aspira e lava}, e infine una o pi\`u stanze. Internamente il sistema traduce questa scelta in una o pi\`u chiamate \texttt{script.turn\_on}, una per ogni stanza selezionata, preservando la compatibilit\`a con Home Assistant ma mostrando all'utente un modello mentale pi\`u vicino all'azione domestica reale.
+Particolare attenzione è stata dedicata al robot aspirapolvere. L'interfaccia aggrega gli script Home Assistant in un controllo orientato al dominio: l'utente sceglie il dispositivo \emph{Qrevo Curv 2 Pro}, il tipo di intervento tra \emph{Aspira}, \emph{Lava} e \emph{Aspira e lava}, quindi una o più stanze. Internamente questa scelta viene tradotta in una o più chiamate \texttt{script.turn\_on}, mantenendo la compatibilità con Home Assistant ma presentando un modello vicino all'azione domestica reale.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\linewidth]{images/Chap - 4/Implementation/implementation_automation_builder_robot.png}
-    \caption{Creazione di un'automazione TAP con azione semantica sul robot: selezione della modalit\`a di pulizia e delle stanze.}
+    \caption{Creazione di un'automazione TAP con azione semantica sul robot: selezione della modalità di pulizia e delle stanze.}
     \label{fig:cap4_impl_robot_automation}
 \end{figure}
 
-La stessa schermata \`e stata inoltre rivista dal punto di vista responsivo. Le righe dedicate a condizioni e azioni non utilizzano pi\`u una disposizione orizzontale rigida, ma una griglia capace di adattarsi alla larghezza disponibile. In questo modo le icone, i campi di selezione, i pulsanti di eliminazione e l'anteprima dell'automazione non si sovrappongono, anche quando vengono utilizzati nomi lunghi o azioni multi-stanza. Questo aspetto \`e rilevante perch\'e la costruzione delle automazioni richiede la lettura simultanea di pi\`u elementi: trigger, dispositivi, stati, azioni e risultato previsto.
-
-Nel complesso, questi aggiornamenti rafforzano tre propriet\`a dell'interfaccia: la fedelt\`a rispetto allo stato della Smart Home reale, la comprensibilit\`a delle azioni complesse e la prevenzione degli errori operativi. L'utente non deve conoscere la struttura interna degli script Home Assistant, ma pu\`o comunque ottenere una configurazione tecnicamente corretta e verificabile dal sistema.
+La stessa schermata è stata rivista dal punto di vista responsivo: le righe dedicate a condizioni e azioni usano una griglia adattiva, evitando sovrapposizioni tra icone, selettori, pulsanti e anteprima dell'automazione anche con nomi lunghi o azioni multi-stanza.
 
 \section{Considerazioni finali}
-La progettazione dell'interfaccia utente ha seguito un percorso coerente con i requisiti e con l'architettura del Gemello Digitale, integrando il paradigma TAP in un'interazione comprensibile e verificabile. Le scelte effettuate hanno privilegiato la trasparenza del processo di simulazione, la chiarezza terminologica e la prevenzione degli errori, bilanciando la complessit\`a del dominio con l'esigenza di usabilit\`a.
+Il lavoro svolto in questo capitolo ha permesso di collegare in modo diretto il sistema di partenza con l'evoluzione progettata durante la tesi.
 
-Il capitolo conclusivo riprende queste scelte per discutere il sistema nel suo complesso e per sintetizzare le implicazioni progettuali e applicative emerse, fornendo un quadro finale delle opportunit\`a e delle prospettive di evoluzione.
+Da un lato è stato analizzato in dettaglio il prototipo iniziale, che risultava già solido per monitoraggio energetico, configurazione casa e gestione account. Dall'altro lato è stata introdotta una nuova componente centrale per la creazione guidata delle automazioni, che rappresenta il contributo principale del mio sviluppo.
+
+Nel capitolo conclusivo verranno riprese queste scelte per discutere l'impatto complessivo sul sistema e le possibili evoluzioni future.
