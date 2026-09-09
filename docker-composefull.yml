@@ -85,7 +85,7 @@ services:
 
   dt-api:
     build:
-      context: ./vendor/digitaltwinapi/
+      context: ./vendor/digitaltwin/
       dockerfile: Dockerfile
     image: dt-backend  # Unified image for API and worker
     ports:
