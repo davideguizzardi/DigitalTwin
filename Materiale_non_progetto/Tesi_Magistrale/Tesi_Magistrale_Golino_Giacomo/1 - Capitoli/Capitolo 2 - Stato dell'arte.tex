@@ -402,3 +402,10 @@ Una recente analisi sperimentale condotta in \cite{Barricelli2022MultiModal} ha 
         regola supera tre azioni, il passaggio continuo voce a touch e viceversa aumenta il tempo
         medio di completamento del 22 \% rispetto alla sola interazione touch~\cite{Barricelli2024}.
 \end{itemize}
+
+\section{Sintesi e implicazioni per il progetto}
+Lo stato dell'arte mostra che il paradigma TAP \`e adeguato alla definizione di automazioni da parte di utenti non programmatori, purch\'e l'interfaccia mantenga visibili le relazioni tra trigger, condizioni e azioni. Le piattaforme commerciali riducono la soglia di ingresso, ma spesso nascondono la logica della regola o rendono meno immediata la verifica di conflitti, vincoli energetici e alternative disponibili.
+
+Gli approcci visuali offrono un controllo diretto della struttura della routine; quelli conversazionali rendono naturale l'avvio dell'interazione, ma richiedono conferme e strategie di disambiguazione. Le soluzioni multimodali suggeriscono quindi un principio utile anche per questa tesi: qualunque sia il canale usato per esprimere l'intenzione dell'utente, la regola risultante deve poter essere letta, verificata e corretta in modo esplicito.
+
+Queste considerazioni guidano il progetto discusso nei capitoli successivi. Il \textit{builder} TAP della \textit{Digital Twin Interface} deve presentare scelte coerenti con i dispositivi configurati, costruire progressivamente la regola, mostrarne un riepilogo comprensibile e distinguere tra modifica, simulazione e salvataggio. Il Capitolo~3 colloca tali requisiti nell'architettura del Gemello Digitale, mentre il Capitolo~4 ne illustra la traduzione nell'interfaccia.

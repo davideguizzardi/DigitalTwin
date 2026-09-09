@@ -1,5 +1,30 @@
-\chapter{Titolo cap - 1}
-\label{chap:uno}
+\chapter{Contesto, obiettivi e struttura della tesi}
+\label{chap:contesto-obiettivi}
 
-\section{Introduzione}
-Da introdurre gli obiettivi e il contesto della tesi, ed eventualmente la sua struttura.
+\section{Contesto applicativo}
+La diffusione di dispositivi connessi nelle abitazioni rende possibile osservare e controllare in modo continuo consumi, condizioni ambientali e comportamenti degli elettrodomestici. In questo contesto, una \textit{smart home} non coincide con una semplice collezione di dispositivi: per essere realmente utile deve consentire alle persone di comprendere lo stato dell'ambiente domestico e di configurarne il comportamento senza dover ricorrere a competenze di programmazione specialistiche.
+
+Le automazioni costituiscono uno strumento centrale per raggiungere questo obiettivo. Una regola di \textit{Trigger-Action Programming} (TAP) collega uno o pi\`u eventi o condizioni a una o pi\`u azioni, ad esempio l'accensione di una luce al rilevamento della presenza oppure l'avvio di un elettrodomestico in una determinata fascia oraria. Questo paradigma si \`e dimostrato vicino al modo in cui gli utenti formulano le proprie intenzioni, ma la sua apparente semplicit\`a non elimina i problemi di ambiguit\`a, conflitti tra regole, consumo energetico e comprensibilit\`a delle opzioni disponibili \cite{Ur2014,Barricelli2024}.
+
+La tesi si colloca nel progetto di un Gemello Digitale per una smart home. Il Gemello Digitale raccoglie informazioni dall'ambiente fisico attraverso \textit{Home Assistant}, ne mantiene una rappresentazione software e mette a disposizione funzioni di monitoraggio, simulazione e supporto alle decisioni. La sua interfaccia web \`e il punto in cui l'utente consulta consumi e dispositivi, configura la casa e interagisce con le automazioni. Il valore dell'interfaccia non risiede quindi solo nella presentazione dei dati: essa deve accompagnare una decisione che pu\`o produrre effetti nell'ambiente domestico reale.
+
+\section{Problema e obiettivi}
+Il sistema di partenza rende disponibili viste sui consumi, strumenti di configurazione e automazioni gi\`a definite, ma non offre un percorso completo e guidato per creare nuove regole TAP direttamente nella \textit{Digital Twin Interface}. La definizione di un'automazione deve inoltre rimanere coerente con lo stato della casa, con le regole esistenti e con gli esiti della simulazione preventiva.
+
+L'obiettivo principale della tesi \`e progettare e integrare, nell'interfaccia del Gemello Digitale, un flusso visuale per la creazione di automazioni. Il lavoro persegue quattro obiettivi operativi:
+\begin{itemize}
+    \item ricostruire il contesto teorico e applicativo delle automazioni domestiche, con particolare attenzione alle interfacce visuali, conversazionali e multimodali;
+    \item analizzare l'architettura del Gemello Digitale e i moduli che collegano interfaccia, simulazione, dati energetici e \textit{Home Assistant};
+    \item individuare i limiti dell'interfaccia iniziale rispetto alla creazione autonoma di nuove routine;
+    \item progettare un \textit{builder} TAP che renda espliciti trigger, condizioni, azioni, riepilogo della regola e passaggi di simulazione e salvataggio.
+\end{itemize}
+
+Il contributo proposto non sostituisce i canali conversazionali gi\`a disponibili, ma introduce un percorso visuale complementare: l'utente pu\`o vedere le scelte effettuate, controllare la struttura della regola e ricevere un riscontro prima della sua applicazione. Questa scelta riprende le indicazioni della letteratura, secondo cui la visibilit\`a dello stato e il supporto alla revisione sono particolarmente importanti quando le regole coinvolgono pi\`u dispositivi o condizioni \cite{Barricelli2022MultiModal,Lago2021}.
+
+\section{Metodo di lavoro e delimitazione}
+Il lavoro \`e stato sviluppato in quattro passaggi. In primo luogo \`e stato svolto uno studio dello stato dell'arte sulle piattaforme per smart home e sugli approcci alla creazione di routine. Successivamente \`e stata analizzata l'architettura del sistema e il ruolo dei suoi moduli. Il terzo passaggio \`e consistito nell'osservazione delle sezioni dell'interfaccia esistente, per individuare i punti di continuit\`a grafica e funzionale. Infine \`e stato definito e realizzato il flusso di creazione delle automazioni, mantenendo coerenza con componenti, palette e navigazione della \textit{Digital Twin Interface}.
+
+L'elaborato descrive la progettazione e l'integrazione dell'interfaccia. Non presenta una sperimentazione con utenti: la valutazione empirica dell'usabilit\`a e il confronto quantitativo con un'interazione esclusivamente conversazionale costituiscono quindi sviluppi futuri, non risultati rivendicati in questa tesi.
+
+\section{Struttura dell'elaborato}
+Il Capitolo~2 presenta i concetti di base, le principali piattaforme per automazioni domestiche e gli approcci visuali, conversazionali e multimodali emersi dalla letteratura. Il Capitolo~3 descrive l'architettura del Gemello Digitale, il collegamento con \textit{Home Assistant} e il ruolo della \textit{Digital Twin Interface}. Il Capitolo~4 analizza il sistema di partenza e illustra il contributo della tesi: il \textit{builder} TAP integrato nella GUI. Le conclusioni riprendono i risultati del lavoro, i suoi limiti e le possibili evoluzioni.

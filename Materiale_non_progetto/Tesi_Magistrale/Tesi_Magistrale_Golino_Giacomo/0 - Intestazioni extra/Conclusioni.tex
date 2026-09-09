@@ -1,2 +1,8 @@
 \chapter{Conclusioni}
-\lipsum[5]
+Questa tesi ha affrontato la creazione di automazioni in una smart home dal punto di vista dell'interazione utente-sistema. Lo stato dell'arte ha evidenziato che il paradigma \textit{Trigger-Action Programming} rende accessibile la composizione di routine, ma richiede un'interfaccia capace di rendere leggibili le scelte effettuate, prevenire ambiguit\`a e separare la definizione della regola dalla sua effettiva applicazione.
+
+L'analisi dell'architettura ha mostrato come la \textit{Digital Twin Interface} possa svolgere il ruolo di punto di raccordo tra utente, dati energetici, simulazione preventiva e \textit{Home Assistant}. Partendo dal sistema iniziale, il lavoro ha individuato il limite principale nella mancanza di un percorso completo per creare nuove automazioni direttamente dalla GUI.
+
+Il contributo proposto consiste nel \textit{builder} visuale TAP integrato nella sezione \textit{Automations}. Il flusso rende espliciti trigger, condizioni e azioni, fornisce un riepilogo della regola e distingue le operazioni di modifica, simulazione e salvataggio. In questo modo la creazione delle automazioni viene ricondotta a un'unica esperienza coerente con l'identit\`a visiva e con i moduli del Gemello Digitale.
+
+Il lavoro non include una valutazione empirica con utenti. Un'estensione naturale consiste quindi nello svolgere test di usabilit\`a e nel confrontare il \textit{builder} visuale con un percorso conversazionale o multimodale, misurando comprensione, tempo di completamento, errori e fiducia dell'utente. Ulteriori sviluppi potranno inoltre ampliare l'insieme di dispositivi e condizioni selezionabili, migliorare la spiegazione dei risultati della simulazione e integrare suggerimenti contestuali per la correzione delle regole.

@@ -19,65 +19,6 @@ Una rappresentazione grafica dettagliata di tale architettura viene mostrata in 
 
 Tale architettura consente agli utenti di realizzare automazioni domestiche attraverso un'interfaccia grafica (GUI). Questa interfaccia, sulla base di controlli e previsioni relativi ai consumi energetici, restituisce un feedback all'utente indicando chiaramente se l'automazione proposta è consentita oppure se genera conflitti con altre automazioni precedentemente impostate o, ancora, se rischia di eccedere il limite massimo di consumo energetico, andando a suggerire possibili modifiche all'automazione che si stava cercando di creare.
 
-\newpage
-\section{Digital Twin Interface}
-La \textit{Digital Twin Interface} costituisce la componente del sistema che permette
-all'utente finale di interagire con il Gemello Digitale sviluppato in questa tesi.
-A differenza della \textit{Automation Creation App} conversazionale progettata dal CNR
-e attualmente eseguita come applicazione esterna, la Digital Twin Interface espone una
-applicazione web tradizionale che offre viste analitiche e strumenti operativi per
-comprendere lo stato della smart home, controllarne i dispositivi e integrare le nuove
-funzionalit\`a di generazione delle automazioni descritte nel capitolo successivo.
-
-L'interfaccia attuale \`e organizzata in quattro sezioni principali:
-\begin{itemize}
-    \item \textbf{Dashboard} \textemdash{} riassume lo stato energetico della casa mostrando
-    mappe interattive degli ambienti, indicatori sui dispositivi attivi e l'esito dei
-    suggerimenti energetici ricevuti dal \textit{Data Analysis Module}. Da questa vista
-    l'utente pu\`o inviare comandi manuali che vengono inoltrati al \textit{Simulation
-    Management Module} (fig. \ref{fig:dig_twin_to_simul}).
-    \item \textbf{Consumption} \textemdash{} espone grafici storici e predittivi dei consumi
-    energetici (fig. \ref{fig:dam}) alimentati dalle API del \textit{Data Analysis Module}.
-    L'utente pu\`o cambiare intervalli temporali, confrontare dispositivi e ricevere
-    notifiche quando le stime superano le soglie definite nel \textit{Configuration
-    Management Module}.
-    \item \textbf{Automations} \textemdash{} elenca le automazioni presenti in Home Assistant,
-    permettendo di attivarle o disattivarle, avviarne l'esecuzione e consultare i
-    suggerimenti prodotti dal Simulation Management Module quando vengono rilevati conflitti
-    o consumi eccessivi (fig. \ref{fig:sim_to_dig}). In questa sezione verr\`a integrato il
-    nuovo builder visuale implementato in questa tesi, eliminando la dipendenza dalla sola
-    Automation Creation App.
-    \item \textbf{Configuration e User area} \textemdash{} permettono di modificare i dati
-    personali, impostare le preferenze dell'utente e configurare mappe, dispositivi,
-    gruppi e piano energetico. I dati inseriti vengono salvati nel \textit{Configuration
-    Management Module} e resi disponibili agli altri moduli del sistema.
-\end{itemize}
-
-Oltre alle funzionalit\`a rivolte all'utente, la Digital Twin Interface gestisce la
-comunicazione con Home Assistant, con il Simulation Management Module e con i servizi Rulebot:
-\begin{itemize}
-    \item invia i comandi manuali e le nuove automazioni al Simulation Management Module,
-    che dopo la simulazione li inoltra al \textit{Home Assistant Integration Module} per
-    l'esecuzione effettiva (fig. \ref{fig:sim_to_home});
-    \item sincronizza lo stato dei dispositivi e delle automazioni leggendo i dati esposti
-    dall'Home Assistant Integration Module e li rende disponibili alla pagina Automations;
-    \item integra nella stessa interfaccia la vista dell'applicazione Rulebot esistente,
-    fornendo all'utente un flusso continuo fra generazione, simulazione e attuazione
-    delle regole.
-\end{itemize}
-
-La Automation Creation App rimane oggi un canale complementare per gli utenti che prediligono
-l'interazione conversazionale e continua a essere eseguita come componente esterna.
-L'obiettivo di questa tesi \`e integrare progressivamente quelle funzionalit\`a nella
-Digital Twin Interface, rendendo il builder visuale il punto di accesso unico alla creazione
-delle automazioni: il flusso sar\`a interamente web, dalla definizione della regola
-all'invio ai moduli di simulazione e all'implementazione su Home Assistant.
-
-In sintesi, la Digital Twin Interface \`e il punto di contatto tra utente e architettura
-software e verr\`a ulteriormente estesa nel capitolo successivo per completare il percorso
-di progettazione e attivazione delle automazioni.
-
-
 \section{Simulation Management Module}
 
 Il \emph{Simulation Management Module} rappresenta un componente centrale nell'architettura del gemello digitale di una smart home, svolgendo un ruolo chiave nel garantire che le automazioni proposte dagli utenti siano efficaci, sicure e coerenti con le preferenze personali e gli obiettivi di ciascun utente. 
@@ -256,6 +197,23 @@ Questa gestione bidirezionale dei dati e dei comandi consente di mantenere sincr
 \caption{Smart Home fisica}
 \label{fig:smart_home_fisica}
 \end{figure}
+
+\section{Digital Twin Interface}
+La \textit{Digital Twin Interface} \`e la componente web attraverso cui l'utente interagisce con il Gemello Digitale. La sua posizione nell'architettura \`e determinante: riceve le intenzioni dell'utente, rende visibili informazioni provenienti dai moduli interni e restituisce un riscontro prima che un comando o un'automazione raggiungano l'ambiente domestico fisico.
+
+L'interfaccia \`e organizzata in quattro aree principali:
+\begin{itemize}
+    \item \textbf{Dashboard}, che riassume lo stato della casa, i dispositivi e i principali indicatori energetici;
+    \item \textbf{Consumption}, che espone grafici storici e predittivi alimentati dal \textit{Data Analysis Module};
+    \item \textbf{Automations}, che mostra le routine sincronizzate con \textit{Home Assistant}, il loro stato e i suggerimenti derivati dalla simulazione;
+    \item \textbf{Configuration e User area}, che consentono di configurare casa, dispositivi, piano energetico e preferenze utente.
+\end{itemize}
+
+La \textit{Digital Twin Interface} comunica con il \textit{Simulation Management Module} per sottoporre comandi e regole a una verifica preventiva; dopo una validazione positiva, il \textit{Home Assistant Integration Module} propaga le operazioni verso \textit{Home Assistant}. Nella direzione opposta, stati dei dispositivi, consumi e automazioni esistenti sono sincronizzati verso l'interfaccia, cos\`i che l'utente operi su una rappresentazione aggiornata della smart home.
+
+Il sistema di partenza permette soprattutto di consultare e gestire automazioni gi\`a presenti. Il contributo della tesi estende la sezione \textit{Automations} con un \textit{builder} visuale che rende espliciti trigger, condizioni e azioni, mantenendo nel medesimo flusso la simulazione e il salvataggio della regola. Un canale conversazionale pu\`o rimanere complementare, ma la GUI consente di verificare con maggiore chiarezza il risultato della composizione.
+
+Questa sezione chiarisce quindi il ruolo dell'interfaccia prima di introdurre, nel Capitolo~4, il dettaglio del progetto e dell'implementazione del nuovo flusso TAP.
 
 \section{Definizione delle automazioni da parte dell'utente}
 
