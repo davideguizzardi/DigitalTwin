@@ -13,17 +13,17 @@ export const DeviceProviderRefresh = ({ children }) => {
   
   const fetchDevices = async () => {
     try {
-      const response = await apiFetch(`/device`);
+      const connectedDevices = await apiFetch(`/device`);
+      const isUsingDemo = !connectedDevices;
+      const response = connectedDevices ?? await apiFetch(`/virtual/device`);
       if (!response) throw new Error("Failed to fetch devices");
       const filtered_devices=response.filter(device=>!removeType.includes(device.device_class) && device.name.toLowerCase()!="backup").map(device=>device)
       setDeviceList(filtered_devices);
       setConnectionOk(true)
-
-      const demo_response=await apiFetch(`/configuration/enable_demo`);
-      if (!demo_response) throw new Error("Failed to fetch demo info");
-      setIsDemo(demo_response.value=="1")
+      setIsDemo(isUsingDemo)
     } catch (err) {
       setConnectionOk(false)
+      setIsDemo(false)
     } 
   };
 
