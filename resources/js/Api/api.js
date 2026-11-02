@@ -1,10 +1,20 @@
-const API_BASE_URL = import.meta.env.VITE_DT_API_URL ?? 'http://192.168.1.118:8000';
+const API_BASE_URL = import.meta.env.VITE_DT_API_URL ?? 'http://rasp-cogno:8000';
 
 // ---------- Token storage ----------
 export const tokenStorage = {
   get: () => localStorage.getItem('dt_access_token'),
   set: (token) => localStorage.setItem('dt_access_token', token),
   clear: () => localStorage.removeItem('dt_access_token'),
+};
+
+// api.js
+export const apiUpload = (path, formData) => {
+    const token = tokenStorage.get();
+    return fetch(`${API_BASE_URL}${path}`, {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: formData, // NON impostare Content-Type, lo gestisce il browser
+    }).then(res => res.json());
 };
 
 // ---------- Core fetch ----------

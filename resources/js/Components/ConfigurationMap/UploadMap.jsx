@@ -5,9 +5,10 @@ import { Button } from 'flowbite-react';
 import ModalUploadMap from './ModalUploadMap';
 import AnimateMap from '../Commons/AnimateMap';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { getIcon } from '../Commons/Constants';
+import { backend, getIcon } from '../Commons/Constants';
 import { domain } from '../Commons/Constants';
-import Cookies from 'js-cookie';
+import { mapFileService } from '@/Api/mapService';
+
 
 
 export default function UploadMap({ maps, endSection }) {
@@ -30,27 +31,9 @@ export default function UploadMap({ maps, endSection }) {
     const cancelCallback = () => { setOpenModal(false) }
 
     const submit = async () => {
-        await fetch(domain + "/sanctum/csrf-cookie", {
-            method: "GET",
-            credentials: "include"
-        });
-        const csrfToken = decodeURIComponent(Cookies.get("XSRF-TOKEN"));
-        let formData = new FormData();
-        listMap.forEach((el, i) => {
-            formData.append(el.floor, el.file)
-        })
-        const apiRoute = route('map.store')
-        const response = await fetch(apiRoute, {
-            method: 'POST',
-            credentials: "include",
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-                "X-XSRF-TOKEN": csrfToken,
-            },
-            body: formData
-        })
-        endSection()
-    }
+        await mapFileService.upload(listMap)
+        endSection();
+    };
     const submitButton = (
         <div className='absolute bottom-0 right-0 w-fit flex py-5 justify-end px-2'>
             <StyledButton className="size-min" onClick={submit} >{t("Next")}{getIcon("arrow_right")}</StyledButton>
@@ -63,18 +46,21 @@ export default function UploadMap({ maps, endSection }) {
     ));
 
     useEffect(() => {
-        const uploadedMaps = maps.sort((m1, m2) => m1.floor > m2.floor)
-            .map((m, index) => ({
+        if (maps && maps.length > 0) {
+            console.log(maps)
+            const uploadedMaps = maps.sort((m1, m2) => m1.floor > m2.floor)
+                .map((m, index) => ({
 
-                floor: m.floor,
-                file: {
-                    preview: domain + "/" + m.url,
-                    name: m.url.split("/")[2]
+                    floor: m.floor,
+                    file: {
+                        preview: domain + "/" + m.url,
+                        name: m.url.split("/")[2]
+                    }
                 }
-            }
-            ))
-        setListMap(uploadedMaps)
-        setIndexThumbs(uploadedMaps.length - 1)
+                ))
+            setListMap(uploadedMaps)
+            setIndexThumbs(uploadedMaps.length - 1)
+        }
     }, [maps]);
 
     // clean up
@@ -104,7 +90,7 @@ export default function UploadMap({ maps, endSection }) {
             </div>
             <div className="size-full flex justify-center items-center">
                 <img className='w-full'
-                    src={map.file.preview}
+                    src={`${backend}${map.file.preview}`}
                     alt={map.file.name}
                 />
             </div>
@@ -127,7 +113,7 @@ export default function UploadMap({ maps, endSection }) {
                                 </Button>
                                 <p className="text-xl">{t("Floor number")} {listMap[indexThumbs].floor}</p>
                             </div>
-                            <AnimateMap map={listMap[indexThumbs].file.preview} />
+                            <AnimateMap map={`${listMap[indexThumbs].file.preview}`} />
                         </div>
                         :
                         <StyledButton className='absolute text-2xl' size="xl" onClick={() => { setOpenModal(true) }}>

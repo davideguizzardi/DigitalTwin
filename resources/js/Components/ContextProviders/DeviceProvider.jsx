@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import { removeType } from "../Commons/Constants";
 
-import { deviceService } from "@/Api";
+import { deviceService,virtualService } from "@/Api";
 
 export const DeviceContext = createContext();
 
@@ -11,8 +11,8 @@ export const DeviceProvider = ({ children }) => {
 
   const fetchDevices = async () => {
     try {
-      //const response = await apiFetch(`/virtual/device/casa_menicanin`);
-      const response = await deviceService.getAll()
+      const response = await virtualService.getDevicesByHome("casa_menicanin")
+      //const response = await deviceService.getAll()
       if (!response) throw new Error("Failed to fetch devices");
       const filtered_devices = response.filter(device => !removeType.includes(device.device_class) && device.name.toLowerCase() != "backup").map(device => device)
       setDeviceList(filtered_devices);

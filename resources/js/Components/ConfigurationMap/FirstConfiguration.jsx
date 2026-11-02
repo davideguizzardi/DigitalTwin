@@ -1,6 +1,6 @@
 import UploadMap from '@/Components/ConfigurationMap/UploadMap';
 import ConfigurationAppliance from '@/Components/ConfigurationMap/ConfigurationAppliance';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import ConfigurationEnergy from './ConfigurationEnergy';
 import WhiteCard from '../Commons/WhiteCard';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
@@ -9,6 +9,7 @@ import ConfigurationHomeAssistant from './ConfigurationHomeAssistant';
 import { DeviceConfiguration } from './DeviceConfiguration';
 import { StyledButton } from '../Commons/StyledBasedComponents';
 import RoomConfiguration from './RoomConfiguration';
+import { mapService } from '@/Api';
 
 const iconsSize = "size-10";
 const steps = [
@@ -51,9 +52,22 @@ function StepProgress({ state, setState,t }) {
     );
 }
 
-const FirstConfiguration = ({maps}) => {
+const FirstConfiguration = () => {
+    const [maps,setMaps]=useState([])
     const [progressState, setProgressState] = useState(stepIndexes.UPLOAD_MAP);
     const { t } = useLaravelReactI18n();
+
+    useEffect(()=>{
+        async function pullMaps(){
+
+            const data= await mapService.getAllFiles()
+            console.log(data)
+            if(data){
+                setMaps(data)
+            }
+        }
+        //pullMaps()
+    },[])
 
     const renderCard = () => {
         switch (progressState) {

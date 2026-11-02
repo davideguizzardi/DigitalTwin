@@ -86,7 +86,7 @@ import { MdMeetingRoom, MdDevices } from "react-icons/md";
 
 
 
-export const backend = import.meta.env.VITE_DT_API_URL || "http://192.168.1.118:8000"
+export const backend = import.meta.env.VITE_DT_API_URL || "http://rasp-cogno:8000"
 export const login_rulebot = import.meta.env.VITE_LOGIN_RULEBOT || false
 export const domain = import.meta.env.VITE_DT_DOMAIN || ""
 export const rulebot = import.meta.env.VITE_RULEBOT_FRONTEND_URL || "http://localhost:8888"

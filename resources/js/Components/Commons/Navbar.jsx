@@ -17,6 +17,9 @@ import DiaryCheck from "./DiaryCheck";
 
 import { authService, logService } from "@/Api";
 
+const NAVBAR_LINKS = ["home", "consumption", "automation", "simulation", "configuration"]
+//const NAVBAR_LINKS = ["home", "simulation"]
+
 function NavLink({ connectedUser, routeName, isActive, children, className = '' }) {
     const user = useContext(UserContext);
 
@@ -54,6 +57,33 @@ export default function Navbar() {
     const { t, setLocale, currentLocale } = useLaravelReactI18n();
 
     const [isFullscreen, setIsFullscreen] = useState(document.fullscreenElement);
+
+    const linksMap = (link_name) => {
+
+        switch (link_name) {
+            case "home":
+                return <>
+                    {getIcon("home", "size-8 md:size-5")} <span className="hidden md:flex">Home</span>
+                </>
+            case "consumption":
+                return <>
+                    {getIcon("power", "size-8 md:size-5")} <span className="hidden md:flex">{t("Consumption")}</span>
+                </>
+            case "automation":
+                return <>
+                {getIcon("puzzle", "size-8 md:size-5")} <span className="hidden md:flex">{t("Automations")}</span>
+                </>
+            case "simulation":
+                return <>
+                {getIcon("graph", "size-5")} <span className="hidden md:flex">{t("Simulation")}</span>
+                </>
+            case "configuration":
+                return <>
+                 {getIcon("gear", "size-5")} <span className="hidden md:flex">{t("Configuration")}</span>
+                </>
+            default: return <></>
+        }
+    }
 
     const currentPage = (() => {
         const [, path] = window.location.pathname.split("/", 2);
@@ -94,7 +124,7 @@ export default function Navbar() {
 
 
     return (
-        <div className="w-full h-13 grid grid-cols-5 justify-center text-3xl bg-zinc-50 p-1 border-b border-gray-300 sticky top-0 z-50">
+        <div className={`w-full h-14 grid grid-cols-5 justify-center text-3xl bg-zinc-50 p-1 border-b border-gray-300 sticky top-0 z-50`}>
             <DiaryCheck user={user} />
             <Modal show={!connectionOk}>
                 <Modal.Header>
@@ -120,22 +150,14 @@ export default function Navbar() {
                 </Modal.Body>
             </Modal>
             <div></div>
-            <div className="col-span-3 grid grid-cols-5 gap-1 items-center">
-                <NavLink connectedUser={user} routeName="home" isActive={currentPage === "home"} className={linkStyle}>
-                    {getIcon("home", "size-8 md:size-5")} <span className="hidden md:flex">Home</span>
-                </NavLink>
-                <NavLink connectedUser={user} routeName="consumption" isActive={currentPage === "consumption"} className={linkStyle}>
-                    {getIcon("power", "size-8 md:size-5")} <span className="hidden md:flex">{t("Consumption")}</span>
-                </NavLink>
-                <NavLink connectedUser={user} routeName="automation" isActive={currentPage === "automation"} className={linkStyle}>
-                    {getIcon("puzzle", "size-8 md:size-5")} <span className="hidden md:flex">{t("Automations")}</span>
-                </NavLink>
-                {<NavLink connectedUser={user} routeName="simulation" isActive={currentPage === "simulation"} className={`${linkStyle} hidden md:flex`}>
-                    {getIcon("graph", "size-5")} <span className="hidden md:flex">{t("Simulation")}</span>
-                </NavLink>}
-                <NavLink connectedUser={user} routeName="configuration" isActive={currentPage === "configuration"} className={`${linkStyle} hidden md:flex`}>
-                    {getIcon("gear", "size-5")} <span className="hidden md:flex">{t("Configuration")}</span>
-                </NavLink>
+            <div className={`col-span-3 grid grid-cols-${NAVBAR_LINKS.length} gap-1 items-center`}>
+                {
+                    NAVBAR_LINKS.map(link => (
+                        <NavLink connectedUser={user} routeName={link} isActive={currentPage === link} className={linkStyle}>
+                            {linksMap(link)}
+                        </NavLink>
+                    ))
+                }
             </div>
 
             <div className="flex justify-end items-center gap-2">
