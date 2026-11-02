@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Spinner} from "flowbite-react";
 import { apiFetch, getIcon } from "../Commons/Constants";
 import { LineChart } from "@mui/x-charts";
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 
 export function ConsumptionPredictionGraphPower({ url_in, future_steps, graphHeight = 0 ,setErrorFun,setOkFun}) {
   const [dataset, setDataset] = useState([])
@@ -11,7 +11,7 @@ export function ConsumptionPredictionGraphPower({ url_in, future_steps, graphHei
   const colorFuture = '#65A30D'
   const threshold=2000
   const heightGraph = graphHeight > 0 ? graphHeight : window.innerHeight > 1000 ? 800 : 550
-  const { t } = useLaravelReactI18n()
+  const { t } = useTranslation()
 
   const getColor = (index) => {
     return index < future_steps ? colorPast : colorFuture; // First 12 elements: #a3e635, others: #65A30D

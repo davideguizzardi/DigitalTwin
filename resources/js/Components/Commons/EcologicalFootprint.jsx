@@ -2,12 +2,12 @@ import { useEffect, useMemo } from "react";
 import { CiUser } from "react-icons/ci";
 import { FaHouse } from "react-icons/fa6";
 import { motion, animate, useMotionValue, useTransform } from "framer-motion";
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 import { EcologicalFootprintCarousel, EcologicalFootprintGrid } from "./EcologialFootprintCarousel";
 import { kgCO2e_kWh } from "./Constants";
 
 export function EcologicalFootprint({ energyConsumptionIn, home = true }) {
-    const { t } = useLaravelReactI18n();
+    const { t } = useTranslation();
 
     const AVERAGE_GCO2 = 60;
     const kgCO2 = useMemo(() => energyConsumptionIn * kgCO2e_kWh, [energyConsumptionIn]);

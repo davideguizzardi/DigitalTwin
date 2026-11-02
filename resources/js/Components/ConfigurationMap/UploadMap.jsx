@@ -4,7 +4,7 @@ import { FaTrashCan } from "react-icons/fa6";
 import { Button } from 'flowbite-react';
 import ModalUploadMap from './ModalUploadMap';
 import AnimateMap from '../Commons/AnimateMap';
-import { useLaravelReactI18n } from 'laravel-react-i18n';
+import {useTranslation} from "react-i18next";
 import { backend, getIcon } from '../Commons/Constants';
 import { domain } from '../Commons/Constants';
 import { mapFileService } from '@/Api/mapService';
@@ -15,7 +15,7 @@ export default function UploadMap({ maps, endSection }) {
     const [listMap, setListMap] = useState([]);
     const [indexThumbs, setIndexThumbs] = useState(-1);
     const [openModal, setOpenModal] = useState(false)
-    const { t } = useLaravelReactI18n()
+    const { t } = useTranslation()
 
     const saveCallback = useCallback((newFile) => {
         let tempList = [...listMap, newFile]

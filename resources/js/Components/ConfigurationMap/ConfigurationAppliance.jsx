@@ -6,7 +6,7 @@ import DroppableLayer from "@/Components/ConfigurationMap/DroppableLayer";
 import { Modal } from "flowbite-react";
 import { useSwipeable } from "react-swipeable";
 import { backend, logsEvents } from "../Commons/Constants";
-import { useLaravelReactI18n } from 'laravel-react-i18n';
+import {useTranslation} from "react-i18next";
 import { DeviceContext } from "../ContextProviders/DeviceProvider";
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import { getIcon } from "../Commons/Constants";
@@ -29,7 +29,7 @@ export default function ConfigurationAppliance({ editMode, endSection, backSecti
     const [previousIndex, setPreviousIndex] = useState(0)
     const [first, setFirst] = useState(true)
     const [openModal, setOpenModal] = useState(false)
-    const { t } = useLaravelReactI18n()
+    const { t } = useTranslation()
 
     const user = useContext(UserContext)
 

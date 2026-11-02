@@ -5,11 +5,11 @@ import InputError from "@/Components/Commons/InputError";
 import { TouchKeyboard2 } from "../Commons/TouchKeyboard2";
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import { domain } from "../Commons/Constants";
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 import { PasswordInput } from "../Commons/PasswordInput";
 
 export default function ModalChangePassword({ open = true, closeCallback }) {
-    const { t } = useLaravelReactI18n();
+    const { t } = useTranslation();
     const [passwords, setPasswords] = useState({ old: "", new: "", confirm: "" });
     const [errors, setErrors] = useState({ old: "", new: "", confirm: "" });
 

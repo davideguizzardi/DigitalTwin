@@ -1,13 +1,13 @@
 import { UserContext } from "@/Layouts/UserLayout";
 import { Checkbox } from "flowbite-react";
 import { useState, useEffect, useContext } from "react";
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 import { logsEvents } from "../Commons/Constants";
 
 import { userService, logService } from "@/Api";
 
 export default function PermissionPrivacy() {
-  const { t } = useLaravelReactI18n();
+  const { t } = useTranslation();
   const user = useContext(UserContext);
   const [privacy, setPrivacy] = useState({
     privacy_collection: false,

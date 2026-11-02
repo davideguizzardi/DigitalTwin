@@ -7,7 +7,7 @@ import { DevicesTypes } from "../Commons/Constants";
 
 import { StyledButton } from "../Commons/StyledBasedComponents";
 
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 import { backend } from "../Commons/Constants";
 import { UserContext } from "@/Layouts/UserLayout";
 import { deviceConfigService, logService } from "@/Api";
@@ -59,7 +59,7 @@ export function IconSelector({ default_icon, onIconChange, open, toggleDropdown,
 export function DeviceConfiguration({ backSection, endSection, isInitialConfiguration = true }) {
     const { deviceList, setDeviceList } = useContext(DeviceContext);
     const [openIndex, setOpenIndex] = useState(-1)
-    const { t } = useLaravelReactI18n()
+    const { t } = useTranslation()
     const user = useContext(UserContext)
 
 

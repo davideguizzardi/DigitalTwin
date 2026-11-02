@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Spinner } from "flowbite-react";
 import { BarChart } from '@mui/x-charts/BarChart';
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 import { logsEvents, useIsMobile } from "../Commons/Constants";
 import { useContext } from "react";
 import { UserContext } from "@/Layouts/UserLayout";
@@ -13,7 +13,7 @@ export function ConsumptionPredictionGraph({ url_in, future_steps, graphHeight =
   const [colorPast, setColorPast] = useState('#a3e635')
   const [colorFuture, setColorFuture] = useState('#65A30D')
   const heightGraph = graphHeight > 0 ? graphHeight : (useIsMobile() ? 500 : window.innerHeight * 0.7)
-  const { t } = useLaravelReactI18n()
+  const { t } = useTranslation()
 
   const user = useContext(UserContext)
   const getColor = (index) => {

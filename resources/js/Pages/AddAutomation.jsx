@@ -13,13 +13,13 @@ import { StyledDiv, StyledButton } from "@/Components/Commons/StyledBasedCompone
 
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 
 import { entityService, deviceService } from "@/Api";
 
 
 export default function AddAutomation({ }) {
-    const { t } = useLaravelReactI18n()
+    const { t } = useTranslation()
 
     //Automations variable
     const [automationName, setAutomationName] = useState("")

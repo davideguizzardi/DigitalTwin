@@ -16,7 +16,7 @@ import { SuggestionsDisplay } from "./SuggestionDisplay";
 import { ConflicsDisplay } from "./ConflictsDisplay";
 import AutomationStats from "./AutomationStats";
 
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -24,7 +24,7 @@ dayjs.extend(timezone);
 const THRESHOLD = 2300
 
 export function AutomationSimulation({ automation_to_simulate }) {
-  const { t } = useLaravelReactI18n()
+  const { t } = useTranslation()
   const [updatedStateMatrix, setUpdatedStateMatrix] = useState({})
   const [automationToAdd, setAutomationToAdd] = useState("")
   const [powerMatrix, setPowerMatrix] = useState([])

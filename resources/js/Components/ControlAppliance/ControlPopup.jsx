@@ -6,7 +6,7 @@ import { getIcon, DevicesTypes } from "../Commons/Constants"
 import { UserContext } from "@/Layouts/UserLayout"
 import ToastNotification from "../Commons/ToastNotification"
 import { SwitchToggle } from "./SwitchToggle"
-import { useLaravelReactI18n } from "laravel-react-i18n"
+import {useTranslation} from "react-i18next"
 import { StyledButton } from "../Commons/StyledBasedComponents"
 import { TouchKeyboard2 } from "../Commons/TouchKeyboard2"
 import { Dropdown } from "flowbite-react"
@@ -74,7 +74,7 @@ export default function ControlPopup({ openDevice }) {
   const [deviceAutomations, setDeviceAutomations] = useState([])
   const [deviceGroups, setDeviceGroups] = useState([])
   const user = useContext(UserContext)
-  const { t } = useLaravelReactI18n()
+  const { t } = useTranslation()
 
   const [editMode, setEditMode] = useState(false)
   const [groupsList, setGroupsList] = useState([])

@@ -1,7 +1,7 @@
 
 import { getIcon } from "@/Components/Commons/Constants";
 import { List, Tooltip } from "flowbite-react"
-import { useLaravelReactI18n } from 'laravel-react-i18n';
+import {useTranslation} from "react-i18next";
 import { DAYS, formatServiceName } from "@/Components/Commons/DataFormatter";
 const block_class = "flex flex-row items-center gap-10 bg-gray-200 rounded-md p-2"
 
@@ -68,7 +68,7 @@ const renderSuggestion = (suggestion, t) => {
 
 
 export function SuggestionsDisplay({ suggestion_list }) {
-    const { t } = useLaravelReactI18n()
+    const { t } = useTranslation()
     return (
         <div className="flex flex-col">
             <div className="bg-lime-400 rounded-md p-2 flex flex-row gap-2 items-center mb-4">

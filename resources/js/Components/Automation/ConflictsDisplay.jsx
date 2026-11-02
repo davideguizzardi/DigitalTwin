@@ -2,7 +2,7 @@ import { getIcon } from "../Commons/Constants";
 import { List,Tooltip } from "flowbite-react"
 import { DAYS } from "../Commons/DataFormatter";
 
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 
 function getConflictDescription(conflict,t){
     if(conflict.type=="Excessive energy consumption"){
@@ -22,7 +22,7 @@ function getConflictDescription(conflict,t){
 }
 
 export function ConflicsDisplay({ conflicts_list }) {
-    const { t } = useLaravelReactI18n();
+    const { t } = useTranslation();
     return (
         <div className="flex flex-col">
             <div className="bg-red-300 rounded-md p-2 flex flex-row gap-2 items-center mb-4">

@@ -2,7 +2,7 @@ import React from "react";
 import { Carousel } from "flowbite-react";
 import { FaCar, FaCoffee, FaPizzaSlice, FaTree, FaVideo, FaMobileAlt } from "react-icons/fa";
 import { SiNetflix } from "react-icons/si";
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 import { kgCO2e_kWh } from "./Constants";
 
 const kWhComparisons = (kWh,t) => {
@@ -51,7 +51,7 @@ const groupComparisons = (comparisons) => {
 };
 
 export const EcologicalFootprintCarousel = ({ kWh }) => {
-  const {t}=useLaravelReactI18n()
+  const {t} = useTranslation()
   const comparisons = kWhComparisons(kWh,t);
   const comparisonGroups = groupComparisons(comparisons);
 
@@ -75,7 +75,7 @@ export const EcologicalFootprintCarousel = ({ kWh }) => {
 
 
 export const EcologicalFootprintGrid = ({ kWh }) => {
-  const {t}=useLaravelReactI18n()
+  const {t} = useTranslation()
 
   return (
     <div className="w-full hidden 2xl:block">

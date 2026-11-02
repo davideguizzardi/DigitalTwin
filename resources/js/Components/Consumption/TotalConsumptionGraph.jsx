@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 dayjs.extend(customParseFormat);
-import { useLaravelReactI18n } from 'laravel-react-i18n';
+import {useTranslation} from "react-i18next";
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import { logsEvents, useIsMobile } from "../Commons/Constants";
 import { UserContext } from "@/Layouts/UserLayout";
@@ -21,7 +21,7 @@ export function TotalConsumptionGraph({ device_list }) {
   const [dataset, setDataset] = useState([])
   const [group, setGroup] = useState("hourly")
   const [loading, setLoading] = useState(false)
-  const { t } = useLaravelReactI18n()
+  const { t } = useTranslation()
   const [deviceName, setDeviceName] = useState(t("Entire House"))
   const [deviceId, setDeviceId] = useState("")
   const [innerDeviceList, setDeviceList] = useState([t("Entire House")])

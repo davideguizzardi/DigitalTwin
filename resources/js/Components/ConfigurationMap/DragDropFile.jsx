@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { CiImageOn } from "react-icons/ci";
 import { StyledButton } from "../Commons/StyledBasedComponents";
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 
 
 const baseStyle = {

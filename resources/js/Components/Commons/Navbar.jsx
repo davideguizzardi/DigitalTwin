@@ -2,7 +2,7 @@ import { backend, getIcon } from "@/Components/Commons/Constants";
 import { UserContext } from "@/Layouts/UserLayout";
 import { Avatar, Dropdown, Modal, Tooltip } from "flowbite-react";
 import { useContext, useState } from "react";
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 import { FaUser } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { DeviceContextRefresh } from "../ContextProviders/DeviceProviderRefresh";
@@ -54,7 +54,7 @@ function NavLink({ connectedUser, routeName, isActive, children, className = '' 
 export default function Navbar() {
     const user = useContext(UserContext);
     const { connectionOk, isDemo } = useContext(DeviceContextRefresh);
-    const { t, setLocale, currentLocale } = useLaravelReactI18n();
+    const { t, i18n } = useTranslation();
 
     const [isFullscreen, setIsFullscreen] = useState(document.fullscreenElement);
 
@@ -243,11 +243,11 @@ export default function Navbar() {
 
                     <Dropdown.Item>
                         <div className="flex flex-row gap-2">
-                            <div onClick={() => setLocale("it")}>
-                                <p className={currentLocale() === "it" ? "underline" : ""}>Italiano</p>
+                            <div onClick={() => i18n.changeLanguage("it")}>
+                                <p className={i18n.resolvedLanguage === "it" ? "underline" : ""}>Italiano</p>
                             </div>
-                            <div onClick={() => setLocale("en")}>
-                                <p className={currentLocale() === "en" ? "underline" : ""}>English</p>
+                            <div onClick={() => i18n.changeLanguage("en")}>
+                                <p className={i18n.resolvedLanguage === "en" ? "underline" : ""}>English</p>
                             </div>
                         </div>
                     </Dropdown.Item>

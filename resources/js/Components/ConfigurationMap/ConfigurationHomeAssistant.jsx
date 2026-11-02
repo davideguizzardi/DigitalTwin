@@ -4,7 +4,7 @@ import { getIcon } from "../Commons/Constants"
 import { motion } from "framer-motion"
 import { homeAssistantService } from "@/Api"
 import { deviceService } from "@/Api"
-import { useLaravelReactI18n } from "laravel-react-i18n"
+import { useTranslation } from "react-i18next";
 
 import { StyledButton } from "../Commons/StyledBasedComponents"
 export default function ConfigurationHomeAssistant({ endSection }) {
@@ -12,7 +12,7 @@ export default function ConfigurationHomeAssistant({ endSection }) {
     const [serverUrl, setServerUrl] = useState("http://homeassistant.local:8123/api")
     const [token, setToken] = useState("")
     const [testResult, setTestResult] = useState("")
-    const { t } = useLaravelReactI18n()
+    const { t } = useTranslation()
 
     const renderTestStep = () => {
         switch (testResult) {

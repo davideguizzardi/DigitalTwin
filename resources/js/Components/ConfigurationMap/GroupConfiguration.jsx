@@ -3,14 +3,14 @@ import { Table } from "flowbite-react";
 import { getIcon } from "../Commons/Constants";
 import { groupService } from "@/Api";
 import { StyledButton } from "../Commons/StyledBasedComponents";
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 import { CreateGroupModal } from "../Commons/CreateGroupModal";
 
 export function GroupConfiguration({ }) {
     const [groups, setGroups] = useState([])
     const [show, setShow] = useState(false)
     const [groupToEdit, setGroupToEdit] = useState(null)
-    const { t } = useLaravelReactI18n()
+    const { t } = useTranslation()
 
     const fetchGroup = async () => {
         const data = await groupService.getAll()

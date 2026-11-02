@@ -12,7 +12,7 @@ import { DeviceProvider } from "../ContextProviders/DeviceProvider";
 import { DeviceConfiguration } from "./DeviceConfiguration";
 import { Toast } from "flowbite-react";
 import { getIcon } from "../Commons/Constants";
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 
 import ToastNotification from "../Commons/ToastNotification";
 
@@ -29,7 +29,7 @@ export default function RoutineConfiguration() {
     const [section, setSection] = useState(0)
     const [showToast, setShowToast] = useState(false)
 
-    const { t } = useLaravelReactI18n()
+    const { t } = useTranslation()
 
     const endSection = () => {
         setShowToast(true)

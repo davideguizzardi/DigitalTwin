@@ -4,7 +4,7 @@ import { EcologicalFootprint } from "@/Components/Commons/EcologicalFootprint";
 import { DeviceTable } from "@/Components/Commons/DeviceTable";
 import AnimateMap2 from "@/Components/Commons/AnimateMap2";
 import TabLayout from "@/Layouts/TabLayout";
-import { useLaravelReactI18n } from 'laravel-react-i18n';
+import {useTranslation} from "react-i18next";
 
 import { DeviceContextRefresh } from "@/Components/ContextProviders/DeviceProviderRefresh";
 import WhiteCard from "@/Components/Commons/WhiteCard";
@@ -82,7 +82,7 @@ const Dashboard3 = () => {
     const minimumPower = 3
 
     const { deviceList = [], fetchDevices } = useContext(DeviceContextRefresh);
-    const { t } = useLaravelReactI18n();
+    const { t } = useTranslation();
 
 
     useEffect(() => {

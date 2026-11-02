@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { Modal } from "flowbite-react";
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 import { StyledButton } from "./StyledBasedComponents";
 import { TouchKeyboard2 } from "./TouchKeyboard2";
 import { groupService } from '@/Api';
 
 export function CreateGroupModal({ show, setShow, handleRoomCreation, group = null }) {
   const [groupName, setGroupName] = useState('');
-  const { t } = useLaravelReactI18n();
+  const { t } = useTranslation();
 
   // Initialize the name field when editing an existing group
   useEffect(() => {

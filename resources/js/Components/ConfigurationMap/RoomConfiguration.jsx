@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Stage, Layer, Line, Text, Image, Circle, Label, Tag } from "react-konva";
 import { Modal } from "flowbite-react";
 import useImage from "use-image";
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import { getIcon, logsEvents } from "../Commons/Constants";
 import { TouchKeyboard2 } from "../Commons/TouchKeyboard2";
@@ -34,7 +34,7 @@ const RoomConfiguration = ({ backSection, endSection, isInitialConfiguration = t
   const [currentRoomName, setCurrentRoomName] = useState(null);
   const [openNewRoomModal, setOpenNewRoomModal] = useState(null)
   const [addingRoom, setAddingRoom] = useState(false);
-  const { t } = useLaravelReactI18n();
+  const { t } = useTranslation();
 
   const [lastCenter, setLastCenter] = useState(null);
   const [dragStopped, setDragStopped] = useState(false);

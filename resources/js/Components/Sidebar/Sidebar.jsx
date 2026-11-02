@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import { Avatar } from "flowbite-react";
 import CardUser from "../Commons/CardUser";
 import DarkButton from "../Commons/DarkButton";
-import { useLaravelReactI18n } from 'laravel-react-i18n';
+import {useTranslation} from "react-i18next";
 
 import { getIcon } from "../Commons/Constants";
 
@@ -14,7 +14,7 @@ export default function Sidebar() {
     const [hoverLogo, setHoverLogo] = useState(false)
     const [scopeLogo, animateLogo] = useAnimate()
 
-    const {t} = useLaravelReactI18n()
+    const {t} = useTranslation()
     const namePage = (string) => {
         const [, path, ] = string.split("/", 3)
         if(string=="/userarea")

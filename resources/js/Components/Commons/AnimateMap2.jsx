@@ -3,7 +3,7 @@ import { useState } from "react"
 import ListButtons from "./ListButtons"
 import CardAppliance from "./CardAppliance"
 import { useSwipeable } from "react-swipeable"
-import { useLaravelReactI18n } from 'laravel-react-i18n';
+import {useTranslation} from "react-i18next";
 import { backend } from "./Constants"
 import ControlPopup from "../ControlAppliance/ControlPopup"
 import RoomMap from "./RoomMap"
@@ -13,7 +13,7 @@ export default function AnimateMap2({ maps, appliances, rooms = [] }) {
     const [indexImg, setIndexImg] = useState(0)
     const [previousIndex, setPreviousIndex] = useState(0)
     const offset = 100
-    const { t } = useLaravelReactI18n()
+    const { t } = useTranslation()
     const floorAbove = () => {
         if (indexImg <= maps.length - 1 && indexImg > 0) {
             animate("div.floor",

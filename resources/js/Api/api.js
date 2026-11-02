@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_DT_API_URL ?? 'http://rasp-cogno:8000';
+const API_BASE_URL = import.meta.env.VITE_DT_API_URL ?? 'http://192.168.1.118:8000';
 
 // ---------- Token storage ----------
 export const tokenStorage = {

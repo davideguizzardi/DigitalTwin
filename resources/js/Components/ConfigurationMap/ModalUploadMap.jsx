@@ -4,13 +4,14 @@ import { useState } from "react";
 import { useDropzone } from 'react-dropzone';
 import DragDropFile from '@/Components/ConfigurationMap/DragDropFile';
 import { StyledButton } from "../Commons/StyledBasedComponents";
-import { useLaravelReactI18n } from 'laravel-react-i18n';
+import {useTranslation} from "react-i18next";
+
 
 
 export default function ModalUploadMap({ open, saveCallback, cancelCallback, indexUsed }) {
     const [floor, setFloor] = useState(0)
     const [file, setFile] = useState(null)
-    const {t} = useLaravelReactI18n()
+    const {t} = useTranslation()
 
     const onDrop = useCallback(acceptedFiles => {
         const firstFile = acceptedFiles.at(0);

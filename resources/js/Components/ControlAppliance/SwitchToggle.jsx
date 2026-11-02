@@ -1,14 +1,14 @@
 import { useState, useEffect, useContext } from "react";
 import { getIcon } from "../Commons/Constants";
 import { ConsumptionPredictionGraphPower } from "../Consumption/ConsumptionPredictionGraphPower";
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 import { DeviceContextRefresh } from "../ContextProviders/DeviceProviderRefresh";
 
 import { serviceService } from "@/Api";
 
 
 function ActiveDevicesDropdown({ }) {
-  const { t } = useLaravelReactI18n()
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const { deviceList = [] } = useContext(DeviceContextRefresh);
   const [activeDevices, setActiveDevices] = useState([])
@@ -68,7 +68,7 @@ function ActiveDevicesDropdown({ }) {
 
 
 function ActiveAutomationsDropdown({ }) {
-  const { t } = useLaravelReactI18n()
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const { deviceList = [] } = useContext(DeviceContextRefresh);
   const [activeAutomations, setActiveAutomations] = useState([
@@ -123,7 +123,7 @@ export function SwitchToggle({ state, stateId, devId, user, setErrorFun = {}, re
   const [actionOk, setActionOk] = useState(false)
   const [openGraph, setOpenGraph] = useState(true)
   const [service, setService] = useState(null)
-  const { t } = useLaravelReactI18n()
+  const { t } = useTranslation()
   useEffect(() => { setIsOn(state) }, [state])
 
   useEffect(() => {

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { logsEvents } from "../Commons/Constants";
 import { FaPencil } from "react-icons/fa6"
-import { useLaravelReactI18n } from 'laravel-react-i18n';
+import {useTranslation} from "react-i18next";
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import { getIcon } from "../Commons/Constants";
 import { Label } from "flowbite-react";
@@ -29,7 +29,7 @@ export default function ConfigurationEnergy({ endSection, backSection, isInitial
             }
         }
     }
-    const { t } = useLaravelReactI18n()
+    const { t } = useTranslation()
 
     const user = useContext(UserContext)
 

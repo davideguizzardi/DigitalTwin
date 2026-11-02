@@ -5,7 +5,7 @@ import { Switch } from "@mui/material";
 import { AutomationDetails } from "./AutomationDetails";
 import { getIcon, } from "@/Components/Commons/Constants";
 import { StyledButton } from "@/Components/Commons/StyledBasedComponents";
-import { useLaravelReactI18n } from 'laravel-react-i18n';
+import {useTranslation} from "react-i18next";
 import { automationService, serviceService } from "@/Api";
 import ToastNotification from "../Commons/ToastNotification";
 
@@ -20,7 +20,7 @@ export function AutomationTable({ automation_context, openId = "", automationRef
     const [is2xlOrLarger, setIs2xlOrLarger] = useState(false)
     const itemsPerPage = 5;
 
-    const { t } = useLaravelReactI18n();
+    const { t } = useTranslation();
 
 
     useEffect(() => {

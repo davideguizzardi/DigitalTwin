@@ -18,7 +18,7 @@ import { useEffect, useState } from 'react';
 import SortableItem from './SortableItem';
 import { useContext } from 'react';
 import { UserContext } from '@/Layouts/UserLayout';
-import { useLaravelReactI18n } from 'laravel-react-i18n';
+import {useTranslation} from "react-i18next";
 import { logsEvents } from '../Commons/Constants';
 
 import { userService, logService } from '@/Api';
@@ -28,7 +28,7 @@ export default function Preferences({ }) {
     const [items, setItems] = useState([])
     const colors = ["#d9f99d", "#bef264", "#84cc16", "#4d7c0f"]
 
-    const { t } = useLaravelReactI18n()
+    const { t } = useTranslation()
 
     const sensors = useSensors(
         useSensor(PointerSensor),

@@ -1,12 +1,12 @@
 import CardDraggable,{ FULL } from "./CardDraggable";
 import { useEffect, useRef, useState } from "react"
 import { DRAG_START, DRAG_END, DRAG_END_OUT, AVAILABLE_DROP, emit, subscribe, unsubscribe } from "@/Utils/events";
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 
 
 export default function ListAppliances({ appliances, dragConstraints, isEditMode = false, addAppl, removeAppl }) {
     const listRef = useRef()
-    const {t}=useLaravelReactI18n()
+    const {t} = useTranslation()
 
     const handleDragStart = (event) => {
         emit(AVAILABLE_DROP, {

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Label } from "flowbite-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 import { StyledButton as Button } from "@/Components/Commons/StyledBasedComponents";
 import { PasswordInput } from "@/Components/Commons/PasswordInput";
 import { TouchKeyboard2 } from "@/Components/Commons/TouchKeyboard2";
@@ -22,7 +22,7 @@ const STEP = {
 };
 
 export default function Login() {
-  const { t } = useLaravelReactI18n();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [step, setStep] = useState(STEP.HOUSE);

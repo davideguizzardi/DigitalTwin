@@ -1,6 +1,6 @@
 import React from "react";
 import { getIcon } from "@/Components/Commons/Constants";
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 const AutomationStats = ({
   monthlyCost,
   minCost,
@@ -8,7 +8,7 @@ const AutomationStats = ({
   powerDrawn,
   energyConsumption,
 }) => {
-const {t} = useLaravelReactI18n()
+const {t} = useTranslation()
   return (
     <div className="grid xl:grid-cols-3 xl:gap-5 grid-cols-1 gap-2">
       {monthlyCost !== -1 ? (

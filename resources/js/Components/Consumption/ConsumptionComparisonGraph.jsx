@@ -3,7 +3,7 @@ import { Spinner, Button, Select, Label } from "flowbite-react";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import { logsEvents, useIsMobile } from "../Commons/Constants";
 import { UserContext } from "@/Layouts/UserLayout";
@@ -15,7 +15,7 @@ export function ConsumptionComparisonGraph({ device_list }) {
   const [dataset, setDataset] = useState([]);
   const [group, setGroup] = useState("daily");
   const [loading, setLoading] = useState(false);
-  const { t } = useLaravelReactI18n();
+  const { t } = useTranslation();
   const [deviceName, setDeviceName] = useState(t("Entire House"));
   const [deviceId, setDeviceId] = useState("");
   const [innerDeviceList, setDeviceList] = useState([]);

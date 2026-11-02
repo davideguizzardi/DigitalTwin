@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import { List, TextInput} from "flowbite-react"
 import ControlPopup from "../ControlAppliance/ControlPopup";
 import DeviceRecord from "./DeviceRecord";
-import { useLaravelReactI18n } from 'laravel-react-i18n';
+import {useTranslation} from "react-i18next";
 import { CiSearch } from "react-icons/ci";
 
 export function DeviceTable({ deviceContext }) {
     const [openDevice,setOpenDevice]=useState({})
     const [deviceList, setDeviceList] = useState([])
     const [searchQuery, setSearchQuery] = useState("")
-    const {t} = useLaravelReactI18n()
+    const {t} = useTranslation()
     useEffect(() => {
         setDeviceList(deviceContext)
     }, [deviceContext])

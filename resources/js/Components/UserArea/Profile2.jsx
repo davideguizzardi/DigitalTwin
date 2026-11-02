@@ -8,7 +8,7 @@ import ModalChangePassword from "./ModalChangePassword";
 import ModalUploadPhoto from "./ModalUploadPhoto";
 import WhiteCard from "../Commons/WhiteCard";
 import { EcologicalFootprint } from "../Commons/EcologicalFootprint";
-import { useLaravelReactI18n } from 'laravel-react-i18n';
+import {useTranslation} from "react-i18next";
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import PermissionPrivacy from "./PermissionPrivacy";
 
@@ -18,7 +18,7 @@ export default function Profile2({ }) {
     const darkMode = localStorage.getItem("darkMode") == "true"
     const [visiblePassword, isVisiblePassword] = useState(false)
     const [visiblePhoto, isVisiblePhoto] = useState(false)
-    const { t } = useLaravelReactI18n()
+    const { t } = useTranslation()
 
     const closePasswordCallback = () => {
         isVisiblePassword(false)

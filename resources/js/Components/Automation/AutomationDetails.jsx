@@ -4,13 +4,13 @@ import AutomationStats from "./AutomationStats";
 import { getIcon } from "@/Components/Commons/Constants";
 import { SuggestionsDisplay } from "./SuggestionDisplay";
 
-import { useLaravelReactI18n } from 'laravel-react-i18n';
+import {useTranslation} from "react-i18next";
 import { getTriggerDescription, getConditionDescription } from "@/Components/Commons/DataFormatter";
 
 
 export function AutomationDetails({ automation_in }) {
     const [automation, setAutomation] = useState({})
-    const { t } = useLaravelReactI18n()
+    const { t } = useTranslation()
     const [detailsOpen, setDetailOpen] = useState(false)
 
     const block_class = "flex flex-row items-center gap-3 md:gap-5 bg-gray-200 rounded-md p-2 my-2 text-sm md:text-base"

@@ -3,7 +3,7 @@ import ConfigurationAppliance from '@/Components/ConfigurationMap/ConfigurationA
 import { useState,useEffect } from 'react';
 import ConfigurationEnergy from './ConfigurationEnergy';
 import WhiteCard from '../Commons/WhiteCard';
-import { useLaravelReactI18n } from 'laravel-react-i18n';
+import {useTranslation} from "react-i18next";
 import { getIcon } from "../Commons/Constants";
 import ConfigurationHomeAssistant from './ConfigurationHomeAssistant';
 import { DeviceConfiguration } from './DeviceConfiguration';
@@ -55,7 +55,7 @@ function StepProgress({ state, setState,t }) {
 const FirstConfiguration = () => {
     const [maps,setMaps]=useState([])
     const [progressState, setProgressState] = useState(stepIndexes.UPLOAD_MAP);
-    const { t } = useLaravelReactI18n();
+    const { t } = useTranslation();
 
     useEffect(()=>{
         async function pullMaps(){

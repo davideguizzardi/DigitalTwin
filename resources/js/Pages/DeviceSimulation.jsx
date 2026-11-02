@@ -12,7 +12,7 @@ import {
     useDrawingArea
 } from '@mui/x-charts';
 import dayjs from "dayjs";
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 import { StyledButton } from "@/Components/Commons/StyledBasedComponents";
 
 import { Slider } from "@mui/material";
@@ -539,7 +539,7 @@ export default function DeviceSimulation({ }) {
 
     const [totalSimulation, setTotalSimulation] = useState({ starting_time: null, values: [] })
 
-    const { t } = useLaravelReactI18n()
+    const { t } = useTranslation()
 
     const [priceCalendar, setPriceCalendar] = useState([]) //matrix 7*1440 that express the cost of energy per each minute of the week
     const [maxThreshold, setMaxThreshold] = useState(2900)

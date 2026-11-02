@@ -6,12 +6,12 @@ import DragDropFile from '@/Components/ConfigurationMap/DragDropFile';
 import { MdOutlineFileUpload } from "react-icons/md";
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import { domain } from "../Commons/Constants";
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 import Cookies from "js-cookie";
 
 export default function ModalUploadPhoto({ open = true, closeCallback }) {
     const [file, setFile] = useState(null)
-    const { t } = useLaravelReactI18n()
+    const { t } = useTranslation()
 
     const onDrop = useCallback(acceptedFiles => {
         const firstFile = acceptedFiles.at(0);

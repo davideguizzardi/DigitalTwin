@@ -1,10 +1,10 @@
 import { List } from "flowbite-react";
-import { useLaravelReactI18n } from "laravel-react-i18n";
+import { useTranslation } from "react-i18next";
 import ControlPopup from "../ControlAppliance/ControlPopup";
 import { getIcon } from "./Constants";
 
 export default function DeviceRecord({ device,onClickFun }) {
-    const {t}=useLaravelReactI18n()
+    const {t} = useTranslation()
     return (
         <List.Item key={device.device_id} className="">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 items-center p-3  text-sm"

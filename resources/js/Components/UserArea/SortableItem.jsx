@@ -2,7 +2,7 @@ import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { FaRegHeart, FaShieldHalved, FaMusic, FaBookOpen } from 'react-icons/fa6'
-import { useLaravelReactI18n } from 'laravel-react-i18n';
+import {useTranslation} from "react-i18next";
 
 export default function SortableItem(props) {
   const {
@@ -12,7 +12,7 @@ export default function SortableItem(props) {
     transform,
     transition,
   } = useSortable({ id: props.id });
-    const {t} = useLaravelReactI18n()
+    const {t} = useTranslation()
 
   const style = {
     transform: CSS.Transform.toString(transform),
