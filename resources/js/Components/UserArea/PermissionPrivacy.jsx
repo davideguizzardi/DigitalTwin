@@ -14,19 +14,14 @@ export default function PermissionPrivacy() {
     privacy_disclosure: false,
   });
 
-  const fetchPrivacy = async () => {
-    if (!user.username) return;
-    const response = await userService.getPrivacyByUser(user.username);
-    if (response) {
-      setPrivacy({
-        privacy_disclosure: response.data_disclosure,
-        privacy_collection: response.data_collection,
-      });
-    }
-  };
 
   useEffect(() => {
-    fetchPrivacy();
+    if(user.data_collection && user.data_disclosure){
+      setPrivacy({
+        privacy_disclosure: user.data_disclosure,
+        privacy_collection: user.data_collection,
+      });
+    }
   }, [user]);
 
   const handlePrivacyChange = async (key, value) => {

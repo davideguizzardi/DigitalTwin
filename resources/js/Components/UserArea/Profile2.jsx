@@ -7,10 +7,11 @@ import { useState } from "react";
 import ModalChangePassword from "./ModalChangePassword";
 import ModalUploadPhoto from "./ModalUploadPhoto";
 import WhiteCard from "../Commons/WhiteCard";
-import { EcologicalFootprint } from "../Commons/EcologicalFootprint";
 import {useTranslation} from "react-i18next";
 import { StyledButton } from "../Commons/StyledBasedComponents";
 import PermissionPrivacy from "./PermissionPrivacy";
+
+import { backend } from "@/Components/Commons/Constants";
 
 export default function Profile2({ }) {
     const user = useContext(UserContext)
@@ -36,7 +37,7 @@ export default function Profile2({ }) {
                 {visiblePhoto && <ModalUploadPhoto closeCallback={closePhotoCallback} />}
                 <div className="relative">
                     {user.url_photo != null && user.url_photo != undefined && user.url_photo != "" ?
-                        <img className="rounded-2xl w-28 md:w-32 aspect-square" src={user.url_photo} />
+                        <img className="rounded-2xl w-28 md:w-32 aspect-square" src={user.url_photo && backend + "/" + user.url_photo} />
                         :
                         <IconContext.Provider value={{ color: (darkMode ? "white" : "black"), size: 150 }}>
                             <FaUser className="rounded-2xl p-5" />

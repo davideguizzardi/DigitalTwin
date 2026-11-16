@@ -11,32 +11,32 @@ const kWhComparisons = (kWh,t) => {
   return [
     { 
       icon: <FaCar className={`${iconStyle} text-slate-600`} />, 
-      text: t("Driving for :value km", {
+      text: t("Driving for {{value}} km", {
         value: (kgCO2e / 0.192).toFixed(1)})
     },
     { 
       icon: <FaCoffee className={`${iconStyle} text-amber-800`} />,
-      text: t("Making :value cups of coffee", {
+      text: t("Making {{value}} cups of coffee", {
         value: (kgCO2e / 0.29).toFixed(1)}) 
     },
     { 
       icon: <FaPizzaSlice className={`${iconStyle} text-yellow-400`} />,
-      text: t("Eating :value pizzas", {
+      text: t("Eating {{value}} pizzas", {
         value: (kgCO2e / 0.86).toFixed(1)}) 
     },
     { 
       icon: <FaTree className={`${iconStyle} text-green-600`} />,
-      text: t("Absorbed by :value trees in a year", {
+      text: t("Absorbed by {{value}} trees in a year", {
         value: (kgCO2e / 21).toFixed(2)}) 
     },
     { 
       icon: <SiNetflix className={`${iconStyle} text-red-500`} />,
-      text: t( "Watching :value hours of Netfilx", {
+      text: t( "Watching {{value}} hours of Netfilx", {
         value: (kWh * 12.5).toFixed(0)})  
     },
     { 
       icon: <FaMobileAlt className={`${iconStyle} text-gray-600`} />,
-      text: t("Charging a phone :value times", {
+      text: t("Charging a phone {{value}} times", {
         value: (kWh * 55).toFixed(0)}) 
     }
   ];

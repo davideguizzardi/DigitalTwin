@@ -55,18 +55,11 @@ export default function Preferences({ }) {
         }
     }
 
-    const fetchItems = async () => {
-        if (!user.username) return null
-        const response = await userService.getPreferencesByUser(user.username)
-        if (Object.keys(response).length > 0) {
-            setItems(response.preferences)
-        } else {
-            setItems(["Health", "Security", "Entertainment", "Study"])
-        }
-    }
-
     useEffect(() => {
-        fetchItems()
+
+        if(user.preferences){
+            setItems(user.preferences.split(";"))
+        }
         return () => { }
     }, [user])
 
